@@ -1,11 +1,12 @@
 # Painting Droid
 
-[DEMO](https://painting-droid-web.vercel.app/) 
+[DEMO](https://painting-droid-web.vercel.app/)
 
 ---
+
 <div align="center">
 
-  <img src="assets/logo.webp" width="200" height="200">
+  <img src="assets/logo.webp" width="300" height="300">
 
 </div>
 
@@ -96,4 +97,3 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 ### License
 
 [MIT](https://choosealicense.com/licenses/mit/)
-
