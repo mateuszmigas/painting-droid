@@ -1,8 +1,17 @@
 # Painting Droid
 
-<img src="assets/logo.webp" width="200" height="200">
+[DEMO](https://painting-droid-web.vercel.app/) 
 
-Painting Droid is an AI-powered cross-platform painting app. It utilizes various AI models, ranging from paid providers to self-hosted open-source models, as well as some lightweight ones built into the app.
+---
+<div align="center">
+
+  <img src="assets/logo.webp" width="200" height="200">
+
+</div>
+
+---
+
+Painting Droid is an AI-powered cross-platform painting app inspired by the legendary MS Paint, but enhanced expandable with plugins and open. It utilizes various AI models, from paid providers to self-hosted open-source models, as well as some lightweight ones built into the app. It works in the browser and as a desktop app on Windows, macOS, and Linux.
 
 ## Features
 
