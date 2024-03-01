@@ -41,7 +41,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 
 #### Using Github Codespaces
 
-1. [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mateuszmigas/painting-droid-test)
+1. [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mateuszmigas/painting-droid)
 2. Install the dependencies using `pnpm install`
 3. Run the app using `pnpm dev:web`
 
