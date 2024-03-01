@@ -23,6 +23,29 @@ Painting Droid is an AI-powered cross-platform painting app. It utilizes various
 | MacOS    | yes                       |
 | Linux    | yes                       |
 
+## Roadmap
+
+### Core features
+
+- [ ] Basic UI layout
+- [ ] Canvas manipulation
+- [ ] Canvas layers
+- [ ] Drawing tools: brush, pencil
+- [ ] Undo/Redo functionality
+- [ ] Command palette
+- [ ] State preservation
+- [ ] Custom 'Project' file format
+- [ ] Saving and loading projects
+- [ ] Area selection
+- [ ] WASM effects
+
+### AI features
+
+- [ ] Stable Diffusion Docker image for local server
+- [ ] Integration with DALL-E
+- [ ] Integration with Stability.ai
+- [ ] Integration with Midjourney
+
 ### License
 
 [MIT](https://choosealicense.com/licenses/mit/)
