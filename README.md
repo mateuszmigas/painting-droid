@@ -6,7 +6,7 @@
 
 <div align="center">
 
-  <img src="assets/logo.webp" width="300" height="300">
+  <img src="assets/logo.webp" width="200" height="200">
 
 </div>
 
