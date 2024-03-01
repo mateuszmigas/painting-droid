@@ -18,6 +18,40 @@ Painting Droid is an AI-powered cross-platform painting app. It utilizes various
 
 ![Architecture](assets/arch.svg)
 
+## How to develop
+
+### Web app
+
+If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required for Github Codespaces).
+
+#### Locally
+
+1. Clone the repository
+2. Install the dependencies using `pnpm install`
+3. Run the app using `pnpm dev:web`
+
+#### Using Dev Container
+
+1. Clone the repository
+2. Make sure you have Docker, Visual Studio Code and [Dev Container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension installed
+3. Open the repository in Visual Studio Code
+4. Open the command palette and run `Dev Containers: Reopen in Container`
+5. Install the dependencies using `pnpm install`
+6. Run the app using `pnpm dev:web`
+
+#### Using Github Codespaces
+
+1. [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mateuszmigas/painting-droid-test)
+2. Install the dependencies using `pnpm install`
+3. Run the app using `pnpm dev:web`
+
+### Desktop app
+
+1. Clone the repository
+2. Install [Tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites/)
+3. Install the dependencies using `pnpm install`
+4. Run the app using `pnpm dev:desktop`
+
 ## Platform support
 
 | Platform | Supported                 |
@@ -25,7 +59,7 @@ Painting Droid is an AI-powered cross-platform painting app. It utilizes various
 | Browser  | yes (limited AI features) |
 | Windows  | yes                       |
 | MacOS    | yes                       |
-| Linux    | yes                       |
+| Linux    | yes (not tested)          |
 
 ## Roadmap
 

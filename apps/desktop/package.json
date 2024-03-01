@@ -1,0 +1,11 @@
+{
+  "name": "@painting-droid/desktop",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.5.8"
+  }
+}
+
