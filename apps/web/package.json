@@ -22,7 +22,8 @@
     "react-dom": "^18.2.0",
     "react-resizable-panels": "^2.0.11",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^4.5.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1",
