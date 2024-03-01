@@ -14,6 +14,10 @@ Painting Droid is an AI-powered cross-platform painting app. It utilizes various
 - Plugin support.
 - Cross-platform compatibility.
 
+## Overview
+
+![Architecture](assets/arch.svg)
+
 ## Platform support
 
 | Platform | Supported                 |
