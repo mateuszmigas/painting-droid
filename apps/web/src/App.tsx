@@ -1,14 +1,15 @@
 import { AppMenuBar } from "@/components/appMenuBar";
 import { ThemeProvider } from "@/lib/themeProvider";
+import { AppStatusBar } from "@/components/appStatusBar";
+import { AppContent } from "@/components/appContent";
 
 export const App = () => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div>
+      <div className="w-full h-full flex flex-col">
         <AppMenuBar></AppMenuBar>
-        <div className="p-2">
-          <h1>Work in progress...</h1>
-        </div>
+        <AppContent></AppContent>
+        <AppStatusBar></AppStatusBar>
       </div>
     </ThemeProvider>
   );

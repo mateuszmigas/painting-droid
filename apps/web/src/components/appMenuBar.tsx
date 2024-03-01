@@ -11,7 +11,7 @@ import { ModeToggle } from "./themeToggle";
 
 export const AppMenuBar = () => {
   return (
-    <div className="border flex flex-row justify-between items-center">
+    <div className="border-b flex flex-row justify-between items-center">
       <Menubar className="border-none">
         <MenubarMenu>
           <MenubarTrigger>File</MenubarTrigger>
@@ -38,6 +38,12 @@ export const AppMenuBar = () => {
             <MenubarSeparator />
             <MenubarItem>Print</MenubarItem>
           </MenubarContent>
+        </MenubarMenu>
+        <MenubarMenu>
+          <MenubarTrigger>View</MenubarTrigger>
+        </MenubarMenu>
+        <MenubarMenu>
+          <MenubarTrigger>Effects</MenubarTrigger>
         </MenubarMenu>
       </Menubar>
       <ModeToggle></ModeToggle>
