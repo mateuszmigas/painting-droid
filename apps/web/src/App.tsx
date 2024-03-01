@@ -1,8 +1,15 @@
+import { AppMenuBar } from "@/components/appMenuBar";
+import { ThemeProvider } from "@/lib/themeProvider";
+
 export const App = () => {
   return (
-    <div className="text-3xl font-bold underline">
-      <h1>Welcome to Painting Droid</h1>
-    </div>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <div>
+        <AppMenuBar></AppMenuBar>
+        <div className="p-2">
+          <h1>Work in progress...</h1>
+        </div>
+      </div>
+    </ThemeProvider>
   );
 };
-
