@@ -72,11 +72,11 @@
   }
   body {
     @apply bg-background text-foreground;
-    @apply w-full h-full;
+    @apply size-full;
   }
   html,
   #root {
-    @apply w-full h-full;
+    @apply size-full;
   }
 }
 

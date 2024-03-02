@@ -8,6 +8,7 @@ import { ColorsPanel } from "./panels/colorsPanel";
 import { LayersPanel } from "./panels/layersPanel";
 import { HistoryPanel } from "./panels/historyPanel";
 import { MetadataPanel } from "./panels/metadataPanel";
+import { CanvasViewport } from "./canvasViewport";
 
 const LeftContent = () => {
   return (
@@ -21,10 +22,6 @@ const LeftContent = () => {
       </ResizablePanel>
     </ResizablePanelGroup>
   );
-};
-
-const MiddleContent = () => {
-  return <div className="p-2">Canvas</div>;
 };
 
 const RightContent = () => {
@@ -53,7 +50,7 @@ export const AppContent = () => {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel>
-        <MiddleContent />
+        <CanvasViewport />
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={20}>
