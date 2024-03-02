@@ -36,7 +36,6 @@ const reducer = (viewport: Viewport, action: ViewportAction): Viewport => {
 export class ViewportManipulator extends ThrottleHtmlManipulator {
   private pointerPosition = { x: 0, y: 0 };
   private isMoving = false;
-  // private actionReducer: (actions: Action[]) => Viewport;
 
   constructor(
     protected element: HTMLElement,
@@ -58,7 +57,7 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
   };
 
   private onMouseDown = (e: MouseEvent) => {
-    if (e.button === 0 && e.shiftKey) {
+    if (e.button === 1) {
       this.pointerPosition = { x: e.offsetX, y: e.offsetY };
       this.isMoving = true;
     }

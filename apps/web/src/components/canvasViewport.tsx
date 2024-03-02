@@ -1,5 +1,10 @@
-import { Viewport, ViewportManipulator } from "@/utils/manipulation";
-import { useEffect, useRef } from "react";
+import {
+  Viewport,
+  ViewportManipulator,
+  defaultViewport,
+  calculateFitViewport,
+} from "@/utils/manipulation";
+import { useLayoutEffect, useRef } from "react";
 import { CanvasHost } from "./canvasHost";
 
 const applyTransform = (viewport: Viewport, element: HTMLElement) => {
@@ -10,41 +15,49 @@ const applyTransform = (viewport: Viewport, element: HTMLElement) => {
 };
 
 export const CanvasViewport = () => {
-  const hostElement = useRef<HTMLDivElement>(null);
-  const viewportElement = useRef<HTMLDivElement>(null);
-  const viewport = useRef<Viewport>({
-    position: { x: 50, y: 50 },
-    zoom: 0.5,
-  });
+  const hostElementRef = useRef<HTMLDivElement>(null);
+  const viewportElementRef = useRef<HTMLDivElement>(null);
+  const canvasSize = { width: 800, height: 600 };
+  const viewport = useRef<Viewport | null>(null);
 
-  useEffect(() => {
-    if (!hostElement.current || !viewportElement.current) return;
+  useLayoutEffect(() => {
+    if (!hostElementRef.current || !viewportElementRef.current) return;
+
+    const hostElement = hostElementRef.current;
+    const viewportElement = viewportElementRef.current;
     const manipulator = new ViewportManipulator(
-      hostElement.current,
-      () => viewport.current,
+      hostElement,
+      () => viewport.current ?? defaultViewport,
       (newViewport) => {
         viewport.current = newViewport;
-        applyTransform(viewport.current, viewportElement.current!);
+        applyTransform(viewport.current, viewportElement!);
       }
     );
-    applyTransform(viewport.current, viewportElement.current!);
+
+    setTimeout(() => {
+      viewport.current = calculateFitViewport(
+        hostElement.getBoundingClientRect(),
+        { x: 0, y: 0, ...canvasSize },
+        50
+      );
+      applyTransform(viewport.current, viewportElement!);
+      viewportElement.classList.remove("hidden");
+    }, 0);
+
     return () => manipulator.dispose();
   }, []);
 
   return (
     <div className="relative size-full">
-      <div
-        ref={hostElement}
-        className="absolute size-full overflow-hidden border "
-      >
+      <div ref={hostElementRef} className="absolute size-full overflow-hidden">
         <div
-          ref={viewportElement}
-          className="pointer-events-none origin-top-left"
+          ref={viewportElementRef}
+          className="pointer-events-none origin-top-left hidden"
         >
           <CanvasHost />
         </div>
       </div>
-      <div className="absolute p-small">Shift+LMB to move</div>
+      <div className="absolute p-small">Middle mouse to move/zoom</div>
     </div>
   );
 };
