@@ -1,4 +1,4 @@
-/* This is icon aggregator, all icons from different libraries are imported here */
+/* This is an icon aggregator where all icons from various libraries are imported. */
 import { Pen, Pencil, Moon, Sun } from "lucide-react";
 
 type IconType = "pen" | "pencil" | "moon" | "sun";
