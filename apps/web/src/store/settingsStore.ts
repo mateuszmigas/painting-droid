@@ -10,7 +10,7 @@ type AppSettingsState = {
 
 const defaultState: AppSettingsState = {
   value: 3,
-  theme: "light",
+  theme: "system",
 };
 
 type AppSettingsSlice = AppSettingsState & {
