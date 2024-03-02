@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Test:
+  Validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,6 +17,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
 
       - name: Install packages
         run: pnpm install --prefer-offline
