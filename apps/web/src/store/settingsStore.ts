@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create, type StateCreator } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 type ThemeType = "light" | "dark" | "system";
@@ -18,18 +18,17 @@ type AppSettingsSlice = AppSettingsState & {
   increment: () => void;
 };
 
+export const settingsStoreCreator: StateCreator<AppSettingsSlice> = (set) => ({
+  ...defaultState,
+  setTheme: (theme) => set({ theme }),
+  increment: () => set((state) => ({ value: state.value + 1 })),
+});
+
 export const useSettingsStore = create<AppSettingsSlice>()(
-  persist(
-    (set) => ({
-      ...defaultState,
-      setTheme: (theme) => set({ theme }),
-      increment: () => set((state) => ({ value: state.value + 1 })),
-    }),
-    {
-      version: 1,
-      name: "settings",
-      storage: createJSONStorage(() => sessionStorage),
-    }
-  )
+  persist(settingsStoreCreator, {
+    version: 1,
+    name: "settings",
+    storage: createJSONStorage(() => sessionStorage),
+  })
 );
 
