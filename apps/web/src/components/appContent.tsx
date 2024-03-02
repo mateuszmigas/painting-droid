@@ -3,12 +3,13 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { SelectToolPanel } from "./panels/selectToolPanel";
 
 const LeftContent = () => {
   return (
     <ResizablePanelGroup direction="vertical">
       <ResizablePanel>
-        <div className="p-2">Tools</div>
+        <SelectToolPanel />
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={30}>
