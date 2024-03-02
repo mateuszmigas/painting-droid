@@ -54,7 +54,7 @@ export const CanvasViewport = () => {
           ref={viewportElementRef}
           className="pointer-events-none origin-top-left hidden shadow-sm"
         >
-          <CanvasHost />
+          <CanvasHost size={canvasSize} />
         </div>
       </div>
       <div className="absolute p-small">Middle mouse to move/zoom</div>

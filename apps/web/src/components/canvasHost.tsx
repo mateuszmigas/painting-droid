@@ -1,6 +1,8 @@
+import { Size } from "@/utils/common";
 import { useLayoutEffect, useRef } from "react";
 
-export const CanvasHost = () => {
+export const CanvasHost = (props: { size: Size }) => {
+  const { size } = props;
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useLayoutEffect(() => {
@@ -17,10 +19,15 @@ export const CanvasHost = () => {
     context.fillText("Hello, World!", 300, 400);
   }, []);
 
+  const { width, height } = size;
   return (
-    <div className="bg-gray-100" style={{ width: 800, height: 600 }}>
-      <canvas ref={canvasRef} width={800} height={600}></canvas>
+    <div className="bg-gray-100" style={{ width, height }}>
+      <canvas
+        className="pixelated-canvas"
+        ref={canvasRef}
+        width={width}
+        height={height}
+      ></canvas>
     </div>
   );
 };
-
