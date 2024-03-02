@@ -5,6 +5,9 @@ import {
 } from "@/components/ui/resizable";
 import { SelectToolPanel } from "./panels/selectToolPanel";
 import { ColorsPanel } from "./panels/colorsPanel";
+import { LayersPanel } from "./panels/layersPanel";
+import { HistoryPanel } from "./panels/historyPanel";
+import { MetadataPanel } from "./panels/metadataPanel";
 
 const LeftContent = () => {
   return (
@@ -28,15 +31,15 @@ const RightContent = () => {
   return (
     <ResizablePanelGroup direction="vertical">
       <ResizablePanel>
-        <div className="p-2">Layers</div>
+        <LayersPanel />
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel>
-        <div className="p-2">History</div>
+        <HistoryPanel />
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel>
-        <div className="p-2">Metadata</div>
+        <MetadataPanel />
       </ResizablePanel>
     </ResizablePanelGroup>
   );
