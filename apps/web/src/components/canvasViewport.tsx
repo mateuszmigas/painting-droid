@@ -52,7 +52,7 @@ export const CanvasViewport = () => {
       <div ref={hostElementRef} className="absolute size-full overflow-hidden">
         <div
           ref={viewportElementRef}
-          className="pointer-events-none origin-top-left hidden"
+          className="pointer-events-none origin-top-left hidden shadow-sm"
         >
           <CanvasHost />
         </div>
