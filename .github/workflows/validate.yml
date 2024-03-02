@@ -27,4 +27,4 @@ jobs:
         run: pnpm install --prefer-offline
 
       - name: Validate
-        run: pnpm run validate
+        run: pnpm run -r validate
