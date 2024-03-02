@@ -11,9 +11,9 @@ export const SelectToolPanel = () => {
     (state) => state
   );
   return (
-    <div className="p-2 flex flex-col gap-2">
+    <div className="flex flex-col gap-medium">
       <PanelHeader title={translations.tools} />
-      <div className="flex flex-wrap flex-row gap-1">
+      <div className="flex flex-wrap flex-row gap-small p-small">
         {tools.map((tool) => (
           <IconButton
             className={selectedTool === tool ? "bg-accent" : ""}

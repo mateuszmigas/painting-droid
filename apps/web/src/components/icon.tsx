@@ -28,7 +28,6 @@ export const Icon = (props: {
   type: IconType;
   size: IconSize;
   className?: string;
-  // onClick
 }) => {
   const { type, size, className } = props;
   return renderLucideIcon(type, size, className);

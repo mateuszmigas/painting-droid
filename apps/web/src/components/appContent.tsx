@@ -4,6 +4,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { SelectToolPanel } from "./panels/selectToolPanel";
+import { ColorsPanel } from "./panels/colorsPanel";
 
 const LeftContent = () => {
   return (
@@ -13,7 +14,7 @@ const LeftContent = () => {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={30}>
-        <div className="p-2">Colors</div>
+        <ColorsPanel />
       </ResizablePanel>
     </ResizablePanelGroup>
   );

@@ -1,4 +1,13 @@
 /** @type {import('tailwindcss').Config} */
+
+const space = {
+  ["very-small"]: "0.125rem",
+  small: "0.25rem",
+  medium: "0.5rem",
+  huge: "1rem",
+};
+
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -17,6 +26,9 @@ module.exports = {
       },
     },
     extend: {
+      gap: space,
+      margin: space,
+      padding: space,
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -74,4 +86,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
