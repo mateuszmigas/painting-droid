@@ -20,6 +20,8 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
+        with:
+          version: 8
 
       - name: Install packages
         run: pnpm install --prefer-offline
