@@ -6,10 +6,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useTheme } from "@/lib/themeProvider";
+import { useSettingsStore } from "@/store";
 
 export const ModeToggle = () => {
-  const { setTheme } = useTheme();
+  const setTheme = useSettingsStore((state) => state.setTheme);
 
   return (
     <DropdownMenu>

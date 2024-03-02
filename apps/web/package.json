@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri"
+    "check-types": "tsc --noEmit",
+    "validate": "pnpm run check-types"
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -38,3 +38,4 @@
     "vite": "^5.0.0"
   }
 }
+
