@@ -1,6 +1,10 @@
 # Painting Droid
 
-[DEMO](https://painting-droid-web.vercel.app/)
+[DEMO](https://painting-droid-web.vercel.app/) 
+
+![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg)
+
+
 
 ---
 
