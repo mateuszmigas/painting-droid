@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/menubar";
 import { ModeToggle } from "./themeToggle";
 
-export const AppMenuBar = () => {
+export const AppHeaderBar = () => {
   return (
     <div className="border-b flex flex-row justify-between items-center px-2">
       <Menubar className="border-none">
