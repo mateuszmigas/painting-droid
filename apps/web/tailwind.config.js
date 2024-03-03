@@ -4,7 +4,7 @@ const space = {
   ["very-small"]: "0.125rem",
   small: "0.25rem",
   medium: "0.5rem",
-  huge: "1rem",
+  big: "1rem",
 };
 
 

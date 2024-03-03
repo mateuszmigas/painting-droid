@@ -6,7 +6,7 @@ import { useSyncTheme } from "./hooks/useSyncTheme";
 export const App = () => {
   useSyncTheme();
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col select-none">
       <AppHeaderBar></AppHeaderBar>
       <AppContent></AppContent>
       <AppStatusBar></AppStatusBar>

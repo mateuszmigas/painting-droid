@@ -1,7 +1,7 @@
 /* This is an icon aggregator where all icons from various libraries are imported. */
-import { Pen, Pencil, Moon, Sun } from "lucide-react";
+import { Pen, Pencil, Moon, Sun, Plus } from "lucide-react";
 
-export type IconType = "pen" | "pencil" | "moon" | "sun";
+export type IconType = "pen" | "pencil" | "moon" | "sun" | "plus";
 export type IconSize = "small" | "medium";
 
 const renderLucideIcon = (
@@ -19,6 +19,8 @@ const renderLucideIcon = (
       return <Moon className={className} size={fontSize} />;
     case "sun":
       return <Sun className={className} size={fontSize} />;
+    case "plus":
+      return <Plus className={className} size={fontSize} />;
     default:
       return null;
   }
