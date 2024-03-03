@@ -1,15 +1,5 @@
 import { KeyGesture } from "@/utils/keyGesture";
-
-type MenuItemAction =
-  | {
-      onClick: () => void;
-    }
-  | {
-      commandId: string;
-    }
-  | {
-      role: string;
-    };
+import { MenuItemAction } from "./menuItemAction";
 
 export type MenuItem =
   | {
@@ -18,7 +8,7 @@ export type MenuItem =
       items: MenuItem[];
     }
   | {
-      type: "child";
+      type: "leaf";
       action: MenuItemAction;
       label: string;
       disabled?: boolean;

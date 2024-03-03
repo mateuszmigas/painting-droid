@@ -10,7 +10,7 @@ export const command = {
       layerName: string;
     }
   ) => {
-    console.log("Adding a new layer to the workspace");
+    console.log("Adding a new layer to the workspace", context, payload);
   },
 };
 

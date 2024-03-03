@@ -1,52 +1,11 @@
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
 import { ModeToggle } from "./themeToggle";
+import { MenuBar } from "./menu-bar/menuBar";
 
 export const AppHeaderBar = () => {
   return (
     <div className="border-b flex flex-row justify-between items-center px-2">
-      <Menubar className="border-none">
-        <MenubarMenu>
-          <MenubarTrigger>File</MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem>
-              New Tab <MenubarShortcut>⌘T</MenubarShortcut>
-            </MenubarItem>
-            <MenubarItem>New Window</MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem>Share</MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem>Print</MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-        <MenubarMenu>
-          <MenubarTrigger>Edit</MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem>
-              New Tab <MenubarShortcut>⌘T</MenubarShortcut>
-            </MenubarItem>
-            <MenubarItem>New Window</MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem>Share</MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem>Print</MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-        <MenubarMenu>
-          <MenubarTrigger>View</MenubarTrigger>
-        </MenubarMenu>
-        <MenubarMenu>
-          <MenubarTrigger>Effects</MenubarTrigger>
-        </MenubarMenu>
-      </Menubar>
-      <ModeToggle></ModeToggle>
+      <MenuBar />
+      <ModeToggle />
     </div>
   );
 };
