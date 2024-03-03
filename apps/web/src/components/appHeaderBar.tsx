@@ -5,6 +5,7 @@ import { IconButton } from "./iconButton";
 import { Button } from "./ui/button";
 import { cn } from "@/utils/css";
 import { useWorkspacesStore } from "@/store";
+import { memo } from "react";
 
 const WorkspaceTab = (props: {
   index: number;
@@ -17,7 +18,7 @@ const WorkspaceTab = (props: {
   return (
     <Button
       className={cn(
-        "border-b-4 h-full text-sm hover:text-primary py-[6px] rounded-none",
+        "border-b-4 h-8 text-sm hover:text-primary pt-1 rounded-none",
         isSelected ? "border-primary" : "border-transparent"
       )}
       variant="ghost"
@@ -29,14 +30,14 @@ const WorkspaceTab = (props: {
   );
 };
 
-export const AppHeaderBar = () => {
+export const AppHeaderBar = memo(() => {
   const { workspaces, selectedWorkspaceIndex, addWorkspace } =
     useWorkspacesStore((state) => state);
 
   return (
     <div className="border-b flex flex-row justify-between items-center px-small gap-big">
       <MenuBar />
-      <div className="flex-1 flex flex-row justify-center overflow-auto">
+      <div className="flex-1 flex flex-row justify-center overflow-auto items-center">
         <ScrollArea className="whitespace-nowrap">
           <div className="h-full flex-row flex items-center">
             {workspaces.map((tab, index) => (
@@ -55,5 +56,5 @@ export const AppHeaderBar = () => {
       <ModeToggle />
     </div>
   );
-};
+});
 
