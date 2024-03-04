@@ -1,5 +1,14 @@
+import {
+  ImageUncompressedBufferRect,
+  ImageUncompressedBuffer,
+} from "@/utils/imageData";
 import { Size } from "@/utils/common";
 import { useLayoutEffect, useRef } from "react";
+
+type CanvasHostProps = {
+  currentData: ImageUncompressedBuffer; //the whole image
+  draftDataDiffs: ImageUncompressedBufferRect[]; //image diffs that will override parts of currentData
+};
 
 export const CanvasHost = (props: { size: Size }) => {
   const { size } = props;
