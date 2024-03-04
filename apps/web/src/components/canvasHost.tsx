@@ -5,7 +5,7 @@ import {
 import { Size } from "@/utils/common";
 import { useLayoutEffect, useRef } from "react";
 
-type CanvasHostProps = {
+export type CanvasHostProps = {
   currentData: ImageUncompressedBuffer; //the whole image
   draftDataDiffs: ImageUncompressedBufferRect[]; //image diffs that will override parts of currentData
 };

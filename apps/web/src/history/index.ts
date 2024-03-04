@@ -1,5 +1,4 @@
 import {
-  ImageCompressedBuffer,
   ImageUncompressedBuffer,
   ImageUncompressedBufferRect,
 } from "@/utils/imageData";
@@ -15,9 +14,9 @@ export type ImageChange =
     };
 
 export class ImageHistory {
-  private checkpoints: Record<number, ImageCompressedBuffer> = {};
+  //   private checkpoints: Record<number, ImageCompressedBuffer> = {};
 
-  init(data?: ImageUncompressedBuffer) {}
+  init(_data?: ImageUncompressedBuffer) {}
 
   push(change: ImageChange) {
     //resets stack
@@ -40,12 +39,12 @@ export class ImageHistory {
     //apply to current
   }
 
-  private compress(data: ImageUncompressedBuffer): ImageCompressedBuffer {
-    return {
-      width: data.width,
-      height: data.height,
-      data: data.data,
-    };
-  }
+  //   private compress(data: ImageUncompressedBuffer): ImageCompressedBuffer {
+  //     return {
+  //       width: data.width,
+  //       height: data.height,
+  //       data: data.data,
+  //     };
+  //   }
 }
 
