@@ -1,8 +1,9 @@
 import { DrawingToolConfig } from "@/drawing-tools";
 import { DrawContext } from "@/drawing-tools/drawContext";
+import { DrawingTool } from "@/drawing-tools/drawTool";
 import { PenDrawTool } from "@/drawing-tools/penTool";
 import { Position } from "@/utils/common";
-import { RefObject, useEffect } from "react";
+import { RefObject, useEffect, useRef } from "react";
 
 const createTool = (tool: DrawingToolConfig, context: DrawContext) => {
   switch (tool.type) {
@@ -44,14 +45,17 @@ export const useDrawTool = (
   transformToCanvasPosition: (position: Position) => Position,
   getDrawContext: () => DrawContext
 ) => {
+  let toolRef = useRef<DrawingTool | null>(null);
+
   useEffect(() => {
     if (!elementRef.current) return;
 
     const element = elementRef.current;
-    const tool = createTool(toolConfig, getDrawContext());
+    toolRef.current = createTool(toolConfig, getDrawContext());
 
-    if (!tool) return;
+    if (!toolRef.current) return;
 
+    const tool = toolRef.current;
     tool.configure(toolConfig.settings);
     let ticksCount = 0;
     let isDrawing = false;
@@ -101,6 +105,10 @@ export const useDrawTool = (
       element.removeEventListener("mouseup", mouseUpHandler);
       element.removeEventListener("mousemove", mouseMoveHandler);
     };
-  }, []);
+  }, [toolConfig.type]);
+
+  useEffect(() => {
+    toolRef.current && toolRef.current.configure(toolConfig.settings);
+  }, [toolConfig.settings]);
 };
 
