@@ -24,7 +24,6 @@ const layerId = "1";
 export const CanvasViewport = () => {
   const hostElementRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<Viewport>(defaultViewport);
-
   const renderer = useCanvasRenderer(hostElementRef, size);
 
   useDrawTool(

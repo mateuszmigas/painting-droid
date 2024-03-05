@@ -16,7 +16,7 @@ export const useFitToViewport = (
         50
       );
       callback(viewport);
-    }, 0);
+    }, 100);
   }, []);
 };
 
