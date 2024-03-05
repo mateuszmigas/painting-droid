@@ -1,62 +1,70 @@
-import {
-  Viewport,
-  ViewportManipulator,
-  defaultViewport,
-  calculateFitViewport,
-} from "@/utils/manipulation";
-import { useLayoutEffect, useRef } from "react";
-import { CanvasHost } from "./canvasHost";
+import { Viewport, defaultViewport } from "@/utils/manipulation";
+import { useEffect, useRef } from "react";
+import { DrawingToolConfig } from "@/drawing-tools";
+import { useCanvasRenderer } from "@/hooks/useCanvasRenderer";
+import { useViewportManipulator } from "@/hooks/useViewportManipulator";
+import { useFitToViewport as useFitToViewportOnInit } from "@/hooks/useFitToViewportOnInit";
+import { useDrawTool } from "@/hooks/useDrawTool";
 
-const applyTransform = (viewport: Viewport, element: HTMLElement) => {
-  element.style.transform = `
-    translate(${viewport.position.x}px, ${viewport.position.y}px) 
-    scale(${viewport.zoom})
-  `;
+const toolConfig: DrawingToolConfig = {
+  type: "pen",
+  settings: {
+    color: "blue",
+    size: 4,
+  },
 };
+
+const size = {
+  width: 1000,
+  height: 1000,
+};
+
+const layerId = "1";
 
 export const CanvasViewport = () => {
   const hostElementRef = useRef<HTMLDivElement>(null);
-  const viewportElementRef = useRef<HTMLDivElement>(null);
-  const canvasSize = { width: 800, height: 600 };
-  const viewport = useRef<Viewport | null>(null);
+  const viewportRef = useRef<Viewport>(defaultViewport);
 
-  useLayoutEffect(() => {
-    if (!hostElementRef.current || !viewportElementRef.current) return;
+  const renderer = useCanvasRenderer(hostElementRef, size);
 
-    const hostElement = hostElementRef.current;
-    const viewportElement = viewportElementRef.current;
-    const manipulator = new ViewportManipulator(
-      hostElement,
-      () => viewport.current ?? defaultViewport,
-      (newViewport) => {
-        viewport.current = newViewport;
-        applyTransform(viewport.current, viewportElement!);
-      }
-    );
+  useDrawTool(
+    hostElementRef,
+    toolConfig,
+    (position) => {
+      const viewport = viewportRef.current!;
+      return {
+        x: (position.x - viewport.position.x) / viewport.zoom,
+        y: (position.y - viewport.position.y) / viewport.zoom,
+      };
+    },
+    () => renderer.getDrawContext(layerId)
+  );
 
-    setTimeout(() => {
-      viewport.current = calculateFitViewport(
-        hostElement.getBoundingClientRect(),
-        { x: 0, y: 0, ...canvasSize },
-        50
-      );
-      applyTransform(viewport.current, viewportElement!);
-      viewportElement.classList.remove("hidden");
-    }, 0);
+  useViewportManipulator(
+    hostElementRef,
+    () => viewportRef.current,
+    (viewport) => {
+      viewportRef.current = viewport;
+      renderer.setViewport(viewport);
+    }
+  );
 
-    return () => manipulator.dispose();
+  useFitToViewportOnInit(hostElementRef, (viewport) => {
+    viewportRef.current = viewport;
+    renderer.setViewport(viewport);
+    hostElementRef.current?.classList.remove("hidden");
+  });
+
+  useEffect(() => {
+    //draw some init data
   }, []);
 
   return (
     <div className="relative size-full">
-      <div ref={hostElementRef} className="absolute size-full overflow-hidden">
-        <div
-          ref={viewportElementRef}
-          className="pointer-events-none origin-top-left hidden shadow-sm"
-        >
-          <CanvasHost size={canvasSize} />
-        </div>
-      </div>
+      <div
+        ref={hostElementRef}
+        className="absolute size-full overflow-hidden hidden"
+      ></div>
       <div className="absolute p-small">Middle mouse to move/zoom</div>
     </div>
   );

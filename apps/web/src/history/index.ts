@@ -1,22 +1,25 @@
 import {
-  ImageUncompressedBuffer,
-  ImageUncompressedBufferRect,
+  ImageUncompressedData,
+  ImageUncompressedRegionRect,
 } from "@/utils/imageData";
 
 export type ImageChange =
   | {
       type: "chunk";
-      data: ImageUncompressedBufferRect;
+      data: ImageUncompressedRegionRect;
     }
   | {
       type: "full";
-      data: ImageUncompressedBuffer;
+      data: ImageUncompressedData;
     };
 
 export class ImageHistory {
   //   private checkpoints: Record<number, ImageCompressedBuffer> = {};
+  private currentImage: ImageUncompressedData | null = null;
 
-  init(_data?: ImageUncompressedBuffer) {}
+  init(data: ImageUncompressedData) {
+    this.currentImage = data;
+  }
 
   push(change: ImageChange) {
     //resets stack
@@ -27,6 +30,12 @@ export class ImageHistory {
     } else {
       throw new Error("Invalid change type");
     }
+  }
+
+  getCurrent() {
+    if (!this.currentImage) throw new Error("No image");
+
+    return this.currentImage;
   }
 
   undo() {

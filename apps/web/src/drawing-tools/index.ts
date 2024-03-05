@@ -1,4 +1,4 @@
-type PenTool = {
+export type PenToolConfig = {
   type: "pen";
   settings: {
     color: string;
@@ -6,7 +6,7 @@ type PenTool = {
   };
 };
 
-type PencilTool = {
+export type PencilToolConfig = {
   type: "pencil";
   settings: {
     color: string;
@@ -14,6 +14,6 @@ type PencilTool = {
   };
 };
 
-export type DrawingTool = PenTool | PencilTool;
-export type DrawingToolType = DrawingTool["type"];
+export type DrawingToolConfig = PenToolConfig | PencilToolConfig;
+export type DrawingToolType = DrawingToolConfig["type"];
 

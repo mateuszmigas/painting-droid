@@ -39,7 +39,7 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
 
   constructor(
     protected element: HTMLElement,
-    protected viewport: () => Viewport,
+    protected getCurrentViewport: () => Viewport,
     private onViewportChange: (newViewport: Viewport) => void
   ) {
     super(element);
@@ -52,7 +52,7 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
   }
 
   private dispatchAction = (action: ViewportAction) => {
-    const newViewport = reducer(this.viewport(), action);
+    const newViewport = reducer(this.getCurrentViewport(), action);
     this.onViewportChange(newViewport);
   };
 
