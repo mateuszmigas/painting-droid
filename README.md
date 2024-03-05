@@ -1,8 +1,9 @@
 # Painting Droid
 
-[DEMO](https://painting-droid-web.vercel.app/) 
+[DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓░░░░░░░░░░░░░░░░░░░ 5% 
 
 ![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg)
+
 
 
 
