@@ -60,7 +60,7 @@ export const CanvasViewport = () => {
       <div
         style={{ opacity: 0 }}
         ref={hostElementRef}
-        className="absolute size-full overflow-hidden transition-opacity duration-1000"
+        className="absolute size-full overflow-hidden transition-opacity duration-1000 cursor-crosshair"
       ></div>
       <div className="absolute p-small">Middle mouse to move/zoom</div>
     </div>
