@@ -50,7 +50,10 @@ export const AppContent = () => {
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel>
-        <CanvasViewport />
+        <>
+          <div className="h-panel-header border-b px-2">Tool settings todo</div>
+          <CanvasViewport />
+        </>
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel defaultSize={20}>

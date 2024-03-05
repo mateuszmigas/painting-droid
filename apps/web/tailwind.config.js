@@ -26,6 +26,9 @@ module.exports = {
       },
     },
     extend: {
+      height: {
+        'panel-header': '32px'
+      },
       gap: space,
       margin: space,
       padding: space,
