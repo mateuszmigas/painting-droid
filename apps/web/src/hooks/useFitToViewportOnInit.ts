@@ -1,8 +1,10 @@
+import { Size } from "@/utils/common";
 import { Viewport, calculateFitViewport } from "@/utils/manipulation";
 import { RefObject, useEffect } from "react";
 
 export const useFitToViewport = (
   hostElementRef: RefObject<HTMLElement>,
+  size: Size,
   callback: (viewport: Viewport) => void
 ) => {
   useEffect(() => {
@@ -10,13 +12,14 @@ export const useFitToViewport = (
 
     const hostElement = hostElementRef.current;
     setTimeout(() => {
+      const rect = hostElement.getBoundingClientRect();
+      const margin = Math.min(rect.width, rect.height) * 0.1;
       const viewport = calculateFitViewport(
-        hostElement.getBoundingClientRect(),
-        { x: 0, y: 0, width: 800, height: 600 },
-        50
+        rect,
+        { x: 0, y: 0, ...size },
+        margin
       );
       callback(viewport);
     }, 100);
   }, []);
 };
-

@@ -48,10 +48,10 @@ export const CanvasViewport = () => {
     }
   );
 
-  useFitToViewportOnInit(hostElementRef, (viewport) => {
+  useFitToViewportOnInit(hostElementRef, size, (viewport) => {
     viewportRef.current = viewport;
     renderer.setViewport(viewport);
-    hostElementRef.current?.classList.remove("hidden");
+    hostElementRef.current?.classList.remove("collapse");
   });
 
   useEffect(() => {
@@ -62,10 +62,9 @@ export const CanvasViewport = () => {
     <div className="relative size-full">
       <div
         ref={hostElementRef}
-        className="absolute size-full overflow-hidden hidden"
+        className="absolute size-full overflow-hidden collapse"
       ></div>
       <div className="absolute p-small">Middle mouse to move/zoom</div>
     </div>
   );
 };
-
