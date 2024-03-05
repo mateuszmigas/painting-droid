@@ -4,10 +4,10 @@ import { PenDrawTool } from "@/drawing-tools/penTool";
 import { Position } from "@/utils/common";
 import { RefObject, useEffect } from "react";
 
-const createTool = (toolConfig: DrawingToolConfig, context: DrawContext) => {
-  switch (toolConfig.type) {
+const createTool = (tool: DrawingToolConfig, context: DrawContext) => {
+  switch (tool.type) {
     case "pen":
-      return new PenDrawTool(toolConfig, context);
+      return new PenDrawTool(context);
     default:
       return null;
   }
@@ -52,6 +52,7 @@ export const useDrawTool = (
 
     if (!tool) return;
 
+    tool.configure(toolConfig.settings);
     let ticksCount = 0;
     let isDrawing = false;
     let currentMousePosition: { x: number; y: number } | null = null;
@@ -80,6 +81,7 @@ export const useDrawTool = (
       if (!isDrawing) return;
       currentMousePosition = getMousePosition(event);
       stop();
+      tool.reset();
       isDrawing = false;
       getDrawContext().restore();
     };
@@ -94,7 +96,7 @@ export const useDrawTool = (
 
     return () => {
       cancel();
-      tool.dispose();
+      tool.reset();
       element.removeEventListener("mousedown", mouseDownHandler);
       element.removeEventListener("mouseup", mouseUpHandler);
       element.removeEventListener("mousemove", mouseMoveHandler);
