@@ -1,9 +1,9 @@
 import { Viewport, defaultViewport } from "@/utils/manipulation";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { DrawingToolConfig } from "@/drawing-tools";
 import { useCanvasRenderer } from "@/hooks/useCanvasRenderer";
 import { useViewportManipulator } from "@/hooks/useViewportManipulator";
-import { useFitToViewport as useFitToViewportOnInit } from "@/hooks/useFitToViewportOnInit";
+import { useFitCanvasToViewport as useFitToViewportOnInit } from "@/hooks/useFitToViewportOnInit";
 import { useDrawTool } from "@/hooks/useDrawTool";
 
 const toolConfig: DrawingToolConfig = {
@@ -39,30 +39,28 @@ export const CanvasViewport = () => {
     () => renderer.getDrawContext(layerId)
   );
 
+  const updateViewport = (viewport: Viewport) => {
+    viewportRef.current = viewport;
+    renderer.setViewport(viewport);
+  };
+
   useViewportManipulator(
     hostElementRef,
     () => viewportRef.current,
-    (viewport) => {
-      viewportRef.current = viewport;
-      renderer.setViewport(viewport);
-    }
+    updateViewport
   );
 
   useFitToViewportOnInit(hostElementRef, size, (viewport) => {
-    viewportRef.current = viewport;
-    renderer.setViewport(viewport);
-    hostElementRef.current?.classList.remove("collapse");
+    updateViewport(viewport);
+    hostElementRef.current!.style.opacity = "1";
   });
-
-  useEffect(() => {
-    //draw some init data
-  }, []);
 
   return (
     <div className="relative size-full">
       <div
+        style={{ opacity: 0 }}
         ref={hostElementRef}
-        className="absolute size-full overflow-hidden collapse"
+        className="absolute size-full overflow-hidden transition-opacity duration-1000"
       ></div>
       <div className="absolute p-small">Middle mouse to move/zoom</div>
     </div>

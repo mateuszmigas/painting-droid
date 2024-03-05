@@ -72,6 +72,7 @@ export const useDrawTool = (
     const mouseDownHandler = (event: MouseEvent) => {
       if (event.button !== 0) return;
       isDrawing = true;
+      getDrawContext().save();
       currentMousePosition = getMousePosition(event);
       start();
     };
@@ -80,6 +81,7 @@ export const useDrawTool = (
       currentMousePosition = getMousePosition(event);
       stop();
       isDrawing = false;
+      getDrawContext().restore();
     };
     const mouseMoveHandler = (event: MouseEvent) => {
       if (!isDrawing) return;
