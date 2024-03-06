@@ -1,10 +1,5 @@
 export type MenuItemAction =
-  | {
-      onClick: () => void;
-    }
-  | {
-      commandId: string;
-    }
-  | {
-      role: string;
-    };
+  | { onClick: () => void }
+  | { commandId: string }
+  | { role: string };
+

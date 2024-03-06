@@ -3,7 +3,7 @@ import { Viewport, calculateFitViewport } from "@/utils/manipulation";
 import { RefObject } from "react";
 import { useAfterPaintEffect } from "./useAfterPaintEffect";
 
-export const useFitCanvasToViewport = (
+export const useFitToViewport = (
   hostElementRef: RefObject<HTMLElement>,
   size: Size,
   callback: (viewport: Viewport) => void

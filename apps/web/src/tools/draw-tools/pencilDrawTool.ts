@@ -14,7 +14,7 @@ export const pencilDrawToolMetadata: DrawToolMetadata = {
   },
 } as const;
 
-export type PencilDrawToolSettings = {
+type PencilDrawToolSettings = {
   color: string;
 };
 
@@ -44,4 +44,3 @@ export class PencilDrawTool implements DrawTool {
     this.previousPosition = null;
   }
 }
-

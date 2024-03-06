@@ -25,7 +25,7 @@ export const brushDrawToolMetadata: DrawToolMetadata = {
   },
 } as const;
 
-export type BrushDrawToolSettings = {
+type BrushDrawToolSettings = {
   color: string;
   size: number;
 };

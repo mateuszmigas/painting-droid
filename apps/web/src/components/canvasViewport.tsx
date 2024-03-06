@@ -1,28 +1,23 @@
-import { Viewport, defaultViewport } from "@/utils/manipulation";
+import {
+  Viewport,
+  defaultViewport,
+  screenToViewportPosition,
+} from "@/utils/manipulation";
 import { useRef } from "react";
-import { useCanvasRenderer } from "@/hooks/useCanvasRenderer";
-import { useViewportManipulator } from "@/hooks/useViewportManipulator";
-import { useFitCanvasToViewport as useFitToViewportOnInit } from "@/hooks/useFitToViewportOnInit";
-import { useDrawTool } from "@/hooks/useDrawTool";
+import {
+  useCanvasRenderer,
+  useViewportManipulator,
+  useFitToViewport,
+  useDrawTool,
+} from "@/hooks";
 import { useToolStore } from "@/store/toolState";
-import { Position } from "@/utils/common";
 
+//temp
 const size = {
   width: 1000,
   height: 1000,
 };
-
 const layerId = "1";
-
-const screenPositionToCanvasPosition = (
-  position: Position,
-  viewport: Viewport
-) => {
-  return {
-    x: (position.x - viewport.position.x) / viewport.zoom,
-    y: (position.y - viewport.position.y) / viewport.zoom,
-  };
-};
 
 export const CanvasViewport = () => {
   const hostElementRef = useRef<HTMLDivElement>(null);
@@ -37,8 +32,7 @@ export const CanvasViewport = () => {
     hostElementRef,
     drawToolId,
     drawToolSettings,
-    (position) =>
-      screenPositionToCanvasPosition(position, viewportRef.current!),
+    (position) => screenToViewportPosition(position, viewportRef.current!),
     () => renderer.getDrawContext(layerId)
   );
 
@@ -53,7 +47,7 @@ export const CanvasViewport = () => {
     updateViewport
   );
 
-  useFitToViewportOnInit(hostElementRef, size, (viewport) => {
+  useFitToViewport(hostElementRef, size, (viewport) => {
     updateViewport(viewport);
     hostElementRef.current!.style.opacity = "1";
   });

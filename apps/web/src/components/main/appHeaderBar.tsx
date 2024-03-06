@@ -1,8 +1,8 @@
-import { ModeToggle } from "./themeToggle";
-import { MenuBar } from "./menu-bar/menuBar";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-import { IconButton } from "./iconButton";
-import { Button } from "./ui/button";
+import { ModeToggle } from "../themeToggle";
+import { MenuBar } from "../menu-bar/menuBar";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { IconButton } from "../iconButton";
+import { Button } from "../ui/button";
 import { cn } from "@/utils/css";
 import { useWorkspacesStore } from "@/store";
 import { memo } from "react";

@@ -3,13 +3,13 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { SelectToolPanel } from "./panels/selectToolPanel";
-import { ColorsPanel } from "./panels/colorsPanel";
-import { LayersPanel } from "./panels/layersPanel";
-import { HistoryPanel } from "./panels/historyPanel";
-import { MetadataPanel } from "./panels/metadataPanel";
-import { CanvasViewport } from "./canvasViewport";
-import { ToolSettingsBar } from "./toolSettingsBar";
+import { SelectToolPanel } from "../panels/selectToolPanel";
+import { ColorsPanel } from "../panels/colorsPanel";
+import { LayersPanel } from "../panels/layersPanel";
+import { HistoryPanel } from "../panels/historyPanel";
+import { MetadataPanel } from "../panels/metadataPanel";
+import { CanvasViewport } from "../canvasViewport";
+import { ToolSettingsBar } from "../toolSettingsBar";
 
 const LeftContent = () => {
   return (

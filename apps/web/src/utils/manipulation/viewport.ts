@@ -60,3 +60,13 @@ export const calculateFitViewport = (
   };
 };
 
+export const screenToViewportPosition = (
+  position: Position,
+  viewport: Viewport
+) => {
+  return {
+    x: (position.x - viewport.position.x) / viewport.zoom,
+    y: (position.y - viewport.position.y) / viewport.zoom,
+  };
+};
+
