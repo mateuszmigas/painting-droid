@@ -1,18 +1,11 @@
 import { Viewport, defaultViewport } from "@/utils/manipulation";
 import { useRef } from "react";
-import { DrawingToolConfig } from "@/drawing-tools";
 import { useCanvasRenderer } from "@/hooks/useCanvasRenderer";
 import { useViewportManipulator } from "@/hooks/useViewportManipulator";
 import { useFitCanvasToViewport as useFitToViewportOnInit } from "@/hooks/useFitToViewportOnInit";
 import { useDrawTool } from "@/hooks/useDrawTool";
-
-const toolConfig: DrawingToolConfig = {
-  type: "pen",
-  settings: {
-    color: "blue",
-    size: 4,
-  },
-};
+import { useToolStore } from "@/store/toolState";
+import { Position } from "@/utils/common";
 
 const size = {
   width: 1000,
@@ -21,21 +14,31 @@ const size = {
 
 const layerId = "1";
 
+const screenPositionToCanvasPosition = (
+  position: Position,
+  viewport: Viewport
+) => {
+  return {
+    x: (position.x - viewport.position.x) / viewport.zoom,
+    y: (position.y - viewport.position.y) / viewport.zoom,
+  };
+};
+
 export const CanvasViewport = () => {
   const hostElementRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<Viewport>(defaultViewport);
   const renderer = useCanvasRenderer(hostElementRef, size);
+  const drawToolId = useToolStore((state) => state.selectedToolId);
+  const drawToolSettings = useToolStore(
+    (state) => state.toolSettings[drawToolId]
+  );
 
   useDrawTool(
     hostElementRef,
-    toolConfig,
-    (position) => {
-      const viewport = viewportRef.current!;
-      return {
-        x: (position.x - viewport.position.x) / viewport.zoom,
-        y: (position.y - viewport.position.y) / viewport.zoom,
-      };
-    },
+    drawToolId,
+    drawToolSettings,
+    (position) =>
+      screenPositionToCanvasPosition(position, viewportRef.current!),
     () => renderer.getDrawContext(layerId)
   );
 

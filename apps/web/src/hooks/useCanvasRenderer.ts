@@ -1,5 +1,4 @@
-import { DrawContext } from "@/drawing-tools/drawContext";
-import { Size } from "@/utils/common";
+import { CanvasContext, Size } from "@/utils/common";
 import { Viewport } from "@/utils/manipulation";
 import { RefObject, useEffect, useRef } from "react";
 
@@ -45,13 +44,8 @@ export const useCanvasRenderer = (
   }, [hostElementRef]);
 
   return {
-    getLayerState: (_layerId: string) => "dupa123",
-    setLayerState: (_layerId: string, _compressedImage: string) => {},
-    getDrawContext: (_layerId: string): DrawContext => {
-      return contextRef.current! as never as DrawContext;
-    },
-    getLayerData: () => {},
-    getLayerDataUrl: () => {},
+    getDrawContext: (_layerId: string) =>
+      contextRef.current! as never as CanvasContext,
     setViewport: (viewport: Viewport) => {
       canvasRef.current && applyTransform(viewport, canvasRef.current);
     },

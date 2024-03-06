@@ -20,3 +20,6 @@ export const scaleRectangle = (
   height: rectangle.height * scale,
 });
 
+export type Color = string;
+
+export type CanvasContext = CanvasRenderingContext2D;

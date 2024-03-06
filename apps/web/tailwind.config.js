@@ -27,7 +27,8 @@ module.exports = {
     },
     extend: {
       height: {
-        'panel-header': '32px'
+        'panel-header': '32px',
+        'input-thin': '24px'
       },
       gap: space,
       margin: space,

@@ -1,16 +1,19 @@
-import { DrawingToolConfig } from "@/drawing-tools";
-import { DrawContext } from "@/drawing-tools/drawContext";
-import { DrawingTool } from "@/drawing-tools/drawTool";
-import { PenDrawTool } from "@/drawing-tools/penTool";
-import { Position } from "@/utils/common";
+import { CanvasContext, Position } from "@/utils/common";
 import { RefObject, useEffect, useRef } from "react";
+import { assertNever } from "@/utils/typeGuards";
+import { DrawToolId } from "@/tools/draw-tools";
+import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
+import { DrawTool } from "@/tools/draw-tools/drawTool";
+import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
 
-const createTool = (tool: DrawingToolConfig, context: DrawContext) => {
-  switch (tool.type) {
-    case "pen":
-      return new PenDrawTool(context);
+const createTool = (id: DrawToolId, context: CanvasContext) => {
+  switch (id) {
+    case "pencil":
+      return new PencilDrawTool(context);
+    case "brush":
+      return new BrushDrawTool(context);
     default:
-      return null;
+      return assertNever(id);
   }
 };
 
@@ -41,22 +44,23 @@ const createRaf = (
 
 export const useDrawTool = (
   elementRef: RefObject<HTMLElement>,
-  toolConfig: DrawingToolConfig,
+  drawToolId: DrawToolId | null,
+  drawToolSettings: Record<string, unknown>,
   transformToCanvasPosition: (position: Position) => Position,
-  getDrawContext: () => DrawContext
+  getCanvasContext: () => CanvasContext
 ) => {
-  let toolRef = useRef<DrawingTool | null>(null);
+  let toolRef = useRef<DrawTool | null>(null);
 
   useEffect(() => {
-    if (!elementRef.current) return;
+    if (!elementRef.current || drawToolId === null) return;
 
     const element = elementRef.current;
-    toolRef.current = createTool(toolConfig, getDrawContext());
+    toolRef.current = createTool(drawToolId, getCanvasContext());
 
     if (!toolRef.current) return;
 
     const tool = toolRef.current;
-    tool.configure(toolConfig.settings);
+    tool.configure(drawToolSettings);
     let ticksCount = 0;
     let isDrawing = false;
     let currentMousePosition: { x: number; y: number } | null = null;
@@ -77,7 +81,7 @@ export const useDrawTool = (
     const mouseDownHandler = (event: MouseEvent) => {
       if (event.button !== 0) return;
       isDrawing = true;
-      getDrawContext().save();
+      getCanvasContext().save();
       currentMousePosition = getMousePosition(event);
       start();
     };
@@ -87,7 +91,7 @@ export const useDrawTool = (
       stop();
       tool.reset();
       isDrawing = false;
-      getDrawContext().restore();
+      getCanvasContext().restore();
     };
     const mouseMoveHandler = (event: MouseEvent) => {
       if (!isDrawing) return;
@@ -105,10 +109,9 @@ export const useDrawTool = (
       element.removeEventListener("mouseup", mouseUpHandler);
       element.removeEventListener("mousemove", mouseMoveHandler);
     };
-  }, [toolConfig.type]);
+  }, [drawToolId]);
 
   useEffect(() => {
-    toolRef.current && toolRef.current.configure(toolConfig.settings);
-  }, [toolConfig.settings]);
+    toolRef.current && toolRef.current.configure(drawToolSettings);
+  }, [drawToolSettings]);
 };
-

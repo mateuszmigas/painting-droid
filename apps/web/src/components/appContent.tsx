@@ -9,6 +9,7 @@ import { LayersPanel } from "./panels/layersPanel";
 import { HistoryPanel } from "./panels/historyPanel";
 import { MetadataPanel } from "./panels/metadataPanel";
 import { CanvasViewport } from "./canvasViewport";
+import { ToolSettingsBar } from "./toolSettingsBar";
 
 const LeftContent = () => {
   return (
@@ -51,7 +52,7 @@ export const AppContent = () => {
       <ResizableHandle />
       <ResizablePanel>
         <>
-          <div className="h-panel-header border-b px-2">Tool settings todo</div>
+          <ToolSettingsBar />
           <CanvasViewport />
         </>
       </ResizablePanel>

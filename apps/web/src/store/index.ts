@@ -1,5 +1,5 @@
 export { useSettingsStore } from "./settingsStore";
 export { useSessionStore } from "./sessionStore";
-export { useDrawingToolStore } from "./drawingToolStore";
+export { useToolStore as useDrawingToolStore } from "./toolState";
 export { useWorkspacesStore } from "./workspacesStore";
 

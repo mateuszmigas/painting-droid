@@ -63,6 +63,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    color-scheme: dark;
   }
 }
 
@@ -83,5 +84,15 @@
     image-rendering: pixelated; /* Chrome, Opera */
     image-rendering: crisp-edges; /* Safari */
   }
-}
 
+  input[type="color"] {
+    border: none;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: 1px solid hsl(var(--input));
+    @apply rounded-md;
+  }
+}
