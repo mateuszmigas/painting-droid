@@ -21,21 +21,25 @@ export const useCanvasRenderer = (
 
     const hostElement = hostElementRef.current;
     const canvas = document.createElement("canvas");
+    canvas.id = "canvas-renderer";
     canvas.width = size.width;
     canvas.height = size.height;
     canvas.style.width = `${size.width}px`;
     canvas.style.height = `${size.height}px`;
     canvas.className =
-      "pixelated-canvas bg-gray-100 pointer-events-none origin-top-left shadow-sm";
+      "pixelated-canvas pointer-events-none origin-top-left shadow-2xl border";
     hostElement.appendChild(canvas);
     canvasRef.current = canvas;
     const offscreenCanvas = canvasRef.current?.transferControlToOffscreen();
     const context = offscreenCanvas?.getContext("2d");
+
     if (!context) {
       throw new Error("Canvas context is null");
     }
 
     contextRef.current = context;
+    context.fillStyle = "white";
+    context.fillRect(0, 0, size.width, size.height);
 
     return () => {
       hostElement.removeChild(canvas);

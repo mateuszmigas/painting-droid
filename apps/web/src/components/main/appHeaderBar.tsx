@@ -1,7 +1,6 @@
 import { ModeToggle } from "../themeToggle";
 import { MenuBar } from "../menu-bar/menuBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { IconButton } from "../iconButton";
 import { Button } from "../ui/button";
 import { cn } from "@/utils/css";
 import { useWorkspacesStore } from "@/store";
@@ -31,8 +30,9 @@ const WorkspaceTab = (props: {
 };
 
 export const AppHeaderBar = memo(() => {
-  const { workspaces, selectedWorkspaceIndex, addWorkspace } =
-    useWorkspacesStore((state) => state);
+  const { workspaces, selectedWorkspaceIndex } = useWorkspacesStore(
+    (state) => state
+  );
 
   return (
     <div className="border-b flex flex-row justify-between items-center px-small gap-big">
@@ -51,7 +51,7 @@ export const AppHeaderBar = memo(() => {
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <IconButton type="plus" size="medium" onClick={addWorkspace} />
+        {/* <IconButton type="plus" size="medium" onClick={addWorkspace} /> */}
       </div>
       <ModeToggle />
     </div>

@@ -7,16 +7,34 @@ export const menuBarDefinition: MenuItem[] = [
     label: "File",
     items: [
       {
-        type: "leaf",
-        label: "Save As",
-        action: {
-          onClick: () => {
-            executeCommand("saveAsCurrentWorkspace", {
-              workspaceId: "123",
-              layerName: "test",
-            });
+        type: "parent",
+        label: "Save As...",
+        items: [
+          {
+            type: "leaf",
+            label: "JPEG Picture",
+            action: {
+              onClick: () =>
+                executeCommand("saveCurrentWorkspaceAsFile", {
+                  workspaceId: "1",
+                  layerName: "1",
+                  format: "jpeg",
+                }),
+            },
           },
-        },
+          {
+            type: "leaf",
+            label: "PNG Picture",
+            action: {
+              onClick: () =>
+                executeCommand("saveCurrentWorkspaceAsFile", {
+                  workspaceId: "1",
+                  layerName: "1",
+                  format: "png",
+                }),
+            },
+          },
+        ],
       },
       {
         type: "separator",

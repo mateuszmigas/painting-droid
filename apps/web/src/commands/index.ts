@@ -27,6 +27,6 @@ export const executeCommand = async (
     throw new Error(`Command not found: ${name}`);
   }
 
-  return command.execute(context, params);
+  return command.execute(context, params as never);
 };
 
