@@ -1,8 +1,8 @@
 import { CommandContext } from "./context";
 
 export const command = {
-  name: "addWorkspaceLayer",
-  description: "Add a new layer to the workspace",
+  name: "saveAsCurrentWorkspace",
+  description: "Save the current workspace as a new file",
   execute: async (
     context: CommandContext,
     payload: {
@@ -10,7 +10,7 @@ export const command = {
       layerName: string;
     }
   ) => {
-    console.log("Adding a new layer to the workspace", context, payload);
+    console.log("Saving sheet", context, payload);
   },
 } as const;
 

@@ -1,3 +1,4 @@
+import { executeCommand } from "@/commands";
 import { MenuItem } from "@/utils/menuItem";
 
 export const menuBarDefinition: MenuItem[] = [
@@ -7,15 +8,22 @@ export const menuBarDefinition: MenuItem[] = [
     items: [
       {
         type: "leaf",
-        label: "New Tab",
-        action: { onClick: () => console.log("New Tab") },
+        label: "Save As",
+        action: {
+          onClick: () => {
+            executeCommand("saveAsCurrentWorkspace", {
+              workspaceId: "123",
+              layerName: "test",
+            });
+          },
+        },
       },
       {
         type: "separator",
       },
       {
         type: "parent",
-        label: "Recent",
+        label: "Temp don't use",
         items: [
           {
             type: "leaf",
