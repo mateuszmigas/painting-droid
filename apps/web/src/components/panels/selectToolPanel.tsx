@@ -3,9 +3,11 @@ import { translations } from "@/translations";
 import { IconButton } from "../iconButton";
 import { useDrawingToolStore } from "@/store";
 import { memo } from "react";
-import { ToolId, defaultToolsSettings } from "@/tools";
+import { ToolId, defaultToolsSettings, toolsMetadata } from "@/tools";
 
-const tools: ToolId[] = Object.keys(defaultToolsSettings) as ToolId[];
+const tools: { id: ToolId; name: string }[] = (
+  Object.keys(defaultToolsSettings) as ToolId[]
+).map((id) => ({ id, name: toolsMetadata[id].name }));
 
 export const SelectToolPanel = memo(() => {
   const { selectedToolId, setSelectedToolId } = useDrawingToolStore(
@@ -15,13 +17,15 @@ export const SelectToolPanel = memo(() => {
     <div className="flex flex-col gap-medium">
       <PanelHeader title={translations.tools} />
       <div className="flex flex-wrap flex-row gap-small p-small">
-        {tools.map((tool) => (
+        {tools.map(({ id, name }) => (
           <IconButton
-            className={selectedToolId === tool ? "bg-accent" : ""}
-            key={tool}
-            type={tool}
+            aria-label={name}
+            title={name}
+            className={selectedToolId === id ? "bg-accent" : ""}
+            key={id}
+            type={id}
             size="medium"
-            onClick={() => setSelectedToolId(tool)}
+            onClick={() => setSelectedToolId(id)}
           />
         ))}
       </div>

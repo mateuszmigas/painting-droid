@@ -9,6 +9,7 @@ export const ColorSetting = (props: {
   const { value, onChange, className } = props;
   return (
     <input
+      name="color"
       className={cn("w-[40px] rounded-md h-input-thin", className)}
       type="color"
       value={value}
