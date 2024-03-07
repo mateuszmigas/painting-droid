@@ -27,7 +27,7 @@ export const useCanvasRenderer = (
     canvas.style.width = `${size.width}px`;
     canvas.style.height = `${size.height}px`;
     canvas.className =
-      "pixelated-canvas pointer-events-none origin-top-left shadow-2xl border";
+      "pixelated-canvas pointer-events-none origin-top-left outline outline-border shadow-2xl box-content";
     hostElement.appendChild(canvas);
     canvasRef.current = canvas;
     const offscreenCanvas = canvasRef.current?.transferControlToOffscreen();

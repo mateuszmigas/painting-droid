@@ -9,8 +9,11 @@ import {
   useViewportManipulator,
   useFitToViewport,
   useDrawTool,
+  useObservable,
 } from "@/hooks";
 import { useToolStore } from "@/store/toolState";
+import { Ruler } from "./Ruler";
+import { useResizeObserver } from "@/hooks/useResizeObserver";
 
 //temp
 const size = {
@@ -21,7 +24,7 @@ const layerId = "1";
 
 export const CanvasViewport = () => {
   const hostElementRef = useRef<HTMLDivElement>(null);
-  const viewportRef = useRef<Viewport>(defaultViewport);
+  const viewport = useObservable<Viewport>(defaultViewport);
   const renderer = useCanvasRenderer(hostElementRef, size);
   const drawToolId = useToolStore((state) => state.selectedToolId);
   const drawToolSettings = useToolStore(
@@ -32,23 +35,31 @@ export const CanvasViewport = () => {
     hostElementRef,
     drawToolId,
     drawToolSettings,
-    (position) => screenToViewportPosition(position, viewportRef.current!),
+    (position) => screenToViewportPosition(position, viewport.getValue()),
     () => renderer.getDrawContext(layerId)
   );
 
-  const updateViewport = (viewport: Viewport) => {
-    viewportRef.current = viewport;
-    renderer.setViewport(viewport);
+  const updateViewport = (partialViewport: Partial<Viewport>) => {
+    const newViewport = {
+      ...viewport.getValue(),
+      ...partialViewport,
+    };
+    viewport.setValue(newViewport);
+    renderer.setViewport(newViewport);
   };
 
   useViewportManipulator(
     hostElementRef,
-    () => viewportRef.current,
+    () => viewport.getValue(),
     updateViewport
   );
 
-  useFitToViewport(hostElementRef, size, (viewport) => {
-    updateViewport(viewport);
+  useResizeObserver(hostElementRef, (newSize) =>
+    updateViewport({ size: newSize })
+  );
+
+  useFitToViewport(hostElementRef, size, (newViewport) => {
+    updateViewport(newViewport);
     hostElementRef.current!.style.opacity = "1";
   });
 
@@ -59,7 +70,7 @@ export const CanvasViewport = () => {
         ref={hostElementRef}
         className="absolute size-full overflow-hidden transition-opacity duration-1000 cursor-crosshair"
       ></div>
-      <div className="absolute p-small">Middle mouse to move/zoom</div>
+      <Ruler viewport={viewport}></Ruler>
     </div>
   );
 };

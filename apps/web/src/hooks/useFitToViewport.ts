@@ -15,7 +15,7 @@ export const useFitToViewport = (
     const rect = hostElement.getBoundingClientRect();
     const margin = Math.min(rect.width, rect.height) * 0.1;
     const viewport = calculateFitViewport(
-      rect,
+      { width: rect.width, height: rect.height },
       { x: 0, y: 0, ...size },
       margin
     );
