@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 
 const rulerConfig = {
   dpi: window.devicePixelRatio,
-  offset: 30,
+  offset: 20,
   shortLine: 15,
   longLine: 30,
   lineThickness: 1,
@@ -110,7 +110,7 @@ export const Ruler = (props: { viewport: Observable<Viewport> }) => {
   );
 
   const drawRulers = useStableCallback((viewport: Viewport) => {
-    const color = "grey";
+    const color = "#64748B";
     canvasHorizontalContextRef.current &&
       drawRuler(
         canvasHorizontalContextRef.current!,
@@ -156,14 +156,14 @@ export const Ruler = (props: { viewport: Observable<Viewport> }) => {
       <canvas
         ref={canvasHorizontalRef}
         height={rulerConfig.offset * rulerConfig.dpi}
-        className="pixelated-canvas absolute left-[30px] h-[30px] w-full"
+        className="pixelated-canvas absolute left-[20px] h-[20px] w-full"
       ></canvas>
       <canvas
         ref={canvasVerticalRef}
         width={rulerConfig.offset * rulerConfig.dpi}
-        className="pixelated-canvas absolute top-[30px] w-[30px] h-full"
+        className="pixelated-canvas absolute top-[20px] w-[20px] h-full"
       ></canvas>
-      <div className=" size-[30px] border-r border-b flex justify-center items-center">
+      <div className="size-[20px] border-r border-b flex justify-center text-xs items-center rounded-br-md bg-background">
         PX
       </div>
     </div>

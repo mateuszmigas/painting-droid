@@ -1,5 +1,5 @@
 export const PanelHeader = (props: { title: string }) => {
   const { title } = props;
-  return <div className="bg-secondary p-small">{title}</div>;
+  return <h1 className="font-bold border-b px-small">{title}</h1>;
 };
 

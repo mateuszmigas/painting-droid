@@ -54,7 +54,7 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
 
 export const MenuBar = () => {
   return (
-    <Menubar className="border-none">
+    <Menubar className="border-none shadow-none">
       {menuBarDefinition.map((parent, index) => {
         if (parent.type !== "parent") {
           throw new Error("Invalid menu bar definition");

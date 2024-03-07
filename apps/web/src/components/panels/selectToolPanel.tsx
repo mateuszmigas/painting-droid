@@ -21,7 +21,11 @@ export const SelectToolPanel = memo(() => {
           <IconButton
             aria-label={name}
             title={name}
-            className={selectedToolId === id ? "bg-accent" : ""}
+            className={
+              selectedToolId === id
+                ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+                : ""
+            }
             key={id}
             type={id}
             size="medium"
