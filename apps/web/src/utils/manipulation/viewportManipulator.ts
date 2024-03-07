@@ -44,10 +44,10 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
   ) {
     super(element);
 
-    this.registerEvent("mousedown", this.onMouseDown);
-    this.registerEvent("mousemove", this.onMouseMove);
-    this.registerEvent("mouseup", this.onMouseUp);
-    this.registerEvent("mouseleave", this.onMouseLeave);
+    this.registerEvent("pointerdown", this.onPointerDown);
+    this.registerEvent("pointermove", this.onPointerMove);
+    this.registerEvent("pointerup", this.onPointerUp);
+    this.registerEvent("pointerleave", this.onPointerLeave);
     this.registerEvent("wheel", this.onWheel);
   }
 
@@ -56,14 +56,14 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
     this.onViewportChange(newViewport);
   };
 
-  private onMouseDown = (e: MouseEvent) => {
+  private onPointerDown = (e: PointerEvent) => {
     if (e.button === 1) {
       this.pointerPosition = { x: e.offsetX, y: e.offsetY };
       this.isMoving = true;
     }
   };
 
-  private onMouseMove = (e: MouseEvent) => {
+  private onPointerMove = (e: PointerEvent) => {
     if (this.isMoving) {
       this.dispatchAction({
         type: "translate",
@@ -75,11 +75,11 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
     this.pointerPosition = { x: e.offsetX, y: e.offsetY };
   };
 
-  private onMouseUp = () => {
+  private onPointerUp = () => {
     this.isMoving = false;
   };
 
-  private onMouseLeave = () => {
+  private onPointerLeave = () => {
     this.isMoving = false;
   };
 

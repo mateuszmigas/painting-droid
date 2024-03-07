@@ -63,14 +63,14 @@ export const useDrawTool = (
     tool.configure(drawToolSettings);
     let ticksCount = 0;
     let isDrawing = false;
-    let currentMousePosition: { x: number; y: number } | null = null;
-    const getMousePosition = (event: MouseEvent) => {
+    let currentPointerPosition: { x: number; y: number } | null = null;
+    const getPointerPosition = (event: PointerEvent) => {
       return { x: event.offsetX, y: event.offsetY };
     };
 
     const { start, stop, cancel } = createRaf((time) => {
       tool.draw({
-        position: transformToCanvasPosition(currentMousePosition!),
+        position: transformToCanvasPosition(currentPointerPosition!),
         isLastTick: false,
         sinceLastTickMs: time,
         ticksCount,
@@ -78,36 +78,43 @@ export const useDrawTool = (
       ticksCount++;
     });
 
-    const mouseDownHandler = (event: MouseEvent) => {
+    const pointerDownHandler = (event: PointerEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
       if (event.button !== 0) return;
       isDrawing = true;
       getCanvasContext().save();
-      currentMousePosition = getMousePosition(event);
+      currentPointerPosition = getPointerPosition(event);
       start();
     };
-    const mouseUpHandler = (event: MouseEvent) => {
+
+    const pointerUpHandler = (event: PointerEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
       if (!isDrawing) return;
-      currentMousePosition = getMousePosition(event);
+      currentPointerPosition = getPointerPosition(event);
       stop();
       tool.reset();
       isDrawing = false;
       getCanvasContext().restore();
     };
-    const mouseMoveHandler = (event: MouseEvent) => {
+    const pointerMoveHandler = (event: PointerEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
       if (!isDrawing) return;
-      currentMousePosition = getMousePosition(event);
+      currentPointerPosition = getPointerPosition(event);
     };
 
-    element.addEventListener("mousedown", mouseDownHandler);
-    element.addEventListener("mouseup", mouseUpHandler);
-    element.addEventListener("mousemove", mouseMoveHandler);
+    element.addEventListener("pointerdown", pointerDownHandler);
+    element.addEventListener("pointerup", pointerUpHandler);
+    element.addEventListener("pointermove", pointerMoveHandler);
 
     return () => {
       cancel();
       tool.reset();
-      element.removeEventListener("mousedown", mouseDownHandler);
-      element.removeEventListener("mouseup", mouseUpHandler);
-      element.removeEventListener("mousemove", mouseMoveHandler);
+      element.removeEventListener("pointerdown", pointerDownHandler);
+      element.removeEventListener("pointerup", pointerUpHandler);
+      element.removeEventListener("pointermove", pointerMoveHandler);
     };
   }, [drawToolId]);
 
@@ -115,3 +122,4 @@ export const useDrawTool = (
     toolRef.current && toolRef.current.configure(drawToolSettings);
   }, [drawToolSettings]);
 };
+
