@@ -1,6 +1,5 @@
 import { useListener, useStableCallback } from "@/hooks";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { useSettingsStore } from "@/store";
 import { Viewport } from "@/utils/manipulation";
 import { Observable } from "@/utils/observable";
 import { useEffect, useRef } from "react";
@@ -101,7 +100,6 @@ const drawRuler = (
 
 export const Ruler = (props: { viewport: Observable<Viewport> }) => {
   const { viewport } = props;
-  const theme = useSettingsStore((state) => state.theme);
   const canvasHorizontalRef = useRef<HTMLCanvasElement>(null);
   const canvasVerticalRef = useRef<HTMLCanvasElement>(null);
   const canvasHorizontalContextRef = useRef<CanvasRenderingContext2D | null>(
@@ -112,7 +110,7 @@ export const Ruler = (props: { viewport: Observable<Viewport> }) => {
   );
 
   const drawRulers = useStableCallback((viewport: Viewport) => {
-    const color = theme === "dark" ? "white" : "black";
+    const color = "grey";
     canvasHorizontalContextRef.current &&
       drawRuler(
         canvasHorizontalContextRef.current!,
@@ -171,4 +169,3 @@ export const Ruler = (props: { viewport: Observable<Viewport> }) => {
     </div>
   );
 };
-

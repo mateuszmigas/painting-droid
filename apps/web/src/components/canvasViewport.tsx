@@ -23,6 +23,7 @@ const size = {
 const layerId = "1";
 
 export const CanvasViewport = () => {
+  const rootElementRef = useRef<HTMLDivElement>(null);
   const hostElementRef = useRef<HTMLDivElement>(null);
   const viewport = useObservable<Viewport>(defaultViewport);
   const renderer = useCanvasRenderer(hostElementRef, size);
@@ -60,15 +61,18 @@ export const CanvasViewport = () => {
 
   useFitToViewport(hostElementRef, size, (newViewport) => {
     updateViewport(newViewport);
-    hostElementRef.current!.style.opacity = "1";
+    rootElementRef.current!.style.opacity = "1";
   });
 
   return (
-    <div className="relative size-full">
+    <div
+      ref={rootElementRef}
+      style={{ opacity: 0 }}
+      className="relative size-full transition-opacity duration-1000"
+    >
       <div
-        style={{ opacity: 0 }}
         ref={hostElementRef}
-        className="absolute size-full overflow-hidden transition-opacity duration-1000 cursor-crosshair"
+        className="absolute size-full overflow-hidden cursor-crosshair"
       ></div>
       <Ruler viewport={viewport}></Ruler>
     </div>
