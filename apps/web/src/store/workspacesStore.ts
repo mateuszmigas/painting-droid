@@ -10,24 +10,23 @@ type Workspace = {
 
 type AppWorkspacesState = {
   workspaces: Workspace[];
-  selectedWorkspaceIndex: number | null;
+  selectedWorkspaceId: string;
 };
 
+const defaultWorkspace = {
+  id: uuid(),
+  name: "Untitled",
+  filePath: null,
+  isSaved: false,
+};
 const defaultState: AppWorkspacesState = {
-  workspaces: [
-    {
-      id: uuid(),
-      name: "Untitled",
-      filePath: null,
-      isSaved: false,
-    },
-  ],
-  selectedWorkspaceIndex: 0,
+  workspaces: [defaultWorkspace],
+  selectedWorkspaceId: defaultWorkspace.id,
 };
 
 type AppWorkspacesSlice = AppWorkspacesState & {
-  selectWorkspace: (index: number) => void;
-  addWorkspace: () => void;
+  selectWorkspace: (id: string) => void;
+  addNewActiveWorkspace: () => void;
 };
 
 export const settingsStoreCreator: StateCreator<AppWorkspacesSlice> = (
@@ -35,20 +34,23 @@ export const settingsStoreCreator: StateCreator<AppWorkspacesSlice> = (
   get
 ) => ({
   ...defaultState,
-  selectWorkspace: (index) => set({ selectedWorkspaceIndex: index }),
-  addWorkspace: () =>
-    set((state) => ({
+  selectWorkspace: (id) => set({ selectedWorkspaceId: id }),
+  addNewActiveWorkspace: () => {
+    const newId = uuid();
+    return set((state) => ({
+      ...state,
       workspaces: [
         ...state.workspaces,
         {
-          id: uuid(),
+          id: newId,
           name: `Workspace ${get().workspaces.length + 1}`,
           filePath: null,
           isSaved: false,
         },
       ],
-      selectedWorkspaceIndex: state.workspaces.length,
-    })),
+      selectedWorkspaceId: newId,
+    }));
+  },
 });
 
 export const useWorkspacesStore =
