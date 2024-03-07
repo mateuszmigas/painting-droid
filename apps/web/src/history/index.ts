@@ -14,7 +14,6 @@ export type ImageChange =
     };
 
 export class ImageHistory {
-  //   private checkpoints: Record<number, ImageCompressedBuffer> = {};
   private currentImage: ImageUncompressedData | null = null;
 
   init(data: ImageUncompressedData) {
