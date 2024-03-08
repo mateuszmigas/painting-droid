@@ -11,5 +11,8 @@ export const createCommand = <
   execute: C;
   icon: IconType;
   defaultKeyGesture?: KeyGesture;
+  options: {
+    showInPalette: boolean;
+  };
 }) => command;
 

@@ -5,7 +5,8 @@ import { createCommand } from "./createCommand";
 export const command = createCommand({
   id: "saveCurrentWorkspaceAsFile",
   name: "Save Current Workspace As File",
-  icon: "brush",
+  icon: "save",
+  options: { showInPalette: true },
   execute: async (
     _: CommandContext,
     payload: {

@@ -1,6 +1,18 @@
-/* This is an icon aggregator where all icons from various libraries are imported. */
+/* This is an icon aggregator where all icons from various libraries are imported. 
+  - https://lucide.dev/icons/
+*/
 import { assertNever } from "@/utils/typeGuards";
-import { Pen, Pencil, Moon, Sun, Plus, Brush, Command } from "lucide-react";
+import {
+  Pen,
+  Pencil,
+  Moon,
+  Sun,
+  Plus,
+  Brush,
+  Command,
+  Save,
+  FilePlus2,
+} from "lucide-react";
 
 export type IconType =
   | "pen"
@@ -9,7 +21,9 @@ export type IconType =
   | "sun"
   | "plus"
   | "brush"
-  | "command";
+  | "command"
+  | "save"
+  | "add-file";
 export type IconSize = "small" | "small-medium" | "medium";
 
 const renderLucideIcon = (
@@ -33,6 +47,10 @@ const renderLucideIcon = (
       return <Brush className={className} size={fontSize} />;
     case "command":
       return <Command className={className} size={fontSize} />;
+    case "save":
+      return <Save className={className} size={fontSize} />;
+    case "add-file":
+      return <FilePlus2 className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

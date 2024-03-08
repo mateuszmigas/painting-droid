@@ -5,13 +5,13 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { useCommandPaletteStore } from "@/store";
 import { useStableCallback } from "@/hooks";
 import { commands, executeCommand } from "@/commands";
 import { Icon } from "./icon";
 
-export const CommandPalette = () => {
+export const CommandPalette = memo(() => {
   const { isOpen, setIsOpen } = useCommandPaletteStore((store) => store);
 
   const toggleIsOpen = useStableCallback(() => {
@@ -36,25 +36,27 @@ export const CommandPalette = () => {
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        {commands.map((command) => (
-          <CommandItem
-            onSelect={() => {
-              executeCommand(command.id as never);
-              setIsOpen(false);
-            }}
-            key={command.name}
-            className="m-1 h-8"
-          >
-            <Icon
-              type={command.icon}
-              size="small"
-              className="mr-2 min-h-5 min-w-5"
-            />
-            <span className="truncate">{command.name}</span>
-          </CommandItem>
-        ))}
+        {commands
+          .filter((command) => command.options.showInPalette)
+          .map((command) => (
+            <CommandItem
+              onSelect={() => {
+                executeCommand(command.id as never);
+                setIsOpen(false);
+              }}
+              key={command.name}
+              className="m-1 h-8"
+            >
+              <Icon
+                type={command.icon}
+                size="small"
+                className="mr-2 min-h-5 min-w-5"
+              />
+              <span className="truncate">{command.name}</span>
+            </CommandItem>
+          ))}
       </CommandList>
     </CommandDialog>
   );
-};
+});
 

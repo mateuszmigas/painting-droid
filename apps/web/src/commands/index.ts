@@ -1,13 +1,17 @@
 import { command as saveCurrentWorkspaceAsFile } from "./saveCurrentWorkspaceAsFile";
 import { command as addNewActiveWorkspace } from "./addNewActiveWorkspace";
+import { command as openCommandPalette } from "./openCommandPalette";
 import { createContext } from "./context";
 
 export const commands = [
   saveCurrentWorkspaceAsFile,
   addNewActiveWorkspace,
+  openCommandPalette,
 ] as const;
 
-const commandById = new Map(commands.map((command) => [command.id, command]));
+export const commandById = new Map(
+  commands.map((command) => [command.id, command])
+);
 
 export type Command = (typeof commands)[number];
 export type CommandId = Command["id"];
@@ -17,6 +21,9 @@ type MapToExecuteCommand<U> = U extends Command
     ? [id: U["id"]]
     : [id: U["id"], params: Parameters<U["execute"]>[1]]
   : never;
+
+export const executeCommandWithDefaults = async (id: CommandId) =>
+  executeCommand(id as never);
 
 export const executeCommand = async (
   ...[id, params]: MapToExecuteCommand<Command>

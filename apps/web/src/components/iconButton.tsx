@@ -11,11 +11,13 @@ type IconButtonProps = Omit<
   onClick?: () => void;
   className?: string;
   iconClassName?: string;
+  title?: string;
 };
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   (props, ref) => {
     const { type, size, onClick, className, iconClassName, ...rest } = props;
+
     return (
       <button
         ref={ref}

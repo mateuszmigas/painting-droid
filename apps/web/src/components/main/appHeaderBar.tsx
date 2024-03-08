@@ -1,10 +1,11 @@
 import { ModeToggle } from "../themeToggle";
 import { MenuBar } from "../menu-bar/menuBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { useCommandPaletteStore, useWorkspacesStore } from "@/store";
+import { useWorkspacesStore } from "@/store";
 import { memo } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { IconButton } from "../iconButton";
+import { CommandIconButton } from "../commandIconButton";
 
 export const AppHeaderBar = memo(() => {
   const {
@@ -13,8 +14,6 @@ export const AppHeaderBar = memo(() => {
     selectWorkspace,
     addNewActiveWorkspace,
   } = useWorkspacesStore((state) => state);
-  const { setIsOpen } = useCommandPaletteStore((store) => store);
-
   return (
     <div className="border-b flex flex-row justify-between items-center px-small gap-big">
       <MenuBar />
@@ -42,11 +41,7 @@ export const AppHeaderBar = memo(() => {
         />
       </div>
       <div className="flex flex-row justify-center items-center pr-small gap-small">
-        <IconButton
-          type="command"
-          size="small"
-          onClick={() => setIsOpen(true)}
-        />
+        <CommandIconButton commandId="openCommandPalette" />
         <ModeToggle />
       </div>
     </div>
