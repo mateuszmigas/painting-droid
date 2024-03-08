@@ -1,16 +1,16 @@
 import { downloadAsFile } from "@/utils/html";
 import { CommandContext } from "./context";
+import { createCommand } from "./createCommand";
 
-export const command = {
-  name: "saveCurrentWorkspaceAsFile",
-  description: "Save the current workspace as a new file",
+export const command = createCommand({
+  id: "saveCurrentWorkspaceAsFile",
+  name: "Save Current Workspace As File",
+  icon: "brush",
   execute: async (
     _: CommandContext,
     payload: {
-      workspaceId: string;
-      layerName: string;
       format: "jpeg" | "png";
-    }
+    } = { format: "jpeg" }
   ) => {
     const { format } = payload;
     const canvas = document.querySelector(
@@ -19,5 +19,5 @@ export const command = {
     const data = canvas.toDataURL(`image/${format}`, 1.0);
     downloadAsFile(data, `picture.${format}`);
   },
-} as const;
+});
 

@@ -1,30 +1,31 @@
-import { command as saveAsCurrentWorkspace } from "./saveAsCurrentWorkspace";
-import { command as addWorkspaceLayer } from "./addWorkspaceLayer";
-import { CommandContext } from "./context";
-const commands = [saveAsCurrentWorkspace, addWorkspaceLayer] as const;
-const commandByName = new Map(
-  commands.map((command) => [command.name, command])
-);
+import { command as saveCurrentWorkspaceAsFile } from "./saveCurrentWorkspaceAsFile";
+import { command as addNewActiveWorkspace } from "./addNewActiveWorkspace";
+import { createContext } from "./context";
+
+export const commands = [
+  saveCurrentWorkspaceAsFile,
+  addNewActiveWorkspace,
+] as const;
+
+const commandById = new Map(commands.map((command) => [command.id, command]));
 
 export type Command = (typeof commands)[number];
-export type CommandId = Command["name"];
+export type CommandId = Command["id"];
 
 type MapToExecuteCommand<U> = U extends Command
   ? Parameters<U["execute"]>[1] extends undefined
-    ? [name: U["name"]]
-    : [name: U["name"], params: Parameters<U["execute"]>[1]]
+    ? [id: U["id"]]
+    : [id: U["id"], params: Parameters<U["execute"]>[1]]
   : never;
 
-const createContext = (): CommandContext => ({});
-
 export const executeCommand = async (
-  ...[name, params]: MapToExecuteCommand<Command>
+  ...[id, params]: MapToExecuteCommand<Command>
 ) => {
   const context = createContext();
-  const command = commandByName.get(name);
+  const command = commandById.get(id);
 
   if (!command) {
-    throw new Error(`Command not found: ${name}`);
+    throw new Error(`Command not found: ${id}`);
   }
 
   return command.execute(context, params as never);

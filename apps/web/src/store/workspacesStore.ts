@@ -8,7 +8,7 @@ type Workspace = {
   isSaved: boolean;
 };
 
-type AppWorkspacesState = {
+export type AppWorkspacesState = {
   workspaces: Workspace[];
   selectedWorkspaceId: string;
 };
@@ -29,7 +29,7 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   addNewActiveWorkspace: () => void;
 };
 
-export const settingsStoreCreator: StateCreator<AppWorkspacesSlice> = (
+export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   set,
   get
 ) => ({
@@ -53,6 +53,7 @@ export const settingsStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
 });
 
-export const useWorkspacesStore =
-  create<AppWorkspacesSlice>(settingsStoreCreator);
+export const useWorkspacesStore = create<AppWorkspacesSlice>(
+  workspacesStoreCreator
+);
 

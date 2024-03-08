@@ -1,7 +1,7 @@
 import { ModeToggle } from "../themeToggle";
 import { MenuBar } from "../menu-bar/menuBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { useWorkspacesStore } from "@/store";
+import { useCommandPaletteStore, useWorkspacesStore } from "@/store";
 import { memo } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { IconButton } from "../iconButton";
@@ -13,11 +13,12 @@ export const AppHeaderBar = memo(() => {
     selectWorkspace,
     addNewActiveWorkspace,
   } = useWorkspacesStore((state) => state);
+  const { setIsOpen } = useCommandPaletteStore((store) => store);
 
   return (
     <div className="border-b flex flex-row justify-between items-center px-small gap-big">
       <MenuBar />
-      <div className="flex-1 flex flex-row justify-center overflow-auto items-center">
+      <div className="flex-1 flex flex-row justify-center overflow-auto items-center gap-small">
         <ScrollArea className="whitespace-nowrap">
           <Tabs value={selectedWorkspaceId} onValueChange={selectWorkspace}>
             <TabsList className="bg-transparent p-0">
@@ -34,9 +35,20 @@ export const AppHeaderBar = memo(() => {
           </Tabs>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <IconButton type="plus" size="medium" onClick={addNewActiveWorkspace} />
+        <IconButton
+          type="plus"
+          size="small-medium"
+          onClick={addNewActiveWorkspace}
+        />
       </div>
-      <ModeToggle />
+      <div className="flex flex-row justify-center items-center pr-small gap-small">
+        <IconButton
+          type="command"
+          size="small"
+          onClick={() => setIsOpen(true)}
+        />
+        <ModeToggle />
+      </div>
     </div>
   );
 });

@@ -16,8 +16,6 @@ export const menuBarDefinition: MenuItem[] = [
             action: {
               onClick: () =>
                 executeCommand("saveCurrentWorkspaceAsFile", {
-                  workspaceId: "1",
-                  layerName: "1",
                   format: "jpeg",
                 }),
             },
@@ -28,8 +26,6 @@ export const menuBarDefinition: MenuItem[] = [
             action: {
               onClick: () =>
                 executeCommand("saveCurrentWorkspaceAsFile", {
-                  workspaceId: "1",
-                  layerName: "1",
                   format: "png",
                 }),
             },

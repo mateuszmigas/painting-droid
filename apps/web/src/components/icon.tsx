@@ -1,16 +1,23 @@
 /* This is an icon aggregator where all icons from various libraries are imported. */
 import { assertNever } from "@/utils/typeGuards";
-import { Pen, Pencil, Moon, Sun, Plus, Brush } from "lucide-react";
+import { Pen, Pencil, Moon, Sun, Plus, Brush, Command } from "lucide-react";
 
-export type IconType = "pen" | "pencil" | "moon" | "sun" | "plus" | "brush";
-export type IconSize = "small" | "medium";
+export type IconType =
+  | "pen"
+  | "pencil"
+  | "moon"
+  | "sun"
+  | "plus"
+  | "brush"
+  | "command";
+export type IconSize = "small" | "small-medium" | "medium";
 
 const renderLucideIcon = (
   icon: IconType,
   size: IconSize,
   className?: string
 ) => {
-  const fontSize = size === "medium" ? 24 : 12;
+  const fontSize = size === "medium" ? 24 : size === "small-medium" ? 20 : 16;
   switch (icon) {
     case "pen":
       return <Pen className={className} size={fontSize} />;
@@ -24,6 +31,8 @@ const renderLucideIcon = (
       return <Plus className={className} size={fontSize} />;
     case "brush":
       return <Brush className={className} size={fontSize} />;
+    case "command":
+      return <Command className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
