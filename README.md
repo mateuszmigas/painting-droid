@@ -2,7 +2,8 @@
 
 [DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓░░░░░░░░░░░░░░░░░░░ 5% 
 
-![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg)
+[![100 - Commitów](https://img.shields.io/badge/100-Commitów-2ea44f)](https://100commitow.pl/)  ![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg)
+
 
 
 
