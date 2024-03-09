@@ -12,6 +12,16 @@ import {
   Command,
   Save,
   FilePlus2,
+  Lock,
+  Unlock,
+  Eye,
+  EyeOff,
+  X,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpToLine,
+  ArrowDownToLine,
+  Copy,
 } from "lucide-react";
 
 export type IconType =
@@ -23,7 +33,18 @@ export type IconType =
   | "brush"
   | "command"
   | "save"
-  | "add-file";
+  | "add-file"
+  | "lock"
+  | "unlock"
+  | "visible"
+  | "hidden"
+  | "x"
+  | "arrow-up"
+  | "arrow-down"
+  | "arrow-up-to-line"
+  | "arrow-down-to-line"
+  | "copy";
+
 export type IconSize = "small" | "small-medium" | "medium";
 
 const renderLucideIcon = (
@@ -51,6 +72,26 @@ const renderLucideIcon = (
       return <Save className={className} size={fontSize} />;
     case "add-file":
       return <FilePlus2 className={className} size={fontSize} />;
+    case "lock":
+      return <Lock className={className} size={fontSize} />;
+    case "unlock":
+      return <Unlock className={className} size={fontSize} />;
+    case "visible":
+      return <Eye className={className} size={fontSize} />;
+    case "hidden":
+      return <EyeOff className={className} size={fontSize} />;
+    case "x":
+      return <X className={className} size={fontSize} />;
+    case "arrow-up":
+      return <ArrowUp className={className} size={fontSize} />;
+    case "arrow-down":
+      return <ArrowDown className={className} size={fontSize} />;
+    case "arrow-up-to-line":
+      return <ArrowUpToLine className={className} size={fontSize} />;
+    case "arrow-down-to-line":
+      return <ArrowDownToLine className={className} size={fontSize} />;
+    case "copy":
+      return <Copy className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

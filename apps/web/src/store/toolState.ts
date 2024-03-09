@@ -8,7 +8,7 @@ type AppToolState = {
 };
 
 const defaultState: AppToolState = {
-  selectedToolId: "pencil",
+  selectedToolId: "brush",
   toolSettings: defaultToolsSettings,
 };
 
