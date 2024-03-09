@@ -156,14 +156,14 @@ export const Ruler = (props: { viewport: Observable<Viewport> }) => {
       <canvas
         ref={canvasHorizontalRef}
         height={rulerConfig.offset * rulerConfig.dpi}
-        className="pixelated-canvas absolute left-[20px] h-[20px] w-full"
+        className="bg-background pixelated-canvas absolute left-[20px] h-[20px] w-full"
       ></canvas>
       <canvas
         ref={canvasVerticalRef}
         width={rulerConfig.offset * rulerConfig.dpi}
-        className="pixelated-canvas absolute top-[20px] w-[20px] h-full"
+        className="bg-background pixelated-canvas absolute top-[20px] w-[20px] h-full"
       ></canvas>
-      <div className="size-[20px] border-r border-b flex justify-center text-xs items-center rounded-br-md bg-background">
+      <div className="size-[20px] border-r border-b flex justify-center text-xs items-center bg-background">
         PX
       </div>
     </div>

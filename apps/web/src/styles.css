@@ -67,6 +67,12 @@
     image-rendering: crisp-edges; /* Safari */
   }
 
+  .alpha-background {
+    --alpha-background-size: 50px;
+    background: repeating-conic-gradient(#bfbfbf 0% 25%, #fff 0% 50%) 50% /
+      var(--alpha-background-size) var(--alpha-background-size);
+  }
+
   .dark {
     color-scheme: dark;
   }

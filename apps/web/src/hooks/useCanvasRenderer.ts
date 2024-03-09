@@ -2,11 +2,16 @@ import { CanvasContext, Size } from "@/utils/common";
 import { Viewport } from "@/utils/manipulation";
 import { RefObject, useEffect, useRef } from "react";
 
+const alphaGridCellSize = 20;
 const applyTransform = (viewport: Viewport, element: HTMLElement) => {
   element.style.transform = `
       translate(${viewport.position.x}px, ${viewport.position.y}px) 
       scale(${viewport.zoom})
     `;
+  element.style.setProperty(
+    "--alpha-background-size",
+    `${alphaGridCellSize / viewport.zoom}px`
+  );
 };
 
 export const useCanvasRenderer = (
@@ -27,7 +32,7 @@ export const useCanvasRenderer = (
     canvas.style.width = `${size.width}px`;
     canvas.style.height = `${size.height}px`;
     canvas.className =
-      "pixelated-canvas pointer-events-none origin-top-left outline outline-border shadow-2xl box-content";
+      "pixelated-canvas pointer-events-none origin-top-left outline outline-border shadow-2xl box-content alpha-background";
     hostElement.appendChild(canvas);
     canvasRef.current = canvas;
     const offscreenCanvas = canvasRef.current?.transferControlToOffscreen();
@@ -38,8 +43,6 @@ export const useCanvasRenderer = (
     }
 
     contextRef.current = context;
-    context.fillStyle = "white";
-    context.fillRect(0, 0, size.width, size.height);
 
     return () => {
       hostElement.removeChild(canvas);
@@ -55,4 +58,3 @@ export const useCanvasRenderer = (
     },
   };
 };
-

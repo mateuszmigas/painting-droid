@@ -17,8 +17,8 @@ import { useResizeObserver } from "@/hooks/useResizeObserver";
 
 //temp
 const size = {
-  width: 1000,
-  height: 1000,
+  width: 800,
+  height: 600,
 };
 const layerId = "1";
 
