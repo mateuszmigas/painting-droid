@@ -2,51 +2,18 @@ import { translations } from "@/translations";
 import { PanelHeader } from "./panelHeader";
 import { IconButton } from "../iconButton";
 import { cn } from "@/utils/css";
+import { useWorkspacesStore } from "@/store";
+import { Layer } from "@/store/workspacesStore";
 
-type Layer = {
-  id: string;
-  name: string;
-  visible: boolean;
-  locked: boolean;
-  preview: string;
-  //opacity
-};
-
-const layers: Layer[] = [
-  {
-    id: "1",
-    name: "Layer 1",
-    visible: false,
-    locked: true,
-    preview: "sss",
-  },
-  {
-    id: "2",
-    name: "Layer 2",
-    visible: true,
-    locked: false,
-    preview: "sss",
-  },
-  {
-    id: "3",
-    name: "Layer 3",
-    visible: true,
-    locked: false,
-    preview: "sss",
-  },
-  {
-    id: "4",
-    name: "Layer 43",
-    visible: true,
-    locked: false,
-    preview: "sss",
-  },
-];
-
-const LayerItem = (props: { layer: Layer; selected: boolean }) => {
-  const { layer } = props;
+const LayerItem = (props: {
+  layer: Layer;
+  selected: boolean;
+  onClick: () => void;
+}) => {
+  const { layer, onClick } = props;
   return (
     <div
+      onClick={onClick}
       className={cn(
         "border flex flex-row p-small gap-small items-center overflow-hidden min-h-16",
         props.selected && "border-primary bg-primary/25"
@@ -59,7 +26,7 @@ const LayerItem = (props: { layer: Layer; selected: boolean }) => {
       />
 
       <div className="min-w-16 min-h-12 border border-black bg-white"></div>
-      <div className="truncate flex-1 ml-1">Name</div>
+      <div className="truncate flex-1 ml-1">{layer.name}</div>
       <div className="flex flex-col justify-between">
         <IconButton
           type={layer.locked ? "lock" : "unlock"}
@@ -77,23 +44,64 @@ const LayerItem = (props: { layer: Layer; selected: boolean }) => {
 };
 
 export const LayersPanel = () => {
+  const {
+    selectedWorkspaceId,
+    addLayer,
+    removeLayer,
+    duplicateLayer,
+    selectLayer,
+    moveLayerUp,
+    moveLayerDown,
+  } = useWorkspacesStore((state) => state);
+  const { layers, selectedLayerId } = useWorkspacesStore(
+    (state) =>
+      state.workspaces.find(
+        (workspace) => workspace.id === selectedWorkspaceId
+      )!
+  );
+
   return (
     <div className="flex flex-col size-full">
       <PanelHeader title={translations.layers + " (work in progress!!!)"} />
       <div className="flex flex-row gap-small p-small mt-small items-center justify-between">
         <div className="flex flex-row gap-small items-center">
-          <IconButton type="plus" size="small"></IconButton>
-          <IconButton type="copy" size="small"></IconButton>
-          <IconButton type="arrow-up" size="small"></IconButton>
-          <IconButton type="arrow-down" size="small"></IconButton>
+          <IconButton
+            type="plus"
+            size="small"
+            onClick={() => addLayer()}
+          ></IconButton>
+          <IconButton
+            type="copy"
+            size="small"
+            onClick={() => duplicateLayer(selectedLayerId)}
+          ></IconButton>
+          <IconButton
+            type="arrow-up"
+            size="small"
+            onClick={() => moveLayerUp(selectedLayerId)}
+          ></IconButton>
+          <IconButton
+            type="arrow-down"
+            size="small"
+            onClick={() => moveLayerDown(selectedLayerId)}
+          ></IconButton>
           <IconButton type="arrow-up-to-line" size="small"></IconButton>
           <IconButton type="arrow-down-to-line" size="small"></IconButton>
         </div>
-        <IconButton type="x" size="small"></IconButton>
+        <IconButton
+          type="x"
+          size="small"
+          onClick={() => removeLayer(selectedLayerId)}
+        ></IconButton>
       </div>
       <div className="flex flex-col gap-small overflow-auto p-small">
-        {layers.map((layer, index) => (
-          <LayerItem key={layer.id} layer={layer} selected={index === 1} />
+        {layers.map((layer) => (
+          <LayerItem
+            key={layer.id}
+            layer={layer}
+            selected={selectedLayerId === layer.id}
+            onClick={() => selectLayer(layer.id)}
+          />
         ))}
       </div>
     </div>

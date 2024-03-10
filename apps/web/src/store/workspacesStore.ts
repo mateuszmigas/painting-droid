@@ -1,37 +1,79 @@
 import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
 
-type Workspace = {
-  id: string;
+export type WorkspaceId = string;
+export type LayerId = string;
+
+export type Layer = {
+  id: LayerId;
+  name: string;
+  visible: boolean;
+  locked: boolean;
+};
+
+export type Workspace = {
+  id: WorkspaceId;
   name: string;
   filePath: string | null;
   isSaved: boolean;
+  selectedLayerId: string;
+  layers: Layer[];
 };
 
 export type AppWorkspacesState = {
   workspaces: Workspace[];
-  selectedWorkspaceId: string;
+  selectedWorkspaceId: WorkspaceId;
 };
 
-const defaultWorkspace = {
+const defaultLayer: Layer = {
+  id: uuid(),
+  name: "Background",
+  visible: true,
+  locked: false,
+};
+
+const defaultWorkspace: Workspace = {
   id: uuid(),
   name: "Untitled",
   filePath: null,
   isSaved: false,
+  selectedLayerId: defaultLayer.id,
+  layers: [defaultLayer],
 };
+
 const defaultState: AppWorkspacesState = {
   workspaces: [defaultWorkspace],
   selectedWorkspaceId: defaultWorkspace.id,
 };
 
 type AppWorkspacesSlice = AppWorkspacesState & {
-  selectWorkspace: (id: string) => void;
+  selectWorkspace: (workspaceId: WorkspaceId) => void;
   addNewActiveWorkspace: () => void;
+  selectLayer: (layerId: LayerId) => void;
+  addLayer: () => void;
+  removeLayer: (layerId: LayerId) => void;
+  duplicateLayer: (layerId: LayerId) => void;
+  moveLayerUp: (layerId: LayerId) => void;
+  moveLayerDown: (layerId: LayerId) => void;
+  // mergeLayerUp: (workspaceId: string, layerId: string) => void;
+  // mergeLayerDown: (workspaceId: string, layerId: string) => void;
+};
+
+export const forSelectedWorkspace = (
+  state: AppWorkspacesState,
+  map: (workspace: Workspace) => Workspace
+) => {
+  const selectedWorkspace = state.selectedWorkspaceId;
+  return {
+    ...state,
+    workspaces: state.workspaces.map((workspace) =>
+      workspace.id === selectedWorkspace ? map(workspace) : workspace
+    ),
+  };
 };
 
 export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
-  set,
-  get
+  set
 ) => ({
   ...defaultState,
   selectWorkspace: (id) => set({ selectedWorkspaceId: id }),
@@ -39,17 +81,105 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
     const newId = uuid();
     return set((state) => ({
       ...state,
-      workspaces: [
-        ...state.workspaces,
-        {
-          id: newId,
-          name: `Workspace ${get().workspaces.length + 1}`,
-          filePath: null,
-          isSaved: false,
-        },
-      ],
+      workspaces: [...state.workspaces, { ...defaultWorkspace, id: newId }],
       selectedWorkspaceId: newId,
     }));
+  },
+  selectLayer: (layerId: LayerId) => {
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => ({
+        ...workspace,
+        selectedLayerId: layerId,
+      }))
+    );
+  },
+  addLayer: () => {
+    const newLayerId = uuid();
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => ({
+        ...workspace,
+        selectedLayerId: newLayerId,
+        layers: [
+          {
+            ...defaultLayer,
+            id: newLayerId,
+            name: `Layer ${workspace.layers.length + 1}`,
+          },
+          ...workspace.layers,
+        ],
+      }))
+    );
+  },
+  removeLayer: (layerId: LayerId) => {
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => {
+        if (workspace.layers.length === 1) return workspace;
+        const newLayers = workspace.layers.filter(
+          (layer) => layer.id !== layerId
+        );
+        return {
+          ...workspace,
+          layers: newLayers,
+          selectedLayerId:
+            layerId === workspace.selectedLayerId
+              ? newLayers[0].id
+              : workspace.selectedLayerId,
+        };
+      })
+    );
+  },
+  duplicateLayer: (layerId: LayerId) => {
+    const newLayerId = uuid();
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => {
+        const index = workspace.layers.findIndex(
+          (layer) => layer.id === layerId
+        );
+        const newLayers = [...workspace.layers];
+        newLayers.splice(index + 1, 0, {
+          ...newLayers[index],
+          id: newLayerId,
+          name: `${newLayers[index].name} copy`,
+        });
+        return {
+          ...workspace,
+          layers: newLayers,
+          selectedLayerId: newLayerId,
+        };
+      })
+    );
+  },
+  moveLayerUp: (layerId: LayerId) => {
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => {
+        const index = workspace.layers.findIndex(
+          (layer) => layer.id === layerId
+        );
+        if (index === 0) return workspace;
+        const newLayers = [...workspace.layers];
+        [newLayers[index], newLayers[index - 1]] = [
+          newLayers[index - 1],
+          newLayers[index],
+        ];
+        return { ...workspace, layers: newLayers };
+      })
+    );
+  },
+  moveLayerDown: (layerId: LayerId) => {
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => {
+        const index = workspace.layers.findIndex(
+          (layer) => layer.id === layerId
+        );
+        if (index === workspace.layers.length - 1) return workspace;
+        const newLayers = [...workspace.layers];
+        [newLayers[index], newLayers[index + 1]] = [
+          newLayers[index + 1],
+          newLayers[index],
+        ];
+        return { ...workspace, layers: newLayers };
+      })
+    );
   },
 });
 

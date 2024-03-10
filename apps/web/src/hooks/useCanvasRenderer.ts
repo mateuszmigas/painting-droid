@@ -16,6 +16,14 @@ const applyTransform = (viewport: Viewport, element: HTMLElement) => {
 
 export const useCanvasRenderer = (
   hostElementRef: RefObject<HTMLElement>,
+  // layers: Record<
+  //   string,
+  //   {
+  //     config: any;
+  //     data: Uint8ClampedArray;
+  //   }
+  // >,
+  // activeLayerId: string,
   size: Size
 ) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

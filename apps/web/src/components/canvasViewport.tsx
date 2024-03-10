@@ -10,6 +10,7 @@ import {
   useFitToViewport,
   useDrawTool,
   useObservable,
+  useCanvasHistory,
 } from "@/hooks";
 import { useToolStore } from "@/store/toolState";
 import { Ruler } from "./Ruler";
@@ -26,18 +27,19 @@ export const CanvasViewport = () => {
   const rootElementRef = useRef<HTMLDivElement>(null);
   const hostElementRef = useRef<HTMLDivElement>(null);
   const viewport = useObservable<Viewport>(defaultViewport);
+  const { commitChanges, revertChanges } = useCanvasHistory();
   const renderer = useCanvasRenderer(hostElementRef, size);
-  const drawToolId = useToolStore((state) => state.selectedToolId);
-  const drawToolSettings = useToolStore(
-    (state) => state.toolSettings[drawToolId]
-  );
 
+  const toolId = useToolStore((state) => state.selectedToolId);
+  const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
   useDrawTool(
     hostElementRef,
-    drawToolId,
-    drawToolSettings,
+    toolId,
+    toolSettings,
     (position) => screenToViewportPosition(position, viewport.getValue()),
-    () => renderer.getDrawContext(layerId)
+    () => renderer.getDrawContext(layerId),
+    commitChanges,
+    revertChanges
   );
 
   const updateViewport = (partialViewport: Partial<Viewport>) => {

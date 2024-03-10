@@ -47,7 +47,9 @@ export const useDrawTool = (
   drawToolId: DrawToolId | null,
   drawToolSettings: Record<string, unknown>,
   transformToCanvasPosition: (position: Position) => Position,
-  getCanvasContext: () => CanvasContext
+  getCanvasContext: () => CanvasContext,
+  _commitChanges: (context: CanvasContext) => void,
+  _revertChanges: (context: CanvasContext) => void
 ) => {
   let toolRef = useRef<DrawTool | null>(null);
 
