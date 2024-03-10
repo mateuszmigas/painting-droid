@@ -19,6 +19,9 @@ const size = {
 
 export const WorkspaceViewport = memo(() => {
   const rootElementRef = useRef<HTMLDivElement>(null);
+  const selectedWorkspaceId = useWorkspacesStore(
+    (store) => store.selectedWorkspaceId
+  );
   const setWorkspaceViewport = useWorkspacesStore(
     (store) => store.setWorkspaceViewport
   );
@@ -51,7 +54,7 @@ export const WorkspaceViewport = memo(() => {
       margin
     );
     setWorkspaceViewport(viewport);
-  });
+  }, [selectedWorkspaceId]);
 
   return (
     <div
@@ -60,7 +63,10 @@ export const WorkspaceViewport = memo(() => {
     >
       {observableViewport.getValue() !== null && (
         <>
-          <CanvasHost viewport={observableViewport as Observable<Viewport>} />
+          <CanvasHost
+            // key={selectedWorkspaceId}
+            viewport={observableViewport as Observable<Viewport>}
+          />
           <Ruler
             observableViewport={observableViewport as Observable<Viewport>}
           />
@@ -69,4 +75,3 @@ export const WorkspaceViewport = memo(() => {
     </div>
   );
 });
-

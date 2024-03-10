@@ -97,7 +97,14 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
     const newId = uuid();
     return set((state) => ({
       ...state,
-      workspaces: [...state.workspaces, { ...defaultWorkspace, id: newId }],
+      workspaces: [
+        ...state.workspaces,
+        {
+          ...defaultWorkspace,
+          id: newId,
+          name: `Untitled ${state.workspaces.length + 1}`,
+        },
+      ],
       selectedWorkspaceId: newId,
     }));
   },
