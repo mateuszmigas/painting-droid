@@ -37,7 +37,6 @@ export const WorkspaceViewport = memo(() => {
     observableViewport,
     (newViewport) => {
       if (deepEqual(newViewport, workspaceViewport)) return;
-      console.log("viewport changed", newViewport);
       setWorkspaceViewport(newViewport as Viewport);
     },
     500
