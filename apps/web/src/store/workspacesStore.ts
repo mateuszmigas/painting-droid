@@ -1,3 +1,4 @@
+import { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
 
@@ -18,6 +19,7 @@ export type Workspace = {
   isSaved: boolean;
   selectedLayerId: string;
   layers: Layer[];
+  viewport: Viewport | null;
 };
 
 export type AppWorkspacesState = {
@@ -39,6 +41,7 @@ const defaultWorkspace: Workspace = {
   isSaved: false,
   selectedLayerId: defaultLayer.id,
   layers: [defaultLayer],
+  viewport: null,
 };
 
 const defaultState: AppWorkspacesState = {
@@ -48,6 +51,7 @@ const defaultState: AppWorkspacesState = {
 
 type AppWorkspacesSlice = AppWorkspacesState & {
   selectWorkspace: (workspaceId: WorkspaceId) => void;
+  setWorkspaceViewport: (viewport: Viewport) => void;
   addNewActiveWorkspace: () => void;
   selectLayer: (layerId: LayerId) => void;
   addLayer: () => void;
@@ -64,7 +68,7 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   // mergeLayerDown: (workspaceId: string, layerId: string) => void;
 };
 
-export const forSelectedWorkspace = (
+export const mapSelectedWorkspace = (
   state: AppWorkspacesState,
   map: (workspace: Workspace) => Workspace
 ) => {
@@ -82,6 +86,13 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
 ) => ({
   ...defaultState,
   selectWorkspace: (id) => set({ selectedWorkspaceId: id }),
+  setWorkspaceViewport: (viewport) =>
+    set((state) =>
+      mapSelectedWorkspace(state, (workspace) => ({
+        ...workspace,
+        viewport,
+      }))
+    ),
   addNewActiveWorkspace: () => {
     const newId = uuid();
     return set((state) => ({
@@ -92,7 +103,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   selectLayer: (layerId: LayerId) => {
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => ({
+      mapSelectedWorkspace(state, (workspace) => ({
         ...workspace,
         selectedLayerId: layerId,
       }))
@@ -101,7 +112,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   addLayer: () => {
     const newLayerId = uuid();
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => ({
+      mapSelectedWorkspace(state, (workspace) => ({
         ...workspace,
         selectedLayerId: newLayerId,
         layers: [
@@ -117,7 +128,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   removeLayer: (layerId: LayerId) => {
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => {
+      mapSelectedWorkspace(state, (workspace) => {
         if (workspace.layers.length === 1) return workspace;
         const newLayers = workspace.layers.filter(
           (layer) => layer.id !== layerId
@@ -136,7 +147,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   duplicateLayer: (layerId: LayerId) => {
     const newLayerId = uuid();
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => {
+      mapSelectedWorkspace(state, (workspace) => {
         const index = workspace.layers.findIndex(
           (layer) => layer.id === layerId
         );
@@ -156,7 +167,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   moveLayerUp: (layerId: LayerId) => {
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => {
+      mapSelectedWorkspace(state, (workspace) => {
         const index = workspace.layers.findIndex(
           (layer) => layer.id === layerId
         );
@@ -172,7 +183,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   moveLayerDown: (layerId: LayerId) => {
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => {
+      mapSelectedWorkspace(state, (workspace) => {
         const index = workspace.layers.findIndex(
           (layer) => layer.id === layerId
         );
@@ -188,7 +199,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   lockLayer: (layerId: LayerId) => {
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => {
+      mapSelectedWorkspace(state, (workspace) => {
         const newLayers = workspace.layers.map((layer) =>
           layer.id === layerId ? { ...layer, locked: true } : layer
         );
@@ -198,7 +209,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   unlockLayer: (layerId: LayerId) => {
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => {
+      mapSelectedWorkspace(state, (workspace) => {
         const newLayers = workspace.layers.map((layer) =>
           layer.id === layerId ? { ...layer, locked: false } : layer
         );
@@ -208,7 +219,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   showLayer: (layerId: LayerId) => {
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => {
+      mapSelectedWorkspace(state, (workspace) => {
         const newLayers = workspace.layers.map((layer) =>
           layer.id === layerId ? { ...layer, visible: true } : layer
         );
@@ -218,7 +229,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   hideLayer: (layerId: LayerId) => {
     return set((state) =>
-      forSelectedWorkspace(state, (workspace) => {
+      mapSelectedWorkspace(state, (workspace) => {
         const newLayers = workspace.layers.map((layer) =>
           layer.id === layerId ? { ...layer, visible: false } : layer
         );
@@ -231,4 +242,8 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
 export const useWorkspacesStore = create<AppWorkspacesSlice>(
   workspacesStoreCreator
 );
+
+export const selectedWorkspaceSelector = (state: AppWorkspacesState) => {
+  return state.workspaces.find((w) => w.id === state.selectedWorkspaceId)!;
+};
 

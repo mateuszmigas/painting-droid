@@ -1,13 +1,11 @@
 import { Position, Rectangle, Size, scaleRectangle } from "../common";
 
 export type Viewport = {
-  size: Size;
   position: Position;
   zoom: number;
 };
 
 export const defaultViewport: Viewport = {
-  size: { width: 0, height: 0 },
   position: { x: 0, y: 0 },
   zoom: 1,
 };
@@ -58,7 +56,6 @@ export const calculateFitViewport = (
       };
 
   return {
-    size: windowSize,
     position: { x: newPosition.x + padding, y: newPosition.y + padding },
     zoom: newZoom,
   };
@@ -73,4 +70,3 @@ export const screenToViewportPosition = (
     y: (position.y - viewport.position.y) / viewport.zoom,
   };
 };
-

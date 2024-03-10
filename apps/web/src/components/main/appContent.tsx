@@ -8,7 +8,7 @@ import { ColorsPanel } from "../panels/colorsPanel";
 import { LayersPanel } from "../panels/layersPanel";
 import { HistoryPanel } from "../panels/historyPanel";
 import { MetadataPanel } from "../panels/metadataPanel";
-import { CanvasViewport } from "../canvasViewport";
+import { WorkspaceViewport } from "../workspaceViewport";
 import { ToolSettingsBar } from "../toolSettingsBar";
 
 const LeftContent = () => {
@@ -53,7 +53,7 @@ export const AppContent = () => {
       <ResizablePanel>
         <>
           <ToolSettingsBar />
-          <CanvasViewport />
+          <WorkspaceViewport />
         </>
       </ResizablePanel>
       <ResizableHandle />

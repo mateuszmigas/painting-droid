@@ -45,7 +45,6 @@ const drawRuler = (
     subCellsCount,
     font,
   } = rulerConfig;
-
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   context.fillStyle = color;
   context.lineWidth = 1;
@@ -98,8 +97,10 @@ const drawRuler = (
   }
 };
 
-export const Ruler = (props: { viewport: Observable<Viewport> }) => {
-  const { viewport } = props;
+const color = "#64748B";
+
+export const Ruler = (props: { observableViewport: Observable<Viewport> }) => {
+  const { observableViewport } = props;
   const canvasHorizontalRef = useRef<HTMLCanvasElement>(null);
   const canvasVerticalRef = useRef<HTMLCanvasElement>(null);
   const canvasHorizontalContextRef = useRef<CanvasRenderingContext2D | null>(
@@ -109,17 +110,24 @@ export const Ruler = (props: { viewport: Observable<Viewport> }) => {
     null
   );
 
-  const drawRulers = useStableCallback((viewport: Viewport) => {
-    const color = "#64748B";
-    canvasHorizontalContextRef.current &&
+  const drawHorizontalRuler = useStableCallback((viewport: Viewport) => {
+    if (canvasHorizontalContextRef.current) {
       drawRuler(
-        canvasHorizontalContextRef.current!,
+        canvasHorizontalContextRef.current,
         viewport,
         color,
         "horizontal"
       );
-    canvasVerticalRef.current &&
-      drawRuler(canvasVerticalContextRef.current!, viewport, color, "vertical");
+    }
+  });
+  const drawVerticalRuler = useStableCallback((viewport: Viewport) => {
+    if (canvasVerticalContextRef.current) {
+      drawRuler(canvasVerticalContextRef.current, viewport, color, "vertical");
+    }
+  });
+  const drawRulers = useStableCallback((viewport: Viewport) => {
+    drawHorizontalRuler(viewport);
+    drawVerticalRuler(viewport);
   });
 
   useEffect(() => {
@@ -137,17 +145,21 @@ export const Ruler = (props: { viewport: Observable<Viewport> }) => {
     }
   }, []);
 
-  useListener(viewport, drawRulers);
+  useListener(observableViewport, drawRulers, {
+    triggerOnMount: true,
+  });
 
   useResizeObserver(canvasHorizontalRef, (rectangle) => {
     if (canvasHorizontalRef.current) {
       canvasHorizontalRef.current.width = rectangle.width * rulerConfig.dpi;
+      drawHorizontalRuler(observableViewport.getValue());
     }
   });
 
   useResizeObserver(canvasVerticalRef, (rectangle) => {
     if (canvasVerticalRef.current) {
       canvasVerticalRef.current.height = rectangle.height * rulerConfig.dpi;
+      drawVerticalRuler(observableViewport.getValue());
     }
   });
 

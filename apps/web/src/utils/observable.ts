@@ -24,8 +24,11 @@ export class Observable<T> {
     this.notify();
   }
 
+  setValueWithoutNotify(data: T) {
+    this.data = data;
+  }
+
   notify() {
     this.listeners.forEach((observer) => observer(this.data));
   }
 }
-
