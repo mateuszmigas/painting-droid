@@ -11,6 +11,9 @@ const LayerItem = (props: {
   onClick: () => void;
 }) => {
   const { layer, onClick } = props;
+  const { showLayer, hideLayer, lockLayer, unlockLayer } = useWorkspacesStore(
+    (state) => state
+  );
   return (
     <div
       onClick={onClick}
@@ -22,7 +25,9 @@ const LayerItem = (props: {
       <IconButton
         type={layer.visible ? "visible" : "hidden"}
         size="small"
-        onClick={() => console.log("eye clicked")}
+        onClick={() =>
+          layer.visible ? hideLayer(layer.id) : showLayer(layer.id)
+        }
       />
 
       <div className="min-w-16 min-h-12 border border-black bg-white"></div>
@@ -31,7 +36,9 @@ const LayerItem = (props: {
         <IconButton
           type={layer.locked ? "lock" : "unlock"}
           size="small"
-          onClick={() => console.log("eye clicked")}
+          onClick={() =>
+            layer.locked ? unlockLayer(layer.id) : lockLayer(layer.id)
+          }
         />
         {/* <IconButton
           type={layer.locked ? "lock" : "unlock"}

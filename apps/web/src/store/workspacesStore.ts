@@ -55,6 +55,11 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   duplicateLayer: (layerId: LayerId) => void;
   moveLayerUp: (layerId: LayerId) => void;
   moveLayerDown: (layerId: LayerId) => void;
+  lockLayer: (layerId: LayerId) => void;
+  unlockLayer: (layerId: LayerId) => void;
+  showLayer: (layerId: LayerId) => void;
+  hideLayer: (layerId: LayerId) => void;
+
   // mergeLayerUp: (workspaceId: string, layerId: string) => void;
   // mergeLayerDown: (workspaceId: string, layerId: string) => void;
 };
@@ -177,6 +182,46 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
           newLayers[index + 1],
           newLayers[index],
         ];
+        return { ...workspace, layers: newLayers };
+      })
+    );
+  },
+  lockLayer: (layerId: LayerId) => {
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => {
+        const newLayers = workspace.layers.map((layer) =>
+          layer.id === layerId ? { ...layer, locked: true } : layer
+        );
+        return { ...workspace, layers: newLayers };
+      })
+    );
+  },
+  unlockLayer: (layerId: LayerId) => {
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => {
+        const newLayers = workspace.layers.map((layer) =>
+          layer.id === layerId ? { ...layer, locked: false } : layer
+        );
+        return { ...workspace, layers: newLayers };
+      })
+    );
+  },
+  showLayer: (layerId: LayerId) => {
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => {
+        const newLayers = workspace.layers.map((layer) =>
+          layer.id === layerId ? { ...layer, visible: true } : layer
+        );
+        return { ...workspace, layers: newLayers };
+      })
+    );
+  },
+  hideLayer: (layerId: LayerId) => {
+    return set((state) =>
+      forSelectedWorkspace(state, (workspace) => {
+        const newLayers = workspace.layers.map((layer) =>
+          layer.id === layerId ? { ...layer, visible: false } : layer
+        );
         return { ...workspace, layers: newLayers };
       })
     );
