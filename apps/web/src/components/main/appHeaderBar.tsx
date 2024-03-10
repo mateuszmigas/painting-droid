@@ -8,12 +8,9 @@ import { IconButton } from "../iconButton";
 import { CommandIconButton } from "../commandIconButton";
 
 export const AppHeaderBar = memo(() => {
-  const {
-    workspaces,
-    selectedWorkspaceId,
-    selectWorkspace,
-    addNewActiveWorkspace,
-  } = useWorkspacesStore((state) => state);
+  const { workspaces, selectedWorkspaceId, selectWorkspace, addNewActiveWorkspace } = useWorkspacesStore(
+    (state) => state,
+  );
   return (
     <div className="border-b flex flex-row justify-between items-center px-small gap-big">
       <MenuBar />
@@ -34,11 +31,7 @@ export const AppHeaderBar = memo(() => {
           </Tabs>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <IconButton
-          type="plus"
-          size="small-medium"
-          onClick={addNewActiveWorkspace}
-        />
+        <IconButton type="plus" size="small-medium" onClick={addNewActiveWorkspace} />
       </div>
       <div className="flex flex-row justify-center items-center pr-small gap-small">
         <CommandIconButton commandId="openCommandPalette" />
@@ -47,4 +40,3 @@ export const AppHeaderBar = memo(() => {
     </div>
   );
 });
-

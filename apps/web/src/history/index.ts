@@ -1,7 +1,4 @@
-import {
-  ImageUncompressedData,
-  ImageUncompressedRegionRect,
-} from "@/utils/imageData";
+import type { ImageUncompressedData, ImageUncompressedRegionRect } from "@/utils/imageData";
 
 export type ImageChange =
   | {
@@ -55,4 +52,3 @@ export class ImageHistory {
   //     };
   //   }
 }
-

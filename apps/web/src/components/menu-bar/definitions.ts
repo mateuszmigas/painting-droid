@@ -1,5 +1,5 @@
 import { executeCommand } from "@/commands";
-import { MenuItem } from "@/utils/menuItem";
+import type { MenuItem } from "@/utils/menuItem";
 
 export const menuBarDefinition: MenuItem[] = [
   {
@@ -81,4 +81,3 @@ export const menuBarDefinition: MenuItem[] = [
     ],
   },
 ];
-

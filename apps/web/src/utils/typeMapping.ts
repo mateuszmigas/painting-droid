@@ -3,4 +3,3 @@ export type FilterKeys<Base, Condition> = {
 }[keyof Base];
 
 export type StartsWith<T, X extends string> = FilterKeys<T, `${X}${string}`>;
-

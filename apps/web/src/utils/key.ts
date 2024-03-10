@@ -25,4 +25,3 @@ export type Key =
   | "B"
   | "N"
   | "M";
-

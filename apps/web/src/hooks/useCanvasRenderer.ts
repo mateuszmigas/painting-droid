@@ -1,6 +1,6 @@
-import { CanvasContext, Size } from "@/utils/common";
-import { Viewport } from "@/utils/manipulation";
-import { RefObject, useEffect, useRef } from "react";
+import type { CanvasContext, Size } from "@/utils/common";
+import type { Viewport } from "@/utils/manipulation";
+import { type RefObject, useEffect, useRef } from "react";
 
 const alphaGridCellSize = 20;
 const applyTransform = (viewport: Viewport, element: HTMLElement) => {
@@ -29,6 +29,7 @@ export const useCanvasRenderer = (
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const contextRef = useRef<OffscreenCanvasRenderingContext2D | null>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!hostElementRef.current || canvasRef.current) return;
 
@@ -66,3 +67,4 @@ export const useCanvasRenderer = (
     },
   };
 };
+

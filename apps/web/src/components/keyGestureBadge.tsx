@@ -1,4 +1,4 @@
-import { KeyGesture } from "@/utils/keyGesture";
+import type { KeyGesture } from "@/utils/keyGesture";
 
 export const KeyGestureBadge = (props: { keyGesture: KeyGesture }) => {
   const { keyGesture } = props;
@@ -11,4 +11,3 @@ export const KeyGestureBadge = (props: { keyGesture: KeyGesture }) => {
     </p>
   );
 };
-

@@ -1,5 +1,5 @@
 import { useDebounce } from "./useDebounce";
-import { Observable } from "@/utils/observable";
+import type { Observable } from "@/utils/observable";
 import { useEffect } from "react";
 
 export const useDebounceListener = <T>(
@@ -11,5 +11,6 @@ export const useDebounceListener = <T>(
   useEffect(() => {
     const unsubscribe = observable.subscribe(debounceOnChange);
     return () => unsubscribe();
-  }, []);
+  }, [observable, debounceOnChange]);
 };
+

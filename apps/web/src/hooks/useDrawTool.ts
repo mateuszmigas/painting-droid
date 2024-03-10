@@ -1,10 +1,11 @@
-import { CanvasContext, Position } from "@/utils/common";
-import { RefObject, useEffect, useRef } from "react";
+import type { CanvasContext, Position } from "@/utils/common";
+import { type RefObject, useEffect, useRef } from "react";
 import { assertNever } from "@/utils/typeGuards";
-import { DrawToolId } from "@/tools/draw-tools";
+import type { DrawToolId } from "@/tools/draw-tools";
 import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
-import { DrawTool } from "@/tools/draw-tools/drawTool";
+import type { DrawTool } from "@/tools/draw-tools/drawTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
+import { useStableCallback } from "./useStableCallback";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -51,13 +52,16 @@ export const useDrawTool = (
   _commitChanges: (context: CanvasContext) => void,
   _revertChanges: (context: CanvasContext) => void
 ) => {
-  let toolRef = useRef<DrawTool | null>(null);
+  const toolRef = useRef<DrawTool | null>(null);
 
+  const getCanvasContextStable = useStableCallback(getCanvasContext);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: todo
   useEffect(() => {
     if (!elementRef.current || drawToolId === null) return;
 
     const element = elementRef.current;
-    toolRef.current = createTool(drawToolId, getCanvasContext());
+    toolRef.current = createTool(drawToolId, getCanvasContextStable());
 
     if (!toolRef.current) return;
 
@@ -85,7 +89,7 @@ export const useDrawTool = (
       event.stopPropagation();
       if (event.button !== 0) return;
       isDrawing = true;
-      getCanvasContext().save();
+      getCanvasContextStable().save();
       currentPointerPosition = getPointerPosition(event);
       start();
     };
@@ -98,7 +102,7 @@ export const useDrawTool = (
       stop();
       tool.reset();
       isDrawing = false;
-      getCanvasContext().restore();
+      getCanvasContextStable().restore();
     };
     const pointerMoveHandler = (event: PointerEvent) => {
       event.preventDefault();
@@ -121,7 +125,7 @@ export const useDrawTool = (
   }, [drawToolId]);
 
   useEffect(() => {
-    toolRef.current && toolRef.current.configure(drawToolSettings);
+    toolRef.current?.configure(drawToolSettings);
   }, [drawToolSettings]);
 };
 

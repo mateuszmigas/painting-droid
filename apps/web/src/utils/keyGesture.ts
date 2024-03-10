@@ -1,4 +1,4 @@
-import { Key } from "./key";
+import type { Key } from "./key";
 
 export type KeyGesture = {
   key: Key;
@@ -25,10 +25,9 @@ export const createKeyGesture = (input: {
 export const keyGestureToString = (keyGesture: KeyGesture) =>
   [
     ...Array.from(
-      `${keyGesture.ctrl ? "⌃" : ""}${keyGesture.alt ? "⌥" : ""}${
-        keyGesture.shift ? "⇧" : ""
-      }${keyGesture.meta ? "⌘" : ""}`
+      `${keyGesture.ctrl ? "⌃" : ""}${keyGesture.alt ? "⌥" : ""}${keyGesture.shift ? "⇧" : ""}${
+        keyGesture.meta ? "⌘" : ""
+      }`,
     ),
     keyGesture.key,
   ].join("+");
-

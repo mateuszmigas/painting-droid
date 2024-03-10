@@ -1,5 +1,5 @@
-import { IconType } from "@/components/icon";
-import { Position } from "@/utils/common";
+import type { IconType } from "@/components/icon";
+import type { Position } from "@/utils/common";
 
 export type DrawPayload = {
   position: Position;
@@ -30,4 +30,3 @@ export interface DrawTool {
   draw(payload: DrawPayload): void;
   reset(): void;
 }
-

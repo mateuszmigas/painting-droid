@@ -5,4 +5,3 @@ export const translations = {
   history: "History",
   metadata: "Metadata",
 };
-

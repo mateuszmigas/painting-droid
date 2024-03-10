@@ -3,16 +3,15 @@ import { translations } from "@/translations";
 import { IconButton } from "../iconButton";
 import { useDrawingToolStore } from "@/store";
 import { memo } from "react";
-import { ToolId, defaultToolsSettings, toolsMetadata } from "@/tools";
+import { type ToolId, defaultToolsSettings, toolsMetadata } from "@/tools";
 
-const tools: { id: ToolId; name: string }[] = (
-  Object.keys(defaultToolsSettings) as ToolId[]
-).map((id) => ({ id, name: toolsMetadata[id].name }));
+const tools: { id: ToolId; name: string }[] = (Object.keys(defaultToolsSettings) as ToolId[]).map((id) => ({
+  id,
+  name: toolsMetadata[id].name,
+}));
 
 export const SelectToolPanel = memo(() => {
-  const { selectedToolId, setSelectedToolId } = useDrawingToolStore(
-    (state) => state
-  );
+  const { selectedToolId, setSelectedToolId } = useDrawingToolStore((state) => state);
   return (
     <div className="flex flex-col gap-medium">
       <PanelHeader title={translations.tools} />
@@ -36,4 +35,3 @@ export const SelectToolPanel = memo(() => {
     </div>
   );
 });
-

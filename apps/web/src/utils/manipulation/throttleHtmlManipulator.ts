@@ -11,17 +11,12 @@ export class ThrottleHtmlManipulator {
   }
 
   dispose() {
-    this.eventListeners.forEach((_, key) =>
-      this.element.removeEventListener(key, this.onEventTriggered)
-    );
+    this.eventListeners.forEach((_, key) => this.element.removeEventListener(key, this.onEventTriggered));
 
     cancelAnimationFrame(this.animationFrameHandle);
   }
 
-  protected registerEvent<T extends Event>(
-    type: EventType,
-    handler: EventHandler<T>
-  ) {
+  protected registerEvent<T extends Event>(type: EventType, handler: EventHandler<T>) {
     this.element.addEventListener(type, this.onEventTriggered);
     this.eventListeners.set(type, handler as EventHandler<Event>);
   }
@@ -44,4 +39,3 @@ export class ThrottleHtmlManipulator {
     this.animationFrameHandle = requestAnimationFrame(this.processEventsLoop);
   }
 }
-

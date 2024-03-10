@@ -1,6 +1,6 @@
 import { cn } from "@/utils/css";
-import { IconType, IconSize, Icon } from "./icon";
-import { ButtonHTMLAttributes, forwardRef } from "react";
+import { type IconType, type IconSize, Icon } from "./icon";
+import { type ButtonHTMLAttributes, forwardRef } from "react";
 
 type IconButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -20,6 +20,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
 
     return (
       <button
+        type="button"
         ref={ref}
         {...rest}
         className={cn(

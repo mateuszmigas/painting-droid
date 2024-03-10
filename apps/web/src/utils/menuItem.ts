@@ -1,5 +1,5 @@
-import { KeyGesture } from "@/utils/keyGesture";
-import { MenuItemAction } from "./menuItemAction";
+import type { KeyGesture } from "@/utils/keyGesture";
+import type { MenuItemAction } from "./menuItemAction";
 
 export type MenuItem =
   | {
@@ -17,4 +17,3 @@ export type MenuItem =
   | {
       type: "separator";
     };
-

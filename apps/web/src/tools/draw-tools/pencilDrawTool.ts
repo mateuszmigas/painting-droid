@@ -1,5 +1,5 @@
-import { DrawPayload, DrawTool, DrawToolMetadata } from "./drawTool";
-import { CanvasContext, Position } from "@/utils/common";
+import type { DrawPayload, DrawTool, DrawToolMetadata } from "./drawTool";
+import type { CanvasContext, Position } from "@/utils/common";
 
 export const pencilDrawToolMetadata: DrawToolMetadata = {
   id: "Pencil",

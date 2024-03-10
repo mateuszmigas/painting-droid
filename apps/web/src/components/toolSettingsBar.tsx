@@ -29,7 +29,7 @@ export const ToolSettingsBar = () => {
                   [id]: newValue,
                 });
               }}
-            ></ToolSetting>
+            />
             <Separator
               orientation="vertical"
               className="h-6 w-px bg-border mx-1"

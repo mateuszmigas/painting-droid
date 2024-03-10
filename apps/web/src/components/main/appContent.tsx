@@ -1,8 +1,4 @@
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { SelectToolPanel } from "../panels/selectToolPanel";
 import { ColorsPanel } from "../panels/colorsPanel";
 import { LayersPanel } from "../panels/layersPanel";
@@ -63,4 +59,3 @@ export const AppContent = () => {
     </ResizablePanelGroup>
   );
 };
-

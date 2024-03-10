@@ -1,5 +1,5 @@
 import { createKeyGesture } from "@/utils/keyGesture";
-import { CommandContext } from "./context";
+import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 
 export const command = createCommand({
@@ -12,4 +12,3 @@ export const command = createCommand({
     context.stores.commandPalette().setIsOpen(true);
   },
 });
-

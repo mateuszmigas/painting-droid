@@ -1,4 +1,4 @@
-import { Viewport, screenToViewportPosition } from "@/utils/manipulation";
+import { type Viewport, screenToViewportPosition } from "@/utils/manipulation";
 import { memo, useEffect, useRef, useState } from "react";
 import {
   useCanvasRenderer,
@@ -8,7 +8,7 @@ import {
   useListener,
 } from "@/hooks";
 import { useToolStore } from "@/store/toolState";
-import { Observable } from "@/utils/observable";
+import type { Observable } from "@/utils/observable";
 //temp
 const size = {
   width: 800,
@@ -54,7 +54,7 @@ export const CanvasHost = memo((props: { viewport: Observable<Viewport> }) => {
       ref={hostElementRef}
       style={{ opacity: visible ? "1" : "0" }}
       className="absolute size-full overflow-hidden cursor-crosshair duration-1000"
-    ></div>
+    />
   );
 });
 

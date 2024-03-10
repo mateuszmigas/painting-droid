@@ -1,7 +1,7 @@
 import { useListener, useStableCallback } from "@/hooks";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { Viewport } from "@/utils/manipulation";
-import { Observable } from "@/utils/observable";
+import type { Viewport } from "@/utils/manipulation";
+import type { Observable } from "@/utils/observable";
 import { useEffect, useRef } from "react";
 
 const rulerConfig = {
@@ -169,15 +169,16 @@ export const Ruler = (props: { observableViewport: Observable<Viewport> }) => {
         ref={canvasHorizontalRef}
         height={rulerConfig.offset * rulerConfig.dpi}
         className="bg-background pixelated-canvas absolute left-[20px] h-[20px] w-full"
-      ></canvas>
+      />
       <canvas
         ref={canvasVerticalRef}
         width={rulerConfig.offset * rulerConfig.dpi}
         className="bg-background pixelated-canvas absolute top-[20px] w-[20px] h-full"
-      ></canvas>
+      />
       <div className="size-[20px] border-r border-b flex justify-center text-xs items-center bg-background">
         PX
       </div>
     </div>
   );
 };
+

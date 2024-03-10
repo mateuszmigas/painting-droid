@@ -11,4 +11,3 @@ describe("settingsStore", () => {
     expect(store.getState().theme).toBe("light");
   });
 });
-

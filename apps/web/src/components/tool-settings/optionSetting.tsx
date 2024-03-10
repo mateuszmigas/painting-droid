@@ -1,11 +1,5 @@
 import { cn } from "@/utils/css";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "../ui/select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../ui/select";
 
 export const OptionSetting = <T extends number | string>(props: {
   value: T;
@@ -19,10 +13,7 @@ export const OptionSetting = <T extends number | string>(props: {
 }) => {
   const { value, onChange, options, placeholder, className } = props;
   return (
-    <Select
-      value={value as string}
-      onValueChange={(value) => onChange(value as T)}
-    >
+    <Select value={value as string} onValueChange={(value) => onChange(value as T)}>
       <SelectTrigger className={cn("text-xs h-input-thin", className)}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
@@ -36,4 +27,3 @@ export const OptionSetting = <T extends number | string>(props: {
     </Select>
   );
 };
-

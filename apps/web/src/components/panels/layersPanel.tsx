@@ -3,7 +3,7 @@ import { PanelHeader } from "./panelHeader";
 import { IconButton } from "../iconButton";
 import { cn } from "@/utils/css";
 import { useWorkspacesStore } from "@/store";
-import { Layer } from "@/store/workspacesStore";
+import type { Layer } from "@/store/workspacesStore";
 
 const LayerItem = (props: {
   layer: Layer;
@@ -15,6 +15,7 @@ const LayerItem = (props: {
     (state) => state
   );
   return (
+    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
       onClick={onClick}
       className={cn(
@@ -30,7 +31,7 @@ const LayerItem = (props: {
         }
       />
 
-      <div className="min-w-16 min-h-12 border border-black bg-white"></div>
+      <div className="min-w-16 min-h-12 border border-black bg-white" />
       <div className="truncate flex-1 ml-1">{layer.name}</div>
       <div className="flex flex-col justify-between">
         <IconButton
@@ -69,37 +70,33 @@ export const LayersPanel = () => {
 
   return (
     <div className="flex flex-col size-full">
-      <PanelHeader title={translations.layers + " (work in progress!!!)"} />
+      <PanelHeader title={`${translations.layers} (work in progress!!!)`} />
       <div className="flex flex-row gap-small p-small mt-small items-center justify-between">
         <div className="flex flex-row gap-small items-center">
-          <IconButton
-            type="plus"
-            size="small"
-            onClick={() => addLayer()}
-          ></IconButton>
+          <IconButton type="plus" size="small" onClick={() => addLayer()} />
           <IconButton
             type="copy"
             size="small"
             onClick={() => duplicateLayer(selectedLayerId)}
-          ></IconButton>
+          />
           <IconButton
             type="arrow-up"
             size="small"
             onClick={() => moveLayerUp(selectedLayerId)}
-          ></IconButton>
+          />
           <IconButton
             type="arrow-down"
             size="small"
             onClick={() => moveLayerDown(selectedLayerId)}
-          ></IconButton>
-          <IconButton type="arrow-up-to-line" size="small"></IconButton>
-          <IconButton type="arrow-down-to-line" size="small"></IconButton>
+          />
+          <IconButton type="arrow-up-to-line" size="small" />
+          <IconButton type="arrow-down-to-line" size="small" />
         </div>
         <IconButton
           type="x"
           size="small"
           onClick={() => removeLayer(selectedLayerId)}
-        ></IconButton>
+        />
       </div>
       <div className="flex flex-col gap-small overflow-auto p-small">
         {layers.map((layer) => (
@@ -114,3 +111,4 @@ export const LayersPanel = () => {
     </div>
   );
 };
+

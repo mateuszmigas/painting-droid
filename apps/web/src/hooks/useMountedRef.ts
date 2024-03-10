@@ -13,4 +13,3 @@ export const useMountedRef = () => {
 
   return mountedRef;
 };
-

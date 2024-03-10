@@ -1,4 +1,4 @@
-import { defaultToolsSettings, ToolId } from "@/tools";
+import { defaultToolsSettings, type ToolId } from "@/tools";
 import { create, type StateCreator } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -14,10 +14,7 @@ const defaultState: AppToolState = {
 
 type AppToolSlice = AppToolState & {
   setSelectedToolId: (type: ToolId) => void;
-  updateToolSettings: (
-    toolId: ToolId,
-    settings: Record<string, unknown>
-  ) => void;
+  updateToolSettings: (toolId: ToolId, settings: Record<string, unknown>) => void;
 };
 
 export const settingsStoreCreator: StateCreator<AppToolSlice> = (set) => ({
@@ -37,6 +34,5 @@ export const useToolStore = create<AppToolSlice>()(
     version: 2,
     name: "tool",
     storage: createJSONStorage(() => sessionStorage),
-  })
+  }),
 );
-

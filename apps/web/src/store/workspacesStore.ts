@@ -1,4 +1,4 @@
-import { Viewport } from "@/utils/manipulation";
+import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
 

@@ -1,5 +1,1 @@
-export type MenuItemAction =
-  | { onClick: () => void }
-  | { commandId: string }
-  | { role: string };
-
+export type MenuItemAction = { onClick: () => void } | { commandId: string } | { role: string };

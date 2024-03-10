@@ -1,6 +1,6 @@
-import { Position } from "../common";
+import type { Position } from "../common";
 import { ThrottleHtmlManipulator } from "./throttleHtmlManipulator";
-import { Viewport, zoomAtPosition } from "./viewport";
+import { type Viewport, zoomAtPosition } from "./viewport";
 
 type ViewportAction =
   | {
@@ -40,7 +40,7 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
   constructor(
     protected element: HTMLElement,
     protected getCurrentViewport: () => Viewport,
-    private onViewportChange: (newViewport: Viewport) => void
+    private onViewportChange: (newViewport: Viewport) => void,
   ) {
     super(element);
 
@@ -92,4 +92,3 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
     });
   };
 }
-

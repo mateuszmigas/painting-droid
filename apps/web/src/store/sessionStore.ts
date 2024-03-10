@@ -23,6 +23,5 @@ export const useSessionStore = create<AppSessionSlice>()(
     version: 1,
     name: "session",
     storage: createJSONStorage(() => sessionStorage),
-  })
+  }),
 );
-

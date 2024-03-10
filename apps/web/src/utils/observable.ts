@@ -32,3 +32,4 @@ export class Observable<T> {
     this.listeners.forEach((observer) => observer(this.data));
   }
 }
+

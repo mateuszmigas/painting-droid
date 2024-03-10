@@ -14,6 +14,7 @@ export const ModeToggle = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
+          type="button"
           title="Change theme"
           className={
             "flex justify-center items-center relative hover:bg-accent rounded-md hover:text-accent-foreground p-1 w-6 h-6"

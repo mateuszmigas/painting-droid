@@ -8,10 +8,11 @@ export const App = () => {
   useSyncTheme();
   return (
     <div className="size-full flex flex-col select-none">
-      <CommandPalette></CommandPalette>
-      <AppHeaderBar></AppHeaderBar>
-      <AppContent></AppContent>
-      <AppStatusBar></AppStatusBar>
+      <CommandPalette />
+      <AppHeaderBar />
+      <AppContent />
+      <AppStatusBar />
     </div>
   );
 };
+

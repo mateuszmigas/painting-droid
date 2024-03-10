@@ -1,6 +1,6 @@
-import { DrawToolSettingType } from "@/tools/draw-tools/drawTool";
+import type { DrawToolSettingType } from "@/tools/draw-tools/drawTool";
 import { ColorSetting } from "./colorSetting";
-import { ToolId, toolsMetadata } from "@/tools";
+import { type ToolId, toolsMetadata } from "@/tools";
 import { OptionSetting } from "./optionSetting";
 
 export const ToolSetting = (props: {
@@ -28,4 +28,3 @@ export const ToolSetting = (props: {
 
   return null;
 };
-

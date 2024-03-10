@@ -1,4 +1,4 @@
-import { Color } from "@/utils/common";
+import type { Color } from "@/utils/common";
 import { cn } from "@/utils/css";
 
 export const ColorSetting = (props: {
@@ -14,7 +14,7 @@ export const ColorSetting = (props: {
       type="color"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-    ></input>
+    />
   );
 };
 

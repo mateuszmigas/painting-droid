@@ -29,6 +29,5 @@ export const useSettingsStore = create<AppSettingsSlice>()(
     version: 1,
     name: "settings",
     storage: createJSONStorage(() => sessionStorage),
-  })
+  }),
 );
-

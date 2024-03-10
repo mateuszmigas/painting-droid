@@ -13,4 +13,3 @@ export const createContext = (): CommandContext => ({
     commandPalette: () => useCommandPaletteStore.getState(),
   },
 });
-

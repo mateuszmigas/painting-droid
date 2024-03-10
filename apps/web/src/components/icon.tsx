@@ -47,11 +47,7 @@ export type IconType =
 
 export type IconSize = "small" | "small-medium" | "medium";
 
-const renderLucideIcon = (
-  icon: IconType,
-  size: IconSize,
-  className?: string
-) => {
+const renderLucideIcon = (icon: IconType, size: IconSize, className?: string) => {
   const fontSize = size === "medium" ? 24 : size === "small-medium" ? 20 : 16;
   switch (icon) {
     case "pen":
@@ -105,4 +101,3 @@ export const Icon = (props: {
   const { type, size, className } = props;
   return renderLucideIcon(type, size, className);
 };
-

@@ -10,10 +10,7 @@ export type Size = {
 
 export type Rectangle = Position & Size;
 
-export const scaleRectangle = (
-  rectangle: Rectangle,
-  scale: number
-): Rectangle => ({
+export const scaleRectangle = (rectangle: Rectangle, scale: number): Rectangle => ({
   x: rectangle.x * scale,
   y: rectangle.y * scale,
   width: rectangle.width * scale,

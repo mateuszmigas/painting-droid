@@ -1,10 +1,10 @@
-import { IconType } from "@/components/icon";
-import { CommandContext } from "./context";
-import { KeyGesture } from "@/utils/keyGesture";
+import type { IconType } from "@/components/icon";
+import type { CommandContext } from "./context";
+import type { KeyGesture } from "@/utils/keyGesture";
 
 export const createCommand = <
   T extends string,
-  C extends (context: CommandContext, payload: any) => Promise<void>
+  C extends (context: CommandContext, payload: never) => Promise<void>
 >(command: {
   id: T;
   name: string;

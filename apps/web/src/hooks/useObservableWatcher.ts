@@ -12,6 +12,7 @@ export const useObservableWatcher = <T>(
   }
 
   //notify subscribers post render
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional
   useEffect(() => {
     observable.notify();
   }, [currentValue, observable]);

@@ -1,4 +1,4 @@
-import { Observable } from "@/utils/observable";
+import type { Observable } from "@/utils/observable";
 import { useStableCallback } from ".";
 import { useEffect } from "react";
 
@@ -15,5 +15,6 @@ export const useListener = <T>(
     const unsubscribe = observable.subscribe(stableOnChange);
     options?.triggerOnMount && stableOnChange(observable.getValue());
     return () => unsubscribe();
-  }, [options?.triggerOnMount]);
+  }, [observable, stableOnChange, options?.triggerOnMount]);
 };
+

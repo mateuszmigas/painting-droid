@@ -1,4 +1,4 @@
-import { Viewport, calculateFitViewport } from "@/utils/manipulation";
+import { type Viewport, calculateFitViewport } from "@/utils/manipulation";
 import { memo, useRef } from "react";
 import { useObservableWatcher, useAfterPaintEffect } from "@/hooks";
 import { Ruler } from "./Ruler";
@@ -7,7 +7,7 @@ import {
   useWorkspacesStore,
 } from "@/store/workspacesStore";
 import { deepEqual } from "@/utils/object";
-import { Observable } from "@/utils/observable";
+import type { Observable } from "@/utils/observable";
 import { useDebounceListener } from "@/hooks/useDebounceListener";
 import { CanvasHost } from "./canvasHost";
 
@@ -21,9 +21,6 @@ export const WorkspaceViewport = memo(() => {
   const rootElementRef = useRef<HTMLDivElement>(null);
   const setWorkspaceViewport = useWorkspacesStore(
     (store) => store.setWorkspaceViewport
-  );
-  const selectedWorkspaceId = useWorkspacesStore(
-    (store) => store.selectedWorkspaceId
   );
   const workspaceViewport = useWorkspacesStore(
     (store) => selectedWorkspaceSelector(store).viewport
@@ -54,7 +51,7 @@ export const WorkspaceViewport = memo(() => {
       margin
     );
     setWorkspaceViewport(viewport);
-  }, [selectedWorkspaceId]);
+  });
 
   return (
     <div
@@ -66,9 +63,10 @@ export const WorkspaceViewport = memo(() => {
           <CanvasHost viewport={observableViewport as Observable<Viewport>} />
           <Ruler
             observableViewport={observableViewport as Observable<Viewport>}
-          ></Ruler>
+          />
         </>
       )}
     </div>
   );
 });
+

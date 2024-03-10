@@ -11,9 +11,9 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { menuBarDefinition } from "./definitions";
-import { MenuItem } from "@/utils/menuItem";
+import type { MenuItem } from "@/utils/menuItem";
 import { Fragment } from "react/jsx-runtime";
-import { MenuItemAction } from "@/utils/menuItemAction";
+import type { MenuItemAction } from "@/utils/menuItemAction";
 
 const processAction = (action: MenuItemAction) => {
   if ("onClick" in action) {
@@ -31,6 +31,7 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
           <MenubarSubTrigger>{item.label}</MenubarSubTrigger>
           <MenubarSubContent>
             {item.items.map((subItem, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: intentional
               <Fragment key={index}>{mapMenuItemToMenubar(subItem)}</Fragment>
             ))}
           </MenubarSubContent>
@@ -61,10 +62,12 @@ export const MenuBar = () => {
         }
 
         return (
+          // biome-ignore lint/suspicious/noArrayIndexKey: intentional
           <MenubarMenu key={index}>
             <MenubarTrigger>{parent.label}</MenubarTrigger>
             <MenubarContent>
               {parent.items.map((item, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: intentional
                 <Fragment key={index}>{mapMenuItemToMenubar(item)}</Fragment>
               ))}
             </MenubarContent>

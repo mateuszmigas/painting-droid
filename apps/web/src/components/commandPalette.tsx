@@ -29,7 +29,7 @@ export const CommandPalette = memo(() => {
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, []);
+  }, [toggleIsOpen]);
 
   return (
     <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
