@@ -1,8 +1,10 @@
 import type { CanvasContext, Size } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
-import { type RefObject, useEffect, useRef } from "react";
+import { useCanvasStack } from "./useCanvasStack";
+import type { RefObject } from "react";
 
 const alphaGridCellSize = 20;
+
 const applyTransform = (viewport: Viewport, element: HTMLElement) => {
   element.style.transform = `
       translate(${viewport.position.x}px, ${viewport.position.y}px) 
@@ -16,54 +18,16 @@ const applyTransform = (viewport: Viewport, element: HTMLElement) => {
 
 export const useCanvasRenderer = (
   hostElementRef: RefObject<HTMLElement>,
-  // layers: Record<
-  //   string,
-  //   {
-  //     config: any;
-  //     data: Uint8ClampedArray;
-  //   }
-  // >,
-  // activeLayerId: string,
   size: Size
 ) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const contextRef = useRef<OffscreenCanvasRenderingContext2D | null>(null);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (!hostElementRef.current || canvasRef.current) return;
-
-    const hostElement = hostElementRef.current;
-    const canvas = document.createElement("canvas");
-    canvas.id = "canvas-renderer";
-    canvas.width = size.width;
-    canvas.height = size.height;
-    canvas.style.width = `${size.width}px`;
-    canvas.style.height = `${size.height}px`;
-    canvas.className =
-      "pixelated-canvas pointer-events-none origin-top-left outline outline-border shadow-2xl box-content alpha-background";
-    hostElement.appendChild(canvas);
-    canvasRef.current = canvas;
-    const offscreenCanvas = canvasRef.current?.transferControlToOffscreen();
-    const context = offscreenCanvas?.getContext("2d");
-
-    if (!context) {
-      throw new Error("Canvas context is null");
-    }
-
-    contextRef.current = context;
-
-    return () => {
-      hostElement.removeChild(canvas);
-      canvasRef.current = null;
-    };
-  }, [hostElementRef]);
+  const stack = useCanvasStack(hostElementRef, size);
 
   return {
-    getDrawContext: (_layerId: string) =>
-      contextRef.current! as never as CanvasContext,
+    getDrawContext: (_layerId: string) => {
+      return stack[0].getContext("2d") as never as CanvasContext;
+    },
     setViewport: (viewport: Viewport) => {
-      canvasRef.current && applyTransform(viewport, canvasRef.current);
+      stack[0] && applyTransform(viewport, stack[0]);
     },
   };
 };

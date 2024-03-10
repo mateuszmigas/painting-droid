@@ -14,25 +14,22 @@ const size = {
   width: 800,
   height: 600,
 };
-const layerId = "1";
-
 export const CanvasHost = memo((props: { viewport: Observable<Viewport> }) => {
   const { viewport } = props;
   const [visible, setVisible] = useState(false);
   const hostElementRef = useRef<HTMLDivElement>(null);
   const renderer = useCanvasRenderer(hostElementRef, size);
-  const { commitChanges, revertChanges } = useCanvasHistory();
+  const { requestContextLock } = useCanvasHistory(renderer.getDrawContext("1"));
 
   const toolId = useToolStore((state) => state.selectedToolId);
   const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
+
   useDrawTool(
     hostElementRef,
     toolId,
     toolSettings,
     (position) => screenToViewportPosition(position, viewport.getValue()),
-    () => renderer.getDrawContext(layerId),
-    commitChanges,
-    revertChanges
+    requestContextLock
   );
 
   useListener(viewport, (newViewport) => renderer.setViewport(newViewport), {

@@ -6,6 +6,7 @@ import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
 import type { DrawTool } from "@/tools/draw-tools/drawTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
 import { useStableCallback } from "./useStableCallback";
+import type { CanvasHistoryContextHandle } from "./useCanvasHistory";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -34,8 +35,8 @@ const createRaf = (
       rafHandle = requestAnimationFrame(loop);
     },
     stop: () => {
-      cancelAnimationFrame(rafHandle);
       callback(Date.now() - start, true);
+      cancelAnimationFrame(rafHandle);
     },
     cancel: () => {
       cancelAnimationFrame(rafHandle);
@@ -48,23 +49,19 @@ export const useDrawTool = (
   drawToolId: DrawToolId | null,
   drawToolSettings: Record<string, unknown>,
   transformToCanvasPosition: (position: Position) => Position,
-  getCanvasContext: () => CanvasContext,
-  _commitChanges: (context: CanvasContext) => void,
-  _revertChanges: (context: CanvasContext) => void
+  contextHandleFactory: () => CanvasHistoryContextHandle
 ) => {
   const toolRef = useRef<DrawTool | null>(null);
 
-  const getCanvasContextStable = useStableCallback(getCanvasContext);
+  const contextHandleFactoryStable = useStableCallback(contextHandleFactory);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: todo
   useEffect(() => {
     if (!elementRef.current || drawToolId === null) return;
 
     const element = elementRef.current;
-    toolRef.current = createTool(drawToolId, getCanvasContextStable());
-
-    if (!toolRef.current) return;
-
+    const lockHandle = contextHandleFactoryStable();
+    toolRef.current = createTool(drawToolId, lockHandle.getContext());
     const tool = toolRef.current;
     tool.configure(drawToolSettings);
     let ticksCount = 0;
@@ -89,7 +86,6 @@ export const useDrawTool = (
       event.stopPropagation();
       if (event.button !== 0) return;
       isDrawing = true;
-      getCanvasContextStable().save();
       currentPointerPosition = getPointerPosition(event);
       start();
     };
@@ -102,7 +98,7 @@ export const useDrawTool = (
       stop();
       tool.reset();
       isDrawing = false;
-      getCanvasContextStable().restore();
+      lockHandle.applyChanges();
     };
     const pointerMoveHandler = (event: PointerEvent) => {
       event.preventDefault();
@@ -111,9 +107,19 @@ export const useDrawTool = (
       currentPointerPosition = getPointerPosition(event);
     };
 
+    const keyDownHandler = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isDrawing) {
+        stop();
+        tool.reset();
+        isDrawing = false;
+        lockHandle.rejectChanges();
+      }
+    };
+
     element.addEventListener("pointerdown", pointerDownHandler);
     element.addEventListener("pointerup", pointerUpHandler);
     element.addEventListener("pointermove", pointerMoveHandler);
+    document.addEventListener("keydown", keyDownHandler);
 
     return () => {
       cancel();
@@ -121,6 +127,7 @@ export const useDrawTool = (
       element.removeEventListener("pointerdown", pointerDownHandler);
       element.removeEventListener("pointerup", pointerUpHandler);
       element.removeEventListener("pointermove", pointerMoveHandler);
+      document.removeEventListener("keydown", keyDownHandler);
     };
   }, [drawToolId]);
 
