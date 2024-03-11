@@ -4,54 +4,63 @@ import {
   useCanvasRenderer,
   useViewportManipulator,
   useDrawTool,
-  useCanvasHistory,
+  useCanvasContextDispatcher,
   useListener,
 } from "@/hooks";
 import { useToolStore } from "@/store/toolState";
 import type { Observable } from "@/utils/observable";
+import type { WorkspaceId } from "@/store/workspacesStore";
 //temp
 const size = {
   width: 800,
   height: 600,
 };
-export const CanvasHost = memo((props: { viewport: Observable<Viewport> }) => {
-  const { viewport } = props;
-  const [visible, setVisible] = useState(false);
-  const hostElementRef = useRef<HTMLDivElement>(null);
-  const renderer = useCanvasRenderer(hostElementRef, size);
-  const { requestContextLock } = useCanvasHistory(renderer.getDrawContext("1"));
+export const CanvasHost = memo(
+  (props: { workspaceId: WorkspaceId; viewport: Observable<Viewport> }) => {
+    const { workspaceId, viewport } = props;
+    const [isRestored, setIsRestored] = useState(false);
+    const hostElementRef = useRef<HTMLDivElement>(null);
+    const renderer = useCanvasRenderer(hostElementRef, size);
+    const dispatcher = useCanvasContextDispatcher(
+      props.workspaceId,
+      renderer.getDrawContext()
+    );
 
-  const toolId = useToolStore((state) => state.selectedToolId);
-  const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
+    useEffect(() => {
+      dispatcher
+        .restoreContext(workspaceId, renderer.getDrawContext())
+        .then(() => setIsRestored(true));
+    }, [workspaceId, renderer, dispatcher]);
 
-  useDrawTool(
-    hostElementRef,
-    toolId,
-    toolSettings,
-    (position) => screenToViewportPosition(position, viewport.getValue()),
-    requestContextLock
-  );
+    const toolId = useToolStore((state) => state.selectedToolId);
+    const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
 
-  useListener(viewport, (newViewport) => renderer.setViewport(newViewport), {
-    triggerOnMount: true,
-  });
+    useDrawTool(
+      hostElementRef,
+      toolId,
+      toolSettings,
+      (position) => screenToViewportPosition(position, viewport.getValue()),
+      dispatcher,
+      isRestored
+    );
 
-  useViewportManipulator(
-    hostElementRef,
-    () => viewport.getValue(),
-    (newViewport) => viewport.setValue(newViewport)
-  );
+    useListener(viewport, (newViewport) => renderer.setViewport(newViewport), {
+      triggerOnMount: true,
+    });
 
-  useEffect(() => {
-    setVisible(true);
-  }, []);
+    useViewportManipulator(
+      hostElementRef,
+      () => viewport.getValue(),
+      (newViewport) => viewport.setValue(newViewport)
+    );
 
-  return (
-    <div
-      ref={hostElementRef}
-      style={{ opacity: visible ? "1" : "0" }}
-      className="absolute size-full overflow-hidden cursor-crosshair duration-1000"
-    />
-  );
-});
+    return (
+      <div
+        ref={hostElementRef}
+        style={{ opacity: isRestored ? "1" : "0" }}
+        className="absolute size-full overflow-hidden cursor-crosshair duration-1000"
+      />
+    );
+  }
+);
 

@@ -1,54 +1,23 @@
-import type { ImageUncompressedData, ImageUncompressedRegionRect } from "@/utils/imageData";
+import type { WorkspaceId } from "@/store/workspacesStore";
+import type { ImageCompressedData } from "@/utils/imageData";
 
-export type ImageChange =
-  | {
-      type: "chunk";
-      data: ImageUncompressedRegionRect;
-    }
-  | {
-      type: "full";
-      data: ImageUncompressedData;
-    };
+class WorkspaceCanvasHistory {
+  private history: Map<WorkspaceId, ImageCompressedData> = new Map();
 
-export class ImageHistory {
-  private currentImage: ImageUncompressedData | null = null;
-
-  init(data: ImageUncompressedData) {
-    this.currentImage = data;
+  push(workspaceId: WorkspaceId, data: ImageCompressedData) {
+    // console.log("pushing", workspaceId);
+    this.history.set(workspaceId, data);
   }
 
-  push(change: ImageChange) {
-    //resets stack
-    if (change.type === "chunk") {
-      //store original chunks
-    } else if (change.type === "full") {
-      //compress current and use as checkpoint
-    } else {
-      throw new Error("Invalid change type");
-    }
+  getLatest(workspaceId: WorkspaceId): ImageCompressedData | null {
+    // console.log("getting latest", workspaceId);
+    return this.history.get(workspaceId) ?? null;
   }
 
-  getCurrent() {
-    if (!this.currentImage) throw new Error("No image");
-
-    return this.currentImage;
+  clear(workspaceId: WorkspaceId) {
+    this.history.delete(workspaceId);
   }
-
-  undo() {
-    //pop from stack
-    //apply to current
-  }
-
-  redo() {
-    //pop from stack
-    //apply to current
-  }
-
-  //   private compress(data: ImageUncompressedBuffer): ImageCompressedBuffer {
-  //     return {
-  //       width: data.width,
-  //       height: data.height,
-  //       data: data.data,
-  //     };
-  //   }
 }
+
+export const workspaceCanvasHistory = new WorkspaceCanvasHistory();
+

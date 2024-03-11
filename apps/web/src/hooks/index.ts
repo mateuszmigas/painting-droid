@@ -1,7 +1,7 @@
 export { useDebounce } from "./useDebounce";
 export { useDrawTool } from "./useDrawTool";
 export { useCanvasRenderer } from "./useCanvasRenderer";
-export { useCanvasHistory } from "./useCanvasHistory";
+export { useCanvasContextDispatcher } from "./useCanvasContextDispatcher";
 export { useAfterPaintEffect } from "./useAfterPaintEffect";
 export { useViewportManipulator } from "./useViewportManipulator";
 export { useSyncTheme } from "./useSyncTheme";

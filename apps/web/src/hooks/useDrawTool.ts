@@ -5,8 +5,7 @@ import type { DrawToolId } from "@/tools/draw-tools";
 import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
 import type { DrawTool } from "@/tools/draw-tools/drawTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
-import { useStableCallback } from "./useStableCallback";
-import type { CanvasHistoryContextHandle } from "./useCanvasHistory";
+import type { CanvasContextDispatcher } from "./useCanvasContextDispatcher";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -49,21 +48,20 @@ export const useDrawTool = (
   drawToolId: DrawToolId | null,
   drawToolSettings: Record<string, unknown>,
   transformToCanvasPosition: (position: Position) => Position,
-  contextHandleFactory: () => CanvasHistoryContextHandle
+  dispatcher: CanvasContextDispatcher,
+  isRestored: boolean
 ) => {
   const toolRef = useRef<DrawTool | null>(null);
 
-  const contextHandleFactoryStable = useStableCallback(contextHandleFactory);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: todo
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intended
   useEffect(() => {
-    if (!elementRef.current || drawToolId === null) return;
+    if (!elementRef.current || !isRestored || drawToolId === null) return;
 
     const element = elementRef.current;
-    const lockHandle = contextHandleFactoryStable();
-    toolRef.current = createTool(drawToolId, lockHandle.getContext());
+    const contextLock = dispatcher.requestContextLock();
+    toolRef.current = createTool(drawToolId, contextLock.getContext());
+    toolRef.current.configure(drawToolSettings);
     const tool = toolRef.current;
-    tool.configure(drawToolSettings);
     let ticksCount = 0;
     let isDrawing = false;
     let currentPointerPosition: { x: number; y: number } | null = null;
@@ -98,7 +96,7 @@ export const useDrawTool = (
       stop();
       tool.reset();
       isDrawing = false;
-      lockHandle.applyChanges();
+      contextLock.applyChanges();
     };
     const pointerMoveHandler = (event: PointerEvent) => {
       event.preventDefault();
@@ -112,7 +110,7 @@ export const useDrawTool = (
         stop();
         tool.reset();
         isDrawing = false;
-        lockHandle.rejectChanges();
+        contextLock.rejectChanges();
       }
     };
 
@@ -129,7 +127,13 @@ export const useDrawTool = (
       element.removeEventListener("pointermove", pointerMoveHandler);
       document.removeEventListener("keydown", keyDownHandler);
     };
-  }, [drawToolId]);
+  }, [
+    drawToolId,
+    dispatcher,
+    elementRef,
+    transformToCanvasPosition,
+    isRestored,
+  ]);
 
   useEffect(() => {
     toolRef.current?.configure(drawToolSettings);

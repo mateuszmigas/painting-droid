@@ -64,7 +64,8 @@ export const WorkspaceViewport = memo(() => {
       {observableViewport.getValue() !== null && (
         <>
           <CanvasHost
-            // key={selectedWorkspaceId}
+            key={selectedWorkspaceId}
+            workspaceId={selectedWorkspaceId}
             viewport={observableViewport as Observable<Viewport>}
           />
           <Ruler
