@@ -1,6 +1,6 @@
 # Painting Droid
 
-[DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓░░░░░░░░░░░░░░░░░░░ 9% 
+[DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓░░░░░░░░░░░░░░░░░░░ 10% 
 
 [![100 - Commitów](https://img.shields.io/badge/100-Commitów-2ea44f)](https://100commitow.pl/) ![Vercel](https://vercelbadge.vercel.app/api/mateuszmigas/painting-droid) ![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg)
 
@@ -82,13 +82,13 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 
 ### Core features
 
-- [ ] Basic UI layout
-- [ ] Canvas manipulation
+- [x] Basic UI layout
+- [x] Canvas manipulation
 - [ ] Canvas layers
-- [ ] Drawing tools: brush, pencil
+- [x] Drawing tools: brush, pencil
 - [ ] Undo/Redo functionality
-- [ ] Command palette
-- [ ] State preservation
+- [x] Command palette
+- [x] State preservation
 - [ ] Custom 'Project' file format
 - [ ] Saving and loading projects
 - [ ] Area selection
