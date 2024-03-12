@@ -2,6 +2,7 @@ import { command as saveCurrentWorkspaceAsFile } from "./saveCurrentWorkspaceAsF
 import { command as addNewActiveWorkspace } from "./addNewActiveWorkspace";
 import { command as openCommandPalette } from "./openCommandPalette";
 import { command as resetLayout } from "./resetLayout";
+import { command as closeActiveWorkspace } from "./closeActiveWorkspace";
 import { createContext } from "./context";
 
 export const commands = [
@@ -9,6 +10,7 @@ export const commands = [
   addNewActiveWorkspace,
   openCommandPalette,
   resetLayout,
+  closeActiveWorkspace,
 ] as const;
 
 export const commandById = new Map(

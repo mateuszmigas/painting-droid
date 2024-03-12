@@ -47,14 +47,22 @@ export type IconType =
   | "copy"
   | "reset";
 
-export type IconSize = "small" | "small-medium" | "medium";
+export type IconSize = "small" | "small-medium" | "medium" | number;
 
 const renderLucideIcon = (
   icon: IconType,
   size: IconSize,
   className?: string
 ) => {
-  const fontSize = size === "medium" ? 24 : size === "small-medium" ? 20 : 16;
+  const fontSize =
+    typeof size === "number"
+      ? size
+      : size === "medium"
+      ? 24
+      : size === "small-medium"
+      ? 20
+      : 16;
+
   switch (icon) {
     case "pen":
       return <Pen className={className} size={fontSize} />;

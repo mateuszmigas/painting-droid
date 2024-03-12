@@ -2,6 +2,7 @@ import type { ImageCompressedData } from "@/utils/imageData";
 import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 export type WorkspaceId = string;
 export type LayerId = string;
@@ -73,6 +74,7 @@ const defaultState: AppWorkspacesState = {
 
 type AppWorkspacesSlice = AppWorkspacesState & {
   selectWorkspace: (workspaceId: WorkspaceId) => void;
+  closeWorkspace: (workspaceId: WorkspaceId) => void;
   setWorkspaceViewport: (viewport: Viewport) => void;
   addNewActiveWorkspace: () => void;
   pushLayerChange: (change: LayerChange) => void;
@@ -119,6 +121,21 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
 ) => ({
   ...defaultState,
   selectWorkspace: (id) => set({ selectedWorkspaceId: id }),
+  closeWorkspace: (id) =>
+    set((state) => {
+      if (state.workspaces.length === 1) {
+        return state;
+      }
+      const workspaces = state.workspaces.filter((w) => w.id !== id);
+      return {
+        ...state,
+        workspaces,
+        selectedWorkspaceId:
+          state.selectedWorkspaceId === id
+            ? workspaces[0].id
+            : state.selectedWorkspaceId,
+      };
+    }),
   setWorkspaceViewport: (viewport) =>
     set((state) =>
       mapSelectedWorkspace(state, (workspace) => ({
@@ -291,8 +308,22 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
 });
 
-export const useWorkspacesStore = create<AppWorkspacesSlice>(
-  workspacesStoreCreator
+export const useWorkspacesStore = create<AppWorkspacesSlice>()(
+  persist(workspacesStoreCreator, {
+    version: 1,
+    name: "workspaces",
+    storage: createJSONStorage(() => sessionStorage),
+    partialize: (state) => ({
+      ...state,
+      workspaces: state.workspaces.map((workspace) => ({
+        ...workspace,
+        canvasData: {
+          ...workspace.canvasData,
+          history: [],
+        },
+      })),
+    }),
+  })
 );
 
 export const selectedWorkspaceSelector = (state: AppWorkspacesState) => {
