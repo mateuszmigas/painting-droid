@@ -16,6 +16,7 @@ const LayerItem = (props: {
 }) => {
   const { layer, onClick } = props;
   const { showLayer, hideLayer } = useWorkspacesStore((state) => state);
+
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
@@ -33,7 +34,11 @@ const LayerItem = (props: {
         }
       />
 
-      <div className="min-w-16 min-h-12 border border-black bg-white" />
+      <div className="min-w-16 min-h-12 border box-content border-black alpha-background">
+        {layer.compressedData && (
+          <img width={64} src={layer.compressedData.data} alt={layer.name} />
+        )}
+      </div>
       <div className="truncate flex-1 ml-1">{layer.name}</div>
     </div>
   );
