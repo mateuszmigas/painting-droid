@@ -63,7 +63,7 @@ export const CanvasViewport = memo(
       toolSettings,
       (position) => screenToViewportPosition(position, viewport.getValue()),
       dispatcher,
-      contexts !== null
+      !!activeContext && contexts !== null
     );
 
     useViewportManipulator(

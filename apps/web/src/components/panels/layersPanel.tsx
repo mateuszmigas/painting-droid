@@ -7,6 +7,7 @@ import {
   activeWorkspaceCanvasDataSelector,
   type Layer,
 } from "@/store/workspacesStore";
+import { memo, useMemo } from "react";
 
 const LayerItem = (props: {
   layer: Layer;
@@ -38,7 +39,7 @@ const LayerItem = (props: {
   );
 };
 
-export const LayersPanel = () => {
+export const LayersPanel = memo(() => {
   const {
     addLayer,
     removeLayer,
@@ -51,6 +52,7 @@ export const LayersPanel = () => {
     activeWorkspaceCanvasDataSelector
   );
   const activeLayerId = layers[activeLayerIndex].id;
+  const reverseLayers = useMemo(() => [...layers].reverse(), [layers]);
 
   return (
     <div className="flex flex-col size-full">
@@ -83,7 +85,7 @@ export const LayersPanel = () => {
         />
       </div>
       <div className="flex flex-col gap-small overflow-auto p-small">
-        {layers.map((layer) => (
+        {reverseLayers.map((layer) => (
           <LayerItem
             key={layer.id}
             layer={layer}
@@ -94,4 +96,4 @@ export const LayersPanel = () => {
       </div>
     </div>
   );
-};
+});

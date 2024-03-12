@@ -186,6 +186,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
               name: `Layer ${canvasData.layers.length + 1}`,
             },
           ],
+          activeLayerIndex: canvasData.layers.length,
         };
       })
     );
@@ -210,8 +211,27 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       })
     );
   },
-  duplicateLayer: (_layerId: LayerId) => {
-    return set((state) => state);
+  duplicateLayer: (layerId: LayerId) => {
+    return set((state) =>
+      mapCanvasData(state, (canvasData) => {
+        const index = canvasData.layers.findIndex(
+          (layer) => layer.id === layerId
+        );
+        return {
+          ...canvasData,
+          layers: [
+            ...canvasData.layers.slice(0, index + 1),
+            {
+              ...canvasData.layers[index],
+              id: uuid(),
+              name: `${canvasData.layers[index].name} copy`,
+            },
+            ...canvasData.layers.slice(index + 1),
+          ],
+          activeLayerIndex: index + 1,
+        };
+      })
+    );
   },
   moveLayerUp: (_layerId: LayerId) => {
     return set((state) => state);
