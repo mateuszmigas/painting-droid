@@ -4,61 +4,72 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { SelectToolPanel } from "../panels/selectToolPanel";
-import { ColorsPanel } from "../panels/colorsPanel";
 import { LayersPanel } from "../panels/layersPanel";
 import { HistoryPanel } from "../panels/historyPanel";
 import { MetadataPanel } from "../panels/metadataPanel";
 import { WorkspaceViewport } from "../workspaceViewport";
 import { ToolSettingsBar } from "../toolSettingsBar";
-
-const LeftContent = () => {
-  return (
-    <ResizablePanelGroup direction="vertical">
-      <ResizablePanel>
-        <SelectToolPanel />
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={30}>
-        <ColorsPanel />
-      </ResizablePanel>
-    </ResizablePanelGroup>
-  );
-};
-
-const RightContent = () => {
-  return (
-    <ResizablePanelGroup direction="vertical">
-      <ResizablePanel>
-        <LayersPanel />
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={30}>
-        <HistoryPanel />
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={15}>
-        <MetadataPanel />
-      </ResizablePanel>
-    </ResizablePanelGroup>
-  );
-};
+import { CollapsibleSidePanel } from "./collapsibleSidePanel";
+import { useLayoutStore } from "@/store";
+import { ColorsPanel } from "../panels/colorsPanel";
+import type { AppColumnNames, AppPanelNames } from "@/store/layoutStore";
+import { translations } from "@/translations";
 
 export const AppContent = () => {
+  const { panels, columns, setPanelSize, setColumnSize } = useLayoutStore(
+    (state) => state
+  );
+
+  const createPanelProps = (name: AppPanelNames) => {
+    return {
+      title: translations.panels[name].title,
+      size: panels[name].size,
+      onResize: (size: number) => setPanelSize(name, size),
+    };
+  };
+
+  const createColumnProps = (name: AppColumnNames) => {
+    return {
+      defaultSize: columns[name].size,
+      onResize: (size: number) => setColumnSize(name, size),
+    };
+  };
+
   return (
     <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel defaultSize={20}>
-        <LeftContent />
+      <ResizablePanel {...createColumnProps("left")}>
+        <ResizablePanelGroup direction="vertical">
+          <CollapsibleSidePanel {...createPanelProps("tools")}>
+            <SelectToolPanel />
+          </CollapsibleSidePanel>
+          <ResizableHandle />
+          <CollapsibleSidePanel {...createPanelProps("colors")}>
+            <ColorsPanel />
+          </CollapsibleSidePanel>
+        </ResizablePanelGroup>
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel>
+      <ResizablePanel {...createColumnProps("middle")}>
         <>
           <ToolSettingsBar />
           <WorkspaceViewport />
         </>
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel defaultSize={20}>
-        <RightContent />
+      <ResizablePanel {...createColumnProps("right")}>
+        <ResizablePanelGroup direction="vertical">
+          <CollapsibleSidePanel {...createPanelProps("layers")}>
+            <LayersPanel />
+          </CollapsibleSidePanel>
+          <ResizableHandle />
+          <CollapsibleSidePanel {...createPanelProps("history")}>
+            <HistoryPanel />
+          </CollapsibleSidePanel>
+          <ResizableHandle />
+          <CollapsibleSidePanel {...createPanelProps("metadata")}>
+            <MetadataPanel />
+          </CollapsibleSidePanel>
+        </ResizablePanelGroup>
       </ResizablePanel>
     </ResizablePanelGroup>
   );

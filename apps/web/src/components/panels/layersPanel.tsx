@@ -1,5 +1,3 @@
-import { translations } from "@/translations";
-import { PanelHeader } from "./panelHeader";
 import { IconButton } from "../iconButton";
 import { cn } from "@/utils/css";
 import { useWorkspacesStore } from "@/store";
@@ -62,7 +60,6 @@ export const LayersPanel = memo(() => {
 
   return (
     <div className="flex flex-col size-full">
-      <PanelHeader title={translations.layers} />
       <div className="flex flex-row gap-small p-small mt-small items-center justify-between">
         <div className="flex flex-row gap-small items-center">
           <IconButton type="plus" size="small" onClick={() => addLayer()} />
