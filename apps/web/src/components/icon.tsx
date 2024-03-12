@@ -22,6 +22,7 @@ import {
   ArrowUpToLine,
   ArrowDownToLine,
   Copy,
+  RotateCcw,
 } from "lucide-react";
 
 export type IconType =
@@ -43,7 +44,8 @@ export type IconType =
   | "arrow-down"
   | "arrow-up-to-line"
   | "arrow-down-to-line"
-  | "copy";
+  | "copy"
+  | "reset";
 
 export type IconSize = "small" | "small-medium" | "medium";
 
@@ -92,6 +94,8 @@ const renderLucideIcon = (
       return <ArrowDownToLine className={className} size={fontSize} />;
     case "copy":
       return <Copy className={className} size={fontSize} />;
+    case "reset":
+      return <RotateCcw className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

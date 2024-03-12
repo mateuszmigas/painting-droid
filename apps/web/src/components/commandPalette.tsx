@@ -21,7 +21,7 @@ export const CommandPalette = memo(() => {
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       //todo: configurable keybinding
-      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         toggleIsOpen();
       }
@@ -59,4 +59,3 @@ export const CommandPalette = memo(() => {
     </CommandDialog>
   );
 });
-

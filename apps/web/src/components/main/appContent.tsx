@@ -1,6 +1,5 @@
 import {
   ResizableHandle,
-  ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { SelectToolPanel } from "../panels/selectToolPanel";
@@ -9,11 +8,12 @@ import { HistoryPanel } from "../panels/historyPanel";
 import { MetadataPanel } from "../panels/metadataPanel";
 import { WorkspaceViewport } from "../workspaceViewport";
 import { ToolSettingsBar } from "../toolSettingsBar";
-import { CollapsibleSidePanel } from "./collapsibleSidePanel";
+import { AppEdgePanel } from "./appEdgePanel";
 import { useLayoutStore } from "@/store";
 import { ColorsPanel } from "../panels/colorsPanel";
 import type { AppColumnNames, AppPanelNames } from "@/store/layoutStore";
 import { translations } from "@/translations";
+import { AppColumn } from "./appColumn";
 
 export const AppContent = () => {
   const { panels, columns, setPanelSize, setColumnSize } = useLayoutStore(
@@ -30,47 +30,47 @@ export const AppContent = () => {
 
   const createColumnProps = (name: AppColumnNames) => {
     return {
-      defaultSize: columns[name].size,
+      size: columns[name].size,
       onResize: (size: number) => setColumnSize(name, size),
     };
   };
 
   return (
     <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel {...createColumnProps("left")}>
+      <AppColumn {...createColumnProps("left")}>
         <ResizablePanelGroup direction="vertical">
-          <CollapsibleSidePanel {...createPanelProps("tools")}>
+          <AppEdgePanel {...createPanelProps("tools")}>
             <SelectToolPanel />
-          </CollapsibleSidePanel>
+          </AppEdgePanel>
           <ResizableHandle />
-          <CollapsibleSidePanel {...createPanelProps("colors")}>
+          <AppEdgePanel {...createPanelProps("colors")}>
             <ColorsPanel />
-          </CollapsibleSidePanel>
+          </AppEdgePanel>
         </ResizablePanelGroup>
-      </ResizablePanel>
+      </AppColumn>
       <ResizableHandle />
-      <ResizablePanel {...createColumnProps("middle")}>
+      <AppColumn {...createColumnProps("middle")}>
         <>
           <ToolSettingsBar />
           <WorkspaceViewport />
         </>
-      </ResizablePanel>
+      </AppColumn>
       <ResizableHandle />
-      <ResizablePanel {...createColumnProps("right")}>
+      <AppColumn {...createColumnProps("right")}>
         <ResizablePanelGroup direction="vertical">
-          <CollapsibleSidePanel {...createPanelProps("layers")}>
+          <AppEdgePanel {...createPanelProps("layers")}>
             <LayersPanel />
-          </CollapsibleSidePanel>
+          </AppEdgePanel>
           <ResizableHandle />
-          <CollapsibleSidePanel {...createPanelProps("history")}>
+          <AppEdgePanel {...createPanelProps("history")}>
             <HistoryPanel />
-          </CollapsibleSidePanel>
+          </AppEdgePanel>
           <ResizableHandle />
-          <CollapsibleSidePanel {...createPanelProps("metadata")}>
+          <AppEdgePanel {...createPanelProps("metadata")}>
             <MetadataPanel />
-          </CollapsibleSidePanel>
+          </AppEdgePanel>
         </ResizablePanelGroup>
-      </ResizablePanel>
+      </AppColumn>
     </ResizablePanelGroup>
   );
 };

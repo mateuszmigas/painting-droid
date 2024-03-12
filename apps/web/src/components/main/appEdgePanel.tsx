@@ -1,8 +1,9 @@
 import { ResizablePanel } from "@/components/ui/resizable";
-import { memo } from "react";
+import { memo, useEffect, useRef } from "react";
 import { PanelHeader } from "../panels/panelHeader";
+import type { ImperativePanelHandle } from "react-resizable-panels";
 
-export const CollapsibleSidePanel = memo(
+export const AppEdgePanel = memo(
   (props: {
     title: string;
     size: number;
@@ -10,11 +11,16 @@ export const CollapsibleSidePanel = memo(
     children: React.ReactNode;
   }) => {
     const { title, size, onResize, children } = props;
+    const ref = useRef<ImperativePanelHandle>(null);
+
+    useEffect(() => {
+      ref.current?.resize(size);
+    }, [size]);
 
     return (
       <>
         <PanelHeader title={title} />
-        <ResizablePanel defaultSize={size} onResize={onResize}>
+        <ResizablePanel ref={ref} defaultSize={size} onResize={onResize}>
           {children}
         </ResizablePanel>
       </>

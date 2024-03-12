@@ -7,8 +7,9 @@ export const command = createCommand({
   name: "Open Command Palette",
   icon: "command",
   options: { showInPalette: false },
-  defaultKeyGesture: createKeyGesture({ key: "J", meta: true }),
+  defaultKeyGesture: createKeyGesture({ key: "K", meta: true }),
   execute: async (context: CommandContext) => {
     context.stores.commandPalette().setIsOpen(true);
   },
 });
+

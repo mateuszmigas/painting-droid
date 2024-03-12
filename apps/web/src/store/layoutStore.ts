@@ -38,6 +38,7 @@ const defaultState: AppLayoutState = {
 type AppLayoutSlice = AppLayoutState & {
   setPanelSize: (name: AppPanelNames, size: number) => void;
   setColumnSize: (column: AppColumnNames, size: number) => void;
+  resetLayout: () => void;
 };
 
 export const settingsStoreCreator: StateCreator<AppLayoutSlice> = (set) => ({
@@ -57,6 +58,9 @@ export const settingsStoreCreator: StateCreator<AppLayoutSlice> = (set) => ({
         [column]: { size },
       },
     }));
+  },
+  resetLayout: () => {
+    set(defaultState);
   },
 });
 
