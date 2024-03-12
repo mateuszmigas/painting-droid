@@ -29,9 +29,10 @@ const LayerItem = (props: {
       <IconButton
         type={layer.visible ? "visible" : "hidden"}
         size="small"
-        onClick={() =>
-          layer.visible ? hideLayer(layer.id) : showLayer(layer.id)
-        }
+        onClick={(e) => {
+          e.stopPropagation();
+          layer.visible ? hideLayer(layer.id) : showLayer(layer.id);
+        }}
       />
 
       <div className="min-w-16 min-h-12 border box-content border-black alpha-background">
