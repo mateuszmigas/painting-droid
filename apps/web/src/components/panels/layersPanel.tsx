@@ -88,14 +88,23 @@ export const LayersPanel = memo(() => {
           onClick={() => removeLayer(activeLayerId)}
         />
       </div>
-      <div className="flex flex-col gap-small overflow-auto p-small">
-        {reverseLayers.map((layer) => (
-          <LayerItem
+      <div className="flex flex-col gap-small overflow-auto m-small relative flex-1">
+        {reverseLayers.map((layer, index) => (
+          <div
+            className="absolute transition-transform duration-standard bg-background"
+            style={{
+              transform: `translateY(${index * 68}px)`,
+              zIndex: activeLayerId === layer.id ? 1 : 0,
+              width: "100%",
+            }}
             key={layer.id}
-            layer={layer}
-            selected={activeLayerId === layer.id}
-            onClick={() => selectLayer(layer.id)}
-          />
+          >
+            <LayerItem
+              layer={layer}
+              selected={activeLayerId === layer.id}
+              onClick={() => selectLayer(layer.id)}
+            />
+          </div>
         ))}
       </div>
     </div>

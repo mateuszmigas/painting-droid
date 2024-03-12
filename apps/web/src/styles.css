@@ -87,4 +87,7 @@
     border: 1px solid hsl(var(--input));
     @apply rounded-md;
   }
+  .itemsss {
+    transition: transform 0.3s ease-out;
+  }
 }

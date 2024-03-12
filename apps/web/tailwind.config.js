@@ -26,6 +26,9 @@ module.exports = {
       },
     },
     extend: {
+      transitionDuration: {
+        standard: '250ms',
+      },
       height: {
         'panel-header': '32px',
         'input-thin': '24px'
