@@ -61,7 +61,7 @@ export const LayersPanel = memo(() => {
 
   return (
     <div className="flex flex-col size-full">
-      <PanelHeader title={`${translations.layers} (work in progress!!!)`} />
+      <PanelHeader title={translations.layers} />
       <div className="flex flex-row gap-small p-small mt-small items-center justify-between">
         <div className="flex flex-row gap-small items-center">
           <IconButton type="plus" size="small" onClick={() => addLayer()} />
@@ -80,8 +80,6 @@ export const LayersPanel = memo(() => {
             size="small"
             onClick={() => moveLayerDown(activeLayerId)}
           />
-          <IconButton type="arrow-up-to-line" size="small" />
-          <IconButton type="arrow-down-to-line" size="small" />
         </div>
         <IconButton
           type="x"

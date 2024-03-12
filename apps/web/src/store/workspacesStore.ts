@@ -233,11 +233,41 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       })
     );
   },
-  moveLayerUp: (_layerId: LayerId) => {
-    return set((state) => state);
+  moveLayerUp: (layerId: LayerId) => {
+    return set((state) =>
+      mapCanvasData(state, (canvasData) => {
+        const currentIndex = canvasData.layers.findIndex(
+          (layer) => layer.id === layerId
+        );
+        const targetIndex = currentIndex + 1;
+        if (currentIndex === canvasData.layers.length - 1) {
+          return canvasData;
+        }
+        const layers = [...canvasData.layers];
+        const layer = layers[currentIndex];
+        layers[currentIndex] = layers[targetIndex];
+        layers[targetIndex] = layer;
+        return { ...canvasData, layers, activeLayerIndex: targetIndex };
+      })
+    );
   },
-  moveLayerDown: (_layerId: LayerId) => {
-    return set((state) => state);
+  moveLayerDown: (layerId: LayerId) => {
+    return set((state) =>
+      mapCanvasData(state, (canvasData) => {
+        const currentIndex = canvasData.layers.findIndex(
+          (layer) => layer.id === layerId
+        );
+        const targetIndex = currentIndex - 1;
+        if (currentIndex === 0) {
+          return canvasData;
+        }
+        const layers = [...canvasData.layers];
+        const layer = layers[currentIndex];
+        layers[currentIndex] = layers[targetIndex];
+        layers[targetIndex] = layer;
+        return { ...canvasData, layers, activeLayerIndex: targetIndex };
+      })
+    );
   },
   showLayer: (layerId: LayerId) => {
     return set((state) =>
