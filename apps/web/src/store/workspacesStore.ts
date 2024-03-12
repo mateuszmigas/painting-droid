@@ -1,3 +1,4 @@
+import type { ImageCompressedData } from "@/utils/imageData";
 import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
@@ -10,16 +11,34 @@ export type Layer = {
   name: string;
   visible: boolean;
   locked: boolean;
+  compressedData: ImageCompressedData | null;
+};
+
+export type LayerChange =
+  | {
+      type: "add";
+      id: LayerId;
+      name: string;
+      data: ImageCompressedData | null;
+    }
+  | {
+      type: "updateLayer";
+      id: LayerId;
+      data: ImageCompressedData;
+    };
+
+type CanvasData = {
+  activeLayerIndex: number;
+  layers: Layer[];
+  history: LayerChange[];
 };
 
 export type Workspace = {
   id: WorkspaceId;
   name: string;
   filePath: string | null;
-  isSaved: boolean;
-  selectedLayerId: string;
-  layers: Layer[];
   viewport: Viewport | null;
+  canvasData: CanvasData;
 };
 
 export type AppWorkspacesState = {
@@ -32,16 +51,19 @@ const defaultLayer: Layer = {
   name: "Background",
   visible: true,
   locked: false,
+  compressedData: null,
 };
 
 const defaultWorkspace: Workspace = {
   id: uuid(),
   name: "Untitled",
   filePath: null,
-  isSaved: false,
-  selectedLayerId: defaultLayer.id,
-  layers: [defaultLayer],
   viewport: null,
+  canvasData: {
+    activeLayerIndex: 0,
+    layers: [defaultLayer],
+    history: [],
+  },
 };
 
 const defaultState: AppWorkspacesState = {
@@ -53,19 +75,15 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   selectWorkspace: (workspaceId: WorkspaceId) => void;
   setWorkspaceViewport: (viewport: Viewport) => void;
   addNewActiveWorkspace: () => void;
+  pushLayerChange: (change: LayerChange) => void;
   selectLayer: (layerId: LayerId) => void;
   addLayer: () => void;
   removeLayer: (layerId: LayerId) => void;
   duplicateLayer: (layerId: LayerId) => void;
   moveLayerUp: (layerId: LayerId) => void;
   moveLayerDown: (layerId: LayerId) => void;
-  lockLayer: (layerId: LayerId) => void;
-  unlockLayer: (layerId: LayerId) => void;
   showLayer: (layerId: LayerId) => void;
   hideLayer: (layerId: LayerId) => void;
-
-  // mergeLayerUp: (workspaceId: string, layerId: string) => void;
-  // mergeLayerDown: (workspaceId: string, layerId: string) => void;
 };
 
 export const mapSelectedWorkspace = (
@@ -77,6 +95,21 @@ export const mapSelectedWorkspace = (
     ...state,
     workspaces: state.workspaces.map((workspace) =>
       workspace.id === selectedWorkspace ? map(workspace) : workspace
+    ),
+  };
+};
+
+export const mapCanvasData = (
+  state: AppWorkspacesState,
+  map: (canvasData: CanvasData) => CanvasData
+) => {
+  const selectedWorkspace = state.selectedWorkspaceId;
+  return {
+    ...state,
+    workspaces: state.workspaces.map((workspace) =>
+      workspace.id === selectedWorkspace
+        ? { ...workspace, canvasData: map(workspace.canvasData) }
+        : workspace
     ),
   };
 };
@@ -108,140 +141,102 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       selectedWorkspaceId: newId,
     }));
   },
+  pushLayerChange: (change) => {
+    return set((state) =>
+      mapCanvasData(state, (canvasData) => {
+        return {
+          ...canvasData,
+          layers: canvasData.layers.map((layer) => {
+            if (layer.id === change.id) {
+              return {
+                ...layer,
+                compressedData: change.data,
+              };
+            }
+            return layer;
+          }),
+          history: [...canvasData.history, change],
+        };
+      })
+    );
+  },
   selectLayer: (layerId: LayerId) => {
     return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => ({
-        ...workspace,
-        selectedLayerId: layerId,
-      }))
+      mapCanvasData(state, (canvasData) => {
+        return {
+          ...canvasData,
+          activeLayerIndex: canvasData.layers.findIndex(
+            (layer) => layer.id === layerId
+          ),
+        };
+      })
     );
   },
   addLayer: () => {
     const newLayerId = uuid();
     return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => ({
-        ...workspace,
-        selectedLayerId: newLayerId,
-        layers: [
-          {
-            ...defaultLayer,
-            id: newLayerId,
-            name: `Layer ${workspace.layers.length + 1}`,
-          },
-          ...workspace.layers,
-        ],
-      }))
+      mapCanvasData(state, (canvasData) => {
+        return {
+          ...canvasData,
+          layers: [
+            ...canvasData.layers,
+            {
+              ...defaultLayer,
+              id: newLayerId,
+              name: `Layer ${canvasData.layers.length + 1}`,
+            },
+          ],
+        };
+      })
     );
   },
   removeLayer: (layerId: LayerId) => {
     return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => {
-        if (workspace.layers.length === 1) return workspace;
-        const newLayers = workspace.layers.filter(
-          (layer) => layer.id !== layerId
+      mapCanvasData(state, (canvasData) => {
+        if (canvasData.layers.length === 1) {
+          return canvasData;
+        }
+        const index = canvasData.layers.findIndex(
+          (layer) => layer.id === layerId
         );
         return {
-          ...workspace,
-          layers: newLayers,
-          selectedLayerId:
-            layerId === workspace.selectedLayerId
-              ? newLayers[0].id
-              : workspace.selectedLayerId,
+          ...canvasData,
+          layers: canvasData.layers.filter((layer) => layer.id !== layerId),
+          activeLayerIndex:
+            index === canvasData.activeLayerIndex
+              ? Math.max(index - 1, 0)
+              : canvasData.activeLayerIndex,
         };
       })
     );
   },
-  duplicateLayer: (layerId: LayerId) => {
-    const newLayerId = uuid();
-    return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => {
-        const index = workspace.layers.findIndex(
-          (layer) => layer.id === layerId
-        );
-        const newLayers = [...workspace.layers];
-        newLayers.splice(index + 1, 0, {
-          ...newLayers[index],
-          id: newLayerId,
-          name: `${newLayers[index].name} copy`,
-        });
-        return {
-          ...workspace,
-          layers: newLayers,
-          selectedLayerId: newLayerId,
-        };
-      })
-    );
+  duplicateLayer: (_layerId: LayerId) => {
+    return set((state) => state);
   },
-  moveLayerUp: (layerId: LayerId) => {
-    return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => {
-        const index = workspace.layers.findIndex(
-          (layer) => layer.id === layerId
-        );
-        if (index === 0) return workspace;
-        const newLayers = [...workspace.layers];
-        [newLayers[index], newLayers[index - 1]] = [
-          newLayers[index - 1],
-          newLayers[index],
-        ];
-        return { ...workspace, layers: newLayers };
-      })
-    );
+  moveLayerUp: (_layerId: LayerId) => {
+    return set((state) => state);
   },
-  moveLayerDown: (layerId: LayerId) => {
-    return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => {
-        const index = workspace.layers.findIndex(
-          (layer) => layer.id === layerId
-        );
-        if (index === workspace.layers.length - 1) return workspace;
-        const newLayers = [...workspace.layers];
-        [newLayers[index], newLayers[index + 1]] = [
-          newLayers[index + 1],
-          newLayers[index],
-        ];
-        return { ...workspace, layers: newLayers };
-      })
-    );
-  },
-  lockLayer: (layerId: LayerId) => {
-    return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => {
-        const newLayers = workspace.layers.map((layer) =>
-          layer.id === layerId ? { ...layer, locked: true } : layer
-        );
-        return { ...workspace, layers: newLayers };
-      })
-    );
-  },
-  unlockLayer: (layerId: LayerId) => {
-    return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => {
-        const newLayers = workspace.layers.map((layer) =>
-          layer.id === layerId ? { ...layer, locked: false } : layer
-        );
-        return { ...workspace, layers: newLayers };
-      })
-    );
+  moveLayerDown: (_layerId: LayerId) => {
+    return set((state) => state);
   },
   showLayer: (layerId: LayerId) => {
     return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => {
-        const newLayers = workspace.layers.map((layer) =>
+      mapCanvasData(state, (canvasData) => ({
+        ...canvasData,
+        layers: canvasData.layers.map((layer) =>
           layer.id === layerId ? { ...layer, visible: true } : layer
-        );
-        return { ...workspace, layers: newLayers };
-      })
+        ),
+      }))
     );
   },
   hideLayer: (layerId: LayerId) => {
     return set((state) =>
-      mapSelectedWorkspace(state, (workspace) => {
-        const newLayers = workspace.layers.map((layer) =>
+      mapCanvasData(state, (canvasData) => ({
+        ...canvasData,
+        layers: canvasData.layers.map((layer) =>
           layer.id === layerId ? { ...layer, visible: false } : layer
-        );
-        return { ...workspace, layers: newLayers };
-      })
+        ),
+      }))
     );
   },
 });
@@ -254,3 +249,9 @@ export const selectedWorkspaceSelector = (state: AppWorkspacesState) => {
   return state.workspaces.find((w) => w.id === state.selectedWorkspaceId)!;
 };
 
+export const activeWorkspaceCanvasDataSelector = (
+  state: AppWorkspacesState
+) => {
+  return state.workspaces.find((w) => w.id === state.selectedWorkspaceId)!
+    .canvasData;
+};

@@ -5,7 +5,7 @@ import type { DrawToolId } from "@/tools/draw-tools";
 import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
 import type { DrawTool } from "@/tools/draw-tools/drawTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
-import type { CanvasContextDispatcher } from "./useCanvasContextDispatcher";
+import type { ContextDispatcher } from "./useCanvasContextDispatcher";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -48,18 +48,17 @@ export const useDrawTool = (
   drawToolId: DrawToolId | null,
   drawToolSettings: Record<string, unknown>,
   transformToCanvasPosition: (position: Position) => Position,
-  dispatcher: CanvasContextDispatcher,
-  isRestored: boolean
+  dispatcher: ContextDispatcher,
+  isReady: boolean
 ) => {
   const toolRef = useRef<DrawTool | null>(null);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intended
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!elementRef.current || !isRestored || drawToolId === null) return;
+    if (!elementRef.current || !isReady || drawToolId === null) return;
 
     const element = elementRef.current;
-    const contextLock = dispatcher.requestContextLock();
-    toolRef.current = createTool(drawToolId, contextLock.getContext());
+    toolRef.current = createTool(drawToolId, dispatcher.getContext());
     toolRef.current.configure(drawToolSettings);
     const tool = toolRef.current;
     let ticksCount = 0;
@@ -92,11 +91,10 @@ export const useDrawTool = (
       event.preventDefault();
       event.stopPropagation();
       if (!isDrawing) return;
-      currentPointerPosition = getPointerPosition(event);
       stop();
       tool.reset();
       isDrawing = false;
-      contextLock.applyChanges();
+      dispatcher.applyChanges();
     };
     const pointerMoveHandler = (event: PointerEvent) => {
       event.preventDefault();
@@ -110,33 +108,26 @@ export const useDrawTool = (
         stop();
         tool.reset();
         isDrawing = false;
-        contextLock.rejectChanges();
+        dispatcher.rejectChanges();
       }
     };
 
     element.addEventListener("pointerdown", pointerDownHandler);
-    element.addEventListener("pointerup", pointerUpHandler);
     element.addEventListener("pointermove", pointerMoveHandler);
+    document.addEventListener("pointerup", pointerUpHandler);
     document.addEventListener("keydown", keyDownHandler);
 
     return () => {
       cancel();
       tool.reset();
       element.removeEventListener("pointerdown", pointerDownHandler);
-      element.removeEventListener("pointerup", pointerUpHandler);
       element.removeEventListener("pointermove", pointerMoveHandler);
+      document.removeEventListener("pointerup", pointerUpHandler);
       document.removeEventListener("keydown", keyDownHandler);
     };
-  }, [
-    drawToolId,
-    dispatcher,
-    elementRef,
-    transformToCanvasPosition,
-    isRestored,
-  ]);
+  }, [drawToolId, dispatcher, elementRef, transformToCanvasPosition, isReady]);
 
   useEffect(() => {
     toolRef.current?.configure(drawToolSettings);
   }, [drawToolSettings]);
 };
-

@@ -17,6 +17,10 @@ export type ImageUncompressedRegionRect = ImageUncompressedData & {
   y: number;
 };
 
+export const clearContext = (context: CanvasContext) => {
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+};
+
 export const createCompressedFromContext = (
   context: CanvasContext
 ): ImageCompressedData => {
@@ -25,21 +29,39 @@ export const createCompressedFromContext = (
   return { width, height, data };
 };
 
-export const restoreContextFromCompressed = (
-  compressed: ImageCompressedData,
-  context: CanvasContext
-) => {
-  return new Promise((resolve, reject) => {
-    const { width, height } = compressed;
+export const loadImageFromCompressed = (compressed: ImageCompressedData) => {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
     image.src = compressed.data;
     image.onload = () => {
-      context.clearRect(0, 0, width, height);
-      context.drawImage(image, 0, 0, width, height);
-      resolve(undefined);
+      resolve(image);
     };
     image.onerror = reject;
   });
+};
+
+export const mergeCompressedData = async (
+  compressedDataImages: ImageCompressedData[]
+) => {
+  const { width, height } = compressedDataImages[0];
+  const context = createCanvasContext(width, height);
+
+  for (const compressedData of compressedDataImages) {
+    const image = await loadImageFromCompressed(compressedData);
+    context.drawImage(image, 0, 0, width, height);
+  }
+
+  return createCompressedFromContext(context);
+};
+
+export const restoreContextFromCompressed = async (
+  compressed: ImageCompressedData,
+  context: CanvasContext
+) => {
+  const { width, height } = compressed;
+  const image = await loadImageFromCompressed(compressed);
+  context.clearRect(0, 0, width, height);
+  context.drawImage(image, 0, 0, width, height);
 };
 
 export const pickRectangleRegion = (
@@ -75,4 +97,10 @@ export const applyRegions = (
     }
   }
 };
-
+const createCanvasContext = (width: number, height: number) => {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d") as CanvasContext;
+  return context;
+};

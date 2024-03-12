@@ -1,4 +1,8 @@
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { SelectToolPanel } from "../panels/selectToolPanel";
 import { ColorsPanel } from "../panels/colorsPanel";
 import { LayersPanel } from "../panels/layersPanel";
@@ -28,11 +32,11 @@ const RightContent = () => {
         <LayersPanel />
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel>
+      <ResizablePanel defaultSize={30}>
         <HistoryPanel />
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel>
+      <ResizablePanel defaultSize={15}>
         <MetadataPanel />
       </ResizablePanel>
     </ResizablePanelGroup>
@@ -59,3 +63,4 @@ export const AppContent = () => {
     </ResizablePanelGroup>
   );
 };
+

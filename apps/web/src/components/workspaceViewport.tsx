@@ -9,7 +9,7 @@ import {
 import { deepEqual } from "@/utils/object";
 import type { Observable } from "@/utils/observable";
 import { useDebounceListener } from "@/hooks/useDebounceListener";
-import { CanvasHost } from "./canvasHost";
+import { CanvasViewport } from "./canvasViewport";
 
 //temp
 const size = {
@@ -63,7 +63,7 @@ export const WorkspaceViewport = memo(() => {
     >
       {observableViewport.getValue() !== null && (
         <>
-          <CanvasHost
+          <CanvasViewport
             key={selectedWorkspaceId}
             workspaceId={selectedWorkspaceId}
             viewport={observableViewport as Observable<Viewport>}

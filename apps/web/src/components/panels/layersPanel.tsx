@@ -3,7 +3,10 @@ import { PanelHeader } from "./panelHeader";
 import { IconButton } from "../iconButton";
 import { cn } from "@/utils/css";
 import { useWorkspacesStore } from "@/store";
-import type { Layer } from "@/store/workspacesStore";
+import {
+  activeWorkspaceCanvasDataSelector,
+  type Layer,
+} from "@/store/workspacesStore";
 
 const LayerItem = (props: {
   layer: Layer;
@@ -11,9 +14,7 @@ const LayerItem = (props: {
   onClick: () => void;
 }) => {
   const { layer, onClick } = props;
-  const { showLayer, hideLayer, lockLayer, unlockLayer } = useWorkspacesStore(
-    (state) => state
-  );
+  const { showLayer, hideLayer } = useWorkspacesStore((state) => state);
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
@@ -33,27 +34,12 @@ const LayerItem = (props: {
 
       <div className="min-w-16 min-h-12 border border-black bg-white" />
       <div className="truncate flex-1 ml-1">{layer.name}</div>
-      <div className="flex flex-col justify-between">
-        <IconButton
-          type={layer.locked ? "lock" : "unlock"}
-          size="small"
-          onClick={() =>
-            layer.locked ? unlockLayer(layer.id) : lockLayer(layer.id)
-          }
-        />
-        {/* <IconButton
-          type={layer.locked ? "lock" : "unlock"}
-          size="small"
-          onClick={() => console.log("eye clicked")}
-        /> */}
-      </div>
     </div>
   );
 };
 
 export const LayersPanel = () => {
   const {
-    selectedWorkspaceId,
     addLayer,
     removeLayer,
     duplicateLayer,
@@ -61,12 +47,10 @@ export const LayersPanel = () => {
     moveLayerUp,
     moveLayerDown,
   } = useWorkspacesStore((state) => state);
-  const { layers, selectedLayerId } = useWorkspacesStore(
-    (state) =>
-      state.workspaces.find(
-        (workspace) => workspace.id === selectedWorkspaceId
-      )!
+  const { layers, activeLayerIndex } = useWorkspacesStore(
+    activeWorkspaceCanvasDataSelector
   );
+  const activeLayerId = layers[activeLayerIndex].id;
 
   return (
     <div className="flex flex-col size-full">
@@ -77,17 +61,17 @@ export const LayersPanel = () => {
           <IconButton
             type="copy"
             size="small"
-            onClick={() => duplicateLayer(selectedLayerId)}
+            onClick={() => duplicateLayer(activeLayerId)}
           />
           <IconButton
             type="arrow-up"
             size="small"
-            onClick={() => moveLayerUp(selectedLayerId)}
+            onClick={() => moveLayerUp(activeLayerId)}
           />
           <IconButton
             type="arrow-down"
             size="small"
-            onClick={() => moveLayerDown(selectedLayerId)}
+            onClick={() => moveLayerDown(activeLayerId)}
           />
           <IconButton type="arrow-up-to-line" size="small" />
           <IconButton type="arrow-down-to-line" size="small" />
@@ -95,7 +79,7 @@ export const LayersPanel = () => {
         <IconButton
           type="x"
           size="small"
-          onClick={() => removeLayer(selectedLayerId)}
+          onClick={() => removeLayer(activeLayerId)}
         />
       </div>
       <div className="flex flex-col gap-small overflow-auto p-small">
@@ -103,7 +87,7 @@ export const LayersPanel = () => {
           <LayerItem
             key={layer.id}
             layer={layer}
-            selected={selectedLayerId === layer.id}
+            selected={activeLayerId === layer.id}
             onClick={() => selectLayer(layer.id)}
           />
         ))}
@@ -111,4 +95,3 @@ export const LayersPanel = () => {
     </div>
   );
 };
-
