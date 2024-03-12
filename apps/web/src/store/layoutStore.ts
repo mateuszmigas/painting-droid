@@ -68,7 +68,7 @@ export const useLayoutStore = create<AppLayoutSlice>()(
   persist(settingsStoreCreator, {
     version: 1,
     name: "layout",
-    storage: createJSONStorage(() => sessionStorage),
+    storage: createJSONStorage(() => localStorage),
   })
 );
 

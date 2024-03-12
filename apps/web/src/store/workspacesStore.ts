@@ -312,7 +312,7 @@ export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   persist(workspacesStoreCreator, {
     version: 1,
     name: "workspaces",
-    storage: createJSONStorage(() => sessionStorage),
+    storage: createJSONStorage(() => localStorage),
     partialize: (state) => ({
       ...state,
       workspaces: state.workspaces.map((workspace) => ({

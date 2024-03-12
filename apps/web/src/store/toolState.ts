@@ -14,7 +14,10 @@ const defaultState: AppToolState = {
 
 type AppToolSlice = AppToolState & {
   setSelectedToolId: (type: ToolId) => void;
-  updateToolSettings: (toolId: ToolId, settings: Record<string, unknown>) => void;
+  updateToolSettings: (
+    toolId: ToolId,
+    settings: Record<string, unknown>
+  ) => void;
 };
 
 export const settingsStoreCreator: StateCreator<AppToolSlice> = (set) => ({
@@ -33,6 +36,7 @@ export const useToolStore = create<AppToolSlice>()(
   persist(settingsStoreCreator, {
     version: 2,
     name: "tool",
-    storage: createJSONStorage(() => sessionStorage),
-  }),
+    storage: createJSONStorage(() => localStorage),
+  })
 );
+

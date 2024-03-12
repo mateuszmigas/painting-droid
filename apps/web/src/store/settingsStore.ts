@@ -28,6 +28,7 @@ export const useSettingsStore = create<AppSettingsSlice>()(
   persist(settingsStoreCreator, {
     version: 1,
     name: "settings",
-    storage: createJSONStorage(() => sessionStorage),
-  }),
+    storage: createJSONStorage(() => localStorage),
+  })
 );
+
