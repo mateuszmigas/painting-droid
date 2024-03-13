@@ -9,6 +9,7 @@ import { useMousePosition } from "@/hooks";
 import { memo, useRef } from "react";
 import { screenToViewportPosition } from "@/utils/manipulation";
 import { fastRound } from "@/utils/math";
+import { CommandIconButton } from "../commandIconButton";
 
 const formatPosition = (position: Position) =>
   `${fastRound(position.x)}, ${fastRound(position.y)}`;
@@ -42,15 +43,18 @@ export const AppStatusBar = memo(() => {
   });
 
   return (
-    <div className="px-2 h-[28px] border-t bg-secondary flex flex-row items-center gap-[20px]">
-      <div className="flex flex-row items-center gap-small">
-        <Icon type="square" size="small" />
-        <div className="text-xs">{formatSize(size)}</div>
+    <div className="px-2 h-[28px] border-t bg-secondary flex flex-row items-center justify-between">
+      <div className="flex flex-row items-center gap-[20px]">
+        <div className="flex flex-row items-center gap-small">
+          <Icon type="square" size="small" />
+          <div className="text-xs">{formatSize(size)}</div>
+        </div>
+        <div className="flex flex-row items-center gap-small">
+          <Icon type="mouse-pointer-square" size="small" />
+          <div ref={positionElementRef} className="text-xs" />
+        </div>
       </div>
-      <div className="flex flex-row items-center gap-small">
-        <Icon type="mouse-pointer-square" size="small" />
-        <div ref={positionElementRef} className="text-xs" />
-      </div>
+      <CommandIconButton commandId="fitCanvasToWindow" />
     </div>
   );
 });

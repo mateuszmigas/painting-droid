@@ -3,6 +3,7 @@ import { command as addNewActiveWorkspace } from "./addNewActiveWorkspace";
 import { command as openCommandPalette } from "./openCommandPalette";
 import { command as resetLayout } from "./resetLayout";
 import { command as closeActiveWorkspace } from "./closeActiveWorkspace";
+import { command as fitCanvasToWindow } from "./fitCanvasToWindow";
 import { createContext } from "./context";
 
 export const commands = [
@@ -11,6 +12,7 @@ export const commands = [
   openCommandPalette,
   resetLayout,
   closeActiveWorkspace,
+  fitCanvasToWindow,
 ] as const;
 
 export const commandById = new Map(

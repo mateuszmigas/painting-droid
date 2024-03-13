@@ -27,6 +27,7 @@ import {
   Bug,
   Square,
   MousePointerSquare,
+  Fullscreen,
 } from "lucide-react";
 
 export type IconType =
@@ -53,7 +54,8 @@ export type IconType =
   | "github"
   | "bug"
   | "square"
-  | "mouse-pointer-square";
+  | "mouse-pointer-square"
+  | "fullscreen";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -120,6 +122,8 @@ const renderLucideIcon = (
       return <Square className={className} size={fontSize} />;
     case "mouse-pointer-square":
       return <MousePointerSquare className={className} size={fontSize} />;
+    case "fullscreen":
+      return <Fullscreen className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
