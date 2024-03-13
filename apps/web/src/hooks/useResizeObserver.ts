@@ -1,15 +1,26 @@
-import type { Size } from "@/utils/common";
+import type { Rectangle } from "@/utils/common";
 import { type RefObject, useEffect } from "react";
 
-export const useResizeObserver = (ref: RefObject<HTMLElement>, onResize: (size: Size) => void) => {
+export const useResizeObserver = (
+  elementRefOrId: RefObject<HTMLElement> | string,
+  onResize: (rectangle: Rectangle) => void
+) => {
   useEffect(() => {
-    if (!ref.current) return;
+    const element =
+      typeof elementRefOrId === "string"
+        ? document.getElementById(elementRefOrId)
+        : elementRefOrId.current;
 
-    const element = ref.current;
+    if (!element) {
+      console.log("element not found");
+      return;
+    }
+
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
-        onResize({ width, height });
+        const { x, y } = element.getBoundingClientRect();
+        onResize({ x, y, width, height });
       }
     });
 
@@ -19,5 +30,6 @@ export const useResizeObserver = (ref: RefObject<HTMLElement>, onResize: (size: 
       observer.unobserve(element);
       observer.disconnect();
     };
-  }, [ref, onResize]);
+  }, [elementRefOrId, onResize]);
 };
+

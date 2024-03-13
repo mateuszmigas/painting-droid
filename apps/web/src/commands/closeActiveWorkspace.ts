@@ -9,7 +9,7 @@ export const command = createCommand({
   execute: async (context: CommandContext) => {
     context.stores
       .workspaces()
-      .closeWorkspace(context.stores.workspaces().selectedWorkspaceId);
+      .closeWorkspace(context.stores.workspaces().activeWorkspaceId);
   },
 });
 

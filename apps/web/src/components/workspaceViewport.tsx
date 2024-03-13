@@ -3,7 +3,7 @@ import { memo, useRef } from "react";
 import { useObservableWatcher, useAfterPaintEffect } from "@/hooks";
 import { Ruler } from "./Ruler";
 import {
-  selectedWorkspaceSelector,
+  activeWorkspaceSelector,
   useWorkspacesStore,
 } from "@/store/workspacesStore";
 import { deepEqual } from "@/utils/object";
@@ -13,17 +13,17 @@ import { CanvasViewport } from "./canvasViewport";
 
 export const WorkspaceViewport = memo(() => {
   const rootElementRef = useRef<HTMLDivElement>(null);
-  const selectedWorkspaceId = useWorkspacesStore(
-    (store) => store.selectedWorkspaceId
+  const activeWorkspaceId = useWorkspacesStore(
+    (store) => store.activeWorkspaceId
   );
   const setWorkspaceViewport = useWorkspacesStore(
     (store) => store.setWorkspaceViewport
   );
   const workspaceViewport = useWorkspacesStore(
-    (store) => selectedWorkspaceSelector(store).viewport
+    (store) => activeWorkspaceSelector(store).viewport
   );
   const workspaceSize = useWorkspacesStore(
-    (store) => selectedWorkspaceSelector(store).size
+    (store) => activeWorkspaceSelector(store).size
   );
   const observableViewport = useObservableWatcher<Viewport | null>(
     workspaceViewport,
@@ -51,26 +51,29 @@ export const WorkspaceViewport = memo(() => {
       margin
     );
     setWorkspaceViewport(viewport);
-  }, [selectedWorkspaceId]);
+  }, [activeWorkspaceId]);
 
   return (
-    <div
-      ref={rootElementRef}
-      className="relative size-full transition-opacity duration-1000"
-    >
-      {observableViewport.getValue() !== null && (
-        <>
-          <CanvasViewport
-            key={selectedWorkspaceId}
-            workspaceId={selectedWorkspaceId}
-            viewport={observableViewport as Observable<Viewport>}
-            size={workspaceSize}
-          />
-          <Ruler
-            observableViewport={observableViewport as Observable<Viewport>}
-          />
-        </>
-      )}
+    <div className="flex flex-col relative size-full">
+      <div
+        id="workspace-viewport"
+        ref={rootElementRef}
+        className="relative flex-1 min-h-0 transition-opacity duration-1000"
+      >
+        {observableViewport.getValue() !== null && (
+          <>
+            <CanvasViewport
+              key={activeWorkspaceId}
+              workspaceId={activeWorkspaceId}
+              viewport={observableViewport as Observable<Viewport>}
+              size={workspaceSize}
+            />
+            <Ruler
+              observableViewport={observableViewport as Observable<Viewport>}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 });

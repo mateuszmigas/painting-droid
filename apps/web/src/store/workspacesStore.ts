@@ -56,7 +56,7 @@ export type Workspace = {
 
 export type AppWorkspacesState = {
   workspaces: Workspace[];
-  selectedWorkspaceId: WorkspaceId;
+  activeWorkspaceId: WorkspaceId;
 };
 
 const defaultLayer: Layer = {
@@ -82,7 +82,7 @@ const defaultWorkspace: Workspace = {
 
 const defaultState: AppWorkspacesState = {
   workspaces: [defaultWorkspace],
-  selectedWorkspaceId: defaultWorkspace.id,
+  activeWorkspaceId: defaultWorkspace.id,
 };
 
 type AppWorkspacesSlice = AppWorkspacesState & {
@@ -101,15 +101,15 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   hideLayer: (layerId: LayerId) => void;
 };
 
-export const mapSelectedWorkspace = (
+export const mapActiveWorkspace = (
   state: AppWorkspacesState,
   map: (workspace: Workspace) => Workspace
 ) => {
-  const selectedWorkspace = state.selectedWorkspaceId;
+  const activeWorkspace = state.activeWorkspaceId;
   return {
     ...state,
     workspaces: state.workspaces.map((workspace) =>
-      workspace.id === selectedWorkspace ? map(workspace) : workspace
+      workspace.id === activeWorkspace ? map(workspace) : workspace
     ),
   };
 };
@@ -118,11 +118,11 @@ export const mapCanvasData = (
   state: AppWorkspacesState,
   map: (canvasData: CanvasData) => CanvasData
 ) => {
-  const selectedWorkspace = state.selectedWorkspaceId;
+  const activeWorkspace = state.activeWorkspaceId;
   return {
     ...state,
     workspaces: state.workspaces.map((workspace) =>
-      workspace.id === selectedWorkspace
+      workspace.id === activeWorkspace
         ? { ...workspace, canvasData: map(workspace.canvasData) }
         : workspace
     ),
@@ -133,7 +133,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   set
 ) => ({
   ...defaultState,
-  selectWorkspace: (id) => set({ selectedWorkspaceId: id }),
+  selectWorkspace: (id) => set({ activeWorkspaceId: id }),
   closeWorkspace: (id) =>
     set((state) => {
       if (state.workspaces.length === 1) {
@@ -143,15 +143,15 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       return {
         ...state,
         workspaces,
-        selectedWorkspaceId:
-          state.selectedWorkspaceId === id
+        activeWorkspaceId:
+          state.activeWorkspaceId === id
             ? workspaces[0].id
-            : state.selectedWorkspaceId,
+            : state.activeWorkspaceId,
       };
     }),
   setWorkspaceViewport: (viewport) =>
     set((state) =>
-      mapSelectedWorkspace(state, (workspace) => ({
+      mapActiveWorkspace(state, (workspace) => ({
         ...workspace,
         viewport,
       }))
@@ -168,7 +168,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
           name: `Untitled ${state.workspaces.length + 1}`,
         },
       ],
-      selectedWorkspaceId: newId,
+      activeWorkspaceId: newId,
     }));
   },
   pushLayerChange: (change) => {
@@ -333,7 +333,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   persist(workspacesStoreCreator, {
-    version: 2,
+    version: 3,
     name: "workspaces",
     storage: createJSONStorage(() => localStorage),
     partialize: (state) => ({
@@ -349,13 +349,13 @@ export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   })
 );
 
-export const selectedWorkspaceSelector = (state: AppWorkspacesState) => {
-  return state.workspaces.find((w) => w.id === state.selectedWorkspaceId)!;
+export const activeWorkspaceSelector = (state: AppWorkspacesState) => {
+  return state.workspaces.find((w) => w.id === state.activeWorkspaceId)!;
 };
 
 export const activeWorkspaceCanvasDataSelector = (
   state: AppWorkspacesState
 ) => {
-  return state.workspaces.find((w) => w.id === state.selectedWorkspaceId)!
+  return state.workspaces.find((w) => w.id === state.activeWorkspaceId)!
     .canvasData;
 };

@@ -25,6 +25,8 @@ import {
   RotateCcw,
   Github,
   Bug,
+  Square,
+  MousePointerSquare,
 } from "lucide-react";
 
 export type IconType =
@@ -49,7 +51,9 @@ export type IconType =
   | "copy"
   | "reset"
   | "github"
-  | "bug";
+  | "bug"
+  | "square"
+  | "mouse-pointer-square";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -112,6 +116,10 @@ const renderLucideIcon = (
       return <Github className={className} size={fontSize} />;
     case "bug":
       return <Bug className={className} size={fontSize} />;
+    case "square":
+      return <Square className={className} size={fontSize} />;
+    case "mouse-pointer-square":
+      return <MousePointerSquare className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

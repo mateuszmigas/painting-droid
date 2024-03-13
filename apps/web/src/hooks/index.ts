@@ -10,3 +10,4 @@ export { useListener } from "./useListener";
 export { useObservableWatcher } from "./useObservableWatcher";
 export { useSyncCanvasWithLayers } from "./useSyncCanvasWithLayers";
 export { useCanvasContextDispatcher } from "./useCanvasContextDispatcher";
+export { useMousePosition } from "./useMousePosition";

@@ -17,7 +17,7 @@ import { IconAnchor } from "../iconAnchor";
 export const AppHeaderBar = memo(() => {
   const {
     workspaces,
-    selectedWorkspaceId,
+    activeWorkspaceId,
     selectWorkspace,
     addNewActiveWorkspace,
     closeWorkspace,
@@ -27,7 +27,7 @@ export const AppHeaderBar = memo(() => {
       <MenuBar />
       <div className="flex-1 flex flex-row justify-center overflow-auto items-center gap-small">
         <ScrollArea className="whitespace-nowrap">
-          <Tabs value={selectedWorkspaceId} onValueChange={selectWorkspace}>
+          <Tabs value={activeWorkspaceId} onValueChange={selectWorkspace}>
             <TabsList className="bg-transparent p-0">
               {workspaces.map((tab) => (
                 <ContextMenu key={tab.id}>
