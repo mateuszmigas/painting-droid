@@ -20,8 +20,8 @@ const LayerItem = (props: {
     <div
       onClick={onClick}
       className={cn(
-        "border flex flex-row p-small gap-small items-center overflow-hidden min-h-16",
-        props.selected && "border-primary bg-primary/25"
+        "rounded-sm flex border-2 flex-row p-small gap-small items-center overflow-hidden min-h-16",
+        props.selected && "border-primary"
       )}
     >
       <IconButton
@@ -63,8 +63,8 @@ export const LayersPanel = memo(() => {
   const reverseLayers = useMemo(() => [...layers].reverse(), [layers]);
 
   return (
-    <div className="flex flex-col size-full">
-      <div className="flex flex-row gap-small p-small mt-small items-center justify-between">
+    <div className="flex flex-col size-full p-small gap-small">
+      <div className="flex flex-row gap-small items-center justify-between">
         <div className="flex flex-row gap-small items-center">
           <IconButton type="plus" size="small" onClick={() => addLayer()} />
           <IconButton
@@ -89,12 +89,12 @@ export const LayersPanel = memo(() => {
           onClick={() => removeLayer(activeLayerId)}
         />
       </div>
-      <div className="flex flex-col gap-small overflow-auto m-small relative flex-1">
+      <div className="flex flex-col gap-small overflow-auto relative flex-1">
         {reverseLayers.map((layer, index) => (
           <div
             className="absolute transition-transform duration-standard bg-background"
             style={{
-              transform: `translateY(${index * 68}px)`,
+              transform: `translateY(${index * (76 + 6)}px)`,
               zIndex: activeLayerId === layer.id ? 1 : 0,
               width: "100%",
             }}

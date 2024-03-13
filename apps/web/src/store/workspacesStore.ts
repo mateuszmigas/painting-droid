@@ -1,3 +1,4 @@
+import type { ToolId } from "@/tools";
 import type { Size } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
 import type { Viewport } from "@/utils/manipulation";
@@ -24,8 +25,17 @@ export type LayerChange =
       data: ImageCompressedData | null;
     }
   | {
-      type: "updateLayer";
+      type: "remove";
       id: LayerId;
+    }
+  | {
+      type: "duplicate";
+      id: LayerId;
+    }
+  | {
+      type: "draw";
+      id: LayerId;
+      tool: ToolId;
       data: ImageCompressedData;
     };
 
@@ -164,6 +174,9 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   pushLayerChange: (change) => {
     return set((state) =>
       mapCanvasData(state, (canvasData) => {
+        if (change.type !== "draw") {
+          throw new Error("Invalid layer change type");
+        }
         return {
           ...canvasData,
           layers: canvasData.layers.map((layer) => {
@@ -193,20 +206,21 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
     );
   },
   addLayer: () => {
-    const newLayerId = uuid();
     return set((state) =>
       mapCanvasData(state, (canvasData) => {
+        const layerId = uuid();
+        const layerName = `Layer ${canvasData.layers.length + 1}`;
         return {
           ...canvasData,
           layers: [
             ...canvasData.layers,
-            {
-              ...defaultLayer,
-              id: newLayerId,
-              name: `Layer ${canvasData.layers.length + 1}`,
-            },
+            { ...defaultLayer, id: layerId, name: layerName },
           ],
           activeLayerIndex: canvasData.layers.length,
+          history: [
+            ...canvasData.history,
+            { type: "add", id: layerId, name: layerName, data: null },
+          ],
         };
       })
     );
@@ -227,6 +241,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
             index === canvasData.activeLayerIndex
               ? Math.max(index - 1, 0)
               : canvasData.activeLayerIndex,
+          history: [...canvasData.history, { type: "remove", id: layerId }],
         };
       })
     );
@@ -234,6 +249,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   duplicateLayer: (layerId: LayerId) => {
     return set((state) =>
       mapCanvasData(state, (canvasData) => {
+        const newLayerId = uuid();
         const index = canvasData.layers.findIndex(
           (layer) => layer.id === layerId
         );
@@ -243,12 +259,16 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
             ...canvasData.layers.slice(0, index + 1),
             {
               ...canvasData.layers[index],
-              id: uuid(),
+              id: newLayerId,
               name: `${canvasData.layers[index].name} copy`,
             },
             ...canvasData.layers.slice(index + 1),
           ],
           activeLayerIndex: index + 1,
+          history: [
+            ...canvasData.history,
+            { type: "duplicate", id: layerId, newLayerId },
+          ],
         };
       })
     );

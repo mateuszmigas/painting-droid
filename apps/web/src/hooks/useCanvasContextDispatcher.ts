@@ -1,3 +1,4 @@
+import { useToolStore } from "./../store/toolState";
 import type { Layer, LayerChange } from "@/store/workspacesStore";
 import type { CanvasContext } from "@/utils/common";
 import {
@@ -35,8 +36,9 @@ export const useCanvasContextDispatcher = (
             : contextData;
 
         onLayerChangeStable({
-          type: "updateLayer",
+          type: "draw",
           id: activeLayer.id,
+          tool: useToolStore.getState().selectedToolId,
           data,
         });
       },
