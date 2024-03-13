@@ -14,11 +14,7 @@ import {
   type WorkspaceId,
 } from "@/store/workspacesStore";
 import { screenToViewportPosition, type Viewport } from "@/utils/manipulation";
-//temp
-const size = {
-  width: 800,
-  height: 600,
-};
+import type { Size } from "@/utils/common";
 
 const alphaGridCellSize = 20;
 const applyTransform = (viewport: Viewport, element: HTMLElement) => {
@@ -33,8 +29,12 @@ const applyTransform = (viewport: Viewport, element: HTMLElement) => {
 };
 
 export const CanvasViewport = memo(
-  (props: { workspaceId: WorkspaceId; viewport: Observable<Viewport> }) => {
-    const { viewport } = props;
+  (props: {
+    workspaceId: WorkspaceId;
+    viewport: Observable<Viewport>;
+    size: Size;
+  }) => {
+    const { viewport, size } = props;
     const hostElementRef = useRef<HTMLDivElement>(null);
     const canvasParentRef = useRef<HTMLDivElement>(null);
     const canvasElementsRef = useRef<HTMLCanvasElement[]>([]);

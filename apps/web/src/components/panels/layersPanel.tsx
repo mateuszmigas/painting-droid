@@ -33,9 +33,13 @@ const LayerItem = (props: {
         }}
       />
 
-      <div className="min-w-16 min-h-12 border box-content border-black alpha-background">
+      <div className="w-16 h-16 border box-content alpha-background">
         {layer.compressedData && (
-          <img width={64} src={layer.compressedData.data} alt={layer.name} />
+          <img
+            className="size-full object-contain"
+            src={layer.compressedData.data}
+            alt={layer.name}
+          />
         )}
       </div>
       <div className="truncate flex-1 ml-1">{layer.name}</div>

@@ -11,12 +11,6 @@ import type { Observable } from "@/utils/observable";
 import { useDebounceListener } from "@/hooks/useDebounceListener";
 import { CanvasViewport } from "./canvasViewport";
 
-//temp
-const size = {
-  width: 800,
-  height: 600,
-};
-
 export const WorkspaceViewport = memo(() => {
   const rootElementRef = useRef<HTMLDivElement>(null);
   const selectedWorkspaceId = useWorkspacesStore(
@@ -27,6 +21,9 @@ export const WorkspaceViewport = memo(() => {
   );
   const workspaceViewport = useWorkspacesStore(
     (store) => selectedWorkspaceSelector(store).viewport
+  );
+  const workspaceSize = useWorkspacesStore(
+    (store) => selectedWorkspaceSelector(store).size
   );
   const observableViewport = useObservableWatcher<Viewport | null>(
     workspaceViewport,
@@ -50,7 +47,7 @@ export const WorkspaceViewport = memo(() => {
     const margin = Math.min(width, height) * 0.1;
     const viewport = calculateFitViewport(
       { width, height },
-      { x: 0, y: 0, ...size },
+      { x: 0, y: 0, ...workspaceSize },
       margin
     );
     setWorkspaceViewport(viewport);
@@ -67,6 +64,7 @@ export const WorkspaceViewport = memo(() => {
             key={selectedWorkspaceId}
             workspaceId={selectedWorkspaceId}
             viewport={observableViewport as Observable<Viewport>}
+            size={workspaceSize}
           />
           <Ruler
             observableViewport={observableViewport as Observable<Viewport>}

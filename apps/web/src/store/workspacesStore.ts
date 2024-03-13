@@ -1,3 +1,4 @@
+import type { Size } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
 import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
@@ -38,6 +39,7 @@ export type Workspace = {
   id: WorkspaceId;
   name: string;
   filePath: string | null;
+  size: Size;
   viewport: Viewport | null;
   canvasData: CanvasData;
 };
@@ -59,6 +61,7 @@ const defaultWorkspace: Workspace = {
   id: uuid(),
   name: "Untitled",
   filePath: null,
+  size: { width: 800, height: 600 },
   viewport: null,
   canvasData: {
     activeLayerIndex: 0,
@@ -310,7 +313,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   persist(workspacesStoreCreator, {
-    version: 1,
+    version: 2,
     name: "workspaces",
     storage: createJSONStorage(() => localStorage),
     partialize: (state) => ({
