@@ -1,6 +1,11 @@
 import { downloadAsFile } from "@/utils/html";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
+import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
+import {
+  compressedDataToDataUrl,
+  mergeCompressedData,
+} from "@/utils/imageData";
 
 export const command = createCommand({
   id: "saveCurrentWorkspaceAsFile",
@@ -8,14 +13,23 @@ export const command = createCommand({
   icon: "save",
   options: { showInPalette: true },
   execute: async (
-    _: CommandContext,
+    context: CommandContext,
     payload: {
       format: "jpeg" | "png";
-    } = { format: "jpeg" },
+    } = { format: "jpeg" }
   ) => {
     const { format } = payload;
-    const canvas = document.querySelector("#canvas-renderer") as HTMLCanvasElement;
-    const data = canvas.toDataURL(`image/${format}`, 1.0);
+
+    const canvasData = activeWorkspaceCanvasDataSelector(
+      context.stores.workspaces()
+    );
+    const layersData = canvasData.layers
+      .filter((layer) => layer.compressedData)
+      .map((layer) => layer.compressedData!);
+
+    const mergedData = await mergeCompressedData(layersData);
+    const data = await compressedDataToDataUrl(mergedData, format);
     downloadAsFile(data, `picture.${format}`);
   },
 });
+
