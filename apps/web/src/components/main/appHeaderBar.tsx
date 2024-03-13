@@ -12,6 +12,7 @@ import {
   ContextMenuContent,
   ContextMenuItem,
 } from "../ui/context-menu";
+import { IconAnchor } from "../iconAnchor";
 
 export const AppHeaderBar = memo(() => {
   const {
@@ -56,6 +57,16 @@ export const AppHeaderBar = memo(() => {
         />
       </div>
       <div className="flex flex-row justify-center items-center pr-small gap-small">
+        <IconAnchor
+          type="bug"
+          size="small"
+          href="https://github.com/mateuszmigas/painting-droid/issues"
+        />
+        <IconAnchor
+          type="github"
+          size="small"
+          href="https://github.com/mateuszmigas/painting-droid"
+        />
         <CommandIconButton commandId="openCommandPalette" />
         <ModeToggle />
       </div>
