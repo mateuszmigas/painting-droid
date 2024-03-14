@@ -11,7 +11,7 @@ import { useStableCallback } from "@/hooks";
 import { commands, executeCommand } from "@/commands";
 import { Icon } from "./icon";
 
-export const CommandPalette = memo(() => {
+export const CommandPaletteHost = memo(() => {
   const { isOpen, setIsOpen } = useCommandPaletteStore((store) => store);
 
   const toggleIsOpen = useStableCallback(() => {

@@ -2,17 +2,18 @@ import { AppHeaderBar } from "@/components/main/appHeaderBar";
 import { AppStatusBar } from "@/components/main/appStatusBar";
 import { AppContent } from "@/components/main/appContent";
 import { useSyncTheme } from "./hooks/useSyncTheme";
-import { CommandPalette } from "./components/commandPalette";
+import { CommandPaletteHost } from "./components/commandPaletteHost";
+import { DialogHost } from "./components/dialogHost";
 
 export const App = () => {
   useSyncTheme();
   return (
     <div className="size-full flex flex-col select-none">
-      <CommandPalette />
+      <DialogHost />
+      <CommandPaletteHost />
       <AppHeaderBar />
       <AppContent />
       <AppStatusBar />
     </div>
   );
 };
-
