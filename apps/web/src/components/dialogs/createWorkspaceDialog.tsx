@@ -46,8 +46,8 @@ const sizes = [
     height: 1080,
   },
   {
-    key: "youtube-thumbnail",
-    name: "Youtube Thumbnail",
+    key: "youtube",
+    name: "Youtube",
     width: 1080,
     height: 720,
   },
