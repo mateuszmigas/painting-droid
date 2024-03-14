@@ -36,7 +36,12 @@ export const createProxyClient = <T extends {}>(initWorker: () => Worker) => {
   };
 
   const client = {
-    //add extra methods here
+    terminate: () => {
+      if (_worker) {
+        _worker.terminate();
+        _worker = null;
+      }
+    },
   };
   const handler: ProxyHandler<typeof client> = {
     get(_, prop) {
@@ -62,4 +67,3 @@ export const createProxyClient = <T extends {}>(initWorker: () => Worker) => {
 
   return new Proxy(client, handler) as ProxyClient<T> & typeof client;
 };
-
