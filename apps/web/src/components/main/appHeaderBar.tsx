@@ -13,15 +13,11 @@ import {
   ContextMenuItem,
 } from "../ui/context-menu";
 import { IconAnchor } from "../iconAnchor";
+import { executeCommand } from "@/commands";
 
 export const AppHeaderBar = memo(() => {
-  const {
-    workspaces,
-    activeWorkspaceId,
-    selectWorkspace,
-    addNewActiveWorkspace,
-    closeWorkspace,
-  } = useWorkspacesStore((state) => state);
+  const { workspaces, activeWorkspaceId, selectWorkspace, closeWorkspace } =
+    useWorkspacesStore((state) => state);
   return (
     <div className="border-b flex flex-row justify-between items-center px-small gap-big">
       <MenuBar />
@@ -53,7 +49,7 @@ export const AppHeaderBar = memo(() => {
         <IconButton
           type="plus"
           size="small-medium"
-          onClick={addNewActiveWorkspace}
+          onClick={() => executeCommand("createActiveWorkspace")}
         />
       </div>
       <div className="flex flex-row justify-center items-center pr-small gap-small">

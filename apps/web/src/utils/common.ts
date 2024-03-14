@@ -20,6 +20,51 @@ export const scaleRectangle = (
   height: rectangle.height * scale,
 });
 
+export const scaleRectangleToFitParent = (
+  rectangle: Rectangle,
+  parent: Size,
+  padding = 0
+) => {
+  const parentWithoutPadding = {
+    width: parent.width - 2 * padding,
+    height: parent.height - 2 * padding,
+  };
+  const rectangleRatio = rectangle.width / rectangle.height;
+  const parentRatio = parentWithoutPadding.width / parentWithoutPadding.height;
+  const alignHorizontally = rectangleRatio > parentRatio;
+  const newScale = alignHorizontally
+    ? parentWithoutPadding.width / rectangle.width
+    : parentWithoutPadding.width / (rectangle.height * parentRatio);
+  const scaledRectangle = scaleRectangle(rectangle, newScale);
+  const newPosition = alignHorizontally
+    ? {
+        x: -scaledRectangle.x,
+        y:
+          -scaledRectangle.y +
+          (parentWithoutPadding.height - scaledRectangle.height) / 2,
+      }
+    : {
+        x:
+          -scaledRectangle.x +
+          (parentWithoutPadding.width - scaledRectangle.width) / 2,
+        y: -scaledRectangle.y,
+      };
+
+  return {
+    x: newPosition.x + padding,
+    y: newPosition.y + padding,
+    scale: newScale,
+  };
+};
+
 export type Color = string;
 
 export type CanvasContext = CanvasRenderingContext2D;
+
+export const calculateScaleToFit = (child: Size, parent: Size) => {
+  const childRatio = child.width / child.height;
+  const parentRatio = parent.width / parent.height;
+  return childRatio > parentRatio
+    ? child.height / parent.height
+    : child.width / parent.width;
+};

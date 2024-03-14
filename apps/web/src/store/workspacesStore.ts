@@ -89,7 +89,7 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   selectWorkspace: (workspaceId: WorkspaceId) => void;
   closeWorkspace: (workspaceId: WorkspaceId) => void;
   setWorkspaceViewport: (viewport: Viewport) => void;
-  addNewActiveWorkspace: () => void;
+  addNewActiveWorkspace: (size: Size) => void;
   pushLayerChange: (change: LayerChange) => void;
   selectLayer: (layerId: LayerId) => void;
   addLayer: () => void;
@@ -156,7 +156,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
         viewport,
       }))
     ),
-  addNewActiveWorkspace: () => {
+  addNewActiveWorkspace: (size: Size) => {
     const newId = uuid();
     return set((state) => ({
       ...state,
@@ -166,6 +166,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
           ...defaultWorkspace,
           id: newId,
           name: `Untitled ${state.workspaces.length + 1}`,
+          size,
         },
       ],
       activeWorkspaceId: newId,

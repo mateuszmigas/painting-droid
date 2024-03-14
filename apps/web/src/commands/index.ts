@@ -1,5 +1,5 @@
 import { command as saveCurrentWorkspaceAsFile } from "./saveCurrentWorkspaceAsFile";
-import { command as addNewActiveWorkspace } from "./addNewActiveWorkspace";
+import { command as createActiveWorkspace } from "./createActiveWorkspace";
 import { command as openCommandPalette } from "./openCommandPalette";
 import { command as resetLayout } from "./resetLayout";
 import { command as closeActiveWorkspace } from "./closeActiveWorkspace";
@@ -8,7 +8,7 @@ import { createContext } from "./context";
 
 export const commands = [
   saveCurrentWorkspaceAsFile,
-  addNewActiveWorkspace,
+  createActiveWorkspace,
   openCommandPalette,
   resetLayout,
   closeActiveWorkspace,
