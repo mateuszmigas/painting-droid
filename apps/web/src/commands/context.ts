@@ -1,7 +1,8 @@
-import {
+import type { DialogService } from "@/components/dialogHost";
+import type {
+  useWorkspacesStore,
   useCommandPaletteStore,
   useLayoutStore,
-  useWorkspacesStore,
 } from "@/store";
 
 export type CommandContext = {
@@ -10,13 +11,5 @@ export type CommandContext = {
     commandPalette: () => ReturnType<typeof useCommandPaletteStore.getState>;
     layout: () => ReturnType<typeof useLayoutStore.getState>;
   };
-  // services
+  dialogService: DialogService;
 };
-
-export const createContext = (): CommandContext => ({
-  stores: {
-    workspaces: () => useWorkspacesStore.getState(),
-    commandPalette: () => useCommandPaletteStore.getState(),
-    layout: () => useLayoutStore.getState(),
-  },
-});

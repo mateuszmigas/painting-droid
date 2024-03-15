@@ -13,11 +13,13 @@ import {
   ContextMenuItem,
 } from "../ui/context-menu";
 import { IconAnchor } from "../iconAnchor";
-import { executeCommand } from "@/commands";
+import { useCommandService } from "@/contexts/commandService";
 
 export const AppHeaderBar = memo(() => {
   const { workspaces, activeWorkspaceId, selectWorkspace, closeWorkspace } =
     useWorkspacesStore((state) => state);
+  const { executeCommand } = useCommandService();
+
   return (
     <div className="border-b flex flex-row justify-between items-center px-small gap-big">
       <MenuBar />

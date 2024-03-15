@@ -4,7 +4,6 @@ import { command as openCommandPalette } from "./openCommandPalette";
 import { command as resetLayout } from "./resetLayout";
 import { command as closeActiveWorkspace } from "./closeActiveWorkspace";
 import { command as fitCanvasToWindow } from "./fitCanvasToWindow";
-import { createContext } from "./context";
 
 export const commands = [
   saveCurrentWorkspaceAsFile,
@@ -28,18 +27,8 @@ type MapToExecuteCommand<U> = U extends Command
     : [id: U["id"], params: Parameters<U["execute"]>[1]]
   : never;
 
-export const executeCommandWithDefaults = async (id: CommandId) =>
-  executeCommand(id as never);
-
-export const executeCommand = async (
+export type ExecuteCommand = (
   ...[id, params]: MapToExecuteCommand<Command>
-) => {
-  const context = createContext();
-  const command = commandById.get(id);
+) => Promise<void>;
 
-  if (!command) {
-    throw new Error(`Command not found: ${id}`);
-  }
-
-  return command.execute(context, params as never);
-};
+export type ExecuteCommandWithDefaults = (id: CommandId) => Promise<void>;
