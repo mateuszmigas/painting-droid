@@ -3,8 +3,8 @@ import { cn } from "@/utils/css";
 import { useWorkspacesStore } from "@/store";
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { memo, useMemo } from "react";
-import { canvasActionDispatcher } from "@/canvas/canvasActionDispatcher";
 import type { CanvasLayer } from "@/canvas/canvasState";
+import { useCanvasActionDispatcher } from "@/hooks";
 
 const LayerItem = (props: {
   layer: CanvasLayer;
@@ -51,6 +51,7 @@ export const LayersPanel = memo(() => {
     activeWorkspaceCanvasDataSelector
   );
   const activeLayerId = layers[activeLayerIndex].id;
+  const canvasActionDispatcher = useCanvasActionDispatcher();
   const reverseLayers = useMemo(() => [...layers].reverse(), [layers]);
 
   return (

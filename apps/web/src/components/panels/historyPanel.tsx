@@ -1,25 +1,23 @@
-import { canvasActionDispatcher } from "@/canvas/canvasActionDispatcher";
 import { IconButton } from "../iconButton";
-import { useEffect, useState } from "react";
+import { memo, useState } from "react";
 import type { IconType } from "../icon";
+import { useCanvasActionDispatcher, useListener } from "@/hooks";
 
-export const HistoryPanel = () => {
+export const HistoryPanel = memo(() => {
+  const canvasActionDispatcher = useCanvasActionDispatcher();
   const [actions, setActions] = useState<{ display: string; icon: IconType }[]>(
     []
   );
-  // const acti;
   const [cursor, setCursor] = useState(0);
-  useEffect(() => {
-    const unsubscribe = canvasActionDispatcher.subscribeToActionsChange(
-      (info) => {
-        setActions(info.actions);
-        setCursor(info.cursor);
-      }
-    );
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+
+  useListener(
+    canvasActionDispatcher.observableStackInfo,
+    (info) => {
+      setActions(info.actions);
+      setCursor(info.cursor);
+    },
+    { triggerOnMount: true }
+  );
 
   return (
     <div className="flex flex-col size-full p-small gap-small">
@@ -50,4 +48,4 @@ export const HistoryPanel = () => {
       </div>
     </div>
   );
-};
+});

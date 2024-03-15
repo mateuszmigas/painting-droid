@@ -11,7 +11,6 @@ import type { Observable } from "@/utils/observable";
 import {
   activeWorkspaceCanvasDataSelector,
   useWorkspacesStore,
-  type WorkspaceId,
 } from "@/store/workspacesStore";
 import { screenToViewportPosition, type Viewport } from "@/utils/manipulation";
 import type { Size } from "@/utils/common";
@@ -29,11 +28,7 @@ const applyTransform = (viewport: Viewport, element: HTMLElement) => {
 };
 
 export const CanvasViewport = memo(
-  (props: {
-    workspaceId: WorkspaceId;
-    viewport: Observable<Viewport>;
-    size: Size;
-  }) => {
+  (props: { viewport: Observable<Viewport>; size: Size }) => {
     const { viewport, size } = props;
     const hostElementRef = useRef<HTMLDivElement>(null);
     const canvasParentRef = useRef<HTMLDivElement>(null);

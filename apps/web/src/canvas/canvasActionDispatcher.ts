@@ -1,3 +1,4 @@
+import { Observable } from "@/utils/observable";
 import { canvasActions } from "./actions";
 import type { CanvasAction } from "./actions/action";
 import type { CanvasState2 } from "./canvasState";
@@ -11,13 +12,16 @@ type GetActionPayload<T extends ActionName> = Parameters<
   (typeof canvasActions)[T]
 >[1];
 
-type ActionChangedInfo = {
+type StackInfo = {
   actions: Pick<CanvasAction, "display" | "icon">[];
   cursor: number;
 };
 
 export class CanvasActionDispatcher {
-  private actionsStackListeners: ((info: ActionChangedInfo) => void)[] = [];
+  observableStackInfo = new Observable<StackInfo>({
+    actions: [],
+    cursor: 0,
+  });
   private actionsStack: Array<CanvasAction> = [];
   private actionsCursor = -1;
   private store: CanvasStore | undefined;
@@ -76,26 +80,14 @@ export class CanvasActionDispatcher {
     this.notifyListeners();
   }
 
-  public subscribeToActionsChange(callback: (info: ActionChangedInfo) => void) {
-    this.actionsStackListeners.push(callback);
-    return () => {
-      this.actionsStackListeners = this.actionsStackListeners.filter(
-        (listener) => listener !== callback
-      );
-    };
-  }
-
   private notifyListeners() {
-    const info: ActionChangedInfo = {
+    const info: StackInfo = {
       actions: this.actionsStack.map((action) => ({
         display: action.display,
         icon: action.icon,
       })),
       cursor: this.actionsCursor,
     };
-    this.actionsStackListeners.forEach((listener) => listener(info));
+    this.observableStackInfo.setValue(info);
   }
 }
-
-export const canvasActionDispatcher = new CanvasActionDispatcher();
-
