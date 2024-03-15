@@ -23,12 +23,12 @@ export const HistoryPanel = memo(() => {
     <div className="flex flex-col size-full p-small gap-small">
       <div className="flex flex-row gap-small items-center">
         <IconButton
-          type="plus"
+          type="undo"
           size="small"
           onClick={() => canvasActionDispatcher.undo()}
         />
         <IconButton
-          type="copy"
+          type="redo"
           size="small"
           onClick={() => canvasActionDispatcher.redo()}
         />
