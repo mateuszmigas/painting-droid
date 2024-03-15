@@ -12,7 +12,6 @@ export const useResizeObserver = (
         : elementRefOrId.current;
 
     if (!element) {
-      console.log("element not found");
       return;
     }
 

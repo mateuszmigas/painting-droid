@@ -22,6 +22,7 @@ export const createCanvasAction = (
     icon: "arrow-up",
     execute: async (state) => {
       const targetIndex = capturedData.currentIndex - 1;
+      if (targetIndex < 0) return state;
       const layers = [...state.layers];
       const layer = layers[capturedData.currentIndex];
       layers[capturedData.currentIndex] = layers[targetIndex];
@@ -30,6 +31,7 @@ export const createCanvasAction = (
     },
     undo: async (state) => {
       const targetIndex = capturedData.currentIndex + 1;
+      if (targetIndex >= state.layers.length) return state;
       const layers = [...state.layers];
       const layer = layers[capturedData.currentIndex];
       layers[capturedData.currentIndex] = layers[targetIndex];
@@ -38,4 +40,3 @@ export const createCanvasAction = (
     },
   };
 };
-

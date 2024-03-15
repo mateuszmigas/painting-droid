@@ -1,3 +1,4 @@
+import { PromiseQueue } from "./../utils/promise";
 import { Observable } from "@/utils/observable";
 import { canvasActions } from "./actions";
 import type { CanvasAction } from "./actions/action";
@@ -30,6 +31,7 @@ export class CanvasActionDispatcher {
   private actionsStack: Array<CanvasAction> = [initAction];
   private actionsCursor = 0;
   private store: CanvasStore | undefined;
+  private promiseQueue = new PromiseQueue();
 
   attachExternalStore(store: CanvasStore) {
     this.store = store;
@@ -44,13 +46,17 @@ export class CanvasActionDispatcher {
       getState: this.store.getState,
     };
 
+    const store = this.store;
     const action = canvasActions[name](context, payload as never);
-    const newState = await action.execute(this.store.getState());
-    this.store.setState(newState);
-    this.actionsCursor++;
-    this.actionsStack = this.actionsStack.slice(0, this.actionsCursor);
-    this.actionsStack.push(action);
-    this.notifyListeners();
+
+    this.promiseQueue.push(async () => {
+      const newState = await action.execute(store.getState());
+      store.setState(newState);
+      this.actionsCursor++;
+      this.actionsStack = this.actionsStack.slice(0, this.actionsCursor);
+      this.actionsStack.push(action);
+      this.notifyListeners();
+    });
   }
 
   async undo() {
@@ -62,11 +68,15 @@ export class CanvasActionDispatcher {
       return;
     }
 
+    const store = this.store;
     const action = this.actionsStack[this.actionsCursor];
-    const newState = await action.undo(this.store.getState());
-    this.store.setState(newState);
-    this.actionsCursor--;
-    this.notifyListeners();
+
+    this.promiseQueue.push(async () => {
+      const newState = await action.undo(store.getState());
+      store.setState(newState);
+      this.actionsCursor--;
+      this.notifyListeners();
+    });
   }
 
   async redo() {
@@ -78,11 +88,15 @@ export class CanvasActionDispatcher {
       return;
     }
 
-    this.actionsCursor++;
+    const store = this.store;
     const action = this.actionsStack[this.actionsCursor];
-    const newState = await action.execute(this.store.getState());
-    this.store.setState(newState);
-    this.notifyListeners();
+
+    this.promiseQueue.push(async () => {
+      this.actionsCursor++;
+      const newState = await action.execute(store.getState());
+      store.setState(newState);
+      this.notifyListeners();
+    });
   }
 
   private notifyListeners() {
