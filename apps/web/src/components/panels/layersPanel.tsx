@@ -47,6 +47,7 @@ const LayerItem = (props: {
 };
 
 export const LayersPanel = memo(() => {
+  console.log("LayersPanel");
   const { layers, activeLayerIndex } = useWorkspacesStore(
     activeWorkspaceCanvasDataSelector
   );
@@ -80,6 +81,7 @@ export const LayersPanel = memo(() => {
           /> */}
         </div>
         <IconButton
+          disabled={layers.length === 1}
           type="x"
           size="small"
           onClick={() =>

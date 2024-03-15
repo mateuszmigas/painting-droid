@@ -16,7 +16,7 @@ export const createCanvasAction = (
 
   return {
     display: "Select Layer",
-    icon: "plus",
+    icon: "mouse-pointer-square",
     execute: async (state) => {
       return {
         ...state,

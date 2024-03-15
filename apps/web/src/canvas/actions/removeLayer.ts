@@ -25,7 +25,7 @@ export const createCanvasAction = (
 
   return {
     display: "Remove Layer",
-    icon: "plus",
+    icon: "x",
     execute: async (canvas) => {
       return {
         ...canvas,

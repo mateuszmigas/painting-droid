@@ -17,13 +17,18 @@ type StackInfo = {
   cursor: number;
 };
 
+const initAction = {
+  display: "New Image",
+  icon: "file-plus",
+} as CanvasAction;
+
 export class CanvasActionDispatcher {
   observableStackInfo = new Observable<StackInfo>({
-    actions: [],
+    actions: [initAction],
     cursor: 0,
   });
-  private actionsStack: Array<CanvasAction> = [];
-  private actionsCursor = -1;
+  private actionsStack: Array<CanvasAction> = [initAction];
+  private actionsCursor = 0;
   private store: CanvasStore | undefined;
 
   attachExternalStore(store: CanvasStore) {
@@ -53,7 +58,7 @@ export class CanvasActionDispatcher {
       throw new Error("No store attached");
     }
 
-    if (this.actionsCursor === -1) {
+    if (this.actionsCursor === 0) {
       return;
     }
 

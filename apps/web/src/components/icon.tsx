@@ -30,6 +30,7 @@ import {
   Fullscreen,
   Undo,
   Redo,
+  FilePlus,
 } from "lucide-react";
 
 export type IconType =
@@ -59,7 +60,8 @@ export type IconType =
   | "mouse-pointer-square"
   | "fullscreen"
   | "undo"
-  | "redo";
+  | "redo"
+  | "file-plus";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -132,6 +134,8 @@ const renderLucideIcon = (
       return <Undo className={className} size={fontSize} />;
     case "redo":
       return <Redo className={className} size={fontSize} />;
+    case "file-plus":
+      return <FilePlus className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

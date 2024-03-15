@@ -23,11 +23,13 @@ export const HistoryPanel = memo(() => {
     <div className="flex flex-col size-full p-small gap-small">
       <div className="flex flex-row gap-small items-center">
         <IconButton
+          disabled={cursor === 0}
           type="undo"
           size="small"
           onClick={() => canvasActionDispatcher.undo()}
         />
         <IconButton
+          disabled={cursor === actions.length - 1}
           type="redo"
           size="small"
           onClick={() => canvasActionDispatcher.redo()}
@@ -36,12 +38,13 @@ export const HistoryPanel = memo(() => {
       <div className="flex-1 overflow-auto flex flex-col">
         {actions.map((action, index) => (
           <div
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+            // biome-ignore lint/suspicious/noArrayIndexKey: The index is the key
             key={index}
-            className={`flex flex-row gap-small items-center ${
-              index === cursor ? "bg-gray-200" : ""
+            className={`rounded-sm border-2 flex flex-row gap-small items-center ${
+              index === cursor ? "border-primary" : " border-transparent"
             } p-small`}
           >
+            <IconButton type={action.icon} size="small" />
             <div>{action.display}</div>
           </div>
         ))}
