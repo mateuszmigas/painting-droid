@@ -1,6 +1,6 @@
-import type { CanvasState2 } from "../canvasState";
+import type { CanvasState } from "../canvasState";
 
 export type CanvasActionContext = {
-  getState: () => CanvasState2;
+  getState: () => CanvasState;
 };
 

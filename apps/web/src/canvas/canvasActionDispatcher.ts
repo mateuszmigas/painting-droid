@@ -1,11 +1,11 @@
 import { Observable } from "@/utils/observable";
 import { canvasActions } from "./actions";
 import type { CanvasAction } from "./actions/action";
-import type { CanvasState2 } from "./canvasState";
+import type { CanvasState } from "./canvasState";
 
 type CanvasStore = {
-  getState: () => CanvasState2;
-  setState: (newState: CanvasState2) => void;
+  getState: () => CanvasState;
+  setState: (newState: CanvasState) => void;
 };
 type ActionName = keyof typeof canvasActions;
 type GetActionPayload<T extends ActionName> = Parameters<

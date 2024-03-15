@@ -11,7 +11,7 @@ export type CanvasLayer = {
   data: CanvasLayerData;
 };
 
-export type CanvasState2 = {
+export type CanvasState = {
   activeLayerIndex: number;
   layers: CanvasLayer[];
 };
@@ -24,7 +24,7 @@ export const defaultLayer: CanvasLayer = {
   data: null,
 };
 
-export const defaultCanvasState: CanvasState2 = {
+export const defaultCanvasState: CanvasState = {
   activeLayerIndex: 0,
   layers: [defaultLayer],
 };

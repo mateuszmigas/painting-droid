@@ -1,4 +1,4 @@
-import { defaultCanvasState, type CanvasState2 } from "@/canvas/canvasState";
+import { defaultCanvasState, type CanvasState } from "@/canvas/canvasState";
 import type { Size } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
@@ -12,7 +12,7 @@ export type Workspace = {
   filePath: string | null;
   size: Size;
   viewport: Viewport | null;
-  canvasData: CanvasState2;
+  canvasData: CanvasState;
 };
 
 export type AppWorkspacesState = {
@@ -39,7 +39,7 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   closeWorkspace: (workspaceId: WorkspaceId) => void;
   setWorkspaceViewport: (viewport: Viewport) => void;
   addNewActiveWorkspace: (size: Size) => void;
-  setCanvasData: (canvasData: CanvasState2) => void;
+  setCanvasData: (canvasData: CanvasState) => void;
 };
 
 export const mapActiveWorkspace = (
