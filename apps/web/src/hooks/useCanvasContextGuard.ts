@@ -1,5 +1,5 @@
-import { canvasActionDispatcher } from "./../canvas/canvasActionDispatcher";
-import type { CanvasLayer, CanvasLayerData } from "./../canvas/canvasState";
+import { canvasActionDispatcher } from "../canvas/canvasActionDispatcher";
+import type { CanvasLayer, CanvasLayerData } from "../canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import {
   clearContext,
@@ -9,17 +9,18 @@ import {
 } from "@/utils/imageData";
 import { useMemo } from "react";
 
-export type ContextDispatcher = {
+export type ContextGuard = {
   applyChanges: () => void;
   rejectChanges: () => void;
   getContext: () => CanvasContext;
 };
 
-export const useCanvasContextDispatcher = (
+export const useCanvasContextGuard = (
   activeContext: CanvasContext,
   activeLayer: CanvasLayer
 ) => {
-  const dispatcher = useMemo<ContextDispatcher>(() => {
+  //todo, lock mechanism
+  const contextGuard = useMemo<ContextGuard>(() => {
     return {
       applyChanges: async () => {
         const contextData = createCompressedFromContext(activeContext);
@@ -44,5 +45,5 @@ export const useCanvasContextDispatcher = (
     };
   }, [activeContext, activeLayer]);
 
-  return dispatcher;
+  return contextGuard;
 };

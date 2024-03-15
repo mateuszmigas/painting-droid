@@ -4,7 +4,7 @@ import {
   useListener,
   useDrawTool,
   useSyncCanvasWithLayers,
-  useCanvasContextDispatcher,
+  useCanvasContextGuard,
 } from "@/hooks";
 import { useToolStore } from "@/store/toolState";
 import type { Observable } from "@/utils/observable";
@@ -44,7 +44,7 @@ export const CanvasViewport = memo(
 
     const { contexts } = useSyncCanvasWithLayers(canvasElementsRef, layers);
     const activeContext = contexts?.[activeLayerIndex];
-    const dispatcher = useCanvasContextDispatcher(
+    const contextGuard = useCanvasContextGuard(
       activeContext!,
       layers[activeLayerIndex]
     );
@@ -56,7 +56,7 @@ export const CanvasViewport = memo(
       toolId,
       toolSettings,
       (position) => screenToViewportPosition(position, viewport.getValue()),
-      dispatcher,
+      contextGuard,
       !!activeContext && contexts !== null
     );
 

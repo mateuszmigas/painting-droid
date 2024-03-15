@@ -17,6 +17,15 @@ canvasActionDispatcher.attachExternalStore({
 
 export const App = () => {
   useSyncTheme();
+
+  //command palette form shortcut
+  //dialogService
+  //drawContext
+  //state
+
+  // useDialogService();
+  // use
+
   return (
     <div className="size-full flex flex-col select-none">
       <DialogHost />

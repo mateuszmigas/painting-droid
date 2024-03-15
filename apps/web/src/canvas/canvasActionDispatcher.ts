@@ -11,7 +11,13 @@ type GetActionPayload<T extends ActionName> = Parameters<
   (typeof canvasActions)[T]
 >[1];
 
+type ActionChangedInfo = {
+  actions: Pick<CanvasAction, "display" | "icon">[];
+  cursor: number;
+};
+
 export class CanvasActionDispatcher {
+  private actionsStackListeners: ((info: ActionChangedInfo) => void)[] = [];
   private actionsStack: Array<CanvasAction> = [];
   private actionsCursor = -1;
   private store: CanvasStore | undefined;
@@ -35,7 +41,7 @@ export class CanvasActionDispatcher {
     this.actionsCursor++;
     this.actionsStack = this.actionsStack.slice(0, this.actionsCursor);
     this.actionsStack.push(action);
-    this.notify();
+    this.notifyListeners();
   }
 
   async undo() {
@@ -51,7 +57,7 @@ export class CanvasActionDispatcher {
     const newState = await action.undo(this.store.getState());
     this.store.setState(newState);
     this.actionsCursor--;
-    this.notify();
+    this.notifyListeners();
   }
 
   async redo() {
@@ -67,14 +73,27 @@ export class CanvasActionDispatcher {
     const action = this.actionsStack[this.actionsCursor];
     const newState = await action.execute(this.store.getState());
     this.store.setState(newState);
-    this.notify();
+    this.notifyListeners();
   }
 
-  private notify() {
-    console.log({
-      actionsStack: this.actionsStack,
-      actionsCursor: this.actionsCursor,
-    });
+  public subscribeToActionsChange(callback: (info: ActionChangedInfo) => void) {
+    this.actionsStackListeners.push(callback);
+    return () => {
+      this.actionsStackListeners = this.actionsStackListeners.filter(
+        (listener) => listener !== callback
+      );
+    };
+  }
+
+  private notifyListeners() {
+    const info: ActionChangedInfo = {
+      actions: this.actionsStack.map((action) => ({
+        display: action.display,
+        icon: action.icon,
+      })),
+      cursor: this.actionsCursor,
+    };
+    this.actionsStackListeners.forEach((listener) => listener(info));
   }
 }
 

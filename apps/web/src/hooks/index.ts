@@ -1,6 +1,5 @@
 export { useDebounce } from "./useDebounce";
 export { useDrawTool } from "./useDrawTool";
-export { useCanvasRenderer } from "./useCanvasRenderer";
 export { useAfterPaintEffect } from "./useAfterPaintEffect";
 export { useViewportManipulator } from "./useViewportManipulator";
 export { useSyncTheme } from "./useSyncTheme";
@@ -9,5 +8,6 @@ export { useObservable } from "./useObservable";
 export { useListener } from "./useListener";
 export { useObservableWatcher } from "./useObservableWatcher";
 export { useSyncCanvasWithLayers } from "./useSyncCanvasWithLayers";
-export { useCanvasContextDispatcher } from "./useCanvasContextDispatcher";
+export { useCanvasContextGuard } from "./useCanvasContextGuard";
+export { useCanvasActionDispatcher } from "./useCanvasActionDispatcher";
 export { useMousePosition } from "./useMousePosition";

@@ -5,7 +5,7 @@ import type { DrawToolId } from "@/tools/draw-tools";
 import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
 import type { DrawTool } from "@/tools/draw-tools/drawTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
-import type { ContextDispatcher } from "./useCanvasContextDispatcher";
+import type { ContextGuard } from "./useCanvasContextGuard";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -48,7 +48,7 @@ export const useDrawTool = (
   drawToolId: DrawToolId | null,
   drawToolSettings: Record<string, unknown>,
   transformToCanvasPosition: (position: Position) => Position,
-  dispatcher: ContextDispatcher,
+  contextGuard: ContextGuard,
   isReady: boolean
 ) => {
   const toolRef = useRef<DrawTool | null>(null);
@@ -58,7 +58,7 @@ export const useDrawTool = (
     if (!elementRef.current || !isReady || drawToolId === null) return;
 
     const element = elementRef.current;
-    toolRef.current = createTool(drawToolId, dispatcher.getContext());
+    toolRef.current = createTool(drawToolId, contextGuard.getContext());
     toolRef.current.configure(drawToolSettings);
     const tool = toolRef.current;
     let ticksCount = 0;
@@ -94,7 +94,7 @@ export const useDrawTool = (
       stop();
       tool.reset();
       isDrawing = false;
-      dispatcher.applyChanges();
+      contextGuard.applyChanges();
     };
     const pointerMoveHandler = (event: PointerEvent) => {
       event.preventDefault();
@@ -108,7 +108,7 @@ export const useDrawTool = (
         stop();
         tool.reset();
         isDrawing = false;
-        dispatcher.rejectChanges();
+        contextGuard.rejectChanges();
       }
     };
 
@@ -125,7 +125,13 @@ export const useDrawTool = (
       document.removeEventListener("pointerup", pointerUpHandler);
       document.removeEventListener("keydown", keyDownHandler);
     };
-  }, [drawToolId, dispatcher, elementRef, transformToCanvasPosition, isReady]);
+  }, [
+    drawToolId,
+    contextGuard,
+    elementRef,
+    transformToCanvasPosition,
+    isReady,
+  ]);
 
   useEffect(() => {
     toolRef.current?.configure(drawToolSettings);

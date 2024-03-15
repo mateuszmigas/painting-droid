@@ -10,6 +10,7 @@ export type CommandContext = {
     commandPalette: () => ReturnType<typeof useCommandPaletteStore.getState>;
     layout: () => ReturnType<typeof useLayoutStore.getState>;
   };
+  // services
 };
 
 export const createContext = (): CommandContext => ({
