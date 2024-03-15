@@ -86,7 +86,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Canvas manipulation
 - [x] Canvas layers
 - [x] Drawing tools: brush, pencil
-- [ ] Undo/Redo functionality
+- [x] Undo/Redo functionality
 - [x] Command palette
 - [x] State preservation
 - [ ] Custom 'Project' file format
