@@ -1,3 +1,4 @@
+import type { CanvasActionDispatcher } from "@/canvas/canvasActionDispatcher";
 import type { DialogService } from "@/components/dialogHost";
 import type {
   useWorkspacesStore,
@@ -12,4 +13,5 @@ export type CommandContext = {
     layout: () => ReturnType<typeof useLayoutStore.getState>;
   };
   dialogService: DialogService;
+  canvasActionDispatcher: CanvasActionDispatcher;
 };

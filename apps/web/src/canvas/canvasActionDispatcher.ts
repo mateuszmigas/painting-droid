@@ -8,8 +8,8 @@ type CanvasStore = {
   getState: () => CanvasState;
   setState: (newState: CanvasState) => void;
 };
-type ActionName = keyof typeof canvasActions;
-type GetActionPayload<T extends ActionName> = Parameters<
+type ActionId = keyof typeof canvasActions;
+type GetActionPayload<T extends ActionId> = Parameters<
   (typeof canvasActions)[T]
 >[1];
 
@@ -37,7 +37,7 @@ export class CanvasActionDispatcher {
     this.store = store;
   }
 
-  async execute<T extends ActionName>(name: T, payload: GetActionPayload<T>) {
+  async execute<T extends ActionId>(name: T, payload: GetActionPayload<T>) {
     this.promiseQueue.push(async () => {
       if (!this.store) {
         throw new Error("No store attached");

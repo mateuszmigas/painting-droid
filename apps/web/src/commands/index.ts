@@ -4,22 +4,22 @@ import { command as openCommandPalette } from "./openCommandPalette";
 import { command as resetLayout } from "./resetLayout";
 import { command as closeActiveWorkspace } from "./closeActiveWorkspace";
 import { command as fitCanvasToWindow } from "./fitCanvasToWindow";
+import { command as undoCanvasAction } from "./undoCanvasAction";
+import { command as redoCanvasAction } from "./redoCanvasAction";
 
-export const commands = [
+export const commands = {
   saveCurrentWorkspaceAsFile,
   createActiveWorkspace,
   openCommandPalette,
   resetLayout,
   closeActiveWorkspace,
   fitCanvasToWindow,
-] as const;
+  undoCanvasAction,
+  redoCanvasAction,
+} as const;
 
-export const commandById = new Map(
-  commands.map((command) => [command.id, command])
-);
-
-export type Command = (typeof commands)[number];
-export type CommandId = Command["id"];
+export type CommandId = keyof typeof commands;
+export type Command = (typeof commands)[keyof typeof commands];
 
 type MapToExecuteCommand<U> = U extends Command
   ? Parameters<U["execute"]>[1] extends undefined

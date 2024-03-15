@@ -5,23 +5,24 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { memo, useEffect, useMemo } from "react";
+import { memo, useMemo } from "react";
 import {
   useCommandPaletteStore,
   useLayoutStore,
   useWorkspacesStore,
 } from "@/store";
-import { useStableCallback } from "@/hooks";
+import { useCanvasActionDispatcher } from "@/hooks";
 import {
+  type CommandId,
   commands,
   type ExecuteCommand,
   type ExecuteCommandWithDefaults,
-  commandById,
 } from "@/commands";
 import { Icon } from "./icon";
 import { CommandServiceContext } from "@/contexts/commandService";
 import type { CommandContext } from "@/commands/context";
 import { useDialogService } from "@/contexts/dialogService";
+import { sortBySelector } from "@/utils/array";
 
 export type CommandService = {
   executeCommandWithDefaults: ExecuteCommandWithDefaults;
@@ -32,25 +33,8 @@ export const CommandPaletteHost = memo(
   (props: { children: React.ReactNode }) => {
     const { children } = props;
     const { isOpen, setIsOpen } = useCommandPaletteStore((store) => store);
+    const canvasActionDispatcher = useCanvasActionDispatcher();
     const dialogService = useDialogService();
-
-    const toggleIsOpen = useStableCallback(() => {
-      setIsOpen(!isOpen);
-    });
-
-    useEffect(() => {
-      const down = (e: KeyboardEvent) => {
-        //todo: configurable keybinding
-        if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-          e.preventDefault();
-          toggleIsOpen();
-        }
-      };
-
-      document.addEventListener("keydown", down);
-      return () => document.removeEventListener("keydown", down);
-    }, [toggleIsOpen]);
-
     const commandService = useMemo<CommandService>(() => {
       const createContext = (): CommandContext => ({
         stores: {
@@ -59,10 +43,11 @@ export const CommandPaletteHost = memo(
           layout: () => useLayoutStore.getState(),
         },
         dialogService,
+        canvasActionDispatcher,
       });
       const executeCommand: ExecuteCommand = async (...[id, params]) => {
         const context = createContext();
-        const command = commandById.get(id);
+        const command = commands[id as CommandId];
         if (!command) {
           throw new Error(`Command not found: ${id}`);
         }
@@ -76,7 +61,15 @@ export const CommandPaletteHost = memo(
         executeCommand,
         executeCommandWithDefaults,
       };
-    }, [dialogService]);
+    }, [dialogService, canvasActionDispatcher]);
+
+    const sortedCommands = sortBySelector(
+      Object.values(commands).filter(
+        (command) => command.options.showInPalette
+      ),
+      (command) => command.display,
+      true
+    );
 
     return (
       <CommandServiceContext.Provider value={commandService}>
@@ -84,25 +77,23 @@ export const CommandPaletteHost = memo(
           <CommandInput placeholder="Type a command or search..." />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            {commands
-              .filter((command) => command.options.showInPalette)
-              .map((command) => (
-                <CommandItem
-                  onSelect={() => {
-                    commandService.executeCommand(command.id as never);
-                    setIsOpen(false);
-                  }}
-                  key={command.display}
-                  className="m-1 h-8"
-                >
-                  <Icon
-                    type={command.icon}
-                    size="small"
-                    className="mr-2 min-h-5 min-w-5"
-                  />
-                  <span className="truncate">{command.display}</span>
-                </CommandItem>
-              ))}
+            {sortedCommands.map((command) => (
+              <CommandItem
+                onSelect={() => {
+                  commandService.executeCommand(command.id as never);
+                  setIsOpen(false);
+                }}
+                key={command.display}
+                className="m-1 h-8"
+              >
+                <Icon
+                  type={command.icon}
+                  size="small"
+                  className="mr-2 min-h-5 min-w-5"
+                />
+                <span className="truncate">{command.display}</span>
+              </CommandItem>
+            ))}
           </CommandList>
         </CommandDialog>
         {children}

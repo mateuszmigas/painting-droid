@@ -14,8 +14,13 @@ import { ColorsPanel } from "../panels/colorsPanel";
 import type { AppColumnNames, AppPanelNames } from "@/store/layoutStore";
 import { translations } from "@/translations";
 import { AppColumn } from "./appColumn";
+import { useCommandService } from "@/contexts/commandService";
+import { useGlobalKeyboardHandler } from "@/hooks";
 
 export const AppContent = () => {
+  const { executeCommand } = useCommandService();
+  useGlobalKeyboardHandler(executeCommand);
+
   const { panels, columns, setPanelSize, setColumnSize } = useLayoutStore(
     (state) => state
   );
@@ -74,4 +79,3 @@ export const AppContent = () => {
     </ResizablePanelGroup>
   );
 };
-
