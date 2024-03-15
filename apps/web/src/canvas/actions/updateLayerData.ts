@@ -1,3 +1,4 @@
+import type { IconType } from "@/components/icon";
 import type { CanvasLayerId } from "./../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
@@ -5,9 +6,14 @@ import type { CanvasLayerData } from "../canvasState";
 
 export const createCanvasAction = (
   context: CanvasActionContext,
-  payload: { layerId: CanvasLayerId; data: CanvasLayerData | null }
+  payload: {
+    layerId: CanvasLayerId;
+    source: string;
+    icon: IconType;
+    data: CanvasLayerData | null;
+  }
 ): CanvasAction => {
-  const { layerId, data } = payload;
+  const { layerId, source, icon, data } = payload;
   const state = context.getState();
 
   const capturedData = {
@@ -17,8 +23,8 @@ export const createCanvasAction = (
   };
 
   return {
-    display: "Update Layer Data",
-    icon: "plus",
+    display: source,
+    icon,
     execute: async (state) => {
       return {
         ...state,

@@ -10,28 +10,26 @@ const LayerItem = (props: {
   layer: CanvasLayer;
   selected: boolean;
   onClick: () => void;
+  setVisibility: (visible: boolean) => void;
 }) => {
-  const { layer, onClick } = props;
-  // const { showLayer, hideLayer } = useWorkspacesStore((state) => state);
-
+  const { layer, selected, onClick, setVisibility } = props;
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
       onClick={onClick}
       className={cn(
         "rounded-sm flex border-2 flex-row p-small gap-small items-center overflow-hidden min-h-16",
-        props.selected && "border-primary"
+        selected && "border-primary"
       )}
     >
-      {/* <IconButton
+      <IconButton
         type={layer.visible ? "visible" : "hidden"}
         size="small"
         onClick={(e) => {
           e.stopPropagation();
-          layer.visible ? hideLayer(layer.id) : showLayer(layer.id);
+          setVisibility(!layer.visible);
         }}
-      /> */}
-
+      />
       <div className="w-16 h-16 border box-content alpha-background">
         {layer.data && (
           <img
@@ -47,7 +45,6 @@ const LayerItem = (props: {
 };
 
 export const LayersPanel = memo(() => {
-  console.log("LayersPanel");
   const { layers, activeLayerIndex } = useWorkspacesStore(
     activeWorkspaceCanvasDataSelector
   );
@@ -64,21 +61,35 @@ export const LayersPanel = memo(() => {
             size="small"
             onClick={() => canvasActionDispatcher.execute("addLayer", {})}
           />
-          {/* <IconButton
+          <IconButton
             type="copy"
             size="small"
-            onClick={() => duplicateLayer(activeLayerId)}
+            onClick={() =>
+              canvasActionDispatcher.execute("duplicateLayer", {
+                layerId: activeLayerId,
+              })
+            }
           />
           <IconButton
+            disabled={activeLayerIndex === layers.length - 1}
             type="arrow-up"
             size="small"
-            onClick={() => moveLayerUp(activeLayerId)}
+            onClick={() =>
+              canvasActionDispatcher.execute("moveLayerUp", {
+                layerId: activeLayerId,
+              })
+            }
           />
           <IconButton
+            disabled={activeLayerIndex === 0}
             type="arrow-down"
             size="small"
-            onClick={() => moveLayerDown(activeLayerId)}
-          /> */}
+            onClick={() =>
+              canvasActionDispatcher.execute("moveLayerDown", {
+                layerId: activeLayerId,
+              })
+            }
+          />
         </div>
         <IconButton
           disabled={layers.length === 1}
@@ -107,8 +118,14 @@ export const LayersPanel = memo(() => {
               selected={activeLayerId === layer.id}
               onClick={() =>
                 canvasActionDispatcher.execute("selectLayer", {
-                  layerId: activeLayerId,
+                  layerId: layer.id,
                 })
+              }
+              setVisibility={(visible) =>
+                canvasActionDispatcher.execute(
+                  visible ? "showLayer" : "hideLayer",
+                  { layerId: layer.id }
+                )
               }
             />
           </div>

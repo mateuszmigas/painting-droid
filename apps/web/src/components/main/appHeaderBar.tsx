@@ -32,6 +32,9 @@ export const AppHeaderBar = memo(() => {
                   <ContextMenuTrigger>
                     <TabsTrigger
                       value={tab.id}
+                      onMouseDown={(e) =>
+                        e.button === 1 && closeWorkspace(tab.id)
+                      }
                       className="rounded-none border-b-4 border-b-transparent px-big pb-1 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                     >
                       {tab.name}

@@ -6,6 +6,7 @@ import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
 import type { DrawTool } from "@/tools/draw-tools/drawTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
 import type { ContextGuard } from "./useCanvasContextGuard";
+import { toolsMetadata } from "@/tools";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -94,7 +95,8 @@ export const useDrawTool = (
       stop();
       tool.reset();
       isDrawing = false;
-      contextGuard.applyChanges();
+      const { name, icon } = toolsMetadata[drawToolId!];
+      contextGuard.applyChanges(name, icon);
     };
     const pointerMoveHandler = (event: PointerEvent) => {
       event.preventDefault();

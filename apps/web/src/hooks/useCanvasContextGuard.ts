@@ -1,3 +1,4 @@
+import type { IconType } from "@/components/icon";
 import type { CanvasLayer } from "../canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import {
@@ -10,7 +11,7 @@ import { useMemo } from "react";
 import { useCanvasActionDispatcher } from ".";
 
 export type ContextGuard = {
-  applyChanges: () => void;
+  applyChanges: (name: string, icon: IconType) => void;
   rejectChanges: () => void;
   getContext: () => CanvasContext;
 };
@@ -23,7 +24,7 @@ export const useCanvasContextGuard = (
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const contextGuard = useMemo<ContextGuard>(() => {
     return {
-      applyChanges: async () => {
+      applyChanges: async (source: string, icon: IconType) => {
         const contextData = createCompressedFromContext(activeContext);
         const data =
           !activeLayer.visible && activeLayer.data
@@ -32,6 +33,8 @@ export const useCanvasContextGuard = (
 
         canvasActionDispatcher.execute("updateLayerData", {
           layerId: activeLayer.id,
+          source,
+          icon,
           data,
         });
       },
