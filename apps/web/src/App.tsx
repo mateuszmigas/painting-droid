@@ -7,13 +7,16 @@ import { DialogHost } from "./components/dialogHost";
 
 export const App = () => {
   useSyncTheme();
+
   return (
     <div className="size-full flex flex-col select-none">
-      <DialogHost />
-      <CommandPaletteHost />
-      <AppHeaderBar />
-      <AppContent />
-      <AppStatusBar />
+      <DialogHost>
+        <CommandPaletteHost>
+          <AppHeaderBar />
+          <AppContent />
+          <AppStatusBar />
+        </CommandPaletteHost>
+      </DialogHost>
     </div>
   );
 };

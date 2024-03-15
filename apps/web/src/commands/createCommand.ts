@@ -7,7 +7,7 @@ export const createCommand = <
   C extends (context: CommandContext, payload: never) => Promise<void>
 >(command: {
   id: T;
-  name: string;
+  display: string;
   execute: C;
   icon: IconType;
   defaultKeyGesture?: KeyGesture;

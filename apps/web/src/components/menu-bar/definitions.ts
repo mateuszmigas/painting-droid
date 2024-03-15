@@ -1,7 +1,9 @@
-import { executeCommand } from "@/commands";
+import type { ExecuteCommand } from "@/commands";
 import type { MenuItem } from "@/utils/menuItem";
 
-export const menuBarDefinition: MenuItem[] = [
+export const createMenuBarDefinition = (
+  executeCommand: ExecuteCommand
+): MenuItem[] => [
   {
     type: "parent",
     label: "File",
@@ -81,3 +83,4 @@ export const menuBarDefinition: MenuItem[] = [
     ],
   },
 ];
+

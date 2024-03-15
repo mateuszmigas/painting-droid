@@ -1,15 +1,18 @@
-import type { Layer } from "@/store/workspacesStore";
+import type { CanvasLayer } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import { clearContext, restoreContextFromCompressed } from "@/utils/imageData";
 import { type RefObject, useState, useEffect } from "react";
 
-const restoreLayers = async (layers: Layer[], contexts: CanvasContext[]) => {
+const restoreLayers = async (
+  layers: CanvasLayer[],
+  contexts: CanvasContext[]
+) => {
   for (let i = 0; i < layers.length; i++) {
     const layer = layers[i];
     const context = contexts[i];
 
-    if (layer.visible && layer.compressedData) {
-      await restoreContextFromCompressed(layer.compressedData, context);
+    if (layer.visible && layer.data) {
+      await restoreContextFromCompressed(layer.data, context);
     } else {
       clearContext(context);
     }
@@ -18,7 +21,7 @@ const restoreLayers = async (layers: Layer[], contexts: CanvasContext[]) => {
 
 export const useSyncCanvasWithLayers = (
   canvasElementsRef: RefObject<HTMLCanvasElement[]>,
-  layers: Layer[]
+  layers: CanvasLayer[]
 ) => {
   const [contexts, setContexts] = useState<CanvasContext[] | null>(null);
 
@@ -40,4 +43,3 @@ export const useSyncCanvasWithLayers = (
 
   return { contexts };
 };
-

@@ -64,7 +64,6 @@ export const WorkspaceViewport = memo(() => {
           <>
             <CanvasViewport
               key={activeWorkspaceId}
-              workspaceId={activeWorkspaceId}
               viewport={observableViewport as Observable<Viewport>}
               size={workspaceSize}
             />

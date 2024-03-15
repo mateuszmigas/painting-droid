@@ -13,11 +13,13 @@ import {
   ContextMenuItem,
 } from "../ui/context-menu";
 import { IconAnchor } from "../iconAnchor";
-import { executeCommand } from "@/commands";
+import { useCommandService } from "@/contexts/commandService";
 
 export const AppHeaderBar = memo(() => {
   const { workspaces, activeWorkspaceId, selectWorkspace, closeWorkspace } =
     useWorkspacesStore((state) => state);
+  const { executeCommand } = useCommandService();
+
   return (
     <div className="border-b flex flex-row justify-between items-center px-small gap-big">
       <MenuBar />
@@ -30,6 +32,9 @@ export const AppHeaderBar = memo(() => {
                   <ContextMenuTrigger>
                     <TabsTrigger
                       value={tab.id}
+                      onMouseDown={(e) =>
+                        e.button === 1 && closeWorkspace(tab.id)
+                      }
                       className="rounded-none border-b-4 border-b-transparent px-big pb-1 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                     >
                       {tab.name}

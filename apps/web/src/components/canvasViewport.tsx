@@ -4,14 +4,13 @@ import {
   useListener,
   useDrawTool,
   useSyncCanvasWithLayers,
-  useCanvasContextDispatcher,
+  useCanvasContextGuard,
 } from "@/hooks";
 import { useToolStore } from "@/store/toolState";
 import type { Observable } from "@/utils/observable";
 import {
   activeWorkspaceCanvasDataSelector,
   useWorkspacesStore,
-  type WorkspaceId,
 } from "@/store/workspacesStore";
 import { screenToViewportPosition, type Viewport } from "@/utils/manipulation";
 import type { Size } from "@/utils/common";
@@ -29,11 +28,7 @@ const applyTransform = (viewport: Viewport, element: HTMLElement) => {
 };
 
 export const CanvasViewport = memo(
-  (props: {
-    workspaceId: WorkspaceId;
-    viewport: Observable<Viewport>;
-    size: Size;
-  }) => {
+  (props: { viewport: Observable<Viewport>; size: Size }) => {
     const { viewport, size } = props;
     const hostElementRef = useRef<HTMLDivElement>(null);
     const canvasParentRef = useRef<HTMLDivElement>(null);
@@ -41,19 +36,13 @@ export const CanvasViewport = memo(
     const { layers, activeLayerIndex } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
-    const pushLayerChange = useWorkspacesStore(
-      (state) => state.pushLayerChange
-    );
 
     const { contexts } = useSyncCanvasWithLayers(canvasElementsRef, layers);
     const activeContext = contexts?.[activeLayerIndex];
-
-    const dispatcher = useCanvasContextDispatcher(
+    const contextGuard = useCanvasContextGuard(
       activeContext!,
-      layers[activeLayerIndex],
-      pushLayerChange
+      layers[activeLayerIndex]
     );
-
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
 
@@ -62,7 +51,7 @@ export const CanvasViewport = memo(
       toolId,
       toolSettings,
       (position) => screenToViewportPosition(position, viewport.getValue()),
-      dispatcher,
+      contextGuard,
       !!activeContext && contexts !== null
     );
 

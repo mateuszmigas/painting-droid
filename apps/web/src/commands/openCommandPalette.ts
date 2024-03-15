@@ -4,7 +4,7 @@ import { createCommand } from "./createCommand";
 
 export const command = createCommand({
   id: "openCommandPalette",
-  name: "Open Command Palette",
+  display: "Open Command Palette",
   icon: "command",
   options: { showInPalette: false },
   defaultKeyGesture: createKeyGesture({ key: "K", meta: true }),

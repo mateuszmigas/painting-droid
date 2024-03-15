@@ -10,7 +10,7 @@ export const MetadataPanel = () => {
     const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(
       useWorkspacesStore.getState()
     );
-    const data = layers[activeLayerIndex].compressedData;
+    const data = layers[activeLayerIndex].data;
     if (!data) {
       setResult("No data to classify");
     } else {
@@ -30,4 +30,3 @@ export const MetadataPanel = () => {
     </div>
   );
 };
-

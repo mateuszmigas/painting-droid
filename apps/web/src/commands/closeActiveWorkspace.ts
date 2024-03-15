@@ -3,7 +3,7 @@ import { createCommand } from "./createCommand";
 
 export const command = createCommand({
   id: "closeActiveWorkspace",
-  name: "Close Active Workspace",
+  display: "Close Active Workspace",
   icon: "x",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {

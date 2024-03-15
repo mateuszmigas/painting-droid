@@ -10,10 +10,12 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { menuBarDefinition } from "./definitions";
+import { createMenuBarDefinition } from "./definitions";
 import type { MenuItem } from "@/utils/menuItem";
 import { Fragment } from "react/jsx-runtime";
 import type { MenuItemAction } from "@/utils/menuItemAction";
+import { useCommandService } from "@/contexts/commandService";
+import { useMemo } from "react";
 
 const processAction = (action: MenuItemAction) => {
   if ("onClick" in action) {
@@ -54,6 +56,11 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
 };
 
 export const MenuBar = () => {
+  const { executeCommand } = useCommandService();
+  const menuBarDefinition = useMemo(
+    () => createMenuBarDefinition(executeCommand),
+    [executeCommand]
+  );
   return (
     <Menubar className="border-none shadow-none">
       {menuBarDefinition.map((parent, index) => {

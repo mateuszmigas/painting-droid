@@ -28,6 +28,9 @@ import {
   Square,
   MousePointerSquare,
   Fullscreen,
+  Undo,
+  Redo,
+  FilePlus,
 } from "lucide-react";
 
 export type IconType =
@@ -55,7 +58,10 @@ export type IconType =
   | "bug"
   | "square"
   | "mouse-pointer-square"
-  | "fullscreen";
+  | "fullscreen"
+  | "undo"
+  | "redo"
+  | "file-plus";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -124,6 +130,12 @@ const renderLucideIcon = (
       return <MousePointerSquare className={className} size={fontSize} />;
     case "fullscreen":
       return <Fullscreen className={className} size={fontSize} />;
+    case "undo":
+      return <Undo className={className} size={fontSize} />;
+    case "redo":
+      return <Redo className={className} size={fontSize} />;
+    case "file-plus":
+      return <FilePlus className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
