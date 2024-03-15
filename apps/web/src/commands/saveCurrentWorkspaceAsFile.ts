@@ -9,7 +9,7 @@ import {
 
 export const command = createCommand({
   id: "saveCurrentWorkspaceAsFile",
-  name: "Save Current Workspace As File",
+  display: "Save Current Workspace As File",
   icon: "save",
   options: { showInPalette: true },
   execute: async (
@@ -24,8 +24,8 @@ export const command = createCommand({
       context.stores.workspaces()
     );
     const layersData = canvasData.layers
-      .filter((layer) => layer.compressedData)
-      .map((layer) => layer.compressedData!);
+      .filter((layer) => layer.data)
+      .map((layer) => layer.data!);
 
     const mergedData = await mergeCompressedData(layersData);
     const data = await compressedDataToDataUrl(mergedData, format);

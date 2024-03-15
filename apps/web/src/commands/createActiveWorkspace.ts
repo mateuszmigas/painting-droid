@@ -5,7 +5,7 @@ import { CreateWorkspaceDialog } from "@/components/dialogs/createWorkspaceDialo
 
 export const command = createCommand({
   id: "createActiveWorkspace",
-  name: "Create New Workspace",
+  display: "Create New Workspace",
   icon: "add-file",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {

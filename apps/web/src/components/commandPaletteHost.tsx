@@ -44,7 +44,7 @@ export const CommandPaletteHost = memo(() => {
                 executeCommand(command.id as never);
                 setIsOpen(false);
               }}
-              key={command.name}
+              key={command.display}
               className="m-1 h-8"
             >
               <Icon
@@ -52,7 +52,7 @@ export const CommandPaletteHost = memo(() => {
                 size="small"
                 className="mr-2 min-h-5 min-w-5"
               />
-              <span className="truncate">{command.name}</span>
+              <span className="truncate">{command.display}</span>
             </CommandItem>
           ))}
       </CommandList>

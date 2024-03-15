@@ -18,7 +18,7 @@ export const CommandIconButton = (props: { commandId: CommandId }) => {
   const command = commandById.get(commandId)!;
   return (
     <IconButton
-      title={createCommandTooltip(command.name, command.defaultKeyGesture)}
+      title={createCommandTooltip(command.display, command.defaultKeyGesture)}
       type={command.icon}
       size="small"
       onClick={() => executeCommandWithDefaults(commandId)}

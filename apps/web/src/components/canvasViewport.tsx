@@ -41,19 +41,13 @@ export const CanvasViewport = memo(
     const { layers, activeLayerIndex } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
-    const pushLayerChange = useWorkspacesStore(
-      (state) => state.pushLayerChange
-    );
 
     const { contexts } = useSyncCanvasWithLayers(canvasElementsRef, layers);
     const activeContext = contexts?.[activeLayerIndex];
-
     const dispatcher = useCanvasContextDispatcher(
       activeContext!,
-      layers[activeLayerIndex],
-      pushLayerChange
+      layers[activeLayerIndex]
     );
-
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
 

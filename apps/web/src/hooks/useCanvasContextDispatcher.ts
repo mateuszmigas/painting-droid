@@ -1,5 +1,5 @@
-import { useToolStore } from "./../store/toolState";
-import type { Layer, LayerChange } from "@/store/workspacesStore";
+import { canvasActionDispatcher } from "./../canvas/canvasActionDispatcher";
+import type { CanvasLayer, CanvasLayerData } from "./../canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import {
   clearContext,
@@ -8,7 +8,6 @@ import {
   restoreContextFromCompressed,
 } from "@/utils/imageData";
 import { useMemo } from "react";
-import { useStableCallback } from ".";
 
 export type ContextDispatcher = {
   applyChanges: () => void;
@@ -18,41 +17,32 @@ export type ContextDispatcher = {
 
 export const useCanvasContextDispatcher = (
   activeContext: CanvasContext,
-  activeLayer: Layer,
-  onLayerChange: (change: LayerChange) => void
+  activeLayer: CanvasLayer
 ) => {
-  const onLayerChangeStable = useStableCallback(onLayerChange);
-
   const dispatcher = useMemo<ContextDispatcher>(() => {
     return {
       applyChanges: async () => {
         const contextData = createCompressedFromContext(activeContext);
         const data =
-          !activeLayer.visible && activeLayer.compressedData
-            ? await mergeCompressedData([
-                activeLayer.compressedData,
-                contextData,
-              ])
+          !activeLayer.visible && activeLayer.data
+            ? await mergeCompressedData([activeLayer.data, contextData])
             : contextData;
 
-        onLayerChangeStable({
-          type: "draw",
-          id: activeLayer.id,
-          tool: useToolStore.getState().selectedToolId,
-          data,
+        canvasActionDispatcher.execute("updateLayerData", {
+          layerId: activeLayer.id,
+          data: data as CanvasLayerData,
         });
       },
       rejectChanges: async () => {
-        const compressedData = activeLayer.compressedData;
-        if (compressedData) {
-          restoreContextFromCompressed(compressedData, activeContext);
+        if (activeLayer.data) {
+          restoreContextFromCompressed(activeLayer.data, activeContext);
         } else {
           clearContext(activeContext);
         }
       },
       getContext: () => activeContext,
     };
-  }, [activeContext, activeLayer, onLayerChangeStable]);
+  }, [activeContext, activeLayer]);
 
   return dispatcher;
 };

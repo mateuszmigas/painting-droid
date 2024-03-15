@@ -5,7 +5,7 @@ import { activeWorkspaceSelector } from "@/store/workspacesStore";
 
 export const command = createCommand({
   id: "fitCanvasToWindow",
-  name: "Fit Canvas to Window",
+  display: "Fit Canvas to Window",
   icon: "fullscreen",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {

@@ -3,7 +3,7 @@ import { createCommand } from "./createCommand";
 
 export const command = createCommand({
   id: "resetLayout",
-  name: "Reset Layout",
+  display: "Reset Layout",
   icon: "reset",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
