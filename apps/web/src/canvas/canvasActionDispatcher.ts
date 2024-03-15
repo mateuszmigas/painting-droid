@@ -38,20 +38,19 @@ export class CanvasActionDispatcher {
   }
 
   async execute<T extends ActionName>(name: T, payload: GetActionPayload<T>) {
-    if (!this.store) {
-      throw new Error("No store attached");
-    }
-
-    const context = {
-      getState: this.store.getState,
-    };
-
-    const store = this.store;
-    const action = canvasActions[name](context, payload as never);
-
     this.promiseQueue.push(async () => {
-      const newState = await action.execute(store.getState());
-      store.setState(newState);
+      if (!this.store) {
+        throw new Error("No store attached");
+      }
+
+      const context = {
+        getState: this.store.getState,
+      };
+
+      const action = canvasActions[name](context, payload as never);
+
+      const newState = await action.execute(this.store.getState());
+      this.store.setState(newState);
       this.actionsCursor++;
       this.actionsStack = this.actionsStack.slice(0, this.actionsCursor);
       this.actionsStack.push(action);
@@ -60,41 +59,38 @@ export class CanvasActionDispatcher {
   }
 
   async undo() {
-    if (!this.store) {
-      throw new Error("No store attached");
-    }
-
-    if (this.actionsCursor === 0) {
-      return;
-    }
-
-    const store = this.store;
-    const action = this.actionsStack[this.actionsCursor];
-
     this.promiseQueue.push(async () => {
-      const newState = await action.undo(store.getState());
-      store.setState(newState);
+      if (!this.store) {
+        throw new Error("No store attached");
+      }
+
+      if (this.actionsCursor === 0) {
+        return;
+      }
+
+      const action = this.actionsStack[this.actionsCursor];
+      const newState = await action.undo(this.store.getState());
+      this.store.setState(newState);
       this.actionsCursor--;
       this.notifyListeners();
     });
   }
 
   async redo() {
-    if (!this.store) {
-      throw new Error("No store attached");
-    }
-
-    if (this.actionsCursor === this.actionsStack.length - 1) {
-      return;
-    }
-
-    const store = this.store;
-    const action = this.actionsStack[this.actionsCursor];
-
     this.promiseQueue.push(async () => {
+      if (!this.store) {
+        throw new Error("No store attached");
+      }
+
+      if (this.actionsCursor === this.actionsStack.length - 1) {
+        return;
+      }
+
       this.actionsCursor++;
-      const newState = await action.execute(store.getState());
-      store.setState(newState);
+      const action = this.actionsStack[this.actionsCursor];
+
+      const newState = await action.execute(this.store.getState());
+      this.store.setState(newState);
       this.notifyListeners();
     });
   }
