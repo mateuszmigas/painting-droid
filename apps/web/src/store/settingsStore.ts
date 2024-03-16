@@ -15,13 +15,11 @@ const defaultState: AppSettingsState = {
 
 type AppSettingsSlice = AppSettingsState & {
   setTheme: (theme: ThemeType) => void;
-  increment: () => void;
 };
 
 export const settingsStoreCreator: StateCreator<AppSettingsSlice> = (set) => ({
   ...defaultState,
   setTheme: (theme) => set({ theme }),
-  increment: () => set((state) => ({ value: state.value + 1 })),
 });
 
 export const useSettingsStore = create<AppSettingsSlice>()(

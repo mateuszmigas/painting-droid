@@ -6,14 +6,16 @@ import type { IconType } from "../icon";
 
 const tools: { id: ToolId; icon: IconType; name: string }[] = (
   Object.keys(defaultToolsSettings) as ToolId[]
-).map((id) => {
-  const metadata = toolsMetadata[id];
-  return {
-    id,
-    icon: metadata.icon,
-    name: metadata.name,
-  };
-});
+)
+  .map((id) => {
+    const metadata = toolsMetadata[id];
+    return {
+      id,
+      icon: metadata.icon,
+      name: metadata.name,
+    };
+  })
+  .filter((tool) => tool.id !== "rectangleSelect");
 
 export const SelectToolPanel = memo(() => {
   const { selectedToolId, setSelectedToolId } = useToolStore((state) => state);
