@@ -7,12 +7,12 @@ import { useEffect, useRef } from "react";
 const rulerConfig = {
   dpi: window.devicePixelRatio,
   offset: 20,
-  shortLine: 15,
+  shortLine: 12,
   longLine: 30,
   lineThickness: 1,
   cellSizeDefault: 50,
   subCellsCount: 5,
-  font: "16px Arial",
+  font: `${10 * window.devicePixelRatio}px Consolas, monospace`,
 };
 
 const calculateCellSize = (zoom: number) => {
@@ -48,25 +48,24 @@ const drawRuler = (
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   context.fillStyle = color;
   context.lineWidth = 1;
+  context.textBaseline = "top";
   context.font = font;
+  const isHorizontal = orientation === "horizontal";
 
   const cellSize = calculateCellSize(viewport.zoom) * dpi;
 
   const total =
-    (orientation === "horizontal"
-      ? context.canvas.width
-      : context.canvas.height) * dpi;
+    (isHorizontal ? context.canvas.width : context.canvas.height) * dpi;
 
   const position =
-    (orientation === "horizontal" ? viewport.position.x : viewport.position.y) *
-    dpi;
+    (isHorizontal ? viewport.position.x : viewport.position.y) * dpi;
 
   let start = (position % cellSize) - cellSize;
 
   while (start < total) {
     const pos = ~~(start - offset * dpi);
 
-    if (orientation === "horizontal") {
+    if (isHorizontal) {
       context.fillRect(pos, 0, lineThickness, longLine);
 
       for (let i = 0; i < subCellsCount; i++) {
@@ -75,7 +74,7 @@ const drawRuler = (
       }
 
       const canvasPos = ~~Math.round((start - position) / viewport.zoom / dpi);
-      context.fillText(canvasPos.toString(), pos + 4, longLine);
+      context.fillText(canvasPos.toString(), pos + 4, longLine / 2 - 3 / dpi);
     } else {
       context.fillRect(0, pos, longLine, lineThickness);
 
@@ -87,7 +86,7 @@ const drawRuler = (
       const canvasPos = ~~Math.round((start - position) / viewport.zoom / dpi);
       context.save();
       context.textAlign = "right";
-      context.translate(longLine, pos + 4);
+      context.translate(longLine / 2 - 3 / dpi, pos + 4);
       context.rotate(-Math.PI / 2);
       context.fillText(canvasPos.toString(), 0, 0);
       context.restore();
@@ -181,4 +180,3 @@ export const Ruler = (props: { observableViewport: Observable<Viewport> }) => {
     </div>
   );
 };
-
