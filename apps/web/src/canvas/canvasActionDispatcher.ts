@@ -95,6 +95,12 @@ export class CanvasActionDispatcher {
     });
   }
 
+  clear() {
+    this.actionsStack = [initAction];
+    this.actionsCursor = 0;
+    this.notifyListeners();
+  }
+
   private notifyListeners() {
     const info: StackInfo = {
       actions: this.actionsStack.map((action) => ({

@@ -37,6 +37,7 @@ const defaultState: AppWorkspacesState = {
 type AppWorkspacesSlice = AppWorkspacesState & {
   selectWorkspace: (workspaceId: WorkspaceId) => void;
   closeWorkspace: (workspaceId: WorkspaceId) => void;
+  clearWorkspace: (workspaceId: WorkspaceId) => void;
   setWorkspaceViewport: (viewport: Viewport) => void;
   addNewActiveWorkspace: (size: Size) => void;
   setCanvasData: (canvasData: CanvasState) => void;
@@ -73,6 +74,15 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
           state.activeWorkspaceId === id
             ? workspaces[0].id
             : state.activeWorkspaceId,
+      };
+    }),
+  clearWorkspace: (id) =>
+    set((state) => {
+      return {
+        ...state,
+        workspaces: state.workspaces.map((w) =>
+          w.id === id ? { ...w, canvasData: defaultCanvasState } : w
+        ),
       };
     }),
   setWorkspaceViewport: (viewport) =>
