@@ -12,6 +12,9 @@
       },
       "complexity": {
         "noForEach": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off"
       }
     }
   },
@@ -21,4 +24,3 @@
     "lineWidth": 120
   }
 }
-

@@ -98,7 +98,6 @@ export const CreateWorkspaceDialog = memo(
                     htmlFor={size.key}
                     className="flex flex-col gap-small items-center justify-between rounded-md border-2 border-muted bg-popover p-medium hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                   >
-                    {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox={`0 0 ${parentSize.width} ${parentSize.height}`}

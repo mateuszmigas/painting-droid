@@ -1,7 +1,7 @@
 import type { CanvasLayer } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import { clearContext, restoreContextFromCompressed } from "@/utils/imageData";
-import { type RefObject, useState, useEffect } from "react";
+import { type RefObject, useEffect, useState } from "react";
 
 const restoreLayers = async (
   layers: CanvasLayer[],
@@ -19,7 +19,7 @@ const restoreLayers = async (
   }
 };
 
-export const useSyncCanvasWithLayers = (
+export const useSyncCanvasStackWithLayers = (
   canvasElementsRef: RefObject<HTMLCanvasElement[]>,
   layers: CanvasLayer[]
 ) => {

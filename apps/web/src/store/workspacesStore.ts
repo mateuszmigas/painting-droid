@@ -109,7 +109,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   persist(workspacesStoreCreator, {
-    version: 4,
+    version: 5,
     name: "workspaces",
     storage: createJSONStorage(() => localStorage),
     partialize: (state) => ({

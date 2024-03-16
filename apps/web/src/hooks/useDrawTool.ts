@@ -50,13 +50,13 @@ export const useDrawTool = (
   drawToolSettings: Record<string, unknown>,
   transformToCanvasPosition: (position: Position) => Position,
   contextGuard: ContextGuard,
-  isReady: boolean
+  enable: boolean
 ) => {
   const toolRef = useRef<DrawTool | null>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!elementRef.current || !isReady || drawToolId === null) return;
+    if (!elementRef.current || !enable || drawToolId === null) return;
 
     const element = elementRef.current;
     toolRef.current = createTool(drawToolId, contextGuard.getContext());
@@ -127,13 +127,7 @@ export const useDrawTool = (
       document.removeEventListener("pointerup", pointerUpHandler);
       document.removeEventListener("keydown", keyDownHandler);
     };
-  }, [
-    drawToolId,
-    contextGuard,
-    elementRef,
-    transformToCanvasPosition,
-    isReady,
-  ]);
+  }, [drawToolId, contextGuard, elementRef, transformToCanvasPosition, enable]);
 
   useEffect(() => {
     toolRef.current?.configure(drawToolSettings);

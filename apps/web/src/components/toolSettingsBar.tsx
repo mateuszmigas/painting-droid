@@ -2,6 +2,7 @@ import { useToolStore } from "@/store/toolState";
 import { toolsMetadata } from "@/tools";
 import { ToolSetting } from "./tool-settings/toolSetting";
 import { Separator } from "@radix-ui/react-separator";
+import type { DrawToolSettingType } from "@/tools/draw-tools/drawTool";
 
 export const ToolSettingsBar = () => {
   const selectedToolId = useToolStore((state) => state.selectedToolId);
@@ -21,7 +22,10 @@ export const ToolSettingsBar = () => {
             <ToolSetting
               toolId={selectedToolId}
               settingKey={id}
-              type={toolsMetadata[selectedToolId].settings[id].type}
+              type={
+                toolsMetadata[selectedToolId].settings[id]
+                  .type as DrawToolSettingType
+              }
               value={value}
               onChange={(newValue) => {
                 updateToolSettings(selectedToolId, {

@@ -1,8 +1,8 @@
+import type { Position, Size } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
 
 export type CanvasLayerId = string;
 export type CanvasLayerData = ImageCompressedData | null;
-
 export type CanvasLayer = {
   id: CanvasLayerId;
   name: string;
@@ -11,9 +11,17 @@ export type CanvasLayer = {
   data: CanvasLayerData;
 };
 
+export type CanvasOverlayShape = {
+  type: "rectangle";
+  position: Position;
+  size: Size;
+  state: "draw" | "manipulate";
+};
+
 export type CanvasState = {
   activeLayerIndex: number;
   layers: CanvasLayer[];
+  overlayShape: CanvasOverlayShape | null;
 };
 
 export const defaultLayer: CanvasLayer = {
@@ -27,5 +35,5 @@ export const defaultLayer: CanvasLayer = {
 export const defaultCanvasState: CanvasState = {
   activeLayerIndex: 0,
   layers: [defaultLayer],
+  overlayShape: null,
 };
-

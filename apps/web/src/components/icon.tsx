@@ -31,6 +31,7 @@ import {
   Undo,
   Redo,
   FilePlus,
+  SquareKanbanDashedIcon,
 } from "lucide-react";
 
 export type IconType =
@@ -61,7 +62,8 @@ export type IconType =
   | "fullscreen"
   | "undo"
   | "redo"
-  | "file-plus";
+  | "file-plus"
+  | "rectangle-select";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -136,6 +138,8 @@ const renderLucideIcon = (
       return <Redo className={className} size={fontSize} />;
     case "file-plus":
       return <FilePlus className={className} size={fontSize} />;
+    case "rectangle-select":
+      return <SquareKanbanDashedIcon className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
@@ -149,4 +153,3 @@ export const Icon = (props: {
   const { type, size, className } = props;
   return renderLucideIcon(type, size, className);
 };
-

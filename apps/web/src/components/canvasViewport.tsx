@@ -3,7 +3,7 @@ import {
   useViewportManipulator,
   useListener,
   useDrawTool,
-  useSyncCanvasWithLayers,
+  useSyncCanvasStackWithLayers,
   useCanvasContextGuard,
 } from "@/hooks";
 import { useToolStore } from "@/store/toolState";
@@ -14,6 +14,10 @@ import {
 } from "@/store/workspacesStore";
 import { screenToViewportPosition, type Viewport } from "@/utils/manipulation";
 import type { Size } from "@/utils/common";
+import { useSyncSvgWithOverlayShape } from "@/hooks/useSyncSvgWithOverlayShapes";
+import React from "react";
+import type { DrawToolId } from "@/tools/draw-tools";
+import { isDrawTool } from "@/tools";
 
 const alphaGridCellSize = 20;
 const applyTransform = (viewport: Viewport, element: HTMLElement) => {
@@ -32,12 +36,13 @@ export const CanvasViewport = memo(
     const { viewport, size } = props;
     const hostElementRef = useRef<HTMLDivElement>(null);
     const canvasParentRef = useRef<HTMLDivElement>(null);
-    const canvasElementsRef = useRef<HTMLCanvasElement[]>([]);
-    const { layers, activeLayerIndex } = useWorkspacesStore(
+    const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
+    const svgElementRef = useRef<SVGSVGElement | null>(null);
+    const { layers, overlayShape, activeLayerIndex } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
-
-    const { contexts } = useSyncCanvasWithLayers(canvasElementsRef, layers);
+    useSyncSvgWithOverlayShape(svgElementRef, overlayShape);
+    const { contexts } = useSyncCanvasStackWithLayers(canvasStackRef, layers);
     const activeContext = contexts?.[activeLayerIndex];
     const contextGuard = useCanvasContextGuard(
       activeContext!,
@@ -48,11 +53,11 @@ export const CanvasViewport = memo(
 
     useDrawTool(
       hostElementRef,
-      toolId,
+      toolId as DrawToolId,
       toolSettings,
       (position) => screenToViewportPosition(position, viewport.getValue()),
       contextGuard,
-      !!activeContext && contexts !== null
+      isDrawTool(toolId) && !!activeContext && contexts !== null
     );
 
     useViewportManipulator(
@@ -81,19 +86,30 @@ export const CanvasViewport = memo(
           className="relative pointer-events-none origin-top-left outline outline-border shadow-2xl box-content alpha-background"
         >
           {layers.map((layer, index) => (
-            <canvas
-              ref={(element) => {
-                if (element) {
-                  canvasElementsRef.current[index] = element;
-                }
-              }}
-              key={layer.id}
-              className="absolute pixelated-canvas"
-              style={{ width: size.width, height: size.height }}
-              width={size.width}
-              height={size.height}
-            />
+            <React.Fragment key={layer.id}>
+              <canvas
+                ref={(element) => {
+                  if (element) {
+                    canvasStackRef.current[index] = element;
+                  }
+                }}
+                className="absolute pixelated-canvas"
+                style={{ width: size.width, height: size.height }}
+                width={size.width}
+                height={size.height}
+              />
+              {index === activeLayerIndex && (
+                <svg
+                  ref={svgElementRef}
+                  className="absolute pointer-events-none"
+                  style={{ width: size.width, height: size.height }}
+                  width={size.width}
+                  height={size.height}
+                />
+              )}
+            </React.Fragment>
           ))}
+          <div key="canvas-manipulators" />
         </div>
       </div>
     );
