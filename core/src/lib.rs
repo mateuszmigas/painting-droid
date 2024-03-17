@@ -8,6 +8,6 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-pub fn greet() {
-    alert("Hello, painting-droid-core!");
+pub fn greet(s: &str) -> String {
+    format!("Hello from Rust, {}!", s)
 }
