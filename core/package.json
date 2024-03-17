@@ -1,0 +1,10 @@
+{
+  "name": "@painting-droid/core",
+  "scripts": {
+    "build": "wasm-pack build --target web"
+  },
+  "devDependencies": {
+    "wasm-pack": "^0.12.1"
+  }
+}
+
