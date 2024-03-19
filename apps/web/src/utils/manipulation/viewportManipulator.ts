@@ -40,7 +40,7 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
   constructor(
     protected element: HTMLElement,
     protected getCurrentViewport: () => Viewport,
-    private onViewportChange: (newViewport: Viewport) => void,
+    private onViewportChange: (newViewport: Viewport) => void
   ) {
     super(element);
 
@@ -48,7 +48,7 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
     this.registerEvent("pointermove", this.onPointerMove);
     this.registerEvent("pointerup", this.onPointerUp);
     this.registerEvent("pointerleave", this.onPointerLeave);
-    this.registerEvent("wheel", this.onWheel);
+    this.registerEvent("wheel", this.onWheel, { passive: true });
   }
 
   private dispatchAction = (action: ViewportAction) => {

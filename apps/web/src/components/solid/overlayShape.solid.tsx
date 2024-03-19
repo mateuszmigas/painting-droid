@@ -1,3 +1,4 @@
+/* @jsxImportSource solid-js */
 import * as Solid from "solid-js";
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import type { Viewport } from "@/utils/manipulation";
@@ -25,7 +26,7 @@ export const OverlayShape = (props: {
             props.overlayShape!.boundingBox.height * props.viewport.zoom
           }px`,
         }}
-        class="absolute border-accent border-2 border-dashed animate-border"
+        class="absolute border-primary border-2 border-dashed animate-border"
       />
     </Solid.Show>
   );
