@@ -22,11 +22,11 @@ type AppLayoutState = {
 
 const defaultState: AppLayoutState = {
   panels: {
-    layers: { name: "layers", size: 45 },
+    layers: { name: "layers", size: 35 },
     tools: { name: "tools", size: 70 },
     colors: { name: "colors", size: 10 },
-    metadata: { name: "metadata", size: 20 },
-    history: { name: "history", size: 35 },
+    metadata: { name: "metadata", size: 10 },
+    history: { name: "history", size: 45 },
   },
   columns: {
     left: { size: 20 },

@@ -1,32 +1,20 @@
-import type { CanvasOverlayShape } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 
-const translate = (shape: CanvasOverlayShape) => {
-  if (shape?.type === "rectangle") {
-    return "Rectangle Select";
-  }
-  return "Unknown";
-};
-
 export const createCanvasAction = (
-  context: CanvasActionContext,
-  payload: {
-    overlayShape: CanvasOverlayShape;
-  }
+  context: CanvasActionContext
 ): CanvasAction => {
-  const { overlayShape } = payload;
   const state = context.getState();
   const previousOverlayShape = state.overlayShape;
 
   const capturedData = {
     previousOverlayShape,
-    newOverlayShape: overlayShape,
+    newOverlayShape: null,
   };
 
   return {
-    display: translate(overlayShape),
-    icon: "rectangle-select",
+    display: "Deselect",
+    icon: "deselect",
     execute: async (state) => {
       return {
         ...state,
@@ -41,3 +29,4 @@ export const createCanvasAction = (
     },
   };
 };
+

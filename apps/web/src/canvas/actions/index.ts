@@ -8,6 +8,8 @@ import { createCanvasAction as moveLayerDown } from "./moveLayerDown";
 import { createCanvasAction as hideLayer } from "./hideLayer";
 import { createCanvasAction as showLayer } from "./showLayer";
 import { createCanvasAction as drawOverlayShape } from "./drawOverlayShape";
+import { createCanvasAction as transformOverlayShape } from "./transformOverlayShape";
+import { createCanvasAction as clearOverlayShape } from "./clearOverlayShape";
 
 export const canvasActions = {
   removeLayer,
@@ -20,4 +22,6 @@ export const canvasActions = {
   hideLayer,
   showLayer,
   drawOverlayShape,
+  transformOverlayShape,
+  clearOverlayShape,
 };

@@ -55,20 +55,32 @@ export const CanvasViewport = memo(
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
     const canvasActionDispatcher = useCanvasActionDispatcher();
-    const { render } = useShapeRenderer(viewport, overlayHostRef);
+    const { render: renderShape } = useShapeRenderer(viewport, overlayHostRef);
 
     useEffect(() => {
-      render(overlayShape);
-    }, [render, overlayShape]);
+      renderShape(overlayShape);
+    }, [renderShape, overlayShape]);
 
     useShapeTool(
       hostElementRef,
       "rectangleSelect",
       (position) => screenToViewportPosition(position, viewport.getValue()),
       () => overlayShape,
-      render,
-      (overlayShape) => {
-        canvasActionDispatcher.execute("drawOverlayShape", { overlayShape });
+      renderShape,
+      (overlayShape, operation) => {
+        if (overlayShape === null) {
+          operation === "deselect" &&
+            canvasActionDispatcher.execute("clearOverlayShape", undefined);
+        } else {
+          operation === "draw" &&
+            canvasActionDispatcher.execute("drawOverlayShape", {
+              overlayShape,
+            });
+          operation === "transform" &&
+            canvasActionDispatcher.execute("transformOverlayShape", {
+              overlayShape,
+            });
+        }
       },
       isShapeTool(toolId)
     );

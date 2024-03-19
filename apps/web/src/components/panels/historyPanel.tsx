@@ -45,7 +45,7 @@ export const HistoryPanel = memo(() => {
             } p-small`}
           >
             <IconButton type={action.icon} size="small" />
-            <div>{action.display}</div>
+            <div className="truncate">{action.display}</div>
           </div>
         ))}
       </div>

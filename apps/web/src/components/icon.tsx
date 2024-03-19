@@ -27,12 +27,14 @@ import {
   Bug,
   Square,
   MousePointerSquare,
+  MousePointerSquareDashed,
   Fullscreen,
   Undo,
   Redo,
   FilePlus,
   BoxSelect,
 } from "lucide-react";
+import { Deselect } from "./icons/deselect";
 
 export type IconType =
   | "pen"
@@ -59,11 +61,13 @@ export type IconType =
   | "bug"
   | "square"
   | "mouse-pointer-square"
+  | "mouse-pointer-square-dashed"
   | "fullscreen"
   | "undo"
   | "redo"
   | "file-plus"
-  | "rectangle-select";
+  | "rectangle-select"
+  | "deselect";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -130,6 +134,8 @@ const renderLucideIcon = (
       return <Square className={className} size={fontSize} />;
     case "mouse-pointer-square":
       return <MousePointerSquare className={className} size={fontSize} />;
+    case "mouse-pointer-square-dashed":
+      return <MousePointerSquareDashed className={className} size={fontSize} />;
     case "fullscreen":
       return <Fullscreen className={className} size={fontSize} />;
     case "undo":
@@ -140,6 +146,8 @@ const renderLucideIcon = (
       return <FilePlus className={className} size={fontSize} />;
     case "rectangle-select":
       return <BoxSelect className={className} size={fontSize} />;
+    case "deselect":
+      return <Deselect className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

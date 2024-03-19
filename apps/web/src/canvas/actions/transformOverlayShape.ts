@@ -3,8 +3,8 @@ import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 
 const translate = (shape: CanvasOverlayShape) => {
-  if (shape?.type === "rectangle") {
-    return "Rectangle Select";
+  if (shape.type === "rectangle") {
+    return "Move Rectangle";
   }
   return "Unknown";
 };
@@ -26,7 +26,7 @@ export const createCanvasAction = (
 
   return {
     display: translate(overlayShape),
-    icon: "rectangle-select",
+    icon: "mouse-pointer-square-dashed",
     execute: async (state) => {
       return {
         ...state,
@@ -41,3 +41,4 @@ export const createCanvasAction = (
     },
   };
 };
+

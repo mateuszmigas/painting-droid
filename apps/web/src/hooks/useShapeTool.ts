@@ -5,7 +5,7 @@ import type { Position } from "@/utils/common";
 import { type RefObject, useEffect } from "react";
 import { assertNever } from "@/utils/typeGuards";
 import { useStableCallback } from ".";
-import { ManipulateShapeTool } from "@/tools/manipulateTool";
+import { TransformShapeTool } from "@/tools/transformShapeTool";
 
 const createDrawShapeTool = (id: ShapeToolId) => {
   switch (id) {
@@ -16,13 +16,18 @@ const createDrawShapeTool = (id: ShapeToolId) => {
   }
 };
 
+type ShapeOperation = "draw" | "transform" | "deselect";
+
 export const useShapeTool = (
   elementRef: RefObject<HTMLElement>,
   shapeToolId: ShapeToolId,
   transformToCanvasPosition: (position: Position) => Position,
   getCurrentShape: () => CanvasOverlayShape | null,
   renderShape: (shape: CanvasOverlayShape | null) => void,
-  commitShape: (shape: CanvasOverlayShape | null) => void,
+  commitShape: (
+    shape: CanvasOverlayShape | null,
+    operation: ShapeOperation
+  ) => void,
   enable: boolean
 ) => {
   const renderStable = useStableCallback(renderShape);
@@ -36,8 +41,8 @@ export const useShapeTool = (
 
     const element = elementRef.current;
     const drawShapeTool = createDrawShapeTool(shapeToolId);
-    const manipulateShapeTool = new ManipulateShapeTool();
-    let state: "draw" | "modify" | null = null;
+    const transformShapeTool = new TransformShapeTool();
+    let state: ShapeOperation | null = null;
     let currentPointerPosition: Position | null = null;
 
     const getPointerPosition = (event: PointerEvent) => {
@@ -53,15 +58,15 @@ export const useShapeTool = (
         drawShapeTool.update(payload);
         renderStable(drawShapeTool.getShape());
       } else {
-        manipulateShapeTool.update(payload.position);
-        const currentShape = manipulateShapeTool.getShape();
+        transformShapeTool.update(payload.position);
+        const currentShape = transformShapeTool.getShape();
         currentShape !== null && renderStable(currentShape);
       }
     };
 
     const reset = () => {
       drawShapeTool.reset();
-      manipulateShapeTool.reset();
+      transformShapeTool.reset();
       state = null;
     };
 
@@ -71,10 +76,10 @@ export const useShapeTool = (
       if (event.button !== 0) return;
 
       currentPointerPosition = getPointerPosition(event);
-      manipulateShapeTool.setTarget(getCurrentShapeStable());
+      transformShapeTool.setTarget(getCurrentShapeStable());
 
-      if (manipulateShapeTool.isInside(currentPointerPosition)) {
-        state = "modify";
+      if (transformShapeTool.isInside(currentPointerPosition)) {
+        state = "transform";
       } else {
         state = "draw";
       }
@@ -88,9 +93,12 @@ export const useShapeTool = (
       if (!state) return;
 
       if (state === "draw") {
-        commitStable(drawShapeTool.getShape());
+        const drawnShape = drawShapeTool.getShape();
+        drawnShape !== null
+          ? commitStable(drawnShape, "draw")
+          : commitStable(null, "deselect");
       } else {
-        commitStable(manipulateShapeTool.getShape());
+        commitStable(transformShapeTool.getShape(), "transform");
       }
 
       reset();
@@ -106,7 +114,7 @@ export const useShapeTool = (
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         reset();
-        renderStable(null);
+        commitStable(null, "deselect");
       }
     };
 
