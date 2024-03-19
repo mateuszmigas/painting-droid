@@ -43,6 +43,7 @@ export const CanvasViewport = memo(
     const canvasBackgroundRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
     const canvasOverlayRef = useRef<HTMLDivElement>(null);
+    const canvasActiveLayerOverlayRef = useRef<HTMLDivElement>(null);
     const { layers, activeLayerIndex, overlayShape } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
@@ -56,8 +57,8 @@ export const CanvasViewport = memo(
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
     const canvasActionDispatcher = useCanvasActionDispatcher();
     const { render: renderShape } = useShapeRenderer(
-      viewport,
-      canvasOverlayRef
+      canvasOverlayRef,
+      viewport
     );
 
     useEffect(() => {
@@ -146,7 +147,10 @@ export const CanvasViewport = memo(
           />
         ))}
         <div
-          key="overlay"
+          className="size-full origin-top-left absolute pointer-events-none left-0 top-0"
+          ref={canvasActiveLayerOverlayRef}
+        />
+        <div
           className="size-full origin-top-left absolute pointer-events-none left-0 top-0"
           ref={canvasOverlayRef}
         />
