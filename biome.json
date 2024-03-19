@@ -17,7 +17,7 @@
         "noSvgWithoutTitle": "off"
       }
     },
-    "ignore": ["wasm/"]
+    "ignore": ["wasm/", "/.solid.tsx$/"]
   },
   "formatter": {
     "indentStyle": "space",

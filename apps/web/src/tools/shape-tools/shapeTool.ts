@@ -4,9 +4,6 @@ import type { Position } from "@/utils/common";
 
 export type ShapePayload = {
   position: Position;
-  isLastTick: boolean;
-  sinceLastTickMs: number;
-  ticksCount: number;
 };
 
 export type ShapeToolMetadata = {
@@ -24,9 +21,8 @@ export type ShapeToolMetadata = {
 };
 
 export interface ShapeTool {
-  configure(config: unknown): void;
-  update(payload: ShapePayload): CanvasOverlayShape | null;
-  finish(): CanvasOverlayShape | null;
+  update(payload: ShapePayload): void;
+  getShape(): CanvasOverlayShape | null;
   reset(): void;
 }
 

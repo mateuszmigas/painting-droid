@@ -7,6 +7,7 @@ import { command as fitCanvasToWindow } from "./fitCanvasToWindow";
 import { command as undoCanvasAction } from "./undoCanvasAction";
 import { command as redoCanvasAction } from "./redoCanvasAction";
 import { command as clearActiveWorkspace } from "./clearActiveWorkspace";
+import { command as selectTool } from "./selectTool";
 
 export const commands = {
   saveCurrentWorkspaceAsFile,
@@ -18,6 +19,7 @@ export const commands = {
   undoCanvasAction,
   redoCanvasAction,
   clearActiveWorkspace,
+  selectTool,
 } as const;
 
 export type CommandId = keyof typeof commands;

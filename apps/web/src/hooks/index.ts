@@ -12,3 +12,5 @@ export { useCanvasContextGuard } from "./useCanvasContextGuard";
 export { useCanvasActionDispatcher } from "./useCanvasActionDispatcher";
 export { useMousePosition } from "./useMousePosition";
 export { useGlobalKeyboardHandler } from "./useGlobalKeyboardHandler";
+export { useShapeRenderer } from "./useShapeRenderer";
+export { useShapeTool } from "./useShapeTool";

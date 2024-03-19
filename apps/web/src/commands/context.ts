@@ -4,6 +4,7 @@ import type {
   useWorkspacesStore,
   useCommandPaletteStore,
   useLayoutStore,
+  useToolStore,
 } from "@/store";
 
 export type CommandContext = {
@@ -11,6 +12,7 @@ export type CommandContext = {
     workspaces: () => ReturnType<typeof useWorkspacesStore.getState>;
     commandPalette: () => ReturnType<typeof useCommandPaletteStore.getState>;
     layout: () => ReturnType<typeof useLayoutStore.getState>;
+    tool: () => ReturnType<typeof useToolStore.getState>;
   };
   dialogService: DialogService;
   canvasActionDispatcher: CanvasActionDispatcher;

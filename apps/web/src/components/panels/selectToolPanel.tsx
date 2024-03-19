@@ -3,22 +3,22 @@ import { useToolStore } from "@/store";
 import { memo } from "react";
 import { type ToolId, defaultToolsSettings, toolsMetadata } from "@/tools";
 import type { IconType } from "../icon";
+import { useCommandService } from "@/contexts/commandService";
 
 const tools: { id: ToolId; icon: IconType; name: string }[] = (
   Object.keys(defaultToolsSettings) as ToolId[]
-)
-  .map((id) => {
-    const metadata = toolsMetadata[id];
-    return {
-      id,
-      icon: metadata.icon,
-      name: metadata.name,
-    };
-  })
-  .filter((tool) => tool.id !== "rectangleSelect");
+).map((id) => {
+  const metadata = toolsMetadata[id];
+  return {
+    id,
+    icon: metadata.icon,
+    name: metadata.name,
+  };
+});
 
 export const SelectToolPanel = memo(() => {
-  const { selectedToolId, setSelectedToolId } = useToolStore((state) => state);
+  const { selectedToolId } = useToolStore((state) => state);
+  const { executeCommand } = useCommandService();
   return (
     <div className="flex flex-col gap-medium">
       <div className="flex flex-wrap flex-row gap-small p-small">
@@ -34,7 +34,7 @@ export const SelectToolPanel = memo(() => {
             key={id}
             type={icon}
             size="medium"
-            onClick={() => setSelectedToolId(id)}
+            onClick={() => executeCommand("selectTool", { toolId: id })}
           />
         ))}
       </div>

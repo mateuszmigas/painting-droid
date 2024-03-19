@@ -1,35 +1,57 @@
-import type { CanvasContext } from "@/utils/common";
+import type { Position } from "@/utils/common";
 import type { ShapePayload, ShapeTool, ShapeToolMetadata } from "./shapeTool";
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
+import { fastRound } from "@/utils/math";
 
 export const rectangleSelectToolMetadata: ShapeToolMetadata = {
   id: "rectangleSelect",
   name: "Rectangle Select",
-  icon: "plus",
+  icon: "rectangle-select",
   settings: {},
 } as const;
 
 export class RectangleSelectTool implements ShapeTool {
-  constructor(private context: CanvasContext) {
-    console.log("context", this.context);
-  }
-
-  configure() {}
+  private startPosition: Position | null = null;
+  private endPosition: Position | null = null;
 
   update(payload: ShapePayload) {
-    console.log("payload", payload);
+    if (!this.startPosition) {
+      this.startPosition = {
+        x: fastRound(payload.position.x),
+        y: fastRound(payload.position.y),
+      };
+    }
+
+    this.endPosition = {
+      x: fastRound(payload.position.x),
+      y: fastRound(payload.position.y),
+    };
+  }
+
+  getShape() {
+    if (!this.startPosition || !this.endPosition) {
+      return null;
+    }
+
+    const x = Math.min(this.startPosition.x, this.endPosition.x);
+    const y = Math.min(this.startPosition.y, this.endPosition.y);
+    const width = Math.abs(this.startPosition.x - this.endPosition.x);
+    const height = Math.abs(this.startPosition.y - this.endPosition.y);
+
+    if (width === 0 || height === 0) {
+      return null;
+    }
+
     return {
       type: "rectangle",
-      position: { x: 150, y: 10 },
-      size: { width: 100, height: 120 },
-      state: "draw",
+      boundingBox: { x, y, width, height },
+      capturedBox: null,
     } as CanvasOverlayShape;
   }
 
-  finish() {
-    return null;
+  reset() {
+    this.startPosition = null;
+    this.endPosition = null;
   }
-
-  reset() {}
 }
 

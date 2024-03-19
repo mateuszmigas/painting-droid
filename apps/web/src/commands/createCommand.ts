@@ -7,12 +7,11 @@ export const createCommand = <
   C extends (context: CommandContext, payload: never) => Promise<void>
 >(command: {
   id: T;
-  display: string;
+  display?: string;
   execute: C;
-  icon: IconType;
+  icon?: IconType;
   defaultKeyGesture?: KeyGesture;
   options: {
     showInPalette: boolean;
   };
 }) => command;
-
