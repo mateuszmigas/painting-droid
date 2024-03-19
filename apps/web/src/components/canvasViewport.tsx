@@ -18,21 +18,21 @@ import type { DrawToolId } from "@/tools/draw-tools";
 import type { Size } from "@/utils/common";
 import { type Viewport, screenToViewportPosition } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
-import React, { memo, useRef, useEffect } from "react";
+import { memo, useRef, useEffect } from "react";
 
 const alphaGridCellSize = 20;
 const applyTransform = (
   viewport: Viewport,
   size: Size,
-  parentElement: HTMLElement,
+  canvasBackground: HTMLElement,
   canvasStack: HTMLCanvasElement[]
 ) => {
-  parentElement.style.transform = `translate(${viewport.position.x}px, ${viewport.position.y}px)`;
-  parentElement.style.width = `${size.width * viewport.zoom}px`;
-  parentElement.style.height = `${size.height * viewport.zoom}px`;
+  canvasBackground.style.transform = `translate(${viewport.position.x}px, ${viewport.position.y}px)`;
+  canvasBackground.style.width = `${size.width * viewport.zoom}px`;
+  canvasBackground.style.height = `${size.height * viewport.zoom}px`;
 
   canvasStack.forEach((element) => {
-    element.style.transform = `scale(${viewport.zoom})`;
+    element.style.transform = `translate(${viewport.position.x}px, ${viewport.position.y}px) scale(${viewport.zoom})`;
   });
 };
 
@@ -40,9 +40,9 @@ export const CanvasViewport = memo(
   (props: { viewport: Observable<Viewport>; size: Size }) => {
     const { viewport, size } = props;
     const hostElementRef = useRef<HTMLDivElement>(null);
-    const canvasParentRef = useRef<HTMLDivElement>(null);
+    const canvasBackgroundRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
-    const overlayHostRef = useRef<HTMLDivElement>(null);
+    const canvasOverlayRef = useRef<HTMLDivElement>(null);
     const { layers, activeLayerIndex, overlayShape } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
@@ -55,7 +55,10 @@ export const CanvasViewport = memo(
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
     const canvasActionDispatcher = useCanvasActionDispatcher();
-    const { render: renderShape } = useShapeRenderer(viewport, overlayHostRef);
+    const { render: renderShape } = useShapeRenderer(
+      viewport,
+      canvasOverlayRef
+    );
 
     useEffect(() => {
       renderShape(overlayShape);
@@ -103,11 +106,11 @@ export const CanvasViewport = memo(
     useListener(
       viewport,
       (newViewport) =>
-        canvasParentRef.current &&
+        canvasBackgroundRef.current &&
         applyTransform(
           newViewport,
           size,
-          canvasParentRef.current,
+          canvasBackgroundRef.current,
           canvasStackRef.current
         ),
       { triggerOnMount: true }
@@ -120,37 +123,32 @@ export const CanvasViewport = memo(
         className="absolute size-full overflow-hidden cursor-crosshair duration-1000"
       >
         <div
-          ref={canvasParentRef}
+          ref={canvasBackgroundRef}
           style={
             {
               "--alpha-background-size": `${alphaGridCellSize}px`,
             } as never
           }
-          className="relative pointer-events-none outline outline-border shadow-2xl box-content alpha-background"
-        >
-          {layers.map((layer, index) => (
-            <React.Fragment key={layer.id}>
-              <canvas
-                ref={(element) => {
-                  if (element) {
-                    canvasStackRef.current[index] = element;
-                  }
-                }}
-                className="origin-top-left absolute pixelated-canvas"
-                style={{ width: size.width, height: size.height }}
-                width={size.width}
-                height={size.height}
-              />
-              {/* {index === activeLayerIndex && (
-                <OverlayShape viewport={viewport} />
-              )} */}
-            </React.Fragment>
-          ))}
-        </div>
+          className="origin-top-left absolute pointer-events-none outline outline-border shadow-2xl box-content alpha-background"
+        />
+        {layers.map((layer, index) => (
+          <canvas
+            key={layer.id}
+            ref={(element) => {
+              if (element) {
+                canvasStackRef.current[index] = element;
+              }
+            }}
+            className="origin-top-left absolute pixelated-canvas pointer-events-none"
+            style={{ width: size.width, height: size.height }}
+            width={size.width}
+            height={size.height}
+          />
+        ))}
         <div
           key="overlay"
-          className="size-full absolute pointer-events-none left-0 top-0"
-          ref={overlayHostRef}
+          className="size-full origin-top-left absolute pointer-events-none left-0 top-0"
+          ref={canvasOverlayRef}
         />
       </div>
     );
