@@ -9,6 +9,7 @@ import { memo, useMemo } from "react";
 import {
   useCommandPaletteStore,
   useLayoutStore,
+  useToolStore,
   useWorkspacesStore,
 } from "@/store";
 import { useCanvasActionDispatcher } from "@/hooks";
@@ -41,6 +42,7 @@ export const CommandPaletteHost = memo(
           workspaces: () => useWorkspacesStore.getState(),
           commandPalette: () => useCommandPaletteStore.getState(),
           layout: () => useLayoutStore.getState(),
+          tool: () => useToolStore.getState(),
         },
         dialogService,
         canvasActionDispatcher,
@@ -87,7 +89,7 @@ export const CommandPaletteHost = memo(
                 className="m-1 h-8"
               >
                 <Icon
-                  type={command.icon}
+                  type={command.icon ?? "command"}
                   size="small"
                   className="mr-2 min-h-5 min-w-5"
                 />

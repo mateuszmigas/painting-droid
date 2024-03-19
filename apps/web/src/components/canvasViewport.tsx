@@ -1,34 +1,39 @@
-import { memo, useRef } from "react";
 import {
-  useViewportManipulator,
-  useListener,
-  useDrawTool,
-  useSyncCanvasStackWithLayers,
+  useCanvasActionDispatcher,
   useCanvasContextGuard,
+  useDrawTool,
+  useListener,
+  useShapeRenderer,
+  useShapeTool,
+  useSyncCanvasStackWithLayers,
+  useViewportManipulator,
 } from "@/hooks";
 import { useToolStore } from "@/store/toolState";
-import type { Observable } from "@/utils/observable";
 import {
   activeWorkspaceCanvasDataSelector,
   useWorkspacesStore,
 } from "@/store/workspacesStore";
-import { screenToViewportPosition, type Viewport } from "@/utils/manipulation";
-import type { Size } from "@/utils/common";
-import { useSyncSvgWithOverlayShape } from "@/hooks/useSyncSvgWithOverlayShapes";
-import React from "react";
+import { isDrawTool, isShapeTool } from "@/tools";
 import type { DrawToolId } from "@/tools/draw-tools";
-import { isDrawTool } from "@/tools";
+import type { Size } from "@/utils/common";
+import { type Viewport, screenToViewportPosition } from "@/utils/manipulation";
+import type { Observable } from "@/utils/observable";
+import React, { memo, useRef, useEffect } from "react";
 
 const alphaGridCellSize = 20;
-const applyTransform = (viewport: Viewport, element: HTMLElement) => {
-  element.style.transform = `
-      translate(${viewport.position.x}px, ${viewport.position.y}px) 
-      scale(${viewport.zoom})
-    `;
-  element.style.setProperty(
-    "--alpha-background-size",
-    `${alphaGridCellSize / viewport.zoom}px`
-  );
+const applyTransform = (
+  viewport: Viewport,
+  size: Size,
+  parentElement: HTMLElement,
+  canvasStack: HTMLCanvasElement[]
+) => {
+  parentElement.style.transform = `translate(${viewport.position.x}px, ${viewport.position.y}px)`;
+  parentElement.style.width = `${size.width * viewport.zoom}px`;
+  parentElement.style.height = `${size.height * viewport.zoom}px`;
+
+  canvasStack.forEach((element) => {
+    element.style.transform = `scale(${viewport.zoom})`;
+  });
 };
 
 export const CanvasViewport = memo(
@@ -37,11 +42,10 @@ export const CanvasViewport = memo(
     const hostElementRef = useRef<HTMLDivElement>(null);
     const canvasParentRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
-    const svgElementRef = useRef<SVGSVGElement | null>(null);
-    const { layers, overlayShape, activeLayerIndex } = useWorkspacesStore(
+    const overlayHostRef = useRef<HTMLDivElement>(null);
+    const { layers, activeLayerIndex, overlayShape } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
-    useSyncSvgWithOverlayShape(svgElementRef, overlayShape);
     const { contexts } = useSyncCanvasStackWithLayers(canvasStackRef, layers);
     const activeContext = contexts?.[activeLayerIndex];
     const contextGuard = useCanvasContextGuard(
@@ -50,6 +54,24 @@ export const CanvasViewport = memo(
     );
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
+    const canvasActionDispatcher = useCanvasActionDispatcher();
+    const { render } = useShapeRenderer(viewport, overlayHostRef);
+
+    useEffect(() => {
+      render(overlayShape);
+    }, [render, overlayShape]);
+
+    useShapeTool(
+      hostElementRef,
+      "rectangleSelect",
+      (position) => screenToViewportPosition(position, viewport.getValue()),
+      () => overlayShape,
+      render,
+      (overlayShape) => {
+        canvasActionDispatcher.execute("drawOverlayShape", { overlayShape });
+      },
+      isShapeTool(toolId)
+    );
 
     useDrawTool(
       hostElementRef,
@@ -70,7 +92,12 @@ export const CanvasViewport = memo(
       viewport,
       (newViewport) =>
         canvasParentRef.current &&
-        applyTransform(newViewport, canvasParentRef.current),
+        applyTransform(
+          newViewport,
+          size,
+          canvasParentRef.current,
+          canvasStackRef.current
+        ),
       { triggerOnMount: true }
     );
 
@@ -82,8 +109,12 @@ export const CanvasViewport = memo(
       >
         <div
           ref={canvasParentRef}
-          style={{ width: size.width, height: size.height }}
-          className="relative pointer-events-none origin-top-left outline outline-border shadow-2xl box-content alpha-background"
+          style={
+            {
+              "--alpha-background-size": `${alphaGridCellSize}px`,
+            } as never
+          }
+          className="relative pointer-events-none outline outline-border shadow-2xl box-content alpha-background"
         >
           {layers.map((layer, index) => (
             <React.Fragment key={layer.id}>
@@ -93,24 +124,22 @@ export const CanvasViewport = memo(
                     canvasStackRef.current[index] = element;
                   }
                 }}
-                className="absolute pixelated-canvas"
+                className="origin-top-left absolute pixelated-canvas"
                 style={{ width: size.width, height: size.height }}
                 width={size.width}
                 height={size.height}
               />
-              {index === activeLayerIndex && (
-                <svg
-                  ref={svgElementRef}
-                  className="absolute pointer-events-none"
-                  style={{ width: size.width, height: size.height }}
-                  width={size.width}
-                  height={size.height}
-                />
-              )}
+              {/* {index === activeLayerIndex && (
+                <OverlayShape viewport={viewport} />
+              )} */}
             </React.Fragment>
           ))}
-          <div key="canvas-manipulators" />
         </div>
+        <div
+          key="overlay"
+          className="size-full absolute pointer-events-none left-0 top-0"
+          ref={overlayHostRef}
+        />
       </div>
     );
   }

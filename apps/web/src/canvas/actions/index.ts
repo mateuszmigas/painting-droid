@@ -7,6 +7,7 @@ import { createCanvasAction as moveLayerUp } from "./moveLayerUp";
 import { createCanvasAction as moveLayerDown } from "./moveLayerDown";
 import { createCanvasAction as hideLayer } from "./hideLayer";
 import { createCanvasAction as showLayer } from "./showLayer";
+import { createCanvasAction as drawOverlayShape } from "./drawOverlayShape";
 
 export const canvasActions = {
   removeLayer,
@@ -18,5 +19,5 @@ export const canvasActions = {
   moveLayerDown,
   hideLayer,
   showLayer,
+  drawOverlayShape,
 };
-

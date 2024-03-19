@@ -4,17 +4,24 @@ import { uuid } from "./uuid";
 export const createProxyServer = (
   workerSelf: Window & typeof globalThis,
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  api: Record<string, (...args: any[]) => Promise<unknown>>
+  api: Record<string, (...args: any[]) => Promise<unknown>>,
+  init?: () => Promise<unknown>
 ) => {
-  workerSelf.addEventListener("message", (message: MessageEvent) => {
+  let isInitialized = false;
+  workerSelf.addEventListener("message", async (message: MessageEvent) => {
     const { type, payload, id } = message.data;
     const method = api[type];
     if (!method) {
       throw new Error(`Unknown method ${type}`);
     }
-    method(...payload).then((result) => {
-      workerSelf.postMessage({ id, result });
-    });
+
+    if (!isInitialized) {
+      init && (await init());
+      isInitialized = true;
+    }
+
+    const result = await method(...payload);
+    workerSelf.postMessage({ id, result });
   });
 };
 

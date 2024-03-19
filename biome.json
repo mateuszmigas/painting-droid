@@ -16,7 +16,8 @@
       "a11y": {
         "noSvgWithoutTitle": "off"
       }
-    }
+    },
+    "ignore": ["wasm/", "/.solid.tsx$/"]
   },
   "formatter": {
     "indentStyle": "space",

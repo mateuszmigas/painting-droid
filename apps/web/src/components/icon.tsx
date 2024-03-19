@@ -31,7 +31,7 @@ import {
   Undo,
   Redo,
   FilePlus,
-  SquareKanbanDashedIcon,
+  BoxSelect,
 } from "lucide-react";
 
 export type IconType =
@@ -139,7 +139,7 @@ const renderLucideIcon = (
     case "file-plus":
       return <FilePlus className={className} size={fontSize} />;
     case "rectangle-select":
-      return <SquareKanbanDashedIcon className={className} size={fontSize} />;
+      return <BoxSelect className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

@@ -7,6 +7,7 @@ import type { DrawTool } from "@/tools/draw-tools/drawTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
 import type { ContextGuard } from "./useCanvasContextGuard";
 import { toolsMetadata } from "@/tools";
+import { createRaf } from "@/utils/frame";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -17,31 +18,6 @@ const createTool = (id: DrawToolId, context: CanvasContext) => {
     default:
       return assertNever(id);
   }
-};
-
-const createRaf = (
-  callback: (sinceLastTickMs: number, isLastTick?: boolean) => void
-) => {
-  let rafHandle = 0;
-  let start = 0;
-
-  return {
-    start: () => {
-      start = Date.now();
-      const loop = (time: number) => {
-        callback(time - start);
-        rafHandle = requestAnimationFrame(loop);
-      };
-      rafHandle = requestAnimationFrame(loop);
-    },
-    stop: () => {
-      callback(Date.now() - start, true);
-      cancelAnimationFrame(rafHandle);
-    },
-    cancel: () => {
-      cancelAnimationFrame(rafHandle);
-    },
-  };
 };
 
 export const useDrawTool = (
@@ -64,27 +40,26 @@ export const useDrawTool = (
     const tool = toolRef.current;
     let ticksCount = 0;
     let isDrawing = false;
-    let currentPointerPosition: { x: number; y: number } | null = null;
-    const getPointerPosition = (event: PointerEvent) => {
-      return { x: event.offsetX, y: event.offsetY };
-    };
+    let currentPointerPosition: Position | null = null;
+
+    const getPointerPosition = (event: PointerEvent) =>
+      transformToCanvasPosition({ x: event.offsetX, y: event.offsetY });
 
     const { start, stop, cancel } = createRaf((time) => {
       tool.draw({
-        position: transformToCanvasPosition(currentPointerPosition!),
-        isLastTick: false,
+        position: currentPointerPosition!,
         sinceLastTickMs: time,
-        ticksCount,
+        ticksCount: ticksCount++,
       });
-      ticksCount++;
     });
 
     const pointerDownHandler = (event: PointerEvent) => {
       event.preventDefault();
       event.stopPropagation();
       if (event.button !== 0) return;
-      isDrawing = true;
+
       currentPointerPosition = getPointerPosition(event);
+      isDrawing = true;
       start();
     };
 

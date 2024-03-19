@@ -1,0 +1,11 @@
+{
+  "name": "@painting-droid/core",
+  "scripts": {
+    "build": "wasm-pack build --target web --out-name core && pnpm copy",
+    "copy": "node copy.js"
+  },
+  "devDependencies": {
+    "wasm-pack": "^0.12.1"
+  }
+}
+

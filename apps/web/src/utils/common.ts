@@ -10,6 +10,15 @@ export type Size = {
 
 export type Rectangle = Position & Size;
 
+export const isPositionInRectangle = (
+  position: Position,
+  rectangle: Rectangle
+) =>
+  position.x >= rectangle.x &&
+  position.x <= rectangle.x + rectangle.width &&
+  position.y >= rectangle.y &&
+  position.y <= rectangle.y + rectangle.height;
+
 export const scaleRectangle = (
   rectangle: Rectangle,
   scale: number
