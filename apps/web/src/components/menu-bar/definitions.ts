@@ -1,86 +1,76 @@
 import type { ExecuteCommand } from "@/commands";
+import type { Workspace } from "@/store/workspacesStore";
 import type { MenuItem } from "@/utils/menuItem";
 
 export const createMenuBarDefinition = (
+  stores: {
+    workspaces: Workspace[];
+  },
   executeCommand: ExecuteCommand
-): MenuItem[] => [
-  {
-    type: "parent",
-    label: "File",
-    items: [
-      {
-        type: "parent",
-        label: "Save As...",
-        items: [
-          {
-            type: "leaf",
-            label: "JPEG Picture",
-            action: {
-              onClick: () =>
-                executeCommand("saveCurrentWorkspaceAsFile", {
-                  format: "jpeg",
-                }),
+): MenuItem[] => {
+  const workspaces = stores.workspaces;
+  return [
+    {
+      type: "parent",
+      label: "File",
+      items: [
+        {
+          type: "leaf",
+          label: "New",
+          action: { onClick: () => executeCommand("createActiveWorkspace") },
+        },
+        {
+          type: "leaf",
+          label: "Open",
+          action: { onClick: () => executeCommand("openWorkspace") },
+        },
+        {
+          type: "leaf",
+          disabled: workspaces.length === 1,
+          label: "Close",
+          action: { onClick: () => executeCommand("closeActiveWorkspace") },
+        },
+        {
+          type: "separator",
+        },
+        {
+          type: "parent",
+          label: "Save As...",
+          items: [
+            {
+              type: "leaf",
+              label: "PDW Workspace",
+              action: { onClick: () => executeCommand("saveAsWorkspace") },
             },
-          },
-          {
-            type: "leaf",
-            label: "PNG Picture",
-            action: {
-              onClick: () =>
-                executeCommand("saveCurrentWorkspaceAsFile", {
-                  format: "png",
-                }),
+            {
+              type: "leaf",
+              label: "JPEG Picture",
+              action: { onClick: () => executeCommand("saveAsJpeg") },
             },
-          },
-        ],
-      },
-      {
-        type: "separator",
-      },
-      {
-        type: "parent",
-        label: "Temp don't use",
-        items: [
-          {
-            type: "leaf",
-            label: "File 1",
-            action: { onClick: () => console.log("File 1") },
-          },
-          {
-            type: "leaf",
-            label: "File 2",
-            action: { onClick: () => console.log("File 2") },
-          },
-          {
-            type: "parent",
-            label: "More...",
-            items: [
-              {
-                type: "leaf",
-                label: "File 3",
-                action: { onClick: () => console.log("File 3") },
-              },
-              {
-                type: "leaf",
-                label: "File 4",
-                action: { onClick: () => console.log("File 4") },
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    type: "parent",
-    label: "Edit",
-    items: [
-      {
-        type: "leaf",
-        label: "File 2",
-        action: { onClick: () => console.log("File 2") },
-      },
-    ],
-  },
-];
-
+            {
+              type: "leaf",
+              label: "PNG Picture",
+              action: { onClick: () => executeCommand("saveAsPng") },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: "parent",
+      label: "Edit",
+      items: [
+        {
+          type: "leaf",
+          label: "Undo",
+          action: { onClick: () => executeCommand("undoCanvasAction") },
+        },
+        {
+          type: "leaf",
+          label: "Redo",
+          action: { onClick: () => executeCommand("redoCanvasAction") },
+        },
+      ],
+    },
+  ];
+};

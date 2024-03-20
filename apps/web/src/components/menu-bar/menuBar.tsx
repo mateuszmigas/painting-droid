@@ -15,7 +15,8 @@ import type { MenuItem } from "@/utils/menuItem";
 import { Fragment } from "react/jsx-runtime";
 import type { MenuItemAction } from "@/utils/menuItemAction";
 import { useCommandService } from "@/contexts/commandService";
-import { useMemo } from "react";
+import { memo } from "react";
+import { useWorkspacesStore } from "@/store";
 
 const processAction = (action: MenuItemAction) => {
   if ("onClick" in action) {
@@ -41,7 +42,10 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
       );
     case "leaf":
       return (
-        <MenubarItem onClick={() => processAction(item.action)}>
+        <MenubarItem
+          disabled={item.disabled}
+          onClick={() => processAction(item.action)}
+        >
           {item.label}
           {item.KeyGesture ? (
             <MenubarShortcut>{item.KeyGesture.toString()}</MenubarShortcut>
@@ -55,11 +59,12 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
   }
 };
 
-export const MenuBar = () => {
+export const MenuBar = memo(() => {
   const { executeCommand } = useCommandService();
-  const menuBarDefinition = useMemo(
-    () => createMenuBarDefinition(executeCommand),
-    [executeCommand]
+  const { workspaces } = useWorkspacesStore();
+  const menuBarDefinition = createMenuBarDefinition(
+    { workspaces },
+    executeCommand
   );
   return (
     <Menubar className="border-none shadow-none">
@@ -83,5 +88,4 @@ export const MenuBar = () => {
       })}
     </Menubar>
   );
-};
-
+});
