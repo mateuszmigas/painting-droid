@@ -1,6 +1,6 @@
 # Painting Droid
 
-[DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓▓░░░░░░░░░░░░░░░░░░ 18% 
+[DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓▓▓▓░░░░░░░░░░░░░░░░ 20% 
 
 [![100 - Commitów](https://img.shields.io/badge/100-Commitów-2ea44f)](https://100commitow.pl/) ![Vercel](https://vercelbadge.vercel.app/api/mateuszmigas/painting-droid) ![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg)
 
@@ -91,7 +91,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] State preservation
 - [ ] Custom 'Project' file format
 - [ ] Saving and loading projects
-- [ ] Area selection
+- [x] Area selection
 - [ ] WASM effects
 
 ### AI features
