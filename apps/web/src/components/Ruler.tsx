@@ -163,7 +163,7 @@ export const Ruler = (props: { observableViewport: Observable<Viewport> }) => {
   });
 
   return (
-    <div className="absolute size-full pointer-events-none overflow-hidden">
+    <div className="absolute size-full pointer-events-none overflow-hidden z-[1]">
       <canvas
         ref={canvasHorizontalRef}
         height={rulerConfig.offset * rulerConfig.dpi}

@@ -201,7 +201,7 @@ export const CanvasViewport = memo(
       <div
         ref={hostElementRef}
         style={{ opacity: contexts !== null ? "1" : "0" }}
-        className="absolute size-full overflow-hidden cursor-crosshair duration-1000"
+        className="absolute size-full overflow-hidden cursor-crosshair duration-1000 z-[0]"
       >
         <div
           ref={canvasBackgroundRef}
