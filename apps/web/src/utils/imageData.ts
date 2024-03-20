@@ -73,39 +73,27 @@ export const restoreContextFromCompressed = async (
   context.drawImage(image, 0, 0, width, height);
 };
 
-export const pickRectangleRegion = (
-  imageData: ImageUncompressedData,
-  region: Rectangle
-): ImageUncompressedRegionRect => {
-  const { x, y, width, height } = region;
-  const data = new Uint8ClampedArray(width * height * 4);
-  for (let i = 0; i < height; i++) {
-    const baseOffset = (y + i) * width * 4 + x * 4;
-    const rectOffset = i * width * 4;
-    data.set(
-      imageData.data.subarray(baseOffset, baseOffset + width * 4),
-      rectOffset
-    );
-  }
-  return { x, y, width, height, data };
+export const getRectangleCompressedFromContext = async (
+  context: CanvasContext,
+  rectangle: Rectangle
+) => {
+  const { x, y, width, height } = rectangle;
+  const data = context.getImageData(x, y, width, height);
+  const canvas = createCanvasContext(width, height);
+  canvas.putImageData(data, 0, 0);
+  return createCompressedFromContext(canvas);
 };
 
-export const applyRegions = (
-  imageData: ImageUncompressedData,
-  regions: ImageUncompressedRegionRect[]
+export const putRectangleCompressedToContext = async (
+  context: CanvasContext,
+  compressed: ImageCompressedData,
+  rectangle: Rectangle
 ) => {
-  for (const diff of regions) {
-    const { x, y, width, height, data } = diff;
-    for (let i = 0; i < height; i++) {
-      const baseOffset = (y + i) * width * 4 + x * 4;
-      const rectOffset = i * width * 4;
-      imageData.data.set(
-        data.subarray(rectOffset, rectOffset + width * 4),
-        baseOffset
-      );
-    }
-  }
+  const { x, y, width, height } = rectangle;
+  const image = await loadImageFromCompressed(compressed);
+  context.drawImage(image, x, y, width, height);
 };
+
 const createCanvasContext = (width: number, height: number) => {
   const canvas = document.createElement("canvas");
   canvas.width = width;

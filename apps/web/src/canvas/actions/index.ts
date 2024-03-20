@@ -10,6 +10,7 @@ import { createCanvasAction as showLayer } from "./showLayer";
 import { createCanvasAction as drawOverlayShape } from "./drawOverlayShape";
 import { createCanvasAction as transformOverlayShape } from "./transformOverlayShape";
 import { createCanvasAction as clearOverlayShape } from "./clearOverlayShape";
+import { createCanvasAction as applyOverlayShape } from "./applyOverlayShape";
 
 export const canvasActions = {
   removeLayer,
@@ -24,4 +25,5 @@ export const canvasActions = {
   drawOverlayShape,
   transformOverlayShape,
   clearOverlayShape,
+  applyOverlayShape,
 };

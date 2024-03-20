@@ -45,7 +45,7 @@ export class RectangleSelectTool implements ShapeTool {
     return {
       type: "rectangle",
       boundingBox: { x, y, width, height },
-      capturedBox: null,
+      captured: null,
     } as CanvasOverlayShape;
   }
 
@@ -54,4 +54,3 @@ export class RectangleSelectTool implements ShapeTool {
     this.endPosition = null;
   }
 }
-

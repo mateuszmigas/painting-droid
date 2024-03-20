@@ -14,7 +14,10 @@ export type CanvasLayer = {
 export type CanvasOverlayShape = {
   type: "rectangle";
   boundingBox: Rectangle;
-  capturedBox: Rectangle | null;
+  captured: {
+    box: Rectangle;
+    data: ImageCompressedData;
+  } | null;
 };
 
 export type CanvasState = {

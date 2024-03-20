@@ -19,6 +19,15 @@ export const isPositionInRectangle = (
   position.y >= rectangle.y &&
   position.y <= rectangle.y + rectangle.height;
 
+export const areRectanglesEqual = (
+  rectangle1: Rectangle,
+  rectangle2: Rectangle
+) =>
+  rectangle1.x === rectangle2.x &&
+  rectangle1.y === rectangle2.y &&
+  rectangle1.width === rectangle2.width &&
+  rectangle1.height === rectangle2.height;
+
 export const scaleRectangle = (
   rectangle: Rectangle,
   scale: number
