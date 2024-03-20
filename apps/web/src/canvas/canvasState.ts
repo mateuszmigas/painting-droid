@@ -34,9 +34,5 @@ export const defaultLayer: CanvasLayer = {
 export const defaultCanvasState: CanvasState = {
   activeLayerIndex: 0,
   layers: [defaultLayer],
-  overlayShape: {
-    type: "rectangle",
-    boundingBox: { x: 0, y: 0, width: 0, height: 0 },
-    capturedBox: null,
-  },
+  overlayShape: null,
 };
