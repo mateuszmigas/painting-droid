@@ -29,7 +29,7 @@ export const MetadataPanel = () => {
   };
   const callRust = async () => {
     const now = performance.now();
-    coreClient.hello("Zdzicho").then((res) => {
+    coreClient.hello("Zdzicho2").then((res) => {
       const time = performance.now() - now;
       setResult(`${res.result} in ${time}ms`);
     });
