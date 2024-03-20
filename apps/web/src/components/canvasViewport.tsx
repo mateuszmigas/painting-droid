@@ -117,6 +117,8 @@ export const CanvasViewport = memo(
       { triggerOnMount: true }
     );
 
+    const { position, zoom } = viewport.getValue();
+
     return (
       <div
         ref={hostElementRef}
@@ -141,7 +143,11 @@ export const CanvasViewport = memo(
               }
             }}
             className="origin-top-left absolute pixelated-canvas pointer-events-none"
-            style={{ width: size.width, height: size.height }}
+            style={{
+              width: size.width,
+              height: size.height,
+              transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})`,
+            }}
             width={size.width}
             height={size.height}
           />
