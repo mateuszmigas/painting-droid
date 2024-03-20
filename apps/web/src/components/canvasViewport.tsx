@@ -142,7 +142,8 @@ export const CanvasViewport = memo(
                 activeLayerData: createCompressedFromContext(activeContext!),
               });
             } else {
-              canvasActionDispatcher.execute("clearOverlayShape", undefined);
+              overlayShape &&
+                canvasActionDispatcher.execute("clearOverlayShape", undefined);
             }
           }
         } else {

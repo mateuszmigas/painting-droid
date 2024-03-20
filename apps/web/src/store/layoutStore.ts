@@ -25,8 +25,8 @@ const defaultState: AppLayoutState = {
     layers: { name: "layers", size: 35 },
     tools: { name: "tools", size: 70 },
     colors: { name: "colors", size: 10 },
-    metadata: { name: "metadata", size: 10 },
-    history: { name: "history", size: 45 },
+    metadata: { name: "metadata", size: 20 },
+    history: { name: "history", size: 35 },
   },
   columns: {
     left: { size: 20 },
@@ -66,7 +66,7 @@ export const settingsStoreCreator: StateCreator<AppLayoutSlice> = (set) => ({
 
 export const useLayoutStore = create<AppLayoutSlice>()(
   persist(settingsStoreCreator, {
-    version: 1,
+    version: 2,
     name: "layout",
     storage: createJSONStorage(() => localStorage),
   })

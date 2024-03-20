@@ -33,6 +33,9 @@ import {
   Redo,
   FilePlus,
   BoxSelect,
+  Loader,
+  Check,
+  Brain,
 } from "lucide-react";
 import { Deselect } from "./icons/deselect";
 
@@ -67,7 +70,10 @@ export type IconType =
   | "redo"
   | "file-plus"
   | "rectangle-select"
-  | "deselect";
+  | "deselect"
+  | "loader"
+  | "check"
+  | "brain";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -148,6 +154,12 @@ const renderLucideIcon = (
       return <BoxSelect className={className} size={fontSize} />;
     case "deselect":
       return <Deselect className={className} size={fontSize} />;
+    case "loader":
+      return <Loader className={className} size={fontSize} />;
+    case "check":
+      return <Check className={className} size={fontSize} />;
+    case "brain":
+      return <Brain className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

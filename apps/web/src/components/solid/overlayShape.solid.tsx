@@ -26,9 +26,8 @@ export const OverlayShape = (props: {
             props.overlayShape!.boundingBox.height * props.viewport.zoom
           }px`,
         }}
-        class="absolute border-primary border-2 border-dashed animate-border"
+        class="absolute border-primary border-2 border-dashed"
       />
     </Solid.Show>
   );
 };
-
