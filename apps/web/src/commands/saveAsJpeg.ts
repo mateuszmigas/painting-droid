@@ -1,11 +1,8 @@
-import { downloadAsFile } from "@/utils/html";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
-import {
-  compressedDataToDataUrl,
-  mergeCompressedData,
-} from "@/utils/imageData";
+import { compressedDataToBlob, mergeCompressedData } from "@/utils/imageData";
+import { saveBlobToFile } from "@/utils/fileSystem";
 
 export const command = createCommand({
   id: "saveAsJpeg",
@@ -22,7 +19,7 @@ export const command = createCommand({
       .map((layer) => layer.data!);
 
     const mergedData = await mergeCompressedData(layersData);
-    const data = await compressedDataToDataUrl(mergedData, format);
-    downloadAsFile(data, `${name}.${format}`);
+    const blob = await compressedDataToBlob(mergedData, format);
+    saveBlobToFile(blob, name, format);
   },
 });

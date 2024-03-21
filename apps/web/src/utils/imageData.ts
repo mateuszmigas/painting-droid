@@ -40,13 +40,15 @@ export const loadImageFromCompressed = (compressed: ImageCompressedData) => {
   });
 };
 
-export const compressedDataToDataUrl = async (
+export const compressedDataToBlob = async (
   compressed: ImageCompressedData,
   format: "jpeg" | "png"
 ) => {
   const context = createCanvasContext(compressed.width, compressed.height);
   await restoreContextFromCompressed(compressed, context);
-  return context.canvas.toDataURL(`image/${format}`, 1.0);
+  const dataUrl = context.canvas.toDataURL(`image/${format}`, 1.0);
+  const response = await fetch(dataUrl);
+  return await response.blob();
 };
 
 export const mergeCompressedData = async (

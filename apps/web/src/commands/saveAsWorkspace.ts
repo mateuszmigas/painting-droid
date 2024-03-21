@@ -1,8 +1,8 @@
-import { downloadAsFile } from "@/utils/html";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { workspaceFormat, workspaceFormatVersion } from "@/contants";
+import { saveTextToFile } from "@/utils/fileSystem";
 
 export const command = createCommand({
   id: "saveAsWorkspace",
@@ -13,16 +13,11 @@ export const command = createCommand({
     const { canvasData, name, size } = activeWorkspaceSelector(
       context.stores.workspaces()
     );
-    const blob = new Blob(
-      [
-        JSON.stringify({
-          version: workspaceFormatVersion,
-          size,
-          data: canvasData,
-        }),
-      ],
-      { type: "text/plain" }
-    );
-    downloadAsFile(URL.createObjectURL(blob), `${name}.${workspaceFormat}`);
+    const text = JSON.stringify({
+      version: workspaceFormatVersion,
+      size,
+      data: canvasData,
+    });
+    saveTextToFile(text, name, workspaceFormat);
   },
 });

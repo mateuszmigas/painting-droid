@@ -1,10 +1,3 @@
-export const downloadAsFile = (data: string, filename: string) => {
-  const anchor = document.createElement("a");
-  anchor.href = data;
-  anchor.download = filename;
-  anchor.click();
-};
-
 export const readFileAsText = (blob: Blob) => {
   return new Promise<string | null>((resolve, reject) => {
     const reader = new FileReader();
@@ -45,4 +38,29 @@ export const openAndReadFileAsText = async (options: { extension: string }) => {
     return null;
   }
   return readFileAsText(file).then((text) => ({ name: file.name, text }));
+};
+
+export const downloadAsFile = (data: string, filename: string) => {
+  const anchor = document.createElement("a");
+  anchor.href = data;
+  anchor.download = filename;
+  anchor.click();
+};
+
+export const saveTextToFile = (
+  text: string,
+  filename: string,
+  extension: string
+) => {
+  const blob = new Blob([text], { type: "text/plain" });
+  downloadAsFile(URL.createObjectURL(blob), `${filename}.${extension}`);
+};
+
+export const saveBlobToFile = async (
+  blob: Blob,
+  filename: string,
+  extension: string
+) => {
+  const url = URL.createObjectURL(blob);
+  downloadAsFile(url, `${filename}.${extension}`);
 };
