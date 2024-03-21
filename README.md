@@ -90,7 +90,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Command palette
 - [x] State preservation
 - [x] Custom 'Project' file format
-- [ ] Saving and loading projects
+- [x] Saving and loading projects
 - [x] Area selection
 - [ ] WASM effects
 
