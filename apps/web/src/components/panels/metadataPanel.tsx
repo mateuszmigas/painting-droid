@@ -40,15 +40,18 @@ export const MetadataPanel = () => {
       const box = {
         x: 0,
         y: 0,
-        width: result.data!.width,
-        height: result.data!.height,
+        width: result.data!.width / 2,
+        height: result.data!.height / 2,
       };
       executeCommand("selectTool", { toolId: "rectangleSelect" });
       canvasDispatcher.execute("drawOverlayShape", {
         overlayShape: {
           type: "rectangle",
           boundingBox: box,
-          captured: { box, data: result.data! },
+          captured: {
+            box: { x: 0, y: 0, width: 0, height: 0 },
+            data: result.data!,
+          },
         },
       });
     }

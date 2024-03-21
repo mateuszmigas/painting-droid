@@ -54,6 +54,9 @@ const applyImageOverlayTransform = (
   }px, ${viewport.position.y + boundingBox.y * viewport.zoom}px) scale(${
     viewport.zoom
   })`;
+
+  image.style.maxWidth = `${boundingBox.width}px`;
+  image.style.maxHeight = `${boundingBox.height}px`;
 };
 
 export const CanvasViewport = memo(
@@ -69,7 +72,6 @@ export const CanvasViewport = memo(
     );
     const { contexts } = useSyncCanvasWithLayers(
       canvasStackRef,
-      imageOverlayRef,
       layers,
       activeLayerIndex,
       overlayShape
@@ -236,8 +238,10 @@ export const CanvasViewport = memo(
           alt=""
           className="pixelated-canvas origin-top-left absolute pointer-events-none left-0 top-0"
           ref={imageOverlayRef}
+          src={overlayShape?.captured ? overlayShape.captured.data.data : ""}
           style={{
             zIndex: activeLayerIndex + 1,
+            willChange: "transform",
           }}
         />
         <div

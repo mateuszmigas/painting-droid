@@ -18,8 +18,8 @@ const restoreLayers = async (
       await restoreContextFromCompressed(layer.data, context);
 
       if (i === activeLayerIndex && overlayShape?.captured) {
-        const rect = overlayShape.captured.box;
-        context.clearRect(rect.x, rect.y, rect.width, rect.height);
+        // const rect = overlayShape.captured.box;
+        // context.clearRect(rect.x, rect.y, rect.width, rect.height);
       }
     } else {
       clearContext(context);
@@ -29,7 +29,6 @@ const restoreLayers = async (
 
 export const useSyncCanvasWithLayers = (
   canvasElementsRef: RefObject<HTMLCanvasElement[]>,
-  imageOverlayRef: RefObject<HTMLImageElement>,
   layers: CanvasLayer[],
   activeLayerIndex: number,
   overlayShape: CanvasOverlayShape | null
@@ -48,21 +47,9 @@ export const useSyncCanvasWithLayers = (
     );
 
     restoreLayers(layers, activeLayerIndex, overlayShape, newContexts).then(
-      () => {
-        setContexts(newContexts);
-        if (!imageOverlayRef.current) return;
-        imageOverlayRef.current.src = overlayShape?.captured
-          ? overlayShape.captured.data.data
-          : "";
-      }
+      () => setContexts(newContexts)
     );
-  }, [
-    layers,
-    activeLayerIndex,
-    overlayShape,
-    canvasElementsRef,
-    imageOverlayRef,
-  ]);
+  }, [layers, activeLayerIndex, overlayShape, canvasElementsRef]);
 
   return { contexts };
 };
