@@ -101,6 +101,10 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [ ] Integration with Stability.ai
 - [ ] Integration with Midjourney
 
+### Extra
+- [ ] Change renderer to webgl/webgpu
+- [ ] Optimize image conversions with Rust
+
 ### License
 
 [MIT](https://choosealicense.com/licenses/mit/)
