@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import solidPlugin from "vite-plugin-solid";
 
-const isDesktop = "TAURI_PLATFORM" in process.env;
+const isDesktop = "TAURI_ENV_PLATFORM" in process.env;
 
 export default defineConfig(async () => ({
   plugins: [
