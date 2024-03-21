@@ -1,6 +1,6 @@
 # Painting Droid
 
-[DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓▓▓▓░░░░░░░░░░░░░░░░ 20% 
+[DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓▓▓▓░░░░░░░░░░░░░░░░ 21% 
 
 [![100 - Commitów](https://img.shields.io/badge/100-Commitów-2ea44f)](https://100commitow.pl/) ![Vercel](https://vercelbadge.vercel.app/api/mateuszmigas/painting-droid) ![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg)
 
@@ -94,16 +94,17 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Area selection
 - [ ] WASM effects
 
-### AI features
+### AI features (Desktop only)
 
 - [ ] Stable Diffusion Docker image for local server
 - [ ] Integration with DALL-E
 - [ ] Integration with Stability.ai
 - [ ] Integration with Midjourney
 
-### Extra
+### Post MVP
 - [ ] Change renderer to webgl/webgpu
 - [ ] Optimize image conversions with Rust
+- [ ] Custom app menu for MacOS
 
 ### License
 
