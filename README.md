@@ -89,7 +89,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Undo/Redo functionality
 - [x] Command palette
 - [x] State preservation
-- [ ] Custom 'Project' file format
+- [x] Custom 'Project' file format
 - [ ] Saving and loading projects
 - [x] Area selection
 - [ ] WASM effects
