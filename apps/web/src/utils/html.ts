@@ -38,3 +38,11 @@ export const openFile = (options: { extension: string }) => {
     fileInput.click();
   });
 };
+
+export const openAndReadFileAsText = async (options: { extension: string }) => {
+  const file = await openFile({ extension: options.extension });
+  if (!file) {
+    return null;
+  }
+  return readFileAsText(file).then((text) => ({ name: file.name, text }));
+};
