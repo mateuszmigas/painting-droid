@@ -1,6 +1,5 @@
 export const translations = {
   tools: "Tools",
-  effects: "Effects",
   layers: "Layers",
   history: "History",
   metadata: "Metadata",
@@ -10,6 +9,10 @@ export const translations = {
     layers: { title: "Layers" },
     history: { title: "History" },
     metadata: { title: "Metadata" },
+  },
+  effects: {
+    grayscale: "Grayscale",
+    sepia: "Sepia",
   },
 };
 

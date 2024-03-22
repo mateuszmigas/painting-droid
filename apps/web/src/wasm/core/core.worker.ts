@@ -7,7 +7,7 @@ const coreServer = {
   hello: async (name: string) => {
     return { result: greet(name) };
   },
-  grayscaleEffect: async (
+  grayscale: async (
     imageData: ImageUncompressedData
   ): Promise<ImageUncompressedData> => {
     const view = new Uint8Array(imageData.data.buffer);
@@ -19,7 +19,7 @@ const coreServer = {
       data: new Uint8ClampedArray(result.buffer),
     };
   },
-  sepiaEffect: async (
+  sepia: async (
     imageData: ImageUncompressedData
   ): Promise<ImageUncompressedData> => {
     const view = new Uint8Array(imageData.data.buffer);

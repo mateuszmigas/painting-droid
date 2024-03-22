@@ -8,6 +8,7 @@ import {
 import { coreClient } from "@/wasm/core/coreClient";
 import { memo, useState } from "react";
 import { Button } from "../ui/button";
+import { translations } from "@/translations";
 
 export const EffectsPanel = memo(() => {
   const [result, setResult] = useState<string>("");
@@ -16,7 +17,7 @@ export const EffectsPanel = memo(() => {
     activeWorkspaceCanvasDataSelector(s)
   );
 
-  const applyEffect = async (effect: "grayscaleEffect" | "sepiaEffect") => {
+  const applyEffect = async (effect: "grayscale" | "sepia") => {
     const now = performance.now();
     const activeLayer = layers[activeLayerIndex];
     const data = activeLayer.data;
@@ -33,7 +34,7 @@ export const EffectsPanel = memo(() => {
     setResult(`Took: ${time}ms`);
     await canvasDispatcher.execute("updateLayerData", {
       layerId: activeLayer.id,
-      source: "web worker",
+      source: translations.effects[effect],
       icon: "brain",
       data: compressedData,
     });
@@ -44,14 +45,14 @@ export const EffectsPanel = memo(() => {
         <Button
           className="w-full max-w-[200px]"
           variant="secondary"
-          onClick={() => applyEffect("grayscaleEffect")}
+          onClick={() => applyEffect("grayscale")}
         >
           Apply Grayscale
         </Button>
         <Button
           className="w-full max-w-[200px]"
           variant="secondary"
-          onClick={() => applyEffect("sepiaEffect")}
+          onClick={() => applyEffect("sepia")}
         >
           Apply Sepia
         </Button>
