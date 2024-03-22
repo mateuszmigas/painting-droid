@@ -4,7 +4,7 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useWorkspacesStore } from "@/store";
 import { memo } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
-import { IconButton } from "../iconButton";
+import { IconButton } from "../icons/iconButton";
 import { CommandIconButton } from "../commandIconButton";
 import {
   ContextMenu,
@@ -12,7 +12,7 @@ import {
   ContextMenuContent,
   ContextMenuItem,
 } from "../ui/context-menu";
-import { IconAnchor } from "../iconAnchor";
+import { IconAnchor } from "../icons/iconAnchor";
 import { useCommandService } from "@/contexts/commandService";
 
 export const AppHeaderBar = memo(() => {

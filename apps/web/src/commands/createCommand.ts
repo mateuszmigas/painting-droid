@@ -1,4 +1,4 @@
-import type { IconType } from "@/components/icon";
+import type { IconType } from "@/components/icons/icon";
 import type { CommandContext } from "./context";
 import type { KeyGesture } from "@/utils/keyGesture";
 

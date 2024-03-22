@@ -1,8 +1,8 @@
-import { IconButton } from "../iconButton";
+import { IconButton } from "../icons/iconButton";
 import { useToolStore } from "@/store";
 import { memo } from "react";
 import { type ToolId, defaultToolsSettings, toolsMetadata } from "@/tools";
-import type { IconType } from "../icon";
+import type { IconType } from "../icons/icon";
 import { useCommandService } from "@/contexts/commandService";
 
 const tools: { id: ToolId; icon: IconType; name: string }[] = (
@@ -41,4 +41,3 @@ export const SelectToolPanel = memo(() => {
     </div>
   );
 });
-

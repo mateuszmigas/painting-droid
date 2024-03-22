@@ -98,7 +98,9 @@ const drawRuler = (
 
 const color = "#64748B";
 
-export const Ruler = (props: { observableViewport: Observable<Viewport> }) => {
+export const CanvasRulers = (props: {
+  observableViewport: Observable<Viewport>;
+}) => {
   const { observableViewport } = props;
   const canvasHorizontalRef = useRef<HTMLCanvasElement>(null);
   const canvasVerticalRef = useRef<HTMLCanvasElement>(null);

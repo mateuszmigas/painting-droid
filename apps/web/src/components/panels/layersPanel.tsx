@@ -1,4 +1,4 @@
-import { IconButton } from "../iconButton";
+import { IconButton } from "../icons/iconButton";
 import { cn } from "@/utils/css";
 import { useWorkspacesStore } from "@/store";
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";

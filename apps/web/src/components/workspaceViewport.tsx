@@ -1,7 +1,7 @@
 import { type Viewport, calculateFitViewport } from "@/utils/manipulation";
 import { memo, useRef } from "react";
 import { useObservableWatcher, useAfterPaintEffect } from "@/hooks";
-import { Ruler } from "./Ruler";
+import { CanvasRulers } from "./canvasRulers";
 import {
   activeWorkspaceSelector,
   useWorkspacesStore,
@@ -67,7 +67,7 @@ export const WorkspaceViewport = memo(() => {
               viewport={observableViewport as Observable<Viewport>}
               size={workspaceSize}
             />
-            <Ruler
+            <CanvasRulers
               observableViewport={observableViewport as Observable<Viewport>}
             />
           </>

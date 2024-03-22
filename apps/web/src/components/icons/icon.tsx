@@ -37,7 +37,7 @@ import {
   Check,
   Brain,
 } from "lucide-react";
-import { Deselect } from "./icons/deselect";
+import { Deselect } from "./deselect";
 
 export type IconType =
   | "pen"

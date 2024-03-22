@@ -1,6 +1,6 @@
-import { IconButton } from "../iconButton";
+import { IconButton } from "../icons/iconButton";
 import { memo, useState } from "react";
-import type { IconType } from "../icon";
+import type { IconType } from "../icons/icon";
 import { useCanvasActionDispatcher, useListener } from "@/hooks";
 
 export const HistoryPanel = memo(() => {

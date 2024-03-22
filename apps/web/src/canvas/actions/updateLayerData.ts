@@ -1,4 +1,4 @@
-import type { IconType } from "@/components/icon";
+import type { IconType } from "@/components/icons/icon";
 import type { CanvasLayerId } from "./../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
@@ -49,4 +49,3 @@ export const createCanvasAction = (
     },
   };
 };
-

@@ -1,4 +1,4 @@
-import type { IconType } from "@/components/icon";
+import type { IconType } from "@/components/icons/icon";
 import type { CanvasLayer } from "../canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import {

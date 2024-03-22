@@ -5,7 +5,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSettingsStore } from "@/store";
-import { Icon } from "./icon";
+import { Icon } from "./icons/icon";
 
 export const ModeToggle = () => {
   const setTheme = useSettingsStore((state) => state.setTheme);

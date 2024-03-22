@@ -1,4 +1,4 @@
-import type { IconType } from "@/components/icon";
+import type { IconType } from "@/components/icons/icon";
 import type { Position } from "@/utils/common";
 
 export type DrawPayload = {

@@ -2,7 +2,7 @@ import {
   activeWorkspaceSelector,
   useWorkspacesStore,
 } from "@/store/workspacesStore";
-import { Icon } from "../icon";
+import { Icon } from "../icons/icon";
 import type { Position } from "@/utils/common";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
 import { useMousePosition } from "@/hooks";

@@ -19,7 +19,7 @@ import {
   type ExecuteCommand,
   type ExecuteCommandWithDefaults,
 } from "@/commands";
-import { Icon } from "./icon";
+import { Icon } from "./icons/icon";
 import { CommandServiceContext } from "@/contexts/commandService";
 import type { CommandContext } from "@/commands/context";
 import { useDialogService } from "@/contexts/dialogService";

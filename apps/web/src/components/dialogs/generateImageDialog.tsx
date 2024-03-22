@@ -9,7 +9,7 @@ import { memo, useState } from "react";
 import { scaleRectangleToFitParent, type Size } from "@/utils/common";
 import { demoModel } from "@/models/server/demo";
 import { Input } from "../ui/input";
-import { Icon } from "../icon";
+import { Icon } from "../icons/icon";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -218,4 +218,3 @@ export const GenerateImageDialog = memo(
     );
   }
 );
-

@@ -1,4 +1,4 @@
-import type { IconType } from "@/components/icon";
+import type { IconType } from "@/components/icons/icon";
 import type { CanvasState } from "../canvasState";
 
 export type CanvasAction = {
@@ -7,4 +7,3 @@ export type CanvasAction = {
   execute: (state: CanvasState) => Promise<CanvasState>;
   undo: (state: CanvasState) => Promise<CanvasState>;
 };
-

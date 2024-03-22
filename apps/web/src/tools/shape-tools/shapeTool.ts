@@ -1,5 +1,5 @@
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
-import type { IconType } from "@/components/icon";
+import type { IconType } from "@/components/icons/icon";
 import type { Position } from "@/utils/common";
 
 export type ShapePayload = {
@@ -25,4 +25,3 @@ export interface ShapeTool {
   getShape(): CanvasOverlayShape | null;
   reset(): void;
 }
-

@@ -1,6 +1,6 @@
 import { type CommandId, commands } from "@/commands";
 import { type KeyGesture, keyGestureToString } from "@/utils/keyGesture";
-import { IconButton } from "./iconButton";
+import { IconButton } from "./icons/iconButton";
 import { useCommandService } from "@/contexts/commandService";
 
 const createCommandTooltip = (name: string, keyGesture?: KeyGesture) => {
