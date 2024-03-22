@@ -4,16 +4,10 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { xenovaClient } from "@/models/local/xenovaClient";
 import { coreClient } from "@/wasm/core/coreClient";
-import { useDialogService } from "@/contexts/dialogService";
-import { GenerateImageDialog } from "../dialogs/generateImageDialog";
-import { useCanvasActionDispatcher } from "@/hooks";
-import { useCommandService } from "@/contexts/commandService";
 
 export const MetadataPanel = () => {
   const [result, setResult] = useState<string>("");
-  const { openDialog } = useDialogService();
-  const canvasDispatcher = useCanvasActionDispatcher();
-  const { executeCommand } = useCommandService();
+
   const classifyLayer = async () => {
     const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(
       useWorkspacesStore.getState()
@@ -34,28 +28,7 @@ export const MetadataPanel = () => {
       setResult(`${res.result} in ${time}ms`);
     });
   };
-  const generateImage = async () => {
-    const result = await openDialog(GenerateImageDialog, {});
-    if (result) {
-      const box = {
-        x: 0,
-        y: 0,
-        width: result.data!.width / 2,
-        height: result.data!.height / 2,
-      };
-      executeCommand("selectTool", { toolId: "rectangleSelect" });
-      canvasDispatcher.execute("drawOverlayShape", {
-        overlayShape: {
-          type: "rectangle",
-          boundingBox: box,
-          captured: {
-            box: { x: 0, y: 0, width: 0, height: 0 },
-            data: result.data!,
-          },
-        },
-      });
-    }
-  };
+
   return (
     <div className="flex flex-col gap-medium">
       <div className="flex flex-wrap flex-row gap-small p-small">
@@ -64,9 +37,6 @@ export const MetadataPanel = () => {
         </Button>
         <Button variant="secondary" onClick={callRust}>
           Call Rust
-        </Button>
-        <Button variant="secondary" onClick={generateImage}>
-          Generate image
         </Button>
       </div>
       <div className="p-small">{result}</div>

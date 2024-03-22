@@ -41,7 +41,7 @@ export const EffectsPanel = memo(() => {
   };
   return (
     <div className="flex flex-col gap-medium">
-      <div className="flex flex-wrap flex-row gap-small p-small">
+      <div className="flex flex-wrap flex-col gap-small p-small">
         <Button
           className="w-full max-w-[200px]"
           variant="secondary"
