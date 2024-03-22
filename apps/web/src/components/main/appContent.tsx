@@ -10,7 +10,7 @@ import { WorkspaceViewport } from "../workspaceViewport";
 import { ToolSettingsBar } from "../toolSettingsBar";
 import { AppEdgePanel } from "./appEdgePanel";
 import { useLayoutStore } from "@/store";
-import { ColorsPanel } from "../panels/colorsPanel";
+import { EffectsPanel } from "../panels/effectsPanel";
 import type { AppColumnNames, AppPanelNames } from "@/store/layoutStore";
 import { translations } from "@/translations";
 import { AppColumn } from "./appColumn";
@@ -48,8 +48,8 @@ export const AppContent = () => {
             <SelectToolPanel />
           </AppEdgePanel>
           <ResizableHandle />
-          <AppEdgePanel {...createPanelProps("colors")}>
-            <ColorsPanel />
+          <AppEdgePanel {...createPanelProps("effects")}>
+            <EffectsPanel />
           </AppEdgePanel>
         </ResizablePanelGroup>
       </AppColumn>

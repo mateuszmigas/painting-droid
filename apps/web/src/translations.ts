@@ -1,12 +1,12 @@
 export const translations = {
   tools: "Tools",
-  colors: "Colors",
+  effects: "Effects",
   layers: "Layers",
   history: "History",
   metadata: "Metadata",
   panels: {
     tools: { title: "Tools" },
-    colors: { title: "Colors" },
+    effects: { title: "Effects (Rust/WASM)" },
     layers: { title: "Layers" },
     history: { title: "History" },
     metadata: { title: "Metadata" },

@@ -1,6 +1,20 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
+* @param {Uint8Array} pixels
+* @param {number} width
+* @param {number} height
+* @returns {Uint8Array}
+*/
+export function grayscale(pixels: Uint8Array, width: number, height: number): Uint8Array;
+/**
+* @param {Uint8Array} pixels
+* @param {number} width
+* @param {number} height
+* @returns {Uint8Array}
+*/
+export function sepia(pixels: Uint8Array, width: number, height: number): Uint8Array;
+/**
 * @param {string} s
 * @returns {string}
 */
@@ -10,11 +24,13 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly grayscale: (a: number, b: number, c: number, d: number, e: number) => void;
+  readonly sepia: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly greet: (a: number, b: number, c: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
-  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;

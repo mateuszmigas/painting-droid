@@ -1,16 +1,35 @@
 import { createProxyServer } from "@/utils/worker";
-import init, { greet } from "./core";
+import init, { greet, grayscale, sepia } from "./core";
 import coreUrl from "./core_bg.wasm?url";
-import { ByteArray } from "@/utils/byteArray";
+import { ImageUncompressedData } from "@/utils/imageData";
 
 const coreServer = {
   hello: async (name: string) => {
     return { result: greet(name) };
   },
-  sendBuffer: async (buffer: ByteArray) => {
-    const view = new Int32Array(buffer.data);
-    view[0] = 42;
-    return buffer;
+  grayscaleEffect: async (
+    imageData: ImageUncompressedData
+  ): Promise<ImageUncompressedData> => {
+    const view = new Uint8Array(imageData.data.buffer);
+    const result = grayscale(view, imageData.width, imageData.height);
+
+    return {
+      width: imageData.width,
+      height: imageData.height,
+      data: new Uint8ClampedArray(result.buffer),
+    };
+  },
+  sepiaEffect: async (
+    imageData: ImageUncompressedData
+  ): Promise<ImageUncompressedData> => {
+    const view = new Uint8Array(imageData.data.buffer);
+    const result = sepia(view, imageData.width, imageData.height);
+
+    return {
+      width: imageData.width,
+      height: imageData.height,
+      data: new Uint8ClampedArray(result.buffer),
+    };
   },
 };
 

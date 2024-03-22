@@ -75,6 +75,22 @@ export const restoreContextFromCompressed = async (
   context.drawImage(image, 0, 0, width, height);
 };
 
+export const getImageDataFromCompressed = async (
+  compressed: ImageCompressedData
+) => {
+  const context = createCanvasContext(compressed.width, compressed.height);
+  await restoreContextFromCompressed(compressed, context);
+  return context.getImageData(0, 0, compressed.width, compressed.height);
+};
+
+export const compressedFromImageData = async (
+  imageData: ImageData
+): Promise<ImageCompressedData> => {
+  const context = createCanvasContext(imageData.width, imageData.height);
+  context.putImageData(imageData, 0, 0);
+  return createCompressedFromContext(context);
+};
+
 export const getRectangleCompressedFromContext = async (
   context: CanvasContext,
   rectangle: Rectangle

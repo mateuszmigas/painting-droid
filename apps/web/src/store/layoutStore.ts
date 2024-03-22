@@ -4,7 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 export type AppPanelNames =
   | "layers"
   | "tools"
-  | "colors"
+  | "effects"
   | "metadata"
   | "history";
 
@@ -23,8 +23,8 @@ type AppLayoutState = {
 const defaultState: AppLayoutState = {
   panels: {
     layers: { name: "layers", size: 35 },
-    tools: { name: "tools", size: 70 },
-    colors: { name: "colors", size: 10 },
+    tools: { name: "tools", size: 50 },
+    effects: { name: "effects", size: 50 },
     metadata: { name: "metadata", size: 20 },
     history: { name: "history", size: 35 },
   },
@@ -66,7 +66,7 @@ export const settingsStoreCreator: StateCreator<AppLayoutSlice> = (set) => ({
 
 export const useLayoutStore = create<AppLayoutSlice>()(
   persist(settingsStoreCreator, {
-    version: 2,
+    version: 3,
     name: "layout",
     storage: createJSONStorage(() => localStorage),
   })
