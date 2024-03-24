@@ -42,3 +42,15 @@ pub fn sepia(pixels: Vec<u8>, _width: u32, _height: u32) -> Vec<u8> {
 pub fn greet(s: &str) -> String {
     format!("Test: Hello from Rust, {}!", s)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_greet() {
+        let expected = "Test: Hello from Rust, World!";
+        let result = greet("World");
+        assert_eq!(result, expected);
+    }
+}
