@@ -1,14 +1,7 @@
-mod utils;
-
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-extern "C" {
-    fn alert(s: &str);
-}
-
-#[wasm_bindgen]
-pub fn grayscale(pixels: Vec<u8>, width: u32, height: u32) -> Vec<u8> {
+pub fn grayscale(pixels: Vec<u8>, _width: u32, _height: u32) -> Vec<u8> {
     let mut result = Vec::new();
     for i in 0..pixels.len() / 4 {
         let r = pixels[i * 4] as f32;
@@ -24,7 +17,7 @@ pub fn grayscale(pixels: Vec<u8>, width: u32, height: u32) -> Vec<u8> {
 }
 
 #[wasm_bindgen]
-pub fn sepia(pixels: Vec<u8>, width: u32, height: u32) -> Vec<u8> {
+pub fn sepia(pixels: Vec<u8>, _width: u32, _height: u32) -> Vec<u8> {
     let mut result = Vec::new();
     for i in 0..pixels.len() / 4 {
         let r = pixels[i * 4] as f32;
@@ -47,5 +40,5 @@ pub fn sepia(pixels: Vec<u8>, width: u32, height: u32) -> Vec<u8> {
 
 #[wasm_bindgen]
 pub fn greet(s: &str) -> String {
-    format!("Hello from Rust, {}!", s)
+    format!("Test: Hello from Rust, {}!", s)
 }

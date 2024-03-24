@@ -7,7 +7,8 @@
     "dev:desktop": "pnpm --filter @painting-droid/desktop run dev",
     "build:web": "pnpm --filter @painting-droid/web run build",
     "build:desktop": "pnpm --filter @painting-droid/desktop run build",
-    "build:core": "pnpm --filter @painting-droid/core run build"
+    "build:core": "pnpm --filter @painting-droid/core run build",
+    "validate": "pnpm -r validate"
   },
   "author": "Mateusz Migas",
   "license": "MIT",
@@ -16,4 +17,3 @@
     "pnpm": ">=3"
   }
 }
-

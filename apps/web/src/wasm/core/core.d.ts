@@ -2,18 +2,18 @@
 /* eslint-disable */
 /**
 * @param {Uint8Array} pixels
-* @param {number} width
-* @param {number} height
+* @param {number} _width
+* @param {number} _height
 * @returns {Uint8Array}
 */
-export function grayscale(pixels: Uint8Array, width: number, height: number): Uint8Array;
+export function grayscale(pixels: Uint8Array, _width: number, _height: number): Uint8Array;
 /**
 * @param {Uint8Array} pixels
-* @param {number} width
-* @param {number} height
+* @param {number} _width
+* @param {number} _height
 * @returns {Uint8Array}
 */
-export function sepia(pixels: Uint8Array, width: number, height: number): Uint8Array;
+export function sepia(pixels: Uint8Array, _width: number, _height: number): Uint8Array;
 /**
 * @param {string} s
 * @returns {string}

@@ -33,16 +33,16 @@ function getArrayU8FromWasm0(ptr, len) {
 }
 /**
 * @param {Uint8Array} pixels
-* @param {number} width
-* @param {number} height
+* @param {number} _width
+* @param {number} _height
 * @returns {Uint8Array}
 */
-export function grayscale(pixels, width, height) {
+export function grayscale(pixels, _width, _height) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passArray8ToWasm0(pixels, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.grayscale(retptr, ptr0, len0, width, height);
+        wasm.grayscale(retptr, ptr0, len0, _width, _height);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
         var v2 = getArrayU8FromWasm0(r0, r1).slice();
@@ -55,16 +55,16 @@ export function grayscale(pixels, width, height) {
 
 /**
 * @param {Uint8Array} pixels
-* @param {number} width
-* @param {number} height
+* @param {number} _width
+* @param {number} _height
 * @returns {Uint8Array}
 */
-export function sepia(pixels, width, height) {
+export function sepia(pixels, _width, _height) {
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passArray8ToWasm0(pixels, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.sepia(retptr, ptr0, len0, width, height);
+        wasm.sepia(retptr, ptr0, len0, _width, _height);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
         var v2 = getArrayU8FromWasm0(r0, r1).slice();
