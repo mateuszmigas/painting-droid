@@ -1,6 +1,9 @@
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import type { CanvasLayerId } from "../canvasState";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const createCanvasAction = (
   context: CanvasActionContext,
@@ -24,7 +27,7 @@ export const createCanvasAction = (
   };
 
   return {
-    display: "Remove Layer",
+    display: translations.canvasActions.removeLayer,
     icon: "x",
     execute: async (canvas) => {
       return {
@@ -51,4 +54,3 @@ export const createCanvasAction = (
     },
   };
 };
-

@@ -1,12 +1,15 @@
 import type { CanvasOverlayShape } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 const translate = (shape: CanvasOverlayShape) => {
   if (shape.type === "rectangle") {
-    return "Move Rectangle";
+    return translations.canvasActions.transformOverlayShape.rectangle;
   }
-  return "Unknown";
+  return translations.unknown;
 };
 
 export const createCanvasAction = (

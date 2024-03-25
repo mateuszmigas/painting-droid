@@ -1,6 +1,9 @@
-import type { CanvasLayerId } from "./../canvasState";
+import type { CanvasLayerId } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const createCanvasAction = (
   context: CanvasActionContext,
@@ -15,7 +18,7 @@ export const createCanvasAction = (
   };
 
   return {
-    display: "Select Layer",
+    display: translations.canvasActions.selectLayer,
     icon: "mouse-pointer-square",
     execute: async (state) => {
       return {
@@ -31,4 +34,3 @@ export const createCanvasAction = (
     },
   };
 };
-

@@ -2,6 +2,9 @@ import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { uuid } from "@/utils/uuid";
 import type { CanvasLayerId } from "../canvasState";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const createCanvasAction = (
   context: CanvasActionContext,
@@ -16,7 +19,7 @@ export const createCanvasAction = (
   };
 
   return {
-    display: "Duplicate Layer",
+    display: translations.canvasActions.duplicateLayer,
     icon: "copy",
     execute: async (state) => {
       const index = state.layers.findIndex(
@@ -29,7 +32,7 @@ export const createCanvasAction = (
           {
             ...state.layers[index],
             id: capturedData.targetLayerId,
-            name: `${state.layers[index].name} copy`,
+            name: translations.layers.defaultCopyName(state.layers[index].name),
           },
           ...state.layers.slice(index + 1),
         ],
@@ -46,4 +49,3 @@ export const createCanvasAction = (
     },
   };
 };
-

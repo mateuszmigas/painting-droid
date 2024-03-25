@@ -12,10 +12,12 @@ import { AppEdgePanel } from "./appEdgePanel";
 import { useLayoutStore } from "@/store";
 import { EffectsPanel } from "../panels/effectsPanel";
 import type { AppColumnNames, AppPanelNames } from "@/store/layoutStore";
-import { translations } from "@/translations";
+import { getTranslations } from "@/translations";
 import { AppColumn } from "./appColumn";
 import { useCommandService } from "@/contexts/commandService";
 import { useGlobalKeyboardHandler } from "@/hooks";
+
+const translations = getTranslations();
 
 export const AppContent = () => {
   const { executeCommand } = useCommandService();

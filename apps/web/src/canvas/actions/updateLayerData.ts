@@ -1,8 +1,7 @@
 import type { IconType } from "@/components/icons/icon";
-import type { CanvasLayerId } from "./../canvasState";
+import type { CanvasLayerId, CanvasLayerData } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
-import type { CanvasLayerData } from "../canvasState";
 
 export const createCanvasAction = (
   context: CanvasActionContext,

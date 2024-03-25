@@ -8,7 +8,9 @@ import {
 import { coreClient } from "@/wasm/core/coreClient";
 import { memo, useState } from "react";
 import { Button } from "../ui/button";
-import { translations } from "@/translations";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const EffectsPanel = memo(() => {
   const [result, setResult] = useState<string>("");
@@ -61,4 +63,3 @@ export const EffectsPanel = memo(() => {
     </div>
   );
 });
-

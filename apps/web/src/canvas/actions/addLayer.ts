@@ -3,6 +3,9 @@ import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { uuid } from "@/utils/uuid";
 import type { CanvasLayerData } from "../canvasState";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const createCanvasAction = (
   context: CanvasActionContext,
@@ -13,12 +16,12 @@ export const createCanvasAction = (
 
   const capturedData = {
     id: uuid(),
-    name: `Layer ${state.layers.length + 1}`,
+    name: translations.layers.defaultName(state.layers.length + 1),
     activeLayerIndex: state.activeLayerIndex,
   };
 
   return {
-    display: "Add Layer",
+    display: translations.canvasActions.addLayer,
     icon: "plus",
     execute: async (state) => {
       return {
@@ -44,4 +47,3 @@ export const createCanvasAction = (
     },
   };
 };
-

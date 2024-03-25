@@ -1,6 +1,9 @@
 import type { CanvasLayerId } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const createCanvasAction = (
   context: CanvasActionContext,
@@ -12,7 +15,7 @@ export const createCanvasAction = (
   const capturedData = { layerId };
 
   return {
-    display: "Hide Layer",
+    display: translations.canvasActions.hideLayer,
     icon: "hidden",
     execute: async (state) => {
       return {
@@ -36,4 +39,3 @@ export const createCanvasAction = (
     },
   };
 };
-

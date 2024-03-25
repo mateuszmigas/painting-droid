@@ -1,6 +1,9 @@
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import type { CanvasLayerId } from "../canvasState";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const createCanvasAction = (
   context: CanvasActionContext,
@@ -18,7 +21,7 @@ export const createCanvasAction = (
   const capturedData = { currentIndex };
 
   return {
-    display: "Move Layer Up",
+    display: translations.canvasActions.moveLayerDown,
     icon: "arrow-up",
     execute: async (state) => {
       const targetIndex = capturedData.currentIndex - 1;

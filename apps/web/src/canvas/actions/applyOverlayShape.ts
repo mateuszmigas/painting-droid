@@ -1,6 +1,9 @@
+import { getTranslations } from "@/translations";
 import type { ImageCompressedData } from "@/utils/imageData";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
+
+const translations = getTranslations();
 
 export const createCanvasAction = (
   context: CanvasActionContext,
@@ -18,7 +21,7 @@ export const createCanvasAction = (
   };
 
   return {
-    display: "Apply Selection",
+    display: translations.canvasActions.applySelection,
     icon: "deselect",
     execute: async (state) => {
       return {
@@ -46,4 +49,3 @@ export const createCanvasAction = (
     },
   };
 };
-

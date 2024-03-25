@@ -1,5 +1,8 @@
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const createCanvasAction = (
   context: CanvasActionContext
@@ -13,7 +16,7 @@ export const createCanvasAction = (
   };
 
   return {
-    display: "Deselect",
+    display: translations.canvasActions.deselect,
     icon: "deselect",
     execute: async (state) => {
       return {
@@ -29,4 +32,3 @@ export const createCanvasAction = (
     },
   };
 };
-
