@@ -1,18 +1,21 @@
 import type { DrawPayload, DrawTool, DrawToolMetadata } from "./drawTool";
 import type { CanvasContext, Position } from "@/utils/common";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations().tools.draw.brush;
 
 export const brushDrawToolMetadata: DrawToolMetadata = {
   id: "brush",
-  name: "Brush",
+  name: translations.name,
   icon: "brush",
   settings: {
     color: {
-      name: "Color",
+      name: translations.settings.color,
       type: "color",
       default: "#17548B",
     },
     size: {
-      name: "Size",
+      name: translations.settings.size,
       type: "size",
       default: 3,
       options: [

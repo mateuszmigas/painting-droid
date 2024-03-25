@@ -4,6 +4,9 @@ import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export type WorkspaceId = string;
 export type Workspace = {
@@ -22,7 +25,7 @@ export type AppWorkspacesState = {
 
 const defaultWorkspace: Workspace = {
   id: uuid(),
-  name: "Untitled",
+  name: translations.workspace.defaultName,
   filePath: null,
   size: { width: 800, height: 600 },
   viewport: null,

@@ -2,10 +2,13 @@ import type { Position } from "@/utils/common";
 import type { ShapePayload, ShapeTool, ShapeToolMetadata } from "./shapeTool";
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import { fastRound } from "@/utils/math";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations().tools.shape.rectangleSelect;
 
 export const rectangleSelectToolMetadata: ShapeToolMetadata = {
   id: "rectangleSelect",
-  name: "Rectangle Select",
+  name: translations.name,
   icon: "rectangle-select",
   settings: {},
 } as const;

@@ -1,8 +1,4 @@
-export const getTranslations = () => {
-  return translations_;
-};
-
-export const translations_ = {
+const translations = {
   panels: {
     tools: { title: "Tools" },
     effects: { title: "Effects (Rust/WASM)" },
@@ -33,6 +29,28 @@ export const translations_ = {
     removeLayer: "Remove Layer",
     selectLayer: "Select Layer",
   },
+  tools: {
+    shape: {
+      rectangleSelect: {
+        name: "Rectangle Select",
+      },
+    },
+    draw: {
+      brush: {
+        name: "Brush",
+        settings: {
+          color: "Color",
+          size: "Size",
+        },
+      },
+      pencil: {
+        name: "Pencil",
+        settings: {
+          color: "Color",
+        },
+      },
+    },
+  },
   commands: {
     clearActiveWorkspace: "Clear Workspace",
     closeActiveWorkspace: "Close Workspace",
@@ -52,5 +70,10 @@ export const translations_ = {
     defaultNewName: (index: number) => `Layer ${index}`,
     defaultCopyName: (name: string) => `${name} copy`,
   },
+  workspace: {
+    defaultName: "Untitled",
+  },
   unknown: "Unknown",
 };
+
+export const getTranslations = () => translations;

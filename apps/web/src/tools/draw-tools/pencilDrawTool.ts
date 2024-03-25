@@ -1,13 +1,16 @@
 import type { DrawPayload, DrawTool, DrawToolMetadata } from "./drawTool";
 import type { CanvasContext, Position } from "@/utils/common";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations().tools.draw.pencil;
 
 export const pencilDrawToolMetadata: DrawToolMetadata = {
   id: "Pencil",
-  name: "Pencil",
+  name: translations.name,
   icon: "pencil",
   settings: {
     color: {
-      name: "Color",
+      name: translations.settings.color,
       type: "color",
       default: "#4BF3C8",
     },
