@@ -8,6 +8,7 @@ import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
 import type { ContextGuard } from "./useCanvasContextGuard";
 import { toolsMetadata } from "@/tools";
 import { createRaf } from "@/utils/frame";
+import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -42,8 +43,8 @@ export const useDrawTool = (
     let isDrawing = false;
     let currentPointerPosition: Position | null = null;
 
-    const getPointerPosition = (event: PointerEvent) =>
-      transformToCanvasPosition({ x: event.offsetX, y: event.offsetY });
+    const getPointerPosition = (position: Position) =>
+      transformToCanvasPosition(position);
 
     const { start, stop, cancel } = createRaf((time) => {
       tool.draw({
@@ -53,31 +54,24 @@ export const useDrawTool = (
       });
     });
 
-    const pointerDownHandler = (event: PointerEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (event.button !== 0) return;
-
-      currentPointerPosition = getPointerPosition(event);
+    const onManipulationStart = (position: Position) => {
+      currentPointerPosition = getPointerPosition(position);
       isDrawing = true;
       start();
     };
 
-    const pointerUpHandler = (event: PointerEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
+    const onManipulationUpdate = (position: Position) => {
+      if (!isDrawing) return;
+      currentPointerPosition = getPointerPosition(position);
+    };
+
+    const onManipulationEnd = () => {
       if (!isDrawing) return;
       stop();
       tool.reset();
       isDrawing = false;
       const { name, icon } = toolsMetadata[drawToolId!];
       contextGuard.applyChanges(name, icon);
-    };
-    const pointerMoveHandler = (event: PointerEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!isDrawing) return;
-      currentPointerPosition = getPointerPosition(event);
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -89,18 +83,20 @@ export const useDrawTool = (
       }
     };
 
-    element.addEventListener("pointerdown", pointerDownHandler);
-    element.addEventListener("pointermove", pointerMoveHandler);
-    document.addEventListener("pointerup", pointerUpHandler);
+    const unsubscribeManipulationEvents = subscribeToManipulationEvents(
+      element,
+      onManipulationStart,
+      onManipulationUpdate,
+      onManipulationEnd
+    );
+
     document.addEventListener("keydown", keyDownHandler);
 
     return () => {
       cancel();
       tool.reset();
-      element.removeEventListener("pointerdown", pointerDownHandler);
-      element.removeEventListener("pointermove", pointerMoveHandler);
-      document.removeEventListener("pointerup", pointerUpHandler);
       document.removeEventListener("keydown", keyDownHandler);
+      unsubscribeManipulationEvents();
     };
   }, [drawToolId, contextGuard, elementRef, transformToCanvasPosition, enable]);
 
