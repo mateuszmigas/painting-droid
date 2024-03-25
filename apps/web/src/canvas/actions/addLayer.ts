@@ -16,7 +16,7 @@ export const createCanvasAction = (
 
   const capturedData = {
     id: uuid(),
-    name: translations.layers.defaultName(state.layers.length + 1),
+    name: translations.layers.defaultNewName(state.layers.length + 1),
     activeLayerIndex: state.activeLayerIndex,
   };
 

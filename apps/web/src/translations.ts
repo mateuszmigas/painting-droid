@@ -15,6 +15,7 @@ export const translations_ = {
     sepia: "Sepia",
   },
   canvasActions: {
+    init: "New Image",
     addLayer: "Add Layer",
     applySelection: "Apply Selection",
     deselect: "Deselect",
@@ -47,7 +48,8 @@ export const translations_ = {
     saveAsWorkspace: "Save Workspace (PDW)",
   },
   layers: {
-    defaultName: (index: number) => `Layer ${index}`,
+    defaultBaseName: "Background",
+    defaultNewName: (index: number) => `Layer ${index}`,
     defaultCopyName: (name: string) => `${name} copy`,
   },
   unknown: "Unknown",

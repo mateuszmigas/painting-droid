@@ -1,7 +1,7 @@
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
-import { workspaceFormat, workspaceFormatVersion } from "@/contants";
+import { workspace } from "@/contants";
 import { saveTextToFile } from "@/utils/fileSystem";
 import { getTranslations } from "@/translations";
 
@@ -17,10 +17,10 @@ export const command = createCommand({
       context.stores.workspaces()
     );
     const text = JSON.stringify({
-      version: workspaceFormatVersion,
+      version: workspace.version,
       size,
       data: canvasData,
     });
-    saveTextToFile(text, name, workspaceFormat);
+    saveTextToFile(text, name, workspace.format);
   },
 });

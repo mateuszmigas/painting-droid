@@ -1,3 +1,5 @@
-export const workspaceFormat = "pdw";
-export const workspaceFormatVersion = 1;
+export const workspace = {
+  format: "pdw",
+  version: 1,
+};
 

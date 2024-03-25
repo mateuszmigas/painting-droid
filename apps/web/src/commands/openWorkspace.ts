@@ -1,6 +1,6 @@
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { workspaceFormat } from "@/contants";
+import { workspace } from "@/contants";
 import type { Size } from "@/utils/common";
 import type { CanvasState } from "@/canvas/canvasState";
 import { openAndReadFileAsText } from "@/utils/fileSystem";
@@ -14,7 +14,7 @@ export const command = createCommand({
   icon: "save",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
-    openAndReadFileAsText({ extension: workspaceFormat }).then((result) => {
+    openAndReadFileAsText({ extension: workspace.format }).then((result) => {
       if (!result) {
         return;
       }

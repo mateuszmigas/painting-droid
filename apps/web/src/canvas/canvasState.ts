@@ -1,5 +1,8 @@
+import { getTranslations } from "@/translations";
 import type { Rectangle } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
+
+const translations = getTranslations();
 
 export type CanvasLayerId = string;
 export type CanvasLayerData = ImageCompressedData | null;
@@ -28,7 +31,7 @@ export type CanvasState = {
 
 export const defaultLayer: CanvasLayer = {
   id: "default",
-  name: "Background",
+  name: translations.layers.defaultBaseName,
   visible: true,
   locked: false,
   data: null,

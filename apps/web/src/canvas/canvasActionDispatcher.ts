@@ -3,6 +3,9 @@ import { Observable } from "@/utils/observable";
 import { canvasActions } from "./actions";
 import type { CanvasAction } from "./actions/action";
 import type { CanvasState } from "./canvasState";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 type CanvasStore = {
   getState: () => CanvasState;
@@ -19,7 +22,7 @@ type StackInfo = {
 };
 
 const initAction = {
-  display: "New Image",
+  display: translations.canvasActions.init,
   icon: "file-plus",
 } as CanvasAction;
 
