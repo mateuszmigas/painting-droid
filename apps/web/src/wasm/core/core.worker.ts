@@ -4,6 +4,7 @@ import coreUrl from "./core_bg.wasm?url";
 import { ImageUncompressedData } from "@/utils/imageData";
 
 const coreServer = {
+  init: () => Promise.resolve(),
   hello: async (name: string) => {
     return { result: greet(name) };
   },

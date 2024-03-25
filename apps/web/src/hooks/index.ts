@@ -14,3 +14,4 @@ export { useMousePosition } from "./useMousePosition";
 export { useGlobalKeyboardHandler } from "./useGlobalKeyboardHandler";
 export { useShapeRenderer } from "./useShapeRenderer";
 export { useShapeTool } from "./useShapeTool";
+export { useIdleCallback } from "./useIdleCallback";
