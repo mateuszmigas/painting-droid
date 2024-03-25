@@ -75,7 +75,7 @@ export const GenerateImageDialog = memo(
     }
 
     const currentSize = availableSizes[
-      availableSizes.findIndex((size) => size.id === form.getValues("size"))
+      availableSizes.findIndex((size) => size.id === form.watch("size"))
     ] as Size;
     const { scale } = scaleRectangleToFitParent(
       { x: 0, y: 0, ...currentSize },
