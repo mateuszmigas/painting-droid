@@ -88,6 +88,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Saving and loading projects
 - [x] Area selection
 - [ ] WASM effects
+- [ ] Responsive UI
 
 ### AI features (Desktop only)
 
