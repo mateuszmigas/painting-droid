@@ -1,10 +1,13 @@
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { CreateWorkspaceDialog } from "@/components/dialogs/createWorkspaceDialog";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const command = createCommand({
   id: "createActiveWorkspace",
-  display: "Create New Workspace",
+  display: translations.commands.createActiveWorkspace,
   icon: "add-file",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
@@ -17,4 +20,3 @@ export const command = createCommand({
     }
   },
 });
-

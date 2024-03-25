@@ -1,9 +1,12 @@
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const command = createCommand({
   id: "closeActiveWorkspace",
-  display: "Close Workspace",
+  display: translations.commands.closeActiveWorkspace,
   icon: "x",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {

@@ -2,10 +2,13 @@ import { calculateFitViewport } from "@/utils/manipulation";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const command = createCommand({
   id: "fitCanvasToWindow",
-  display: "Fit Canvas to Window",
+  display: translations.commands.fitCanvasToWindow,
   icon: "fullscreen",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
@@ -25,4 +28,3 @@ export const command = createCommand({
     context.stores.workspaces().setWorkspaceViewport(viewport);
   },
 });
-

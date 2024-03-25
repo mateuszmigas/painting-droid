@@ -4,10 +4,13 @@ import { workspaceFormat } from "@/contants";
 import type { Size } from "@/utils/common";
 import type { CanvasState } from "@/canvas/canvasState";
 import { openAndReadFileAsText } from "@/utils/fileSystem";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const command = createCommand({
   id: "openWorkspace",
-  display: "Open Workspace (PDW)",
+  display: translations.commands.openWorkspace,
   icon: "save",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {

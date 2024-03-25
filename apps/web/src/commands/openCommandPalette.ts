@@ -1,10 +1,13 @@
 import { createKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const command = createCommand({
   id: "openCommandPalette",
-  display: "Open Command Palette",
+  display: translations.commands.openCommandPalette,
   icon: "command",
   options: { showInPalette: false },
   defaultKeyGesture: createKeyGesture({ key: "K", meta: true }),
@@ -12,4 +15,3 @@ export const command = createCommand({
     context.stores.commandPalette().setIsOpen(true);
   },
 });
-

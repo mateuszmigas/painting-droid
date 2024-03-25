@@ -3,10 +3,13 @@ import { createCommand } from "./createCommand";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { compressedDataToBlob, mergeCompressedData } from "@/utils/imageData";
 import { saveBlobToFile } from "@/utils/fileSystem";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const command = createCommand({
   id: "saveAsPng",
-  display: "Save As Image (PNG)",
+  display: translations.commands.saveAsPng,
   icon: "save",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
