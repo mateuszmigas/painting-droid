@@ -5,8 +5,6 @@ import type { DrawToolId } from "@/tools/draw-tools";
 import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
 import type { DrawTool } from "@/tools/draw-tools/drawTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
-import type { ContextGuard } from "./useCanvasContextGuard";
-import { toolsMetadata } from "@/tools";
 import { createRaf } from "@/utils/frame";
 import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
 import { useStableCallback } from ".";
@@ -26,21 +24,34 @@ export const useDrawTool = (
   elementRef: RefObject<HTMLElement>,
   drawToolId: DrawToolId | null,
   drawToolSettings: Record<string, unknown>,
+  activeContext: CanvasContext | null,
   transformToCanvasPosition: (position: Position) => Position,
-  contextGuard: ContextGuard,
+  handlers: {
+    cancel: () => Promise<void>;
+    commit: (drawToolId: DrawToolId) => Promise<void>;
+  },
   enable: boolean
 ) => {
   const toolRef = useRef<DrawTool | null>(null);
+  const cancelStable = useStableCallback(handlers.cancel);
+  const commitStable = useStableCallback(handlers.commit);
   const transformToCanvasPositionStable = useStableCallback(
     transformToCanvasPosition
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!elementRef.current || !enable || drawToolId === null) return;
+    if (
+      !elementRef.current ||
+      drawToolId === null ||
+      activeContext === null ||
+      !enable
+    ) {
+      return;
+    }
 
     const element = elementRef.current;
-    toolRef.current = createTool(drawToolId, contextGuard.getContext());
+    toolRef.current = createTool(drawToolId, activeContext);
     toolRef.current.configure(drawToolSettings);
     const tool = toolRef.current;
     let ticksCount = 0;
@@ -71,8 +82,7 @@ export const useDrawTool = (
       stop();
       tool.reset();
       isDrawing = false;
-      const { name, icon } = toolsMetadata[drawToolId!];
-      contextGuard.applyChanges(name, icon);
+      commitStable(drawToolId!);
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -80,7 +90,7 @@ export const useDrawTool = (
         stop();
         tool.reset();
         isDrawing = false;
-        contextGuard.rejectChanges();
+        cancelStable();
       }
     };
 
@@ -101,7 +111,9 @@ export const useDrawTool = (
     };
   }, [
     drawToolId,
-    contextGuard,
+    cancelStable,
+    commitStable,
+    activeContext,
     elementRef,
     transformToCanvasPositionStable,
     enable,

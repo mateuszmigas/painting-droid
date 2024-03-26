@@ -8,7 +8,6 @@ export { useObservable } from "./useObservable";
 export { useListener } from "./useListener";
 export { useObservableWatcher } from "./useObservableWatcher";
 export { useSyncCanvasWithLayers } from "./useSyncCanvasWithLayers";
-export { useCanvasContextGuard } from "./useCanvasContextGuard";
 export { useCanvasActionDispatcher } from "./useCanvasActionDispatcher";
 export { useMousePosition } from "./useMousePosition";
 export { useGlobalKeyboardHandler } from "./useGlobalKeyboardHandler";

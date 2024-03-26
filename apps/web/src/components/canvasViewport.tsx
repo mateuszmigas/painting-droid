@@ -1,9 +1,7 @@
-import type { CanvasActionDispatcher } from "@/canvas/canvasActionDispatcher";
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import { useCanvasContextStore } from "@/contexts/canvasContextService";
 import {
   useCanvasActionDispatcher,
-  useCanvasContextGuard,
   useDrawTool,
   useListener,
   useShapeRenderer,
@@ -19,20 +17,14 @@ import {
 } from "@/store/workspacesStore";
 import { isDrawTool, isShapeTool } from "@/tools";
 import type { DrawToolId } from "@/tools/draw-tools";
-import {
-  areRectanglesEqual,
-  type CanvasContext,
-  type Rectangle,
-  type Size,
-} from "@/utils/common";
-import {
-  createCompressedFromContext,
-  getRectangleCompressedFromContext,
-  putRectangleCompressedToContext,
-} from "@/utils/imageData";
+import type { Rectangle, Size } from "@/utils/common";
 import { type Viewport, screenToViewportPosition } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
 import { memo, useRef, useEffect } from "react";
+import {
+  createDrawToolHandlers,
+  createShapeToolHandlers,
+} from "./toolHandlers";
 
 const alphaGridCellSize = 20;
 
@@ -66,62 +58,6 @@ const applyImageOverlayTransform = (
   image.style.maxHeight = `${boundingBox.height}px`;
 };
 
-const createShapeToolHandlers = (
-  activeContext: CanvasContext | null,
-  canvasActionDispatcher: CanvasActionDispatcher,
-  renderShape: (shape: CanvasOverlayShape | null) => void
-) => {
-  return {
-    update: async (shape: CanvasOverlayShape | null) => {
-      renderShape(shape);
-    },
-    commit: async (
-      shape: CanvasOverlayShape | null,
-      operation: "draw" | "transform"
-    ) => {
-      if (shape === null) {
-        await canvasActionDispatcher.execute("clearOverlayShape", undefined);
-        return;
-      }
-      if (operation === "transform") {
-        await canvasActionDispatcher.execute("transformOverlayShape", {
-          overlayShape: shape,
-        });
-        return;
-      }
-
-      const box = shape.boundingBox;
-      await canvasActionDispatcher.execute("drawOverlayShape", {
-        overlayShape: {
-          ...shape,
-          captured: {
-            box,
-            data: await getRectangleCompressedFromContext(activeContext!, box),
-          },
-        },
-      });
-    },
-    cancel: async (shape: CanvasOverlayShape | null) => {
-      const apply =
-        shape?.captured &&
-        !areRectanglesEqual(shape.boundingBox, shape.captured.box);
-
-      if (apply) {
-        await putRectangleCompressedToContext(
-          activeContext!,
-          shape.captured!.data,
-          shape.boundingBox
-        );
-        canvasActionDispatcher.execute("applyOverlayShape", {
-          activeLayerData: createCompressedFromContext(activeContext!),
-        });
-      } else {
-        shape && canvasActionDispatcher.execute("clearOverlayShape", undefined);
-      }
-    },
-  };
-};
-
 export const CanvasViewport = memo(
   (props: {
     viewport: Observable<Viewport>;
@@ -140,10 +76,6 @@ export const CanvasViewport = memo(
 
     useSyncCanvasWithLayers(canvasStackRef, layers, activeLayerIndex);
     const { activeContext } = useCanvasContextStore();
-    const contextGuard = useCanvasContextGuard(
-      activeContext!,
-      layers[activeLayerIndex]
-    );
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
     const canvasActionDispatcher = useCanvasActionDispatcher();
@@ -191,8 +123,8 @@ export const CanvasViewport = memo(
       () => overlayShape,
       createShapeToolHandlers(
         activeContext,
-        canvasActionDispatcher,
-        renderShape
+        renderShape,
+        canvasActionDispatcher
       ),
       !isLocked && isShapeTool(toolId)
     );
@@ -201,8 +133,13 @@ export const CanvasViewport = memo(
       hostElementRef,
       toolId as DrawToolId,
       toolSettings,
+      activeContext,
       (position) => screenToViewportPosition(position, viewport.getValue()),
-      contextGuard,
+      createDrawToolHandlers(
+        activeContext,
+        layers[activeLayerIndex],
+        canvasActionDispatcher
+      ),
       !isLocked && isDrawTool(toolId) && !!activeContext
     );
 
