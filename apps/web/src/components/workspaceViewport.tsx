@@ -54,6 +54,10 @@ export const WorkspaceViewport = memo(() => {
     setWorkspaceViewport(viewport);
   }, [activeWorkspaceId]);
 
+  const popup = useWorkspacesStore(
+    (store) => activeWorkspaceSelector(store).popup
+  );
+
   return (
     <div className="flex flex-col relative size-full">
       <div
@@ -67,6 +71,7 @@ export const WorkspaceViewport = memo(() => {
               key={activeWorkspaceId}
               viewport={observableViewport as Observable<Viewport>}
               size={workspaceSize}
+              isLocked={popup !== null}
             />
             <CanvasRulers
               observableViewport={observableViewport as Observable<Viewport>}

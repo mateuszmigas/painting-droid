@@ -60,8 +60,12 @@ const applyImageOverlayTransform = (
 };
 
 export const CanvasViewport = memo(
-  (props: { viewport: Observable<Viewport>; size: Size }) => {
-    const { viewport, size } = props;
+  (props: {
+    viewport: Observable<Viewport>;
+    size: Size;
+    isLocked: boolean;
+  }) => {
+    const { viewport, size, isLocked } = props;
     const hostElementRef = useRef<HTMLDivElement>(null);
     const canvasBackgroundRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
@@ -171,7 +175,7 @@ export const CanvasViewport = memo(
             });
         }
       },
-      isShapeTool(toolId)
+      !isLocked && isShapeTool(toolId)
     );
 
     useDrawTool(
@@ -180,7 +184,7 @@ export const CanvasViewport = memo(
       toolSettings,
       (position) => screenToViewportPosition(position, viewport.getValue()),
       contextGuard,
-      isDrawTool(toolId) && !!activeContext && contexts !== null
+      !isLocked && isDrawTool(toolId) && !!activeContext && contexts !== null
     );
 
     useViewportManipulator(

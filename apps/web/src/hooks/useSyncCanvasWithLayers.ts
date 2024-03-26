@@ -1,3 +1,4 @@
+import { setActiveCanvasContext } from "@/contexts/canvasContextService";
 import type { CanvasOverlayShape } from "../canvas/canvasState";
 import type { CanvasLayer } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
@@ -47,7 +48,10 @@ export const useSyncCanvasWithLayers = (
     );
 
     restoreLayers(layers, activeLayerIndex, overlayShape, newContexts).then(
-      () => setContexts(newContexts)
+      () => {
+        setContexts(newContexts);
+        setActiveCanvasContext(newContexts[activeLayerIndex]);
+      }
     );
   }, [layers, activeLayerIndex, overlayShape, canvasElementsRef]);
 

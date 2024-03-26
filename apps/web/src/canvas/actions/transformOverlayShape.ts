@@ -9,7 +9,7 @@ const translate = (shape: CanvasOverlayShape) => {
   if (shape.type === "rectangle") {
     return translations.canvasActions.transformOverlayShape.rectangle;
   }
-  return translations.unknown;
+  return translations.general.unknown;
 };
 
 export const createCanvasAction = (

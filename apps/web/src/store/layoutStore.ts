@@ -1,14 +1,9 @@
 import { create, type StateCreator } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-export type AppPanelNames =
-  | "layers"
-  | "tools"
-  | "effects"
-  | "metadata"
-  | "history";
+export type AppPanelNames = "layers" | "metadata" | "history";
 
-export type AppColumnNames = "left" | "middle" | "right";
+export type AppColumnNames = "middle" | "right";
 
 type AppPanelState = {
   name: AppPanelNames;
@@ -23,14 +18,11 @@ type AppLayoutState = {
 const defaultState: AppLayoutState = {
   panels: {
     layers: { name: "layers", size: 35 },
-    tools: { name: "tools", size: 50 },
-    effects: { name: "effects", size: 50 },
     metadata: { name: "metadata", size: 20 },
     history: { name: "history", size: 35 },
   },
   columns: {
-    left: { size: 20 },
-    middle: { size: 60 },
+    middle: { size: 80 },
     right: { size: 20 },
   },
 };

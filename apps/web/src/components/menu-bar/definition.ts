@@ -1,3 +1,4 @@
+import { type AdjustmentId, adjustmentsMetadata } from "@/adjustments";
 import type { ExecuteCommand } from "@/commands";
 import type { Workspace } from "@/store/workspacesStore";
 import type { MenuItem } from "@/utils/menuItem";
@@ -71,6 +72,20 @@ export const createMenuBarDefinition = (
           action: { onClick: () => executeCommand("redoCanvasAction") },
         },
       ],
+    },
+    {
+      type: "parent",
+      label: "Adjustments",
+      items: Object.entries(adjustmentsMetadata).map(([id, metadata]) => ({
+        type: "leaf",
+        label: metadata.name,
+        action: {
+          onClick: () =>
+            executeCommand("openAdjustmentsPopup", {
+              adjustmentId: id as AdjustmentId,
+            }),
+        },
+      })),
     },
   ];
 };

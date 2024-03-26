@@ -1,14 +1,8 @@
 const translations = {
   panels: {
-    tools: { title: "Tools" },
-    effects: { title: "Effects (Rust/WASM)" },
     layers: { title: "Layers" },
     history: { title: "History" },
     metadata: { title: "Metadata" },
-  },
-  effects: {
-    grayscale: "Grayscale",
-    sepia: "Sepia",
   },
   canvasActions: {
     init: "New Image",
@@ -28,6 +22,10 @@ const translations = {
     moveLayerUp: "Move Layer Up",
     removeLayer: "Remove Layer",
     selectLayer: "Select Layer",
+  },
+  adjustments: {
+    grayscale: { name: "Grayscale" },
+    sepia: { name: "Sepia" },
   },
   tools: {
     shape: {
@@ -73,7 +71,11 @@ const translations = {
   workspace: {
     defaultName: "Untitled",
   },
-  unknown: "Unknown",
+  general: {
+    apply: "Apply",
+    cancel: "Cancel",
+    unknown: "Unknown",
+  },
 };
 
 export const getTranslations = () => translations;

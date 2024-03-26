@@ -10,7 +10,6 @@ import { WorkspaceViewport } from "../workspaceViewport";
 import { ToolSettingsBar } from "../toolSettingsBar";
 import { AppEdgePanel } from "./appEdgePanel";
 import { useLayoutStore } from "@/store";
-import { EffectsPanel } from "../panels/effectsPanel";
 import type { AppColumnNames, AppPanelNames } from "@/store/layoutStore";
 import { getTranslations } from "@/translations";
 import { AppColumn } from "./appColumn";
@@ -43,41 +42,34 @@ export const AppContent = () => {
   };
 
   return (
-    <ResizablePanelGroup direction="horizontal">
-      <AppColumn {...createColumnProps("left")}>
-        <ResizablePanelGroup direction="vertical">
-          <AppEdgePanel {...createPanelProps("tools")}>
-            <SelectToolPanel />
-          </AppEdgePanel>
-          <ResizableHandle />
-          <AppEdgePanel {...createPanelProps("effects")}>
-            <EffectsPanel />
-          </AppEdgePanel>
-        </ResizablePanelGroup>
-      </AppColumn>
-      <ResizableHandle />
-      <AppColumn {...createColumnProps("middle")}>
-        <>
-          <ToolSettingsBar />
-          <WorkspaceViewport />
-        </>
-      </AppColumn>
-      <ResizableHandle />
-      <AppColumn {...createColumnProps("right")}>
-        <ResizablePanelGroup direction="vertical">
-          <AppEdgePanel {...createPanelProps("layers")}>
-            <LayersPanel />
-          </AppEdgePanel>
-          <ResizableHandle />
-          <AppEdgePanel {...createPanelProps("history")}>
-            <HistoryPanel />
-          </AppEdgePanel>
-          <ResizableHandle />
-          <AppEdgePanel {...createPanelProps("metadata")}>
-            <MetadataPanel />
-          </AppEdgePanel>
-        </ResizablePanelGroup>
-      </AppColumn>
-    </ResizablePanelGroup>
+    <div className="relative flex flex-row size-full">
+      <div className="border-r w-[40px]">
+        <SelectToolPanel />
+      </div>
+      <ResizablePanelGroup className="flex-1" direction="horizontal">
+        <AppColumn {...createColumnProps("middle")}>
+          <>
+            <ToolSettingsBar />
+            <WorkspaceViewport />
+          </>
+        </AppColumn>
+        <ResizableHandle />
+        <AppColumn {...createColumnProps("right")}>
+          <ResizablePanelGroup direction="vertical">
+            <AppEdgePanel {...createPanelProps("layers")}>
+              <LayersPanel />
+            </AppEdgePanel>
+            <ResizableHandle />
+            <AppEdgePanel {...createPanelProps("history")}>
+              <HistoryPanel />
+            </AppEdgePanel>
+            <ResizableHandle />
+            <AppEdgePanel {...createPanelProps("metadata")}>
+              <MetadataPanel />
+            </AppEdgePanel>
+          </ResizablePanelGroup>
+        </AppColumn>
+      </ResizablePanelGroup>
+    </div>
   );
 };

@@ -11,6 +11,7 @@ import { command as undoCanvasAction } from "./undoCanvasAction";
 import { command as redoCanvasAction } from "./redoCanvasAction";
 import { command as clearActiveWorkspace } from "./clearActiveWorkspace";
 import { command as selectTool } from "./selectTool";
+import { command as openAdjustmentsPopup } from "./openAdjustmentsPopup";
 
 export const commands = {
   saveAsPng,
@@ -26,6 +27,7 @@ export const commands = {
   redoCanvasAction,
   clearActiveWorkspace,
   selectTool,
+  openAdjustmentsPopup,
 } as const;
 
 export type CommandId = keyof typeof commands;

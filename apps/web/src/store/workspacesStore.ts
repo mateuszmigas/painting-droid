@@ -5,10 +5,16 @@ import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getTranslations } from "@/translations";
+import type { AdjustmentId } from "@/adjustments";
 
 const translations = getTranslations();
 
-export type WorkspacePopupType = "effects" | null;
+export type WorkspacePopup = {
+  type: "adjustments";
+  adjustmentId: AdjustmentId;
+  settings: Record<string, unknown>;
+};
+
 export type WorkspaceId = string;
 export type Workspace = {
   id: WorkspaceId;
@@ -16,7 +22,7 @@ export type Workspace = {
   filePath: string | null;
   size: Size;
   viewport: Viewport | null;
-  popup: WorkspacePopupType;
+  popup: WorkspacePopup | null;
   canvasData: CanvasState;
 };
 
@@ -48,8 +54,9 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   addNewActiveWorkspace: (size: Size) => void;
   loadWorkspace: (name: string, size: Size, canvasData: CanvasState) => void;
   setCanvasData: (canvasData: CanvasState) => void;
-  openApplyPopup: (type: WorkspacePopupType) => void;
+  openApplyPopup: (type: WorkspacePopup) => void;
   closeApplyPopup: () => void;
+  updatePopupSettings: (settings: Record<string, unknown>) => void;
 };
 
 export const mapActiveWorkspace = (
@@ -69,7 +76,14 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   set
 ) => ({
   ...defaultState,
-  selectWorkspace: (id) => set({ activeWorkspaceId: id }),
+  selectWorkspace: (id) =>
+    set((state) => ({
+      activeWorkspaceId: id,
+      workspaces: state.workspaces.map((workspace) => ({
+        ...workspace,
+        popup: null,
+      })),
+    })),
   closeWorkspace: (id) =>
     set((state) => {
       if (state.workspaces.length === 1) {
@@ -141,7 +155,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
         canvasData,
       }))
     ),
-  openApplyPopup: (type: WorkspacePopupType) =>
+  openApplyPopup: (type: WorkspacePopup) =>
     set((state) =>
       mapActiveWorkspace(state, (workspace) => ({
         ...workspace,
@@ -153,6 +167,15 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       mapActiveWorkspace(state, (workspace) => ({
         ...workspace,
         popup: null,
+      }))
+    ),
+  updatePopupSettings: (settings) =>
+    set((state) =>
+      mapActiveWorkspace(state, (workspace) => ({
+        ...workspace,
+        popup: workspace.popup
+          ? { ...workspace.popup, settings }
+          : workspace.popup,
       }))
     ),
 });
@@ -184,4 +207,11 @@ export const activeWorkspaceCanvasDataSelector = (
 ) => {
   return state.workspaces.find((w) => w.id === state.activeWorkspaceId)!
     .canvasData;
+};
+
+export const activeWorkspaceActiveLayerSelector = (
+  state: AppWorkspacesState
+) => {
+  const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(state);
+  return layers[activeLayerIndex];
 };

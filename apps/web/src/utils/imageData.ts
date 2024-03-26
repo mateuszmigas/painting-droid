@@ -75,6 +75,17 @@ export const restoreContextFromCompressed = async (
   context.drawImage(image, 0, 0, width, height);
 };
 
+export const restoreContextFromUncompressed = (
+  uncompressed: ImageUncompressedData,
+  context: CanvasContext
+) => {
+  context.putImageData(
+    new ImageData(uncompressed.data, uncompressed.width, uncompressed.height),
+    0,
+    0
+  );
+};
+
 export const getImageDataFromCompressed = async (
   compressed: ImageCompressedData
 ) => {
