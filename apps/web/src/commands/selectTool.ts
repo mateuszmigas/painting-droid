@@ -1,7 +1,7 @@
 import type { ToolId } from "@/tools";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
+import { clearOrApplyOverlayShape } from "./utils";
 
 export const command = createCommand({
   id: "selectTool",
@@ -13,14 +13,7 @@ export const command = createCommand({
     }
   ) => {
     const { toolId } = payload;
-
+    await clearOrApplyOverlayShape(context);
     context.stores.tool().setSelectedToolId(toolId);
-
-    const isSelecting =
-      activeWorkspaceCanvasDataSelector(context.stores.workspaces())
-        .overlayShape !== null;
-
-    isSelecting &&
-      context.canvasActionDispatcher.execute("clearOverlayShape", undefined);
   },
 });

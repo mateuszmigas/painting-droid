@@ -1,4 +1,6 @@
+import type { CanvasActionDispatcher } from "@/canvas/canvasActionDispatcher";
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
+import { useCanvasContextStore } from "@/contexts/canvasContextService";
 import {
   useCanvasActionDispatcher,
   useCanvasContextGuard,
@@ -17,7 +19,12 @@ import {
 } from "@/store/workspacesStore";
 import { isDrawTool, isShapeTool } from "@/tools";
 import type { DrawToolId } from "@/tools/draw-tools";
-import { areRectanglesEqual, type Rectangle, type Size } from "@/utils/common";
+import {
+  areRectanglesEqual,
+  type CanvasContext,
+  type Rectangle,
+  type Size,
+} from "@/utils/common";
 import {
   createCompressedFromContext,
   getRectangleCompressedFromContext,
@@ -59,6 +66,62 @@ const applyImageOverlayTransform = (
   image.style.maxHeight = `${boundingBox.height}px`;
 };
 
+const createShapeToolHandlers = (
+  activeContext: CanvasContext | null,
+  canvasActionDispatcher: CanvasActionDispatcher,
+  renderShape: (shape: CanvasOverlayShape | null) => void
+) => {
+  return {
+    update: async (shape: CanvasOverlayShape | null) => {
+      renderShape(shape);
+    },
+    commit: async (
+      shape: CanvasOverlayShape | null,
+      operation: "draw" | "transform"
+    ) => {
+      if (shape === null) {
+        await canvasActionDispatcher.execute("clearOverlayShape", undefined);
+        return;
+      }
+      if (operation === "transform") {
+        await canvasActionDispatcher.execute("transformOverlayShape", {
+          overlayShape: shape,
+        });
+        return;
+      }
+
+      const box = shape.boundingBox;
+      await canvasActionDispatcher.execute("drawOverlayShape", {
+        overlayShape: {
+          ...shape,
+          captured: {
+            box,
+            data: await getRectangleCompressedFromContext(activeContext!, box),
+          },
+        },
+      });
+    },
+    cancel: async (shape: CanvasOverlayShape | null) => {
+      const apply =
+        shape?.captured &&
+        !areRectanglesEqual(shape.boundingBox, shape.captured.box);
+
+      if (apply) {
+        await putRectangleCompressedToContext(
+          activeContext!,
+          shape.captured!.data,
+          shape.boundingBox
+        );
+        canvasActionDispatcher.execute("applyOverlayShape", {
+          activeLayerData: createCompressedFromContext(activeContext!),
+        });
+      } else {
+        shape && canvasActionDispatcher.execute("clearOverlayShape", undefined);
+      }
+    },
+  };
+};
+
 export const CanvasViewport = memo(
   (props: {
     viewport: Observable<Viewport>;
@@ -74,13 +137,9 @@ export const CanvasViewport = memo(
     const { layers, activeLayerIndex, overlayShape } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
-    const { contexts } = useSyncCanvasWithLayers(
-      canvasStackRef,
-      layers,
-      activeLayerIndex,
-      overlayShape
-    );
-    const activeContext = contexts?.[activeLayerIndex];
+
+    useSyncCanvasWithLayers(canvasStackRef, layers, activeLayerIndex);
+    const { activeContext } = useCanvasContextStore();
     const contextGuard = useCanvasContextGuard(
       activeContext!,
       layers[activeLayerIndex]
@@ -88,7 +147,7 @@ export const CanvasViewport = memo(
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
     const canvasActionDispatcher = useCanvasActionDispatcher();
-    const { render: renderShape } = useShapeRenderer(shapeOverlayRef, viewport);
+    const { render } = useShapeRenderer(shapeOverlayRef, viewport);
 
     const applySelectedImageTransform = useStableCallback(
       (overlayShape: CanvasOverlayShape | null, viewport: Viewport) => {
@@ -114,67 +173,27 @@ export const CanvasViewport = memo(
       }
     );
 
+    const renderShape = useStableCallback(
+      (shape: CanvasOverlayShape | null) => {
+        render(shape);
+        shape && applySelectedImageTransform(shape, viewport.getValue());
+      }
+    );
+
     useEffect(() => {
       renderShape(overlayShape);
-      applySelectedImageTransform(overlayShape, viewport.getValue());
-    }, [renderShape, overlayShape, applySelectedImageTransform, viewport]);
+    }, [renderShape, overlayShape]);
 
     useShapeTool(
       hostElementRef,
       "rectangleSelect",
       (position) => screenToViewportPosition(position, viewport.getValue()),
       () => overlayShape,
-      (shape) => {
-        renderShape(shape);
-        shape && applySelectedImageTransform(shape, viewport.getValue());
-      },
-      async (newOverlayShape, operation) => {
-        if (newOverlayShape === null) {
-          if (operation === "deselect") {
-            const apply =
-              overlayShape?.captured &&
-              !areRectanglesEqual(
-                overlayShape.boundingBox,
-                overlayShape.captured.box
-              );
-
-            if (apply) {
-              await putRectangleCompressedToContext(
-                activeContext!,
-                overlayShape.captured!.data,
-                overlayShape.boundingBox
-              );
-              canvasActionDispatcher.execute("applyOverlayShape", {
-                activeLayerData: createCompressedFromContext(activeContext!),
-              });
-            } else {
-              overlayShape &&
-                canvasActionDispatcher.execute("clearOverlayShape", undefined);
-            }
-          }
-        } else {
-          if (operation === "draw") {
-            const capturedBox = newOverlayShape.boundingBox;
-            const capturedData = await getRectangleCompressedFromContext(
-              activeContext!,
-              capturedBox
-            );
-            canvasActionDispatcher.execute("drawOverlayShape", {
-              overlayShape: {
-                ...newOverlayShape,
-                captured: {
-                  box: capturedBox,
-                  data: capturedData,
-                },
-              },
-            });
-          }
-          operation === "transform" &&
-            canvasActionDispatcher.execute("transformOverlayShape", {
-              overlayShape: newOverlayShape,
-            });
-        }
-      },
+      createShapeToolHandlers(
+        activeContext,
+        canvasActionDispatcher,
+        renderShape
+      ),
       !isLocked && isShapeTool(toolId)
     );
 
@@ -184,7 +203,7 @@ export const CanvasViewport = memo(
       toolSettings,
       (position) => screenToViewportPosition(position, viewport.getValue()),
       contextGuard,
-      !isLocked && isDrawTool(toolId) && !!activeContext && contexts !== null
+      !isLocked && isDrawTool(toolId) && !!activeContext
     );
 
     useViewportManipulator(
@@ -207,7 +226,7 @@ export const CanvasViewport = memo(
     return (
       <div
         ref={hostElementRef}
-        style={{ opacity: contexts !== null ? "1" : "0" }}
+        style={{ opacity: activeContext !== null ? "1" : "0" }}
         className="absolute size-full overflow-hidden cursor-crosshair duration-1000 z-[0]"
       >
         <div

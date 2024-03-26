@@ -12,7 +12,7 @@ import {
   useToolStore,
   useWorkspacesStore,
 } from "@/store";
-import { useCanvasActionDispatcher } from "@/hooks";
+import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
 import {
   type CommandId,
   commands,
@@ -24,6 +24,7 @@ import { CommandServiceContext } from "@/contexts/commandService";
 import type { CommandContext } from "@/commands/context";
 import { useDialogService } from "@/contexts/dialogService";
 import { sortBySelector } from "@/utils/array";
+import { useCanvasContextStore } from "@/contexts/canvasContextService";
 
 export type CommandService = {
   executeCommandWithDefaults: ExecuteCommandWithDefaults;
@@ -35,6 +36,8 @@ export const CommandPaletteHost = memo(
     const { children } = props;
     const { isOpen, setIsOpen } = useCommandPaletteStore((store) => store);
     const canvasActionDispatcher = useCanvasActionDispatcher();
+    const { activeContext } = useCanvasContextStore();
+    const getActiveCanvasContext = useStableCallback(() => activeContext);
     const dialogService = useDialogService();
     const commandService = useMemo<CommandService>(() => {
       const createContext = (): CommandContext => ({
@@ -46,6 +49,7 @@ export const CommandPaletteHost = memo(
         },
         dialogService,
         canvasActionDispatcher,
+        getActiveCanvasContext,
       });
       const executeCommand: ExecuteCommand = async (...[id, params]) => {
         const context = createContext();
@@ -63,7 +67,7 @@ export const CommandPaletteHost = memo(
         executeCommand,
         executeCommandWithDefaults,
       };
-    }, [dialogService, canvasActionDispatcher]);
+    }, [dialogService, canvasActionDispatcher, getActiveCanvasContext]);
 
     const sortedCommands = sortBySelector(
       Object.values(commands).filter(

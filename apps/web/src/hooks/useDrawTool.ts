@@ -9,6 +9,7 @@ import type { ContextGuard } from "./useCanvasContextGuard";
 import { toolsMetadata } from "@/tools";
 import { createRaf } from "@/utils/frame";
 import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
+import { useStableCallback } from ".";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -30,6 +31,9 @@ export const useDrawTool = (
   enable: boolean
 ) => {
   const toolRef = useRef<DrawTool | null>(null);
+  const transformToCanvasPositionStable = useStableCallback(
+    transformToCanvasPosition
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -43,9 +47,6 @@ export const useDrawTool = (
     let isDrawing = false;
     let currentPointerPosition: Position | null = null;
 
-    const getPointerPosition = (position: Position) =>
-      transformToCanvasPosition(position);
-
     const { start, stop, cancel } = createRaf((time) => {
       tool.draw({
         position: currentPointerPosition!,
@@ -55,14 +56,14 @@ export const useDrawTool = (
     });
 
     const onManipulationStart = (position: Position) => {
-      currentPointerPosition = getPointerPosition(position);
+      currentPointerPosition = transformToCanvasPositionStable(position);
       isDrawing = true;
       start();
     };
 
     const onManipulationUpdate = (position: Position) => {
       if (!isDrawing) return;
-      currentPointerPosition = getPointerPosition(position);
+      currentPointerPosition = transformToCanvasPositionStable(position);
     };
 
     const onManipulationEnd = () => {
@@ -98,7 +99,13 @@ export const useDrawTool = (
       document.removeEventListener("keydown", keyDownHandler);
       unsubscribeManipulationEvents();
     };
-  }, [drawToolId, contextGuard, elementRef, transformToCanvasPosition, enable]);
+  }, [
+    drawToolId,
+    contextGuard,
+    elementRef,
+    transformToCanvasPositionStable,
+    enable,
+  ]);
 
   useEffect(() => {
     toolRef.current?.configure(drawToolSettings);

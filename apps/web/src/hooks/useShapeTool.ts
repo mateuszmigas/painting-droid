@@ -6,6 +6,7 @@ import { type RefObject, useEffect } from "react";
 import { assertNever } from "@/utils/typeGuards";
 import { useStableCallback } from ".";
 import { TransformShapeTool } from "@/tools/transformShapeTool";
+import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
 
 const createDrawShapeTool = (id: ShapeToolId) => {
   switch (id) {
@@ -16,124 +17,125 @@ const createDrawShapeTool = (id: ShapeToolId) => {
   }
 };
 
-type ShapeOperation = "draw" | "transform" | "deselect";
+type ShapeOperation = "draw" | "transform";
 
 export const useShapeTool = (
   elementRef: RefObject<HTMLElement>,
   shapeToolId: ShapeToolId,
   transformToCanvasPosition: (position: Position) => Position,
   getCurrentShape: () => CanvasOverlayShape | null,
-  renderShape: (shape: CanvasOverlayShape | null) => void,
-  commitShape: (
-    shape: CanvasOverlayShape | null,
-    operation: ShapeOperation
-  ) => void,
+  handlers: {
+    cancel: (shape: CanvasOverlayShape | null) => Promise<void>;
+    update: (
+      shape: CanvasOverlayShape | null,
+      operation: ShapeOperation
+    ) => Promise<void>;
+    commit: (
+      shape: CanvasOverlayShape | null,
+      operation: ShapeOperation
+    ) => Promise<void>;
+  },
   enable: boolean
 ) => {
-  const renderStable = useStableCallback(renderShape);
-  const commitStable = useStableCallback(commitShape);
+  const cancelStable = useStableCallback(handlers.cancel);
+  const updateStable = useStableCallback(handlers.update);
+  const commitStable = useStableCallback(handlers.commit);
   const getCurrentShapeStable = useStableCallback(getCurrentShape);
   const transformToCanvasPositionStable = useStableCallback(
     transformToCanvasPosition
   );
+
   useEffect(() => {
     if (!elementRef.current || !enable || shapeToolId === null) return;
 
     const element = elementRef.current;
     const drawShapeTool = createDrawShapeTool(shapeToolId);
     const transformShapeTool = new TransformShapeTool();
-    let state: ShapeOperation | null = null;
+    let operation: ShapeOperation | null = null;
     let currentPointerPosition: Position | null = null;
-
-    const getPointerPosition = (event: PointerEvent) => {
-      return transformToCanvasPositionStable({
-        x: event.offsetX,
-        y: event.offsetY,
-      });
-    };
 
     const update = () => {
       const payload = { position: currentPointerPosition! };
-      if (state === "draw") {
+      if (operation === "draw") {
         drawShapeTool.update(payload);
-        renderStable(drawShapeTool.getShape());
-      } else {
+        updateStable(drawShapeTool.getShape(), operation);
+      }
+      if (operation === "transform") {
         transformShapeTool.update(payload.position);
-        const currentShape = transformShapeTool.getShape();
-        currentShape !== null && renderStable(currentShape);
+        updateStable(transformShapeTool.getShape(), operation!);
       }
     };
 
     const reset = () => {
       drawShapeTool.reset();
       transformShapeTool.reset();
-      state = null;
+      operation = null;
     };
 
-    const pointerDownHandler = (event: PointerEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (event.button !== 0) return;
+    const cancelCurrent = () => cancelStable(getCurrentShapeStable());
 
-      currentPointerPosition = getPointerPosition(event);
+    const onManipulationStart = (position: Position) => {
+      currentPointerPosition = transformToCanvasPositionStable(position);
       transformShapeTool.setTarget(getCurrentShapeStable());
 
       if (transformShapeTool.isInside(currentPointerPosition)) {
-        state = "transform";
+        operation = "transform";
       } else {
-        state = "draw";
+        operation = "draw";
       }
 
       update();
     };
 
-    const pointerUpHandler = (event: PointerEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!state) return;
+    const onManipulationEnd = () => {
+      if (!operation) return;
 
-      if (state === "draw") {
+      if (operation === "draw") {
         const drawnShape = drawShapeTool.getShape();
         drawnShape !== null
-          ? commitStable(drawnShape, "draw")
-          : commitStable(null, "deselect");
+          ? commitStable(drawnShape, operation)
+          : cancelCurrent();
       } else {
-        commitStable(transformShapeTool.getShape(), "transform");
+        const transformedShape = transformShapeTool.getShape();
+        transformedShape !== null
+          ? commitStable(transformedShape, operation)
+          : cancelCurrent();
       }
 
       reset();
     };
-    const pointerMoveHandler = (event: PointerEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!state) return;
-      currentPointerPosition = getPointerPosition(event);
+    const onManipulationUpdate = (position: Position) => {
+      if (!operation) return;
+      currentPointerPosition = transformToCanvasPositionStable(position);
       update();
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         reset();
-        commitStable(null, "deselect");
+        cancelCurrent();
       }
     };
 
-    element.addEventListener("pointerdown", pointerDownHandler);
-    element.addEventListener("pointermove", pointerMoveHandler);
-    document.addEventListener("pointerup", pointerUpHandler);
+    const unsubscribeManipulationEvents = subscribeToManipulationEvents(
+      element,
+      onManipulationStart,
+      onManipulationUpdate,
+      onManipulationEnd
+    );
+
     document.addEventListener("keydown", keyDownHandler);
 
     return () => {
-      element.removeEventListener("pointerdown", pointerDownHandler);
-      element.removeEventListener("pointermove", pointerMoveHandler);
-      document.removeEventListener("pointerup", pointerUpHandler);
       document.removeEventListener("keydown", keyDownHandler);
+      unsubscribeManipulationEvents();
     };
   }, [
     shapeToolId,
     enable,
     elementRef,
-    renderStable,
+    cancelStable,
+    updateStable,
     commitStable,
     getCurrentShapeStable,
     transformToCanvasPositionStable,

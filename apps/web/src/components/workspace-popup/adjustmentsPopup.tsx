@@ -33,8 +33,7 @@ export const AdjustmentsPopup = memo(() => {
   const closePopup = useWorkspacesStore((store) => store.closeApplyPopup);
   const adjustment = adjustmentsMetadata[popup.adjustmentId];
   const activeLayer = layers[activeLayerIndex];
-
-  const { getActiveContext } = useCanvasContextStore();
+  const { activeContext } = useCanvasContextStore();
 
   const runAdjustment = useStableCallback(async () => {
     const data = activeLayer.data;
@@ -70,17 +69,17 @@ export const AdjustmentsPopup = memo(() => {
       if (!imageData) {
         return;
       }
-      restoreContextFromUncompressed(
-        imageData as ImageUncompressedData,
-        getActiveContext()!
-      );
+      activeContext &&
+        restoreContextFromUncompressed(
+          imageData as ImageUncompressedData,
+          activeContext
+        );
     };
     run();
-  }, [getActiveContext, runAdjustment]);
+  }, [activeContext, runAdjustment]);
 
   useEffect(() => {
     return () => {
-      const activeContext = getActiveContext();
       if (activeContext !== null) {
         const activeLayer = activeWorkspaceActiveLayerSelector(
           useWorkspacesStore.getState()
@@ -92,7 +91,7 @@ export const AdjustmentsPopup = memo(() => {
         }
       }
     };
-  }, [getActiveContext]);
+  }, [activeContext]);
 
   return (
     <div className="flex flex-col gap-big">

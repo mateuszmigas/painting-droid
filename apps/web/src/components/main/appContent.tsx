@@ -15,10 +15,11 @@ import { getTranslations } from "@/translations";
 import { AppColumn } from "./appColumn";
 import { useCommandService } from "@/contexts/commandService";
 import { useGlobalKeyboardHandler } from "@/hooks";
+import { memo } from "react";
 
 const translations = getTranslations();
 
-export const AppContent = () => {
+export const AppContent = memo(() => {
   const { executeCommand } = useCommandService();
   useGlobalKeyboardHandler(executeCommand);
 
@@ -72,4 +73,4 @@ export const AppContent = () => {
       </ResizablePanelGroup>
     </div>
   );
-};
+});
