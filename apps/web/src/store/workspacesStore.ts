@@ -8,6 +8,7 @@ import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
+export type WorkspacePopupType = "effects" | null;
 export type WorkspaceId = string;
 export type Workspace = {
   id: WorkspaceId;
@@ -15,6 +16,7 @@ export type Workspace = {
   filePath: string | null;
   size: Size;
   viewport: Viewport | null;
+  popup: WorkspacePopupType;
   canvasData: CanvasState;
 };
 
@@ -29,6 +31,7 @@ const defaultWorkspace: Workspace = {
   filePath: null,
   size: { width: 800, height: 600 },
   viewport: null,
+  popup: null,
   canvasData: defaultCanvasState,
 };
 
@@ -45,6 +48,8 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   addNewActiveWorkspace: (size: Size) => void;
   loadWorkspace: (name: string, size: Size, canvasData: CanvasState) => void;
   setCanvasData: (canvasData: CanvasState) => void;
+  openApplyPopup: (type: WorkspacePopupType) => void;
+  closeApplyPopup: () => void;
 };
 
 export const mapActiveWorkspace = (
@@ -136,11 +141,25 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
         canvasData,
       }))
     ),
+  openApplyPopup: (type: WorkspacePopupType) =>
+    set((state) =>
+      mapActiveWorkspace(state, (workspace) => ({
+        ...workspace,
+        popup: type,
+      }))
+    ),
+  closeApplyPopup: () =>
+    set((state) =>
+      mapActiveWorkspace(state, (workspace) => ({
+        ...workspace,
+        popup: null,
+      }))
+    ),
 });
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   persist(workspacesStoreCreator, {
-    version: 7,
+    version: 8,
     name: "workspaces",
     storage: createJSONStorage(() => localStorage),
     partialize: (state) => ({
