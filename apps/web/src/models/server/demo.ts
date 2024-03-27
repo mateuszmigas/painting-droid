@@ -1,5 +1,6 @@
 import { environment } from "@/environment";
 import type { Size } from "@/utils/common";
+import { dupa } from "../../../../../../images/dupa";
 
 export const demoModel = {
   category: "text-to-image",
@@ -17,21 +18,20 @@ export const demoModel = {
     { width: 896, height: 1152 },
   ],
   request: async (prompt: string, size: Size) => {
-    const result = await fetch(environment.DEMO_API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, size }),
-    });
-    if (result.status === 429) {
-      throw new Error("Rate limit exceeded");
-    }
-    if (result.status !== 200) {
-      throw new Error("Failed to fetch image");
-    }
-    const data = (await result.json()) as {
-      artifacts: { base64: string }[];
-    };
-    return data.artifacts[0].base64;
+    // const result = await fetch(environment.DEMO_API_URL, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ prompt, size }),
+    // });
+    // if (result.status === 429) {
+    //   throw new Error("Rate limit exceeded");
+    // }
+    // if (result.status !== 200) {
+    //   throw new Error("Failed to fetch image");
+    // }
+    // const data = (await result.json()) as {
+    //   artifacts: { base64: string }[];
+    // };
+    return dupa;
   },
 };
-

@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { xenovaClient } from "@/models/local/xenovaClient";
 import { coreClient } from "@/wasm/core/coreClient";
+import { getImageDataFromCompressed } from "@/utils/imageData";
 
 export const MetadataPanel = () => {
   const [result, setResult] = useState<string>("");
@@ -16,6 +17,8 @@ export const MetadataPanel = () => {
     if (!data) {
       setResult("No data to classify");
     } else {
+      // const uncompressedData = await getImageDataFromCompressed(data);
+      setResult("Loading...");
       xenovaClient.classifyImage(data).then((res) => {
         setResult(res.result);
       });
