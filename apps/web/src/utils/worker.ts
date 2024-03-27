@@ -1,5 +1,10 @@
 //based on https://github.com/mateuszmigas/ts-experiments/blob/master/strong-api.ts
+import { isFunction } from "./typeGuards";
 import { uuid } from "./uuid";
+
+const createCallback = (id: string) => ({ __callbackId__: id });
+const isCallback = (arg: unknown): arg is { __callbackId__: string } =>
+  arg !== null && typeof arg === "object" && "__callbackId__" in arg;
 
 export const createProxyServer = (
   workerSelf: Window & typeof globalThis,
@@ -10,6 +15,15 @@ export const createProxyServer = (
   let isInitialized = false;
   workerSelf.addEventListener("message", async (message: MessageEvent) => {
     const { type, payload, id } = message.data;
+    const mappedArgs = payload.map((arg: unknown) => {
+      if (isCallback(arg)) {
+        const id = arg.__callbackId__;
+        return (...args: unknown[]) => {
+          workerSelf.postMessage({ id, result: args });
+        };
+      }
+      return arg;
+    });
     const method = api[type];
     if (!method) {
       throw new Error(`Unknown method ${type}`);
@@ -20,7 +34,7 @@ export const createProxyServer = (
       isInitialized = true;
     }
 
-    const result = await method(...payload);
+    const result = await method(...mappedArgs);
     workerSelf.postMessage({ id, result });
   });
 };
@@ -58,11 +72,27 @@ export const createProxyClient = <T extends {}>(initWorker: () => Worker) => {
       return (...args: unknown[]) => {
         const worker = getWorker();
         const id = uuid();
-        worker.postMessage({ id, type: prop, payload: args });
+        const callbackIds: string[] = [];
+        const mappedArgs = args.map((arg) => {
+          if (isFunction(arg)) {
+            const callbackId = uuid();
+            const callback = (event: MessageEvent) => {
+              event.data.id === callbackId &&
+                arg(...((event.data as { result: unknown[] }).result as []));
+            };
+            callbackIds.push(callbackId);
+            callbacks.set(callbackId, callback);
+            return createCallback(callbackId);
+          }
+          return arg;
+        });
+        worker.postMessage({ id, type: prop, payload: mappedArgs });
+
         return new Promise<string>((resolve) => {
           const callback = (event: MessageEvent) => {
             if (event.data.id === id) {
               callbacks.delete(id);
+              callbackIds.forEach((callbackId) => callbacks.delete(callbackId));
               resolve(event.data.result);
             }
           };
