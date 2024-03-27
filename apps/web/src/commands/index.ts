@@ -12,6 +12,13 @@ import { command as redoCanvasAction } from "./redoCanvasAction";
 import { command as clearActiveWorkspace } from "./clearActiveWorkspace";
 import { command as selectTool } from "./selectTool";
 import { command as openAdjustmentsPopup } from "./openAdjustmentsPopup";
+import { command as addLayer } from "./addLayer";
+import { command as removeLayer } from "./removeLayer";
+import { command as moveLayerUp } from "./moveLayerUp";
+import { command as moveLayerDown } from "./moveLayerDown";
+import { command as duplicateLayer } from "./duplicateLayer";
+import { command as hideLayer } from "./hideLayer";
+import { command as showLayer } from "./showLayer";
 
 export const commands = {
   saveAsPng,
@@ -28,6 +35,13 @@ export const commands = {
   clearActiveWorkspace,
   selectTool,
   openAdjustmentsPopup,
+  addLayer,
+  removeLayer,
+  moveLayerUp,
+  moveLayerDown,
+  duplicateLayer,
+  hideLayer,
+  showLayer,
 } as const;
 
 export type CommandId = keyof typeof commands;

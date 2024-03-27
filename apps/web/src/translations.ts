@@ -62,6 +62,13 @@ const translations = {
     saveAsJpeg: "Save As JPEG",
     saveAsPng: "Save As PNG",
     saveAsWorkspace: "Save Workspace (PDW)",
+    addLayer: "Add Layer",
+    removeLayer: "Remove Layer",
+    moveLayerUp: "Move Layer Up",
+    moveLayerDown: "Move Layer Down",
+    duplicateLayer: "Duplicate Layer",
+    hideLayer: "Hide Layer",
+    showLayer: "Show Layer",
   },
   layers: {
     defaultBaseName: "Background",

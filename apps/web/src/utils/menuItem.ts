@@ -1,5 +1,6 @@
 import type { KeyGesture } from "@/utils/keyGesture";
 import type { MenuItemAction } from "./menuItemAction";
+import type { IconType } from "@/components/icons/icon";
 
 export type MenuItem =
   | {
@@ -12,8 +13,10 @@ export type MenuItem =
       action: MenuItemAction;
       label: string;
       disabled?: boolean;
-      KeyGesture?: KeyGesture;
+      keyGesture?: KeyGesture;
+      icon?: IconType;
     }
   | {
       type: "separator";
     };
+

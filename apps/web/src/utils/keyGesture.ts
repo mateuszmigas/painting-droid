@@ -30,7 +30,7 @@ export const keyGestureToString = (keyGesture: KeyGesture) =>
       }${keyGesture.meta ? "⌘" : ""}`
     ),
     keyGesture.key,
-  ].join("+");
+  ].join("");
 
 const mapCodeToKey = (code: string): Key => {
   return code.toUpperCase() as Key;

@@ -17,6 +17,8 @@ import type { MenuItemAction } from "@/utils/menuItemAction";
 import { useCommandService } from "@/contexts/commandService";
 import { memo } from "react";
 import { useWorkspacesStore } from "@/store";
+import { Icon } from "../icons/icon";
+import { keyGestureToString } from "@/utils/keyGesture";
 
 const processAction = (action: MenuItemAction) => {
   if ("onClick" in action) {
@@ -43,12 +45,16 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
     case "leaf":
       return (
         <MenubarItem
+          className="gap-small items-center"
           disabled={item.disabled}
           onClick={() => processAction(item.action)}
         >
+          {item.icon && <Icon type={item.icon} size="small" />}
           {item.label}
-          {item.KeyGesture ? (
-            <MenubarShortcut>{item.KeyGesture.toString()}</MenubarShortcut>
+          {item.keyGesture ? (
+            <MenubarShortcut>
+              {keyGestureToString(item.keyGesture)}
+            </MenubarShortcut>
           ) : null}
         </MenubarItem>
       );
@@ -61,7 +67,7 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
 
 export const MenuBar = memo(() => {
   const { executeCommand } = useCommandService();
-  const { workspaces } = useWorkspacesStore();
+  const workspaces = useWorkspacesStore();
   const menuBarDefinition = createMenuBarDefinition(
     { workspaces },
     executeCommand
