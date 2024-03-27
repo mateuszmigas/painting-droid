@@ -10,6 +10,7 @@ export const subscribeToManipulationEvents = (
   if (isMobile()) {
     const offset = { x: 0, y: 0 };
     const onTouchStart = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
       event.preventDefault();
       const rect = element.getBoundingClientRect();
       offset.x = rect.x;
@@ -20,6 +21,7 @@ export const subscribeToManipulationEvents = (
       });
     };
     const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
       event.preventDefault();
       onManipulationUpdate({
         x: event.touches[0].clientX - offset.x,
@@ -78,4 +80,3 @@ export const subscribeToManipulationEvents = (
     element.removeEventListener("pointerup", onPointerUp);
   };
 };
-

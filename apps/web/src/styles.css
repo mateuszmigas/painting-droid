@@ -57,7 +57,10 @@
     @apply bg-background text-foreground;
     @apply size-full;
   }
-  html,
+  html {
+    @apply size-full;
+    touch-action: none;
+  }
   #root {
     @apply size-full;
   }
