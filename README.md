@@ -87,8 +87,11 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Custom 'Project' file format
 - [x] Saving and loading projects
 - [x] Area selection
-- [ ] WASM effects
-- [ ] Responsive UI
+- [x] Responsive UI
+- [x] Online Demo Model for Web
+- [x] WASM adjustments mechanism
+- [ ] Some Offline JS Model
+- [ ] Image resize/crop
 
 ### AI features (Desktop only)
 
@@ -99,11 +102,12 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 
 ### Post MVP
 
+- [ ] More image adjustments
+- [ ] More tools: fill, erase, magic wand, text
 - [ ] Release notes popup
 - [ ] Change renderer to webgl/webgpu
 - [ ] Optimize image conversions with Rust
 - [ ] Custom app menu for MacOS
-- [ ] More tools: fill, erase, magic wand, text
 - [ ] Annotation tools: line, rectangle, circle
 - [ ] Plugin support
 
