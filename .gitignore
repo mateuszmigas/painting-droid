@@ -18,4 +18,5 @@ node_modules
 *.sln
 *.sw?
 
+.env
 .env.local
