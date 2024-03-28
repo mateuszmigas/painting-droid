@@ -1,5 +1,5 @@
 import type { ObjectDetectionModel } from "./objectDetectionModel";
-import { xenovaClient } from "../providers/local/xenovaClient";
+import { transformerJsClient } from "../providers/local/transformerJsClient";
 import { sortBySelector } from "@/utils/array";
 
 export const model: ObjectDetectionModel = {
@@ -8,7 +8,10 @@ export const model: ObjectDetectionModel = {
   url: "https://huggingface.co/facebook/detr-resnet-50",
   settings: {},
   execute: async (imageData, onProgress) => {
-    const result = await xenovaClient.detectObjects(imageData, onProgress);
+    const result = await transformerJsClient.detectObjects(
+      imageData,
+      onProgress
+    );
 
     return sortBySelector(result, (item) => item.score, false).map((item) => ({
       label: item.label,
@@ -22,4 +25,3 @@ export const model: ObjectDetectionModel = {
     }));
   },
 };
-

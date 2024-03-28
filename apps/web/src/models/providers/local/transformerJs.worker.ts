@@ -34,7 +34,7 @@ const objectDetectionPipeline = createLazyPipeline(
     })
 );
 
-const xenovaServer = {
+const transformerJsServer = {
   detectObjects: async (
     imageData: ImageCompressedData,
     onProgress: (value: number, message: string) => void
@@ -58,5 +58,5 @@ const xenovaServer = {
   },
 };
 
-export type XenovaApi = typeof xenovaServer;
-createProxyServer(self, xenovaServer);
+export type TransformerJsApi = typeof transformerJsServer;
+createProxyServer(self, transformerJsServer);
