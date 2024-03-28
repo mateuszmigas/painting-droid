@@ -92,6 +92,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] WASM adjustments mechanism
 - [x] Some Offline JS Model
 - [ ] Image resize/crop
+- [ ] Clipboard support
 - [ ] Desktop app releases and autoupdate
 
 ### AI features (Desktop only)
