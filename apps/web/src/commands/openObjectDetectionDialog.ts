@@ -6,7 +6,7 @@ import { getTranslations } from "@/translations";
 const translations = getTranslations();
 
 export const command = createCommand({
-  icon: "brain",
+  icon: "shapes",
   id: "openObjectDetectionDialog",
   display: translations.models.objectDetection.name,
   options: { showInPalette: true },

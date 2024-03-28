@@ -36,6 +36,10 @@ import {
   Loader,
   Check,
   Brain,
+  Menu,
+  Image,
+  Shapes,
+  FolderOpen,
 } from "lucide-react";
 import { Deselect } from "./deselect";
 
@@ -73,7 +77,11 @@ export type IconType =
   | "deselect"
   | "loader"
   | "check"
-  | "brain";
+  | "brain"
+  | "menu"
+  | "image"
+  | "shapes"
+  | "folder-open";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -160,6 +168,14 @@ const renderLucideIcon = (
       return <Check className={className} size={fontSize} />;
     case "brain":
       return <Brain className={className} size={fontSize} />;
+    case "menu":
+      return <Menu className={className} size={fontSize} />;
+    case "image":
+      return <Image className={className} size={fontSize} />;
+    case "shapes":
+      return <Shapes className={className} size={fontSize} />;
+    case "folder-open":
+      return <FolderOpen className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

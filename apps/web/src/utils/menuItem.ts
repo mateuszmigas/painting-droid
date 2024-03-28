@@ -7,6 +7,7 @@ export type MenuItem =
       type: "parent";
       label: string;
       items: MenuItem[];
+      icon?: IconType;
     }
   | {
       type: "leaf";
@@ -19,4 +20,3 @@ export type MenuItem =
   | {
       type: "separator";
     };
-

@@ -19,6 +19,7 @@ import { memo } from "react";
 import { useWorkspacesStore } from "@/store";
 import { Icon } from "../icons/icon";
 import { keyGestureToString } from "@/utils/keyGesture";
+import { isMobile } from "@/utils/platform";
 
 const processAction = (action: MenuItemAction) => {
   if ("onClick" in action) {
@@ -33,7 +34,10 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
     case "parent":
       return (
         <MenubarSub>
-          <MenubarSubTrigger>{item.label}</MenubarSubTrigger>
+          <MenubarSubTrigger className="gap-small items-center">
+            {item.icon && <Icon type={item.icon} size="small" />}
+            {item.label}
+          </MenubarSubTrigger>
           <MenubarSubContent>
             {item.items.map((subItem, index) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: intentional
@@ -68,10 +72,11 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
 export const MenuBar = memo(() => {
   const { executeCommand } = useCommandService();
   const workspaces = useWorkspacesStore();
-  const menuBarDefinition = createMenuBarDefinition(
-    { workspaces },
-    executeCommand
-  );
+  const menuItems = createMenuBarDefinition({ workspaces }, executeCommand);
+  const menuBarDefinition = isMobile()
+    ? [{ type: "parent", label: "", icon: "menu", items: menuItems } as const]
+    : menuItems;
+
   return (
     <Menubar className="border-none shadow-none">
       {menuBarDefinition.map((parent, index) => {
@@ -82,7 +87,10 @@ export const MenuBar = memo(() => {
         return (
           // biome-ignore lint/suspicious/noArrayIndexKey: intentional
           <MenubarMenu key={index}>
-            <MenubarTrigger>{parent.label}</MenubarTrigger>
+            <MenubarTrigger className="gap-small items-center">
+              {parent.icon && <Icon type={parent.icon} size="small" />}
+              {parent.label}
+            </MenubarTrigger>
             <MenubarContent>
               {parent.items.map((item, index) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: intentional

@@ -11,7 +11,7 @@ const translations = getTranslations();
 export const command = createCommand({
   id: "openWorkspace",
   display: translations.commands.openWorkspace,
-  icon: "save",
+  icon: "folder-open",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
     openAndReadFileAsText({ extension: workspace.format }).then((result) => {

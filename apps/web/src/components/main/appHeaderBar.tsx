@@ -14,6 +14,7 @@ import {
 } from "../ui/context-menu";
 import { IconAnchor } from "../icons/iconAnchor";
 import { useCommandService } from "@/contexts/commandService";
+import { Separator } from "../ui/separator";
 
 export const AppHeaderBar = memo(() => {
   const { workspaces, activeWorkspaceId, selectWorkspace, closeWorkspace } =
@@ -21,9 +22,10 @@ export const AppHeaderBar = memo(() => {
   const { executeCommand } = useCommandService();
 
   return (
-    <div className="border-b flex flex-row justify-between items-center px-small gap-big">
+    <div className="border-b flex flex-row justify-between items-center px-small">
       <MenuBar />
-      <div className="flex-1 flex flex-row justify-center overflow-auto items-center gap-small">
+      <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
+      <div className="ml-medium flex-1 flex flex-row justify-start overflow-auto items-center gap-small">
         <ScrollArea className="whitespace-nowrap">
           <Tabs value={activeWorkspaceId} onValueChange={selectWorkspace}>
             <TabsList className="bg-transparent p-0">
@@ -57,6 +59,7 @@ export const AppHeaderBar = memo(() => {
           onClick={() => executeCommand("createActiveWorkspace")}
         />
       </div>
+      <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
       <div className="flex flex-row justify-center items-center pr-small gap-small">
         <IconAnchor
           type="bug"

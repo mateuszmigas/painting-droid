@@ -40,26 +40,14 @@ export const createMenuBarDefinition = (
       type: "parent",
       label: "File",
       items: [
-        {
-          type: "leaf",
-          label: "New",
-          action: { onClick: () => executeCommand("createActiveWorkspace") },
-        },
-        {
-          type: "leaf",
-          label: "Open",
-          action: { onClick: () => executeCommand("openWorkspace") },
-        },
-        {
-          type: "leaf",
-          disabled: stores.workspaces.workspaces.length === 1,
-          label: "Close",
-          action: { onClick: () => executeCommand("closeActiveWorkspace") },
-        },
+        itemFromCommand("createActiveWorkspace", executeCommand),
+        itemFromCommand("openWorkspace", executeCommand),
+        itemFromCommand("closeActiveWorkspace", executeCommand),
         {
           type: "separator",
         },
         {
+          icon: "save",
           type: "parent",
           label: "Save As...",
           items: [
@@ -86,16 +74,8 @@ export const createMenuBarDefinition = (
       type: "parent",
       label: "Edit",
       items: [
-        {
-          type: "leaf",
-          label: "Undo",
-          action: { onClick: () => executeCommand("undoCanvasAction") },
-        },
-        {
-          type: "leaf",
-          label: "Redo",
-          action: { onClick: () => executeCommand("redoCanvasAction") },
-        },
+        itemFromCommand("undoCanvasAction", executeCommand),
+        itemFromCommand("redoCanvasAction", executeCommand),
       ],
     },
     {
