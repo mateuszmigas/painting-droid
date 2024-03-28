@@ -83,7 +83,7 @@ export const TextToImageDialog = memo(
     ] as Size;
     const { scale } = scaleRectangleToFitParent(
       { x: 0, y: 0, ...currentSize },
-      { width: 240, height: 240 },
+      { width: 320, height: 320 },
       1
     );
     return (
@@ -96,20 +96,22 @@ export const TextToImageDialog = memo(
             className="flex flex-col gap-big sm:flex-row "
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <div
-              style={{
-                width: `${currentSize.width * scale}px`,
-                height: `${currentSize.height * scale}px`,
-              }}
-              className=" border-primary border-2 border-dashed object-contain box-content"
-            >
-              {imgData && (
-                <img
-                  className="size-full object-contain"
-                  src={imgData}
-                  alt=""
-                />
-              )}
+            <div className="flex flex-col items-center justify-center gap-big size-full">
+              <div
+                style={{
+                  width: `${currentSize.width * scale}px`,
+                  height: `${currentSize.height * scale}px`,
+                }}
+                className=" border-primary border-2 border-dashed object-contain box-content"
+              >
+                {imgData && (
+                  <img
+                    className="size-full object-contain"
+                    src={imgData}
+                    alt=""
+                  />
+                )}
+              </div>
             </div>
             <div className="flex flex-col gap-big justify-between min-w-64">
               <div className="w-full flex flex-col gap-big mb-big">
