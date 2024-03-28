@@ -31,11 +31,13 @@ export const model: TextToImageModel = {
     const data = (await result.json()) as {
       artifacts: { base64: string }[];
     };
+    if (!data.artifacts.length) {
+      throw new Error("Failed to fetch image");
+    }
     return {
       width: size.width,
       height: size.height,
-      data: `data:image/png;base64,${data}`,
+      data: `data:image/png;base64,${data.artifacts[0].base64}`,
     };
   },
 };
-
