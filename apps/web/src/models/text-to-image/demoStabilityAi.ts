@@ -1,11 +1,11 @@
 import { environment } from "@/environment";
 import type { Size } from "@/utils/common";
+import type { TextToImageModel } from "./textToImageModel";
 
-export const demoModel = {
-  category: "text-to-image",
+export const model: TextToImageModel = {
   name: "Demo",
-  description: "Demo model",
-  availableSizes: [
+  url: "https://stability.ai/",
+  sizes: [
     { width: 1024, height: 1024 },
     { width: 1152, height: 896 },
     { width: 1216, height: 832 },
@@ -16,7 +16,7 @@ export const demoModel = {
     { width: 832, height: 1216 },
     { width: 896, height: 1152 },
   ],
-  request: async (prompt: string, size: Size) => {
+  execute: async (prompt: string, size: Size) => {
     const result = await fetch(environment.DEMO_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -31,7 +31,11 @@ export const demoModel = {
     const data = (await result.json()) as {
       artifacts: { base64: string }[];
     };
-    return data.artifacts[0].base64;
+    return {
+      width: size.width,
+      height: size.height,
+      data: `data:image/png;base64,${data}`,
+    };
   },
 };
 

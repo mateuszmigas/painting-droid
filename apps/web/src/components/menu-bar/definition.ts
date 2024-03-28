@@ -9,7 +9,7 @@ import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
-const leafFromCommand = (
+const itemFromCommand = (
   commandId: CommandId,
   executeCommand: ExecuteCommand,
   disabled?: boolean,
@@ -102,29 +102,29 @@ export const createMenuBarDefinition = (
       type: "parent",
       label: "Layers",
       items: [
-        leafFromCommand("addLayer", executeCommand),
-        leafFromCommand("duplicateLayer", executeCommand),
-        leafFromCommand(
+        itemFromCommand("addLayer", executeCommand),
+        itemFromCommand("duplicateLayer", executeCommand),
+        itemFromCommand(
           "moveLayerUp",
           executeCommand,
           activeLayerIndex === layers.length - 1
         ),
-        leafFromCommand(
+        itemFromCommand(
           "moveLayerDown",
           executeCommand,
           activeLayerIndex === 0
         ),
-        leafFromCommand("removeLayer", executeCommand),
+        itemFromCommand("removeLayer", executeCommand),
         {
           type: "separator",
         },
-        leafFromCommand("hideLayer", executeCommand),
-        leafFromCommand("showLayer", executeCommand),
+        itemFromCommand("hideLayer", executeCommand),
+        itemFromCommand("showLayer", executeCommand),
       ],
     },
     {
       type: "parent",
-      label: "Adjustments",
+      label: translations.adjustments.name,
       items: Object.entries(adjustmentsMetadata).map(([id, metadata]) => ({
         type: "leaf",
         label: metadata.name,
@@ -135,6 +135,14 @@ export const createMenuBarDefinition = (
             }),
         },
       })),
+    },
+    {
+      type: "parent",
+      label: translations.models.name,
+      items: [
+        itemFromCommand("openObjectDetectionDialog", executeCommand),
+        itemFromCommand("openTextToImageDialog", executeCommand),
+      ],
     },
   ];
 };

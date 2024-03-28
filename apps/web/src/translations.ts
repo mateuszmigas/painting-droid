@@ -24,8 +24,19 @@ const translations = {
     selectLayer: "Select Layer",
   },
   adjustments: {
+    name: "Adjustments",
     grayscale: { name: "Grayscale" },
     sepia: { name: "Sepia" },
+  },
+  models: {
+    name: "Models",
+    objectDetection: {
+      name: "Object Detection",
+      result: {
+        noObjects: "No objects detected",
+      },
+    },
+    textToImage: { name: "Text to Image" },
   },
   tools: {
     shape: {
@@ -82,6 +93,13 @@ const translations = {
     apply: "Apply",
     cancel: "Cancel",
     unknown: "Unknown",
+    process: "Process",
+    result: "Result",
+    loading: "Loading",
+  },
+  errors: {
+    noImageData: "No image data",
+    processingError: "Processing error",
   },
 };
 
