@@ -74,7 +74,7 @@ export const AppHeaderBar = memo(() => {
         <IconButton
           type="plus"
           size="small-medium"
-          onClick={() => executeCommand("createActiveWorkspace")}
+          onClick={() => executeCommand("newActiveWorkspace")}
         />
       </div>
       <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />

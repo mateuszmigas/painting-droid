@@ -29,15 +29,21 @@ export const createCompressedFromContext = (
   return { width, height, data };
 };
 
-export const loadImageFromCompressed = (compressed: ImageCompressedData) => {
+export const loadImageFromData = (data: string) => {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
-    image.src = compressed.data;
+    image.src = data;
     image.onload = () => {
       resolve(image);
     };
     image.onerror = reject;
   });
+};
+
+export const compressedFromImage = (image: HTMLImageElement) => {
+  const context = createCanvasContext(image.width, image.height);
+  context.drawImage(image, 0, 0);
+  return createCompressedFromContext(context);
 };
 
 export const compressedDataToBlob = async (
@@ -57,8 +63,8 @@ export const mergeCompressedData = async (
   const { width, height } = compressedDataImages[0];
   const context = createCanvasContext(width, height);
 
-  for (const compressedData of compressedDataImages) {
-    const image = await loadImageFromCompressed(compressedData);
+  for (const compressed of compressedDataImages) {
+    const image = await loadImageFromData(compressed.data);
     context.drawImage(image, 0, 0, width, height);
   }
 
@@ -70,7 +76,7 @@ export const restoreContextFromCompressed = async (
   context: CanvasContext
 ) => {
   const { width, height } = compressed;
-  const image = await loadImageFromCompressed(compressed);
+  const image = await loadImageFromData(compressed.data);
   context.clearRect(0, 0, width, height);
   context.drawImage(image, 0, 0, width, height);
 };
@@ -119,7 +125,7 @@ export const putRectangleCompressedToContext = async (
   rectangle: Rectangle
 ) => {
   const { x, y, width, height } = rectangle;
-  const image = await loadImageFromCompressed(compressed);
+  const image = await loadImageFromData(compressed.data);
   context.drawImage(image, x, y, width, height);
 };
 

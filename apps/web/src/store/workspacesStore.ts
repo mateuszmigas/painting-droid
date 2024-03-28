@@ -1,4 +1,8 @@
-import { defaultCanvasState, type CanvasState } from "@/canvas/canvasState";
+import {
+  defaultCanvasState,
+  type CanvasState,
+  defaultLayer,
+} from "@/canvas/canvasState";
 import type { Size } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
@@ -6,6 +10,7 @@ import { create, type StateCreator } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getTranslations } from "@/translations";
 import type { AdjustmentId } from "@/adjustments";
+import type { ImageCompressedData } from "@/utils/imageData";
 
 const translations = getTranslations();
 
@@ -52,7 +57,16 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   clearWorkspace: (workspaceId: WorkspaceId) => void;
   setWorkspaceViewport: (viewport: Viewport) => void;
   addNewActiveWorkspace: (size: Size) => void;
-  loadWorkspace: (name: string, size: Size, canvasData: CanvasState) => void;
+  createWorkspaceFromCanvasData: (
+    name: string,
+    size: Size,
+    canvasData: CanvasState
+  ) => void;
+  createWorkspaceFromImage: (
+    name: string,
+    size: Size,
+    data: ImageCompressedData
+  ) => void;
   setCanvasData: (canvasData: CanvasState) => void;
   openApplyPopup: (type: WorkspacePopup) => void;
   closeApplyPopup: () => void;
@@ -131,7 +145,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       activeWorkspaceId: newId,
     }));
   },
-  loadWorkspace: (name, size, canvasData) => {
+  createWorkspaceFromCanvasData: (name, size, canvasData) => {
     const newId = uuid();
     return set((state) => ({
       ...state,
@@ -143,6 +157,26 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
           name,
           size,
           canvasData,
+        },
+      ],
+      activeWorkspaceId: newId,
+    }));
+  },
+  createWorkspaceFromImage(name, size, data) {
+    const newId = uuid();
+    return set((state) => ({
+      ...state,
+      workspaces: [
+        ...state.workspaces,
+        {
+          ...defaultWorkspace,
+          id: newId,
+          name,
+          size,
+          canvasData: {
+            ...defaultCanvasState,
+            layers: [{ ...defaultLayer, data }],
+          },
         },
       ],
       activeWorkspaceId: newId,

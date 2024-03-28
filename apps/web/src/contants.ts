@@ -3,3 +3,4 @@ export const workspace = {
   version: 1,
 };
 
+export const supportedImageFormats = ["png", "jpeg"];

@@ -63,10 +63,10 @@ const translations = {
   commands: {
     clearActiveWorkspace: "Clear Workspace",
     closeActiveWorkspace: "Close Workspace",
-    createActiveWorkspace: "Create New Workspace",
+    newActiveWorkspace: "New Workspace",
     fitCanvasToWindow: "Fit Canvas to Window",
     openCommandPalette: "Open Command Palette",
-    openWorkspace: "Open Workspace (PDW)",
+    openFile: "Open File",
     redoCanvasAction: "Redo Canvas Action",
     undoCanvasAction: "Undo Canvas Action",
     resetLayout: "Reset Layout",
@@ -96,6 +96,7 @@ const translations = {
     process: "Process",
     result: "Result",
     loading: "Loading",
+    images: "Images",
   },
   errors: {
     noImageData: "No image data",

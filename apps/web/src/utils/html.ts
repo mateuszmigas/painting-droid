@@ -1,5 +1,10 @@
-export const readFileAsText = (blob: Blob) => {
-  return new Promise<string | null>((resolve, reject) => {
+const urlToBlob = async (url: string) => {
+  const response = await fetch(url);
+  return response.blob();
+};
+
+export const readFileAsText = (url: string) => {
+  return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       resolve(event?.target?.result as string);
@@ -7,37 +12,47 @@ export const readFileAsText = (blob: Blob) => {
     reader.onerror = (event) => {
       reject(event?.target?.error);
     };
-    reader.readAsText(blob);
+    urlToBlob(url).then((blob) => reader.readAsText(blob));
   });
 };
 
-export const openFile = (options: { extension: string }) => {
-  return new Promise<File>((resolve, reject) => {
+export const readFileAsDataURL = (url: string) => {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      resolve(event?.target?.result as string);
+    };
+    reader.onerror = (event) => {
+      reject(event?.target?.error);
+    };
+    urlToBlob(url).then((blob) => reader.readAsDataURL(blob));
+  });
+};
+
+export const openFile = (options: { extensions: string[] }) => {
+  return new Promise<{ name: string; path: string } | null>((resolve) => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.multiple = false;
-    fileInput.accept = `.${options.extension}`;
+    fileInput.accept = options.extensions
+      .map((extension) => `.${extension}`)
+      .join(",");
     fileInput.addEventListener("change", (event) => {
       const e = event as unknown as {
         target: { files: FileList | null };
       };
       const result = e?.target?.files?.[0] || null;
       if (result) {
-        resolve(result);
+        resolve({
+          name: result.name,
+          path: URL.createObjectURL(result),
+        });
       } else {
-        reject("No file selected");
+        resolve(null);
       }
     });
     fileInput.click();
   });
-};
-
-export const openAndReadFileAsText = async (options: { extension: string }) => {
-  const file = await openFile({ extension: options.extension });
-  if (!file) {
-    return null;
-  }
-  return readFileAsText(file).then((text) => ({ name: file.name, text }));
 };
 
 export const downloadAsFile = (data: string, filename: string) => {

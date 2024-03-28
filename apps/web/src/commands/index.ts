@@ -1,8 +1,8 @@
 import { command as saveAsPng } from "./saveAsPng";
 import { command as saveAsJpeg } from "./saveAsJpeg";
 import { command as saveAsWorkspace } from "./saveAsWorkspace";
-import { command as openWorkspace } from "./openWorkspace";
-import { command as createActiveWorkspace } from "./createActiveWorkspace";
+import { command as openFile } from "./openFile";
+import { command as newActiveWorkspace } from "./newActiveWorkspace";
 import { command as openCommandPalette } from "./openCommandPalette";
 import { command as resetLayout } from "./resetLayout";
 import { command as closeActiveWorkspace } from "./closeActiveWorkspace";
@@ -26,8 +26,8 @@ export const commands = {
   saveAsPng,
   saveAsJpeg,
   saveAsWorkspace,
-  openWorkspace,
-  createActiveWorkspace,
+  openFile,
+  newActiveWorkspace,
   openCommandPalette,
   resetLayout,
   closeActiveWorkspace,

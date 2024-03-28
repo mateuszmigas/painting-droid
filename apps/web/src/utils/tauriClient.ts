@@ -1,20 +1,57 @@
-// import { invoke } from "@tauri-apps/api/core";
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { readTextFile, writeTextFile, writeFile } from "@tauri-apps/plugin-fs";
+import {
+  writeTextFile,
+  writeFile,
+  readTextFile,
+  readFile,
+} from "@tauri-apps/plugin-fs";
+import { getTranslations } from "@/translations";
+import { splitNameAndExtension } from "./fileSystem";
 
-export const openAndReadFileAsText = async (options: {
-  extension: string;
-}): Promise<{ name: string; text: string } | null> => {
+const translations = getTranslations();
+
+const bytesToBase64 = (buffer: Uint8Array) => {
+  return new Promise<string>((resolve) => {
+    const blob = new Blob([buffer], {
+      type: "application/octet-binary",
+    });
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      resolve(dataUrl.substr(dataUrl.indexOf(",") + 1));
+    };
+    reader.readAsDataURL(blob);
+  });
+};
+
+export const openFile = async (options: {
+  extensions: string[];
+}): Promise<{ name: string; path: string } | null> => {
   const file = await open({
     multiple: false,
     directory: false,
-    filters: [{ name: options.extension, extensions: [options.extension] }],
+    filters: [
+      { name: translations.general.images, extensions: options.extensions },
+    ],
   });
   if (!file) {
     return null;
   }
-  const text = await readTextFile(file.path);
-  return { name: file?.name ?? "Unknown", text };
+  return {
+    name: file.name!,
+    path: file.path,
+  };
+};
+
+export const readFileAsText = (path: string) => {
+  return readTextFile(path);
+};
+
+export const readFileAsDataURL = async (path: string) => {
+  const { extension } = splitNameAndExtension(path);
+  const bytes = await readFile(path);
+  const dataUrl = await bytesToBase64(bytes);
+  return `data:image/${extension};base64,${dataUrl}`;
 };
 
 export const saveTextToFile = async (
@@ -45,4 +82,3 @@ export const saveBlobToFile = async (
   const arrayBuffer = await blob.arrayBuffer();
   return writeFile(path, new Uint8Array(arrayBuffer));
 };
-

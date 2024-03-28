@@ -1,19 +1,29 @@
 import {
-  openAndReadFileAsText as openAndReadFileAsTextWeb,
   saveTextToFile as saveTextToFileWeb,
   saveBlobToFile as saveBlobToFileWeb,
+  openFile as openFileWeb,
+  readFileAsDataURL as readFileAsDataURLWeb,
+  readFileAsText as readFileAsTextWeb,
 } from "./html";
 import {
-  openAndReadFileAsText as openAndReadFileAsTextDesktop,
   saveTextToFile as saveTextToFileDesktop,
   saveBlobToFile as saveBlobToFileDesktop,
+  openFile as openFileDesktop,
+  readFileAsDataURL as readFileAsDataURLDesktop,
+  readFileAsText as readFileAsTextDesktop,
 } from "./tauriClient";
 import { isWeb } from "./platform";
 
-export const openAndReadFileAsText = async (options: { extension: string }) =>
-  isWeb()
-    ? openAndReadFileAsTextWeb(options)
-    : openAndReadFileAsTextDesktop(options);
+export const openFile = (options: {
+  extensions: string[];
+}): Promise<{ name: string; path: string } | null> =>
+  isWeb() ? openFileWeb(options) : openFileDesktop(options);
+
+export const readFileAsDataURL = (path: string) =>
+  isWeb() ? readFileAsDataURLWeb(path) : readFileAsDataURLDesktop(path);
+
+export const readFileAsText = (path: string) =>
+  isWeb() ? readFileAsTextWeb(path) : readFileAsTextDesktop(path);
 
 export const saveTextToFile = (
   text: string,
@@ -33,3 +43,9 @@ export const saveBlobToFile = (
     ? saveBlobToFileWeb(blob, filename, extension)
     : saveBlobToFileDesktop(blob, filename, extension);
 
+export const splitNameAndExtension = (name: string) => {
+  const parts = name.split(".");
+  const extension = parts.pop();
+  const fileName = parts.join(".");
+  return { fileName, extension };
+};

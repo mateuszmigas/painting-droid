@@ -40,8 +40,8 @@ export const createMenuBarDefinition = (
       type: "parent",
       label: "File",
       items: [
-        itemFromCommand("createActiveWorkspace", executeCommand),
-        itemFromCommand("openWorkspace", executeCommand),
+        itemFromCommand("openFile", executeCommand),
+        itemFromCommand("newActiveWorkspace", executeCommand),
         itemFromCommand("closeActiveWorkspace", executeCommand),
         {
           type: "separator",

@@ -6,8 +6,8 @@ import { getTranslations } from "@/translations";
 const translations = getTranslations();
 
 export const command = createCommand({
-  id: "createActiveWorkspace",
-  display: translations.commands.createActiveWorkspace,
+  id: "newActiveWorkspace",
+  display: translations.commands.newActiveWorkspace,
   icon: "add-file",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
