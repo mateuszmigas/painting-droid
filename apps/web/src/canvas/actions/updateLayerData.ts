@@ -7,12 +7,12 @@ export const createCanvasAction = (
   context: CanvasActionContext,
   payload: {
     layerId: CanvasLayerId;
-    source: string;
+    display: string;
     icon: IconType;
     data: CanvasLayerData | null;
   }
 ): CanvasAction => {
-  const { layerId, source, icon, data } = payload;
+  const { layerId, display: source, icon, data } = payload;
   const state = context.getState();
 
   const capturedData = {

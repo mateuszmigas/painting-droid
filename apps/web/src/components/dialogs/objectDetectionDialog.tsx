@@ -125,7 +125,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
       data: imageData,
       layerId: activeLayer.id,
       icon: "brain",
-      source: translations.models.objectDetection.name,
+      display: translations.models.objectDetection.name,
     });
     close();
   };

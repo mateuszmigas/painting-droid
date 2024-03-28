@@ -15,7 +15,6 @@ import {
   Form,
   FormLabel,
 } from "../ui/form";
-import type { ImageCompressedData } from "@/utils/imageData";
 import {
   Select,
   SelectContent,
@@ -26,6 +25,8 @@ import {
 import { uuid } from "@/utils/uuid";
 import { textToImageModels } from "@/models/text-to-image";
 import { getTranslations } from "@/translations";
+import { useCanvasActionDispatcher } from "@/hooks";
+import { useCommandService } from "@/contexts/commandService";
 
 const translations = getTranslations();
 
@@ -42,184 +43,199 @@ const availableSizes = demoModel.sizes.map((size) => {
   return { id: uuid(), width: size.width, height: size.height };
 });
 
-export const TextToImageDialog = memo(
-  (props: {
-    close: (result: { data: ImageCompressedData | null }) => void;
-  }) => {
-    const { close } = props;
+export const TextToImageDialog = memo((props: { close: () => void }) => {
+  const { close } = props;
+  const canvasActionDispatcher = useCanvasActionDispatcher();
+  const { executeCommand } = useCommandService();
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      prompt: "a cat with a nice hat",
+      model: "demo",
+      size: availableSizes[0].id,
+    },
+  });
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [imgData, setImgData] = useState<string>("");
 
-    const form = useForm<z.infer<typeof FormSchema>>({
-      resolver: zodResolver(FormSchema),
-      defaultValues: {
-        prompt: "a cat with a nice hat",
-        model: "demo",
-        size: availableSizes[0].id,
-      },
-    });
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [imgData, setImgData] = useState<string>("");
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    setIsGenerating(true);
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-      setIsGenerating(true);
+    const size = availableSizes.findIndex(
+      (size) => size.id === form.watch("size")
+    );
 
-      const size = availableSizes.findIndex(
-        (size) => size.id === form.watch("size")
-      );
+    demoModel
+      .execute(data.prompt, availableSizes[size])
+      .then((img) => {
+        setImgData(img.data);
+        setIsGenerating(false);
+      })
+      .catch((err) => {
+        form.setError("prompt", { message: err.toString() });
+        setIsGenerating(false);
+      });
+  };
 
-      demoModel
-        .execute(data.prompt, availableSizes[size])
-        .then((img) => {
-          setImgData(img.data);
-          setIsGenerating(false);
-        })
-        .catch((err) => {
-          form.setError("prompt", { message: err.toString() });
-          setIsGenerating(false);
-        });
+  const apply = async () => {
+    if (imgData === null) {
+      close();
+      return;
     }
 
-    const currentSize = availableSizes[
-      availableSizes.findIndex((size) => size.id === form.watch("size"))
-    ] as Size;
-    const { scale } = scaleRectangleToFitParent(
-      { x: 0, y: 0, ...currentSize },
-      { width: 320, height: 320 },
-      1
-    );
-    return (
-      <DialogContent style={{ minWidth: "fit-content" }}>
-        <DialogHeader>
-          <DialogTitle>{translations.models.textToImage.name}</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            className="flex flex-col gap-big sm:flex-row "
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
-            <div className="flex flex-col items-center justify-center gap-big size-full">
-              <div
-                style={{
-                  width: `${currentSize.width * scale}px`,
-                  height: `${currentSize.height * scale}px`,
-                }}
-                className=" border-primary border-2 border-dashed object-contain box-content"
-              >
-                {imgData && (
-                  <img
-                    className="size-full object-contain"
-                    src={imgData}
-                    alt=""
+    await executeCommand("selectTool", { toolId: "rectangleSelect" });
+    await canvasActionDispatcher.execute("drawOverlayShape", {
+      display: translations.models.textToImage.name,
+      overlayShape: {
+        type: "rectangle",
+        boundingBox: {
+          x: 0,
+          y: 0,
+          width: currentSize.width / 2,
+          height: currentSize.height / 2,
+        },
+        captured: {
+          box: { x: 0, y: 0, width: 0, height: 0 },
+          data: {
+            data: imgData,
+            width: currentSize.width,
+            height: currentSize.height,
+          },
+        },
+      },
+    });
+    close();
+  };
+
+  const currentSize = availableSizes[
+    availableSizes.findIndex((size) => size.id === form.watch("size"))
+  ] as Size;
+  const { scale } = scaleRectangleToFitParent(
+    { x: 0, y: 0, ...currentSize },
+    { width: 320, height: 320 },
+    1
+  );
+  return (
+    <DialogContent style={{ minWidth: "fit-content" }}>
+      <DialogHeader>
+        <DialogTitle>{translations.models.textToImage.name}</DialogTitle>
+      </DialogHeader>
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-big sm:flex-row "
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <div className="flex flex-col items-center justify-center gap-big size-full">
+            <div
+              style={{
+                width: `${currentSize.width * scale}px`,
+                height: `${currentSize.height * scale}px`,
+              }}
+              className=" border-primary border-2 border-dashed object-contain box-content"
+            >
+              {imgData && (
+                <img
+                  className="size-full object-contain"
+                  src={imgData}
+                  alt=""
+                />
+              )}
+            </div>
+          </div>
+          <div className="flex flex-col gap-big justify-between min-w-64">
+            <div className="w-full flex flex-col gap-big mb-big">
+              <div className="w-full flex flex-row gap-big">
+                <FormField
+                  control={form.control}
+                  name="model"
+                  render={({ field }) => (
+                    <FormItem className="w-[50%]">
+                      <FormLabel>Model</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="demo">Demo</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="size"
+                  render={({ field }) => (
+                    <FormItem className="w-[50%]">
+                      <FormLabel>Size</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value as never}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {availableSizes.map((size) => (
+                            <SelectItem key={size.id} value={size.id}>
+                              {size.width}x{size.height}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="w-full flex flex-row gap-big items-end">
+                <FormField
+                  control={form.control}
+                  name="prompt"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Prompt</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <div className="gap-medium flex flex-row justify-end">
+              <Button type="submit" variant="secondary" disabled={isGenerating}>
+                {imgData ? "Regenerate" : "Generate"}
+                {isGenerating ? (
+                  <Icon
+                    className="ml-2 animate-spin"
+                    type="loader"
+                    size="small"
+                  />
+                ) : (
+                  <Icon
+                    className="ml-2"
+                    type={imgData ? "check" : "brain"}
+                    size="small"
                   />
                 )}
-              </div>
+              </Button>
+              <Button type="button" onClick={apply} disabled={!imgData}>
+                Apply
+              </Button>
             </div>
-            <div className="flex flex-col gap-big justify-between min-w-64">
-              <div className="w-full flex flex-col gap-big mb-big">
-                <div className="w-full flex flex-row gap-big">
-                  <FormField
-                    control={form.control}
-                    name="model"
-                    render={({ field }) => (
-                      <FormItem className="w-[50%]">
-                        <FormLabel>Model</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="demo">Demo</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="size"
-                    render={({ field }) => (
-                      <FormItem className="w-[50%]">
-                        <FormLabel>Size</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value as never}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {availableSizes.map((size) => (
-                              <SelectItem key={size.id} value={size.id}>
-                                {size.width}x{size.height}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="w-full flex flex-row gap-big items-end">
-                  <FormField
-                    control={form.control}
-                    name="prompt"
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormLabel>Prompt</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="gap-medium flex flex-row justify-end">
-                <Button
-                  type="submit"
-                  variant="secondary"
-                  disabled={isGenerating}
-                >
-                  {imgData ? "Regenerate" : "Generate"}
-                  {isGenerating ? (
-                    <Icon
-                      className="ml-2 animate-spin"
-                      type="loader"
-                      size="small"
-                    />
-                  ) : (
-                    <Icon
-                      className="ml-2"
-                      type={imgData ? "check" : "brain"}
-                      size="small"
-                    />
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  onClick={() =>
-                    close({
-                      data: imgData ? { data: imgData, ...currentSize } : null,
-                    })
-                  }
-                  disabled={!imgData}
-                >
-                  Apply
-                </Button>
-              </div>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    );
-  }
-);
+          </div>
+        </form>
+      </Form>
+    </DialogContent>
+  );
+});

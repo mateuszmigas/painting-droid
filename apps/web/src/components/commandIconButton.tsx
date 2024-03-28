@@ -2,6 +2,7 @@ import { type CommandId, commands } from "@/commands";
 import { type KeyGesture, keyGestureToString } from "@/utils/keyGesture";
 import { IconButton } from "./icons/iconButton";
 import { useCommandService } from "@/contexts/commandService";
+import type { IconSize } from "./icons/icon";
 
 const createCommandTooltip = (name: string, keyGesture?: KeyGesture) => {
   if (keyGesture) {
@@ -10,8 +11,11 @@ const createCommandTooltip = (name: string, keyGesture?: KeyGesture) => {
   return name;
 };
 
-export const CommandIconButton = (props: { commandId: CommandId }) => {
-  const { commandId } = props;
+export const CommandIconButton = (props: {
+  commandId: CommandId;
+  size?: IconSize;
+}) => {
+  const { commandId, size = "small" } = props;
   const command = commands[commandId]!;
   const { executeCommandWithDefaults } = useCommandService();
   return (
@@ -21,7 +25,7 @@ export const CommandIconButton = (props: { commandId: CommandId }) => {
         command.defaultKeyGesture
       )}
       type={command.icon ?? "command"}
-      size="small"
+      size={size}
       onClick={() => executeCommandWithDefaults(commandId)}
     />
   );

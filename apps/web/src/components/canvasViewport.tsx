@@ -159,6 +159,9 @@ export const CanvasViewport = memo(
     );
 
     const { position, zoom } = viewport.getValue();
+    const imageOverlaySrc = overlayShape?.captured
+      ? overlayShape.captured.data.data
+      : "";
 
     return (
       <div
@@ -198,10 +201,11 @@ export const CanvasViewport = memo(
           alt=""
           className="pixelated-canvas origin-top-left absolute pointer-events-none left-0 top-0"
           ref={imageOverlayRef}
-          src={overlayShape?.captured ? overlayShape.captured.data.data : ""}
+          src={imageOverlaySrc}
           style={{
             zIndex: activeLayerIndex + 1,
             willChange: "transform",
+            visibility: imageOverlaySrc ? "visible" : "hidden",
           }}
         />
         <div

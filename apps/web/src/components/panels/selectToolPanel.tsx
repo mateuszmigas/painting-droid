@@ -4,9 +4,7 @@ import { memo } from "react";
 import { type ToolId, defaultToolsSettings, toolsMetadata } from "@/tools";
 import type { IconType } from "../icons/icon";
 import { useCommandService } from "@/contexts/commandService";
-import { useDialogService } from "@/contexts/dialogService";
-import { useCanvasActionDispatcher } from "@/hooks";
-import { TextToImageDialog } from "../dialogs/textToImageDialog";
+import { CommandIconButton } from "../commandIconButton";
 
 const tools: { id: ToolId; icon: IconType; name: string }[] = (
   Object.keys(defaultToolsSettings) as ToolId[]
@@ -22,31 +20,7 @@ const tools: { id: ToolId; icon: IconType; name: string }[] = (
 export const SelectToolPanel = memo(() => {
   const { selectedToolId } = useToolStore((state) => state);
   const { executeCommand } = useCommandService();
-  const { openDialog } = useDialogService();
-  const canvasDispatcher = useCanvasActionDispatcher();
 
-  const generateImage = async () => {
-    const result = await openDialog(TextToImageDialog, {});
-    if (result) {
-      const box = {
-        x: 0,
-        y: 0,
-        width: result.data!.width / 2,
-        height: result.data!.height / 2,
-      };
-      executeCommand("selectTool", { toolId: "rectangleSelect" });
-      canvasDispatcher.execute("drawOverlayShape", {
-        overlayShape: {
-          type: "rectangle",
-          boundingBox: box,
-          captured: {
-            box: { x: 0, y: 0, width: 0, height: 0 },
-            data: result.data!,
-          },
-        },
-      });
-    }
-  };
   return (
     <div className="flex flex-col gap-medium">
       <div className="flex flex-wrap flex-row gap-small p-small">
@@ -65,12 +39,7 @@ export const SelectToolPanel = memo(() => {
             onClick={() => executeCommand("selectTool", { toolId: id })}
           />
         ))}
-        <IconButton
-          title={"Cat generator"}
-          type={"brain"}
-          size="medium"
-          onClick={generateImage}
-        />
+        <CommandIconButton size="medium" commandId="openTextToImageDialog" />
       </div>
     </div>
   );

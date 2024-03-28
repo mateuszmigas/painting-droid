@@ -86,7 +86,7 @@ export const createDrawToolHandlers = (
 
       canvasActionDispatcher.execute("updateLayerData", {
         layerId: activeLayer.id,
-        source: name,
+        display: name,
         icon,
         data,
       });
@@ -101,4 +101,3 @@ export const createDrawToolHandlers = (
     },
   };
 };
-

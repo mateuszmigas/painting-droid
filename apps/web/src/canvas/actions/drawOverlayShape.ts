@@ -16,9 +16,10 @@ export const createCanvasAction = (
   context: CanvasActionContext,
   payload: {
     overlayShape: CanvasOverlayShape;
+    display?: string;
   }
 ): CanvasAction => {
-  const { overlayShape } = payload;
+  const { overlayShape, display: source } = payload;
   const state = context.getState();
   const previousOverlayShape = state.overlayShape;
 
@@ -28,7 +29,7 @@ export const createCanvasAction = (
   };
 
   return {
-    display: translate(overlayShape),
+    display: source ?? translate(overlayShape),
     icon: "rectangle-select",
     execute: async (state) => {
       return {

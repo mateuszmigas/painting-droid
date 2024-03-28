@@ -5,7 +5,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import {
   useCommandPaletteStore,
   useLayoutStore,
@@ -20,7 +20,6 @@ import {
   type ExecuteCommandWithDefaults,
 } from "@/commands";
 import { Icon } from "./icons/icon";
-import { CommandServiceContext } from "@/contexts/commandService";
 import type { CommandContext } from "@/commands/context";
 import { useDialogService } from "@/contexts/dialogService";
 import { sortBySelector } from "@/utils/array";
@@ -32,8 +31,8 @@ export type CommandService = {
 };
 
 export const CommandPaletteHost = memo(
-  (props: { children: React.ReactNode }) => {
-    const { children } = props;
+  (props: { setCommandService: (commandService: CommandService) => void }) => {
+    const { setCommandService } = props;
     const { isOpen, setIsOpen } = useCommandPaletteStore((store) => store);
     const canvasActionDispatcher = useCanvasActionDispatcher();
     const { activeContext } = useCanvasContextStore();
@@ -69,6 +68,10 @@ export const CommandPaletteHost = memo(
       };
     }, [dialogService, canvasActionDispatcher, getActiveCanvasContext]);
 
+    useEffect(() => {
+      setCommandService(commandService);
+    }, [setCommandService, commandService]);
+
     const sortedCommands = sortBySelector(
       Object.values(commands).filter(
         (command) => command.options.showInPalette
@@ -78,32 +81,29 @@ export const CommandPaletteHost = memo(
     );
 
     return (
-      <CommandServiceContext.Provider value={commandService}>
-        <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
-          <CommandInput placeholder="Type a command or search..." />
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            {sortedCommands.map((command) => (
-              <CommandItem
-                onSelect={() => {
-                  commandService.executeCommand(command.id as never);
-                  setIsOpen(false);
-                }}
-                key={command.display}
-                className="m-1 h-8"
-              >
-                <Icon
-                  type={command.icon ?? "command"}
-                  size="small"
-                  className="mr-2 min-h-5 min-w-5"
-                />
-                <span className="truncate">{command.display}</span>
-              </CommandItem>
-            ))}
-          </CommandList>
-        </CommandDialog>
-        {children}
-      </CommandServiceContext.Provider>
+      <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
+        <CommandInput placeholder="Type a command or search..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          {sortedCommands.map((command) => (
+            <CommandItem
+              onSelect={() => {
+                commandService.executeCommand(command.id as never);
+                setIsOpen(false);
+              }}
+              key={command.display}
+              className="m-1 h-8"
+            >
+              <Icon
+                type={command.icon ?? "command"}
+                size="small"
+                className="mr-2 min-h-5 min-w-5"
+              />
+              <span className="truncate">{command.display}</span>
+            </CommandItem>
+          ))}
+        </CommandList>
+      </CommandDialog>
     );
   }
 );

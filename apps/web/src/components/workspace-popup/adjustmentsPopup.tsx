@@ -56,7 +56,7 @@ export const AdjustmentsPopup = memo(() => {
     );
     await canvasDispatcher.execute("updateLayerData", {
       layerId: activeLayer.id,
-      source: adjustment.name,
+      display: adjustment.name,
       icon: "brain",
       data: compressedData,
     });
@@ -107,4 +107,3 @@ export const AdjustmentsPopup = memo(() => {
     </div>
   );
 });
-
