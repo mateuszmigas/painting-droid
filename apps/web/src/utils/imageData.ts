@@ -130,3 +130,11 @@ const createCanvasContext = (width: number, height: number) => {
   const context = canvas.getContext("2d") as CanvasContext;
   return context;
 };
+
+export const canvasContextFromCompressed = async (
+  compressed: ImageCompressedData
+) => {
+  const context = createCanvasContext(compressed.width, compressed.height);
+  await restoreContextFromCompressed(compressed, context);
+  return context;
+};

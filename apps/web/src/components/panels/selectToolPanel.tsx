@@ -6,7 +6,7 @@ import type { IconType } from "../icons/icon";
 import { useCommandService } from "@/contexts/commandService";
 import { useDialogService } from "@/contexts/dialogService";
 import { useCanvasActionDispatcher } from "@/hooks";
-import { GenerateImageDialog } from "../dialogs/generateImageDialog";
+import { TextToImageDialog } from "../dialogs/textToImageDialog";
 
 const tools: { id: ToolId; icon: IconType; name: string }[] = (
   Object.keys(defaultToolsSettings) as ToolId[]
@@ -26,7 +26,7 @@ export const SelectToolPanel = memo(() => {
   const canvasDispatcher = useCanvasActionDispatcher();
 
   const generateImage = async () => {
-    const result = await openDialog(GenerateImageDialog, {});
+    const result = await openDialog(TextToImageDialog, {});
     if (result) {
       const box = {
         x: 0,

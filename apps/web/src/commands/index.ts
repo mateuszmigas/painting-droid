@@ -19,6 +19,8 @@ import { command as moveLayerDown } from "./moveLayerDown";
 import { command as duplicateLayer } from "./duplicateLayer";
 import { command as hideLayer } from "./hideLayer";
 import { command as showLayer } from "./showLayer";
+import { command as openObjectDetectionDialog } from "./openObjectDetectionDialog";
+import { command as openTextToImageDialog } from "./openTextToImageDialog";
 
 export const commands = {
   saveAsPng,
@@ -42,6 +44,8 @@ export const commands = {
   duplicateLayer,
   hideLayer,
   showLayer,
+  openObjectDetectionDialog,
+  openTextToImageDialog,
 } as const;
 
 export type CommandId = keyof typeof commands;

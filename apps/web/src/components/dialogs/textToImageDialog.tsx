@@ -2,7 +2,6 @@ import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { memo, useState } from "react";
 import { scaleRectangleToFitParent, type Size } from "@/utils/common";
-import { demoModel } from "@/models/server/demo";
 import { Input } from "../ui/input";
 import { Icon } from "../icons/icon";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +24,10 @@ import {
   SelectValue,
 } from "../ui/select";
 import { uuid } from "@/utils/uuid";
+import { textToImageModels } from "@/models/text-to-image";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 const FormSchema = z.object({
   prompt: z.string().min(10, {
@@ -34,11 +37,12 @@ const FormSchema = z.object({
   size: z.string(),
 });
 
-const availableSizes = demoModel.availableSizes.map((size) => {
+const demoModel = textToImageModels.demo_stability_ai;
+const availableSizes = demoModel.sizes.map((size) => {
   return { id: uuid(), width: size.width, height: size.height };
 });
 
-export const GenerateImageDialog = memo(
+export const TextToImageDialog = memo(
   (props: {
     close: (result: { data: ImageCompressedData | null }) => void;
   }) => {
@@ -52,25 +56,25 @@ export const GenerateImageDialog = memo(
         size: availableSizes[0].id,
       },
     });
-    const [isFetching, setIsFetching] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
     const [imgData, setImgData] = useState<string>("");
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
-      setIsFetching(true);
+      setIsGenerating(true);
 
       const size = availableSizes.findIndex(
         (size) => size.id === form.watch("size")
       );
 
       demoModel
-        .request(data.prompt, availableSizes[size])
+        .execute(data.prompt, availableSizes[size])
         .then((img) => {
-          setImgData(`data:image/png;base64,${img}`);
-          setIsFetching(false);
+          setImgData(img.data);
+          setIsGenerating(false);
         })
         .catch((err) => {
           form.setError("prompt", { message: err.toString() });
-          setIsFetching(false);
+          setIsGenerating(false);
         });
     }
 
@@ -84,30 +88,28 @@ export const GenerateImageDialog = memo(
     );
     return (
       <DialogContent style={{ minWidth: "fit-content" }}>
-        <DialogHeader className="pb-5">
-          <DialogTitle>Generate Image</DialogTitle>
+        <DialogHeader>
+          <DialogTitle>{translations.models.textToImage.name}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
             className="flex flex-col gap-big sm:flex-row "
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <div className="flex flex-col items-center justify-center gap-big size-full">
-              <div
-                style={{
-                  width: `${currentSize.width * scale}px`,
-                  height: `${currentSize.height * scale}px`,
-                }}
-                className="border-primary border-2 border-dashed object-contain box-content"
-              >
-                {imgData && (
-                  <img
-                    className="size-full object-contain"
-                    src={imgData}
-                    alt=""
-                  />
-                )}
-              </div>
+            <div
+              style={{
+                width: `${currentSize.width * scale}px`,
+                height: `${currentSize.height * scale}px`,
+              }}
+              className=" border-primary border-2 border-dashed object-contain box-content"
+            >
+              {imgData && (
+                <img
+                  className="size-full object-contain"
+                  src={imgData}
+                  alt=""
+                />
+              )}
             </div>
             <div className="flex flex-col gap-big justify-between min-w-64">
               <div className="w-full flex flex-col gap-big mb-big">
@@ -180,9 +182,13 @@ export const GenerateImageDialog = memo(
                 </div>
               </div>
               <div className="gap-medium flex flex-row justify-end">
-                <Button type="submit" variant="secondary" disabled={isFetching}>
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  disabled={isGenerating}
+                >
                   {imgData ? "Regenerate" : "Generate"}
-                  {isFetching ? (
+                  {isGenerating ? (
                     <Icon
                       className="ml-2 animate-spin"
                       type="loader"
