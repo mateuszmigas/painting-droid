@@ -19,7 +19,6 @@ import { memo } from "react";
 import { useWorkspacesStore } from "@/store";
 import { Icon } from "../icons/icon";
 import { keyGestureToString } from "@/utils/keyGesture";
-import { isMobile } from "@/utils/platform";
 
 const processAction = (action: MenuItemAction) => {
   if ("onClick" in action) {
@@ -69,11 +68,12 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
   }
 };
 
-export const MenuBar = memo(() => {
+export const MenuBar = memo((props: { compact: boolean }) => {
+  const { compact } = props;
   const { executeCommand } = useCommandService();
   const workspaces = useWorkspacesStore();
   const menuItems = createMenuBarDefinition({ workspaces }, executeCommand);
-  const menuBarDefinition = isMobile()
+  const menuBarDefinition = compact
     ? [{ type: "parent", label: "", icon: "menu", items: menuItems } as const]
     : menuItems;
 

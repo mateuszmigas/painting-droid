@@ -2,7 +2,7 @@ import { ModeToggle } from "../themeToggle";
 import { MenuBar } from "../menu-bar/menuBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useWorkspacesStore } from "@/store";
-import { memo } from "react";
+import { memo, useLayoutEffect, useRef, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { IconButton } from "../icons/iconButton";
 import { CommandIconButton } from "../commandIconButton";
@@ -15,15 +15,33 @@ import {
 import { IconAnchor } from "../icons/iconAnchor";
 import { useCommandService } from "@/contexts/commandService";
 import { Separator } from "../ui/separator";
+import { useResizeObserver } from "@/hooks/useResizeObserver";
+
+const compactThreshold = 640;
 
 export const AppHeaderBar = memo(() => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [compactMenuBar, setCompactMenuBar] = useState<boolean>(false);
   const { workspaces, activeWorkspaceId, selectWorkspace, closeWorkspace } =
     useWorkspacesStore((state) => state);
   const { executeCommand } = useCommandService();
 
+  useLayoutEffect(() => {
+    if (containerRef.current) {
+      setCompactMenuBar(containerRef.current.clientWidth < compactThreshold);
+    }
+  }, []);
+
+  useResizeObserver(containerRef, ({ width }) => {
+    setCompactMenuBar(width < compactThreshold);
+  });
+
   return (
-    <div className="border-b flex flex-row justify-between items-center px-small">
-      <MenuBar />
+    <div
+      ref={containerRef}
+      className="border-b flex flex-row justify-between items-center px-small"
+    >
+      <MenuBar compact={compactMenuBar} />
       <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
       <div className="ml-medium flex-1 flex flex-row justify-start overflow-auto items-center gap-small">
         <ScrollArea className="whitespace-nowrap">
