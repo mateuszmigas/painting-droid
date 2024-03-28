@@ -90,7 +90,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Responsive UI
 - [x] Online Demo Model for Web
 - [x] WASM adjustments mechanism
-- [ ] Some Offline JS Model
+- [x] Some Offline JS Model
 - [ ] Image resize/crop
 - [ ] Desktop app releases and autoupdate
 
