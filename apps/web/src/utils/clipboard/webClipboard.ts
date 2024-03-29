@@ -6,9 +6,11 @@ import {
 import type { PlatformClipboard } from "./platformClipboard";
 
 const copyImage = async (imageData: ImageCompressedData): Promise<void> => {
-  const blob = await compressedDataToBlob(imageData, "png");
-  const data = [new ClipboardItem({ [blob.type]: blob })];
-  return navigator.clipboard.write(data);
+  return navigator.clipboard.write([
+    new ClipboardItem({
+      "image/png": compressedDataToBlob(imageData, "png"),
+    }),
+  ]);
 };
 
 const pasteImage = async (): Promise<ImageCompressedData | null> => {
