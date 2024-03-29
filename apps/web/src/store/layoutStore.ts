@@ -17,9 +17,9 @@ type AppLayoutState = {
 
 const defaultState: AppLayoutState = {
   panels: {
-    layers: { name: "layers", size: 35 },
+    layers: { name: "layers", size: 40 },
     metadata: { name: "metadata", size: 20 },
-    history: { name: "history", size: 35 },
+    history: { name: "history", size: 40 },
   },
   columns: {
     middle: { size: 80 },
@@ -63,4 +63,3 @@ export const useLayoutStore = create<AppLayoutSlice>()(
     storage: createJSONStorage(() => localStorage),
   })
 );
-
