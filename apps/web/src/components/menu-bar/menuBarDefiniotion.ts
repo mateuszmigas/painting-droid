@@ -43,9 +43,7 @@ export const createMenuBarDefinition = (
         itemFromCommand("openFile", executeCommand),
         itemFromCommand("newActiveWorkspace", executeCommand),
         itemFromCommand("closeActiveWorkspace", executeCommand),
-        {
-          type: "separator",
-        },
+        { type: "separator" },
         {
           icon: "save",
           type: "parent",
@@ -76,6 +74,9 @@ export const createMenuBarDefinition = (
       items: [
         itemFromCommand("undoCanvasAction", executeCommand),
         itemFromCommand("redoCanvasAction", executeCommand),
+        { type: "separator" },
+        itemFromCommand("copyImage", executeCommand),
+        itemFromCommand("pasteImage", executeCommand),
       ],
     },
     {
@@ -95,9 +96,7 @@ export const createMenuBarDefinition = (
           activeLayerIndex === 0
         ),
         itemFromCommand("removeLayer", executeCommand),
-        {
-          type: "separator",
-        },
+        { type: "separator" },
         itemFromCommand("hideLayer", executeCommand),
         itemFromCommand("showLayer", executeCommand),
       ],

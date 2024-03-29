@@ -21,6 +21,8 @@ import { command as hideLayer } from "./hideLayer";
 import { command as showLayer } from "./showLayer";
 import { command as openObjectDetectionDialog } from "./openObjectDetectionDialog";
 import { command as openTextToImageDialog } from "./openTextToImageDialog";
+import { command as copyImage } from "./copyImage";
+import { command as pasteImage } from "./pasteImage";
 
 export const commands = {
   saveAsPng,
@@ -46,6 +48,8 @@ export const commands = {
   showLayer,
   openObjectDetectionDialog,
   openTextToImageDialog,
+  copyImage,
+  pasteImage,
 } as const;
 
 export type CommandId = keyof typeof commands;

@@ -57,6 +57,12 @@ export const compressedDataToBlob = async (
   return await response.blob();
 };
 
+export const blobToCompressedData = async (blob: Blob) => {
+  const dataUrl = URL.createObjectURL(blob);
+  const image = await loadImageFromData(dataUrl);
+  return compressedFromImage(image);
+};
+
 export const mergeCompressedData = async (
   compressedDataImages: ImageCompressedData[]
 ) => {

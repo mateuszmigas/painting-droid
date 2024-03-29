@@ -80,6 +80,8 @@ const translations = {
     duplicateLayer: "Duplicate Layer",
     hideLayer: "Hide Layer",
     showLayer: "Show Layer",
+    pasteImage: "Paste Image",
+    copyImage: "Copy Image",
   },
   layers: {
     defaultBaseName: "Background",

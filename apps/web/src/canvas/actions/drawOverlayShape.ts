@@ -1,3 +1,4 @@
+import type { IconType } from "@/components/icons/icon";
 import type { CanvasOverlayShape } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
@@ -17,9 +18,10 @@ export const createCanvasAction = (
   payload: {
     overlayShape: CanvasOverlayShape;
     display?: string;
+    icon?: IconType;
   }
 ): CanvasAction => {
-  const { overlayShape, display: source } = payload;
+  const { overlayShape, display, icon } = payload;
   const state = context.getState();
   const previousOverlayShape = state.overlayShape;
 
@@ -29,8 +31,8 @@ export const createCanvasAction = (
   };
 
   return {
-    display: source ?? translate(overlayShape),
-    icon: "rectangle-select",
+    display: display ?? translate(overlayShape),
+    icon: icon ?? "rectangle-select",
     execute: async (state) => {
       return {
         ...state,
