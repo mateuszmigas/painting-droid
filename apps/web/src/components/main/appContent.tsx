@@ -2,7 +2,7 @@ import {
   ResizableHandle,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { SelectToolPanel } from "../panels/selectToolPanel";
+import { ToolsPanel } from "../panels/toolsPanel";
 import { LayersPanel } from "../panels/layersPanel";
 import { HistoryPanel } from "../panels/historyPanel";
 import { MetadataPanel } from "../panels/metadataPanel";
@@ -45,7 +45,7 @@ export const AppContent = memo(() => {
   return (
     <div className="relative flex flex-row size-full">
       <div className="border-r w-[40px]">
-        <SelectToolPanel />
+        <ToolsPanel />
       </div>
       <ResizablePanelGroup className="flex-1" direction="horizontal">
         <AppColumn {...createColumnProps("middle")}>

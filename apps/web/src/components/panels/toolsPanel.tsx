@@ -17,7 +17,7 @@ const tools: { id: ToolId; icon: IconType; name: string }[] = (
   };
 });
 
-export const SelectToolPanel = memo(() => {
+export const ToolsPanel = memo(() => {
   const { selectedToolId } = useToolStore((state) => state);
   const { executeCommand } = useCommandService();
 

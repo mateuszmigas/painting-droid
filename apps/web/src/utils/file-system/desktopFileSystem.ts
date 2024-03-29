@@ -6,7 +6,8 @@ import {
   readFile,
 } from "@tauri-apps/plugin-fs";
 import { getTranslations } from "@/translations";
-import { splitNameAndExtension } from "./fileSystem";
+import type { PlatformFileSystem } from "./platformFileSystem";
+import { splitNameAndExtension } from "../path";
 
 const translations = getTranslations();
 
@@ -24,7 +25,7 @@ const bytesToBase64 = (buffer: Uint8Array) => {
   });
 };
 
-export const openFile = async (options: {
+const openFile = async (options: {
   extensions: string[];
 }): Promise<{ name: string; path: string } | null> => {
   const file = await open({
@@ -43,18 +44,18 @@ export const openFile = async (options: {
   };
 };
 
-export const readFileAsText = (path: string) => {
+const readFileAsText = (path: string) => {
   return readTextFile(path);
 };
 
-export const readFileAsDataURL = async (path: string) => {
+const readFileAsDataURL = async (path: string) => {
   const { extension } = splitNameAndExtension(path);
   const bytes = await readFile(path);
   const dataUrl = await bytesToBase64(bytes);
   return `data:image/${extension};base64,${dataUrl}`;
 };
 
-export const saveTextToFile = async (
+const saveTextToFile = async (
   text: string,
   filename: string,
   extension: string
@@ -68,7 +69,7 @@ export const saveTextToFile = async (
   return writeTextFile(path, text);
 };
 
-export const saveBlobToFile = async (
+const saveBlobToFile = async (
   blob: Blob,
   filename: string,
   extension: string
@@ -82,3 +83,12 @@ export const saveBlobToFile = async (
   const arrayBuffer = await blob.arrayBuffer();
   return writeFile(path, new Uint8Array(arrayBuffer));
 };
+
+export const desktopFileSystem: PlatformFileSystem = {
+  openFile,
+  readFileAsDataURL,
+  readFileAsText,
+  saveTextToFile,
+  saveBlobToFile,
+};
+

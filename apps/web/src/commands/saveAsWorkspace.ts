@@ -2,8 +2,8 @@ import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { workspace } from "@/contants";
-import { saveTextToFile } from "@/utils/fileSystem";
 import { getTranslations } from "@/translations";
+import { fileSystem } from "@/utils/file-system";
 
 const translations = getTranslations();
 
@@ -21,6 +21,6 @@ export const command = createCommand({
       size,
       data: canvasData,
     });
-    saveTextToFile(text, name, workspace.format);
+    fileSystem.saveTextToFile(text, name, workspace.format);
   },
 });

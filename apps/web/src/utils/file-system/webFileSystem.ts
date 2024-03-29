@@ -1,9 +1,11 @@
+import type { PlatformFileSystem } from "./platformFileSystem";
+
 const urlToBlob = async (url: string) => {
   const response = await fetch(url);
   return response.blob();
 };
 
-export const readFileAsText = (url: string) => {
+const readFileAsText = (url: string) => {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -16,7 +18,7 @@ export const readFileAsText = (url: string) => {
   });
 };
 
-export const readFileAsDataURL = (url: string) => {
+const readFileAsDataURL = (url: string) => {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -29,7 +31,7 @@ export const readFileAsDataURL = (url: string) => {
   });
 };
 
-export const openFile = (options: { extensions: string[] }) => {
+const openFile = (options: { extensions: string[] }) => {
   return new Promise<{ name: string; path: string } | null>((resolve) => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -55,14 +57,14 @@ export const openFile = (options: { extensions: string[] }) => {
   });
 };
 
-export const downloadAsFile = (data: string, filename: string) => {
+const downloadAsFile = (data: string, filename: string) => {
   const anchor = document.createElement("a");
   anchor.href = data;
   anchor.download = filename;
   anchor.click();
 };
 
-export const saveTextToFile = (
+const saveTextToFile = async (
   text: string,
   filename: string,
   extension: string
@@ -71,7 +73,7 @@ export const saveTextToFile = (
   downloadAsFile(URL.createObjectURL(blob), `${filename}.${extension}`);
 };
 
-export const saveBlobToFile = async (
+const saveBlobToFile = async (
   blob: Blob,
   filename: string,
   extension: string
@@ -79,3 +81,12 @@ export const saveBlobToFile = async (
   const url = URL.createObjectURL(blob);
   downloadAsFile(url, `${filename}.${extension}`);
 };
+
+export const webFileSystem: PlatformFileSystem = {
+  openFile,
+  readFileAsDataURL,
+  readFileAsText,
+  saveTextToFile,
+  saveBlobToFile,
+};
+

@@ -2,8 +2,8 @@ import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { compressedDataToBlob, mergeCompressedData } from "@/utils/imageData";
-import { saveBlobToFile } from "@/utils/fileSystem";
 import { getTranslations } from "@/translations";
+import { fileSystem } from "@/utils/file-system";
 
 const translations = getTranslations();
 
@@ -23,6 +23,6 @@ export const command = createCommand({
 
     const mergedData = await mergeCompressedData(layersData);
     const blob = await compressedDataToBlob(mergedData, format);
-    saveBlobToFile(blob, name, format);
+    fileSystem.saveBlobToFile(blob, name, format);
   },
 });
