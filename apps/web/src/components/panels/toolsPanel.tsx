@@ -5,6 +5,7 @@ import { type ToolId, defaultToolsSettings, toolsMetadata } from "@/tools";
 import type { IconType } from "../icons/icon";
 import { useCommandService } from "@/contexts/commandService";
 import { CommandIconButton } from "../commandIconButton";
+import { Separator } from "../ui/separator";
 
 const tools: { id: ToolId; icon: IconType; name: string }[] = (
   Object.keys(defaultToolsSettings) as ToolId[]
@@ -39,7 +40,12 @@ export const ToolsPanel = memo(() => {
             onClick={() => executeCommand("selectTool", { toolId: id })}
           />
         ))}
+        <Separator orientation="horizontal" className="my-1" />
         <CommandIconButton size="medium" commandId="openTextToImageDialog" />
+        <CommandIconButton
+          size="medium"
+          commandId="openObjectDetectionDialog"
+        />
       </div>
     </div>
   );
