@@ -59,6 +59,12 @@ const translations = {
           color: "Color",
         },
       },
+      eraser: {
+        name: "Eraser",
+        settings: {
+          size: "Size",
+        },
+      },
     },
   },
   commands: {

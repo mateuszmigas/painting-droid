@@ -8,6 +8,7 @@ import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
 import { createRaf } from "@/utils/frame";
 import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
 import { useStableCallback } from ".";
+import { EraserDrawTool } from "@/tools/draw-tools/eraserDrawTool";
 
 const createTool = (id: DrawToolId, context: CanvasContext) => {
   switch (id) {
@@ -15,6 +16,8 @@ const createTool = (id: DrawToolId, context: CanvasContext) => {
       return new PencilDrawTool(context);
     case "brush":
       return new BrushDrawTool(context);
+    case "eraser":
+      return new EraserDrawTool(context);
     default:
       return assertNever(id);
   }

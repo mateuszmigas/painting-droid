@@ -34,9 +34,8 @@ export const settingsStoreCreator: StateCreator<AppToolSlice> = (set) => ({
 
 export const useToolStore = create<AppToolSlice>()(
   persist(settingsStoreCreator, {
-    version: 3,
+    version: 4,
     name: "tool",
     storage: createJSONStorage(() => localStorage),
   })
 );
-
