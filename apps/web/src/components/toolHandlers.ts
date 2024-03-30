@@ -2,15 +2,9 @@ import type { CanvasActionDispatcher } from "@/canvas/canvasActionDispatcher";
 import type { CanvasOverlayShape, CanvasLayer } from "@/canvas/canvasState";
 import { toolsMetadata } from "@/tools";
 import type { DrawToolId } from "@/tools/draw-tools";
+import { clearContext, restoreContextFromCompressed } from "@/utils/canvas";
 import { type CanvasContext, areRectanglesEqual } from "@/utils/common";
-import {
-  getRectangleCompressedFromContext,
-  putRectangleCompressedToContext,
-  createCompressedFromContext,
-  mergeCompressedData,
-  restoreContextFromCompressed,
-  clearContext,
-} from "@/utils/imageData";
+import { ImageProcessor } from "@/utils/imageProcessor";
 
 export const createShapeToolHandlers = (
   activeContext: CanvasContext | null,
@@ -37,12 +31,16 @@ export const createShapeToolHandlers = (
       }
 
       const box = shape.boundingBox;
+
       await canvasActionDispatcher.execute("drawOverlayShape", {
         overlayShape: {
           ...shape,
           captured: {
             box,
-            data: await getRectangleCompressedFromContext(activeContext!, box),
+            data: await ImageProcessor.fromCropContext(
+              activeContext!,
+              box
+            ).toCompressed(),
           },
         },
       });
@@ -53,13 +51,20 @@ export const createShapeToolHandlers = (
         !areRectanglesEqual(shape.boundingBox, shape.captured.box);
 
       if (apply) {
-        await putRectangleCompressedToContext(
-          activeContext!,
-          shape.captured!.data,
-          shape.boundingBox
-        );
+        const capturedContext = await ImageProcessor.fromCompressed(
+          shape.captured!.data
+        ).toContext();
+
+        //todo move inside shape
+        const data = await ImageProcessor.processContext(activeContext!)
+          .useContext(async (context) => {
+            const { x, y, width, height } = shape.boundingBox;
+            context.drawImage(capturedContext.canvas, x, y, width, height);
+          })
+          .toCompressed();
+
         canvasActionDispatcher.execute("applyOverlayShape", {
-          activeLayerData: createCompressedFromContext(activeContext!),
+          activeLayerData: data,
         });
       } else {
         shape && canvasActionDispatcher.execute("clearOverlayShape", undefined);
@@ -78,10 +83,16 @@ export const createDrawToolHandlers = (
       if (!activeContext) return;
 
       const { name, icon } = toolsMetadata[drawToolId!];
-      const contextData = createCompressedFromContext(activeContext);
+      const contextData = await ImageProcessor.processContext(
+        activeContext
+      ).toCompressed();
+
       const data =
         !activeLayer.visible && activeLayer.data
-          ? await mergeCompressedData([activeLayer.data, contextData])
+          ? await ImageProcessor.fromMergedCompressed([
+              activeLayer.data,
+              contextData,
+            ]).toCompressed()
           : contextData;
 
       canvasActionDispatcher.execute("updateLayerData", {
@@ -94,7 +105,7 @@ export const createDrawToolHandlers = (
     cancel: async () => {
       if (!activeContext) return;
       if (activeLayer.data) {
-        restoreContextFromCompressed(activeLayer.data, activeContext);
+        restoreContextFromCompressed(activeContext, activeLayer.data);
       } else {
         clearContext(activeContext);
       }

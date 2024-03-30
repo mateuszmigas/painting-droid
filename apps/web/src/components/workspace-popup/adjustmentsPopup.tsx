@@ -7,18 +7,17 @@ import {
   activeWorkspaceSelector,
 } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
-import {
-  getImageDataFromCompressed,
-  compressedFromImageData,
-  type ImageUncompressedData,
-  restoreContextFromUncompressed,
-  clearContext,
-  restoreContextFromCompressed,
-} from "@/utils/imageData";
+import type { ImageUncompressedData } from "@/utils/imageData";
 import { coreClient } from "@/wasm/core/coreClient";
 import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
 import { adjustmentsMetadata } from "@/adjustments";
 import { useCanvasContextStore } from "@/contexts/canvasContextService";
+import {
+  clearContext,
+  restoreContextFromCompressed,
+  restoreContextFromUncompressed,
+} from "@/utils/canvas";
+import { ImageProcessor } from "@/utils/imageProcessor";
 
 const translations = getTranslations();
 
@@ -40,7 +39,7 @@ export const AdjustmentsPopup = memo(() => {
     if (!data) {
       return null;
     }
-    const input = await getImageDataFromCompressed(data!);
+    const input = await ImageProcessor.fromCompressed(data).toImageData();
     return await coreClient[popup.adjustmentId](input);
   });
 
@@ -51,14 +50,15 @@ export const AdjustmentsPopup = memo(() => {
       return;
     }
 
-    const compressedData = await compressedFromImageData(
-      new ImageData(imageData.data, imageData.width, imageData.height)
-    );
+    const data = await ImageProcessor.fromUncompressed(
+      imageData
+    ).toCompressed();
+
     await canvasDispatcher.execute("updateLayerData", {
       layerId: activeLayer.id,
       display: adjustment.name,
       icon: "brain",
-      data: compressedData,
+      data,
     });
     closePopup();
   });
@@ -71,8 +71,8 @@ export const AdjustmentsPopup = memo(() => {
       }
       activeContext &&
         restoreContextFromUncompressed(
-          imageData as ImageUncompressedData,
-          activeContext
+          activeContext,
+          imageData as ImageUncompressedData
         );
     };
     run();
@@ -85,7 +85,7 @@ export const AdjustmentsPopup = memo(() => {
           useWorkspacesStore.getState()
         );
         if (activeLayer.data) {
-          restoreContextFromCompressed(activeLayer.data, activeContext);
+          restoreContextFromCompressed(activeContext, activeLayer.data);
         } else {
           clearContext(activeContext);
         }

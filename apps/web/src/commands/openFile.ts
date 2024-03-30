@@ -4,9 +4,9 @@ import { supportedImageFormats, workspace } from "@/contants";
 import type { Size } from "@/utils/common";
 import type { CanvasState } from "@/canvas/canvasState";
 import { getTranslations } from "@/translations";
-import { compressedFromImage, loadImageFromData } from "@/utils/imageData";
 import { splitNameAndExtension } from "@/utils/path";
 import { fileSystem } from "@/utils/file-system";
+import { ImageProcessor } from "@/utils/imageProcessor";
 
 const translations = getTranslations();
 
@@ -38,8 +38,7 @@ export const command = createCommand({
             .createWorkspaceFromCanvasData(fileName, size, data);
         } else {
           const dataUrl = await fileSystem.readFileAsDataURL(result.path);
-          const image = await loadImageFromData(dataUrl as string);
-          const data = await compressedFromImage(image);
+          const data = await ImageProcessor.fromDataUrl(dataUrl).toCompressed();
 
           context.stores
             .workspaces()

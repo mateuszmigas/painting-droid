@@ -1,10 +1,6 @@
 import type { ObjectDetectionResult } from "@/models/object-detection/objectDetectionModel";
 import { getTranslations } from "@/translations";
-import {
-  canvasContextFromCompressed,
-  createCompressedFromContext,
-  type ImageCompressedData,
-} from "@/utils/imageData";
+import type { ImageCompressedData } from "@/utils/imageData";
 import { memo, useState } from "react";
 import { Icon } from "../icons/icon";
 import { Button } from "../ui/button";
@@ -23,6 +19,7 @@ import {
 import { useWorkspacesStore } from "@/store";
 import { activeWorkspaceActiveLayerSelector } from "@/store/workspacesStore";
 import { useCanvasActionDispatcher } from "@/hooks";
+import { ImageProcessor } from "@/utils/imageProcessor";
 
 const colors = [
   "#D04848",
@@ -43,23 +40,29 @@ const models = Object.entries(objectDetectionModels).map(([key, value]) => ({
   label: value.name,
 }));
 
-const applyResultToImage = async (
+const applyResultToImage = (
   image: ImageCompressedData,
   result: ObjectDetectionResult
 ) => {
-  const context = await canvasContextFromCompressed(image);
-  context.lineWidth = 4;
+  return ImageProcessor.fromCompressed(image)
+    .useContext(async (context) => {
+      context.lineWidth = 4;
 
-  for (let i = result.length - 1; i >= 0; i--) {
-    const item = result[i];
-    context.strokeStyle = getColor(i);
-    context.strokeRect(item.box.x, item.box.y, item.box.width, item.box.height);
-    context.font = "16px Arial";
-    context.fillStyle = getColor(i);
-    context.fillText(item.label, item.box.x + 5, item.box.y + 16);
-  }
-
-  return createCompressedFromContext(context);
+      for (let i = result.length - 1; i >= 0; i--) {
+        const item = result[i];
+        context.strokeStyle = getColor(i);
+        context.strokeRect(
+          item.box.x,
+          item.box.y,
+          item.box.width,
+          item.box.height
+        );
+        context.font = "16px Arial";
+        context.fillStyle = getColor(i);
+        context.fillText(item.label, item.box.x + 5, item.box.y + 16);
+      }
+    })
+    .toCompressed();
 };
 
 export const ObjectDetectionDialog = memo((props: { close: () => void }) => {

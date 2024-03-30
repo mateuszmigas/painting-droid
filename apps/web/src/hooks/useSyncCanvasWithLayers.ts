@@ -1,8 +1,8 @@
 import { useCanvasContextStore } from "@/contexts/canvasContextService";
 import type { CanvasLayer } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
-import { clearContext, restoreContextFromCompressed } from "@/utils/imageData";
 import { type RefObject, useEffect } from "react";
+import { clearContext, restoreContextFromCompressed } from "@/utils/canvas";
 
 const restoreLayers = async (
   layers: CanvasLayer[],
@@ -13,7 +13,7 @@ const restoreLayers = async (
     const context = contexts[i];
 
     if (layer.visible && layer.data) {
-      await restoreContextFromCompressed(layer.data, context);
+      await restoreContextFromCompressed(context, layer.data);
 
       // if (i === activeLayerIndex && overlayShape?.captured) {
       //   // const rect = overlayShape.captured.box;

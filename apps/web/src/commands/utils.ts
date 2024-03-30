@@ -1,10 +1,7 @@
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { areRectanglesEqual } from "@/utils/common";
-import {
-  putRectangleCompressedToContext,
-  createCompressedFromContext,
-} from "@/utils/imageData";
 import type { CommandContext } from "./context";
+import { ImageProcessor } from "@/utils/imageProcessor";
 
 export const clearOrApplyOverlayShape = async (context: CommandContext) => {
   const shape = activeWorkspaceCanvasDataSelector(
@@ -18,13 +15,18 @@ export const clearOrApplyOverlayShape = async (context: CommandContext) => {
 
     if (apply) {
       const activeContext = context.getActiveCanvasContext();
-      await putRectangleCompressedToContext(
-        activeContext!,
-        shape.captured!.data,
-        shape.boundingBox
-      );
+      const capturedContext = await ImageProcessor.fromCompressed(
+        shape.captured!.data
+      ).toContext();
+
+      const data = await ImageProcessor.processContext(activeContext!)
+        .useContext(async (context) => {
+          const { x, y, width, height } = shape.boundingBox;
+          context.drawImage(capturedContext.canvas, x, y, width, height);
+        })
+        .toCompressed();
       context.canvasActionDispatcher.execute("applyOverlayShape", {
-        activeLayerData: createCompressedFromContext(activeContext!),
+        activeLayerData: data,
       });
     } else {
       shape &&
@@ -32,4 +34,3 @@ export const clearOrApplyOverlayShape = async (context: CommandContext) => {
     }
   }
 };
-
