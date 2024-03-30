@@ -23,6 +23,7 @@ import { command as openObjectDetectionDialog } from "./openObjectDetectionDialo
 import { command as openTextToImageDialog } from "./openTextToImageDialog";
 import { command as copyImage } from "./copyImage";
 import { command as pasteImage } from "./pasteImage";
+import { command as cutImage } from "./cutImage";
 
 export const commands = {
   saveAsPng,
@@ -50,6 +51,7 @@ export const commands = {
   openTextToImageDialog,
   copyImage,
   pasteImage,
+  cutImage,
 } as const;
 
 export type CommandId = keyof typeof commands;

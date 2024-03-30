@@ -22,6 +22,7 @@ const translations = {
     moveLayerUp: "Move Layer Up",
     removeLayer: "Remove Layer",
     selectLayer: "Select Layer",
+    cutOverlayShape: "Cut Selection",
   },
   adjustments: {
     name: "Adjustments",
@@ -82,6 +83,7 @@ const translations = {
     showLayer: "Show Layer",
     pasteImage: "Paste Image",
     copyImage: "Copy Image",
+    cutImage: "Cut Image",
   },
   layers: {
     defaultBaseName: "Background",
