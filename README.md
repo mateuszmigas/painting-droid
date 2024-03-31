@@ -104,6 +104,8 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 
 ### Post MVP
 
+- [ ] Consider using Blob instaed of base64 for storing images
+- [ ] Consider IndexDB instead of localStorage
 - [ ] More image adjustments
 - [ ] More tools: fill, erase, magic wand, text
 - [ ] Release notes popup
