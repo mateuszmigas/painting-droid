@@ -23,7 +23,7 @@ import { Icon } from "./icons/icon";
 import type { CommandContext } from "@/commands/context";
 import { useDialogService } from "@/contexts/dialogService";
 import { sortBySelector } from "@/utils/array";
-import { useCanvasContextStore } from "@/contexts/canvasContextService";
+import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
 
 export type CommandService = {
   executeCommandWithDefaults: ExecuteCommandWithDefaults;
@@ -35,8 +35,8 @@ export const CommandPaletteHost = memo(
     const { setCommandService } = props;
     const { isOpen, setIsOpen } = useCommandPaletteStore((store) => store);
     const canvasActionDispatcher = useCanvasActionDispatcher();
-    const { activeContext } = useCanvasContextStore();
-    const getActiveCanvasContext = useStableCallback(() => activeContext);
+    const { previewContext } = useCanvasPreviewContextStore();
+    const getActiveCanvasContext = useStableCallback(() => previewContext);
     const dialogService = useDialogService();
     const commandService = useMemo<CommandService>(() => {
       const createContext = (): CommandContext => ({

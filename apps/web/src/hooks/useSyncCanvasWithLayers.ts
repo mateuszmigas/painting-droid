@@ -1,4 +1,4 @@
-import { useCanvasContextStore } from "@/contexts/canvasContextService";
+import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
 import type { CanvasLayer } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import { type RefObject, useEffect } from "react";
@@ -30,7 +30,7 @@ export const useSyncCanvasWithLayers = (
   layers: CanvasLayer[],
   activeLayerIndex: number
 ) => {
-  const { setActiveContext } = useCanvasContextStore();
+  const { setPreviewContext } = useCanvasPreviewContextStore();
   useEffect(() => {
     if (!canvasElementsRef.current) {
       return;
@@ -41,7 +41,7 @@ export const useSyncCanvasWithLayers = (
     );
 
     restoreLayers(layers, newContexts).then(() =>
-      setActiveContext(newContexts[activeLayerIndex])
+      setPreviewContext(newContexts[activeLayerIndex])
     );
-  }, [layers, setActiveContext, activeLayerIndex, canvasElementsRef]);
+  }, [layers, setPreviewContext, activeLayerIndex, canvasElementsRef]);
 };

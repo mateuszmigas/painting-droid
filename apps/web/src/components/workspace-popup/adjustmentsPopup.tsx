@@ -11,7 +11,7 @@ import type { ImageUncompressedData } from "@/utils/imageData";
 import { coreClient } from "@/wasm/core/coreClient";
 import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
 import { adjustmentsMetadata } from "@/adjustments";
-import { useCanvasContextStore } from "@/contexts/canvasContextService";
+import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
 import {
   clearContext,
   restoreContextFromCompressed,
@@ -32,7 +32,7 @@ export const AdjustmentsPopup = memo(() => {
   const closePopup = useWorkspacesStore((store) => store.closeApplyPopup);
   const adjustment = adjustmentsMetadata[popup.adjustmentId];
   const activeLayer = layers[activeLayerIndex];
-  const { activeContext } = useCanvasContextStore();
+  const { previewContext } = useCanvasPreviewContextStore();
 
   const runAdjustment = useStableCallback(async () => {
     const data = activeLayer.data;
@@ -69,29 +69,29 @@ export const AdjustmentsPopup = memo(() => {
       if (!imageData) {
         return;
       }
-      activeContext &&
+      previewContext &&
         restoreContextFromUncompressed(
-          activeContext,
+          previewContext,
           imageData as ImageUncompressedData
         );
     };
     run();
-  }, [activeContext, runAdjustment]);
+  }, [previewContext, runAdjustment]);
 
   useEffect(() => {
     return () => {
-      if (activeContext !== null) {
+      if (previewContext !== null) {
         const activeLayer = activeWorkspaceActiveLayerSelector(
           useWorkspacesStore.getState()
         );
         if (activeLayer.data) {
-          restoreContextFromCompressed(activeContext, activeLayer.data);
+          restoreContextFromCompressed(previewContext, activeLayer.data);
         } else {
-          clearContext(activeContext);
+          clearContext(previewContext);
         }
       }
     };
-  }, [activeContext]);
+  }, [previewContext]);
 
   return (
     <div className="flex flex-col gap-big">

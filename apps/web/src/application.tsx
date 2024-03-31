@@ -9,15 +9,16 @@ import {
 import { DialogHost, type DialogService } from "./components/dialogHost";
 import { useIdleCallback } from "./hooks";
 import { coreClient } from "./wasm/core/coreClient";
-import { CanvasContextStoreContext } from "./contexts/canvasContextService";
+import { CanvasPreviewContextStoreContext } from "./contexts/canvasPreviewContextStore";
 import type { CanvasContext } from "./utils/common";
 import { useState } from "react";
 import { DialogServiceContext } from "./contexts/dialogService";
 import { CommandServiceContext } from "./contexts/commandService";
 
 export const App = () => {
-  const [activeCanvasContext, setActiveCanvasContext] =
-    useState<CanvasContext | null>(null);
+  const [previewContext, setPreviewContext] = useState<CanvasContext | null>(
+    null
+  );
   const [dialogService, setDialogService] = useState<DialogService | null>(
     null
   );
@@ -32,11 +33,8 @@ export const App = () => {
 
   return (
     <div className="size-full flex flex-col select-none">
-      <CanvasContextStoreContext.Provider
-        value={{
-          activeContext: activeCanvasContext,
-          setActiveContext: setActiveCanvasContext,
-        }}
+      <CanvasPreviewContextStoreContext.Provider
+        value={{ previewContext, setPreviewContext }}
       >
         <DialogServiceContext.Provider value={dialogService!}>
           <CommandServiceContext.Provider value={commandService!}>
@@ -51,7 +49,7 @@ export const App = () => {
             )}
           </CommandServiceContext.Provider>
         </DialogServiceContext.Provider>
-      </CanvasContextStoreContext.Provider>
+      </CanvasPreviewContextStoreContext.Provider>
     </div>
   );
 };

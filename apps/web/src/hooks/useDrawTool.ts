@@ -27,7 +27,7 @@ export const useDrawTool = (
   elementRef: RefObject<HTMLElement>,
   drawToolId: DrawToolId | null,
   drawToolSettings: Record<string, unknown>,
-  activeContext: CanvasContext | null,
+  previewContext: CanvasContext | null,
   transformToCanvasPosition: (position: Position) => Position,
   handlers: {
     cancel: () => Promise<void>;
@@ -47,14 +47,14 @@ export const useDrawTool = (
     if (
       !elementRef.current ||
       drawToolId === null ||
-      activeContext === null ||
+      previewContext === null ||
       !enable
     ) {
       return;
     }
 
     const element = elementRef.current;
-    toolRef.current = createTool(drawToolId, activeContext);
+    toolRef.current = createTool(drawToolId, previewContext);
     toolRef.current.configure(drawToolSettings);
     const tool = toolRef.current;
     let ticksCount = 0;
@@ -116,7 +116,7 @@ export const useDrawTool = (
     drawToolId,
     cancelStable,
     commitStable,
-    activeContext,
+    previewContext,
     elementRef,
     transformToCanvasPositionStable,
     enable,

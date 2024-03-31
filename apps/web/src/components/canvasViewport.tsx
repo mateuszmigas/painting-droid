@@ -1,5 +1,5 @@
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
-import { useCanvasContextStore } from "@/contexts/canvasContextService";
+import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
 import {
   useCanvasActionDispatcher,
   useDrawTool,
@@ -75,7 +75,7 @@ export const CanvasViewport = memo(
     );
 
     useSyncCanvasWithLayers(canvasStackRef, layers, activeLayerIndex);
-    const { activeContext } = useCanvasContextStore();
+    const { previewContext } = useCanvasPreviewContextStore();
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
     const canvasActionDispatcher = useCanvasActionDispatcher();
@@ -122,7 +122,7 @@ export const CanvasViewport = memo(
       (position) => screenToViewportPosition(position, viewport.getValue()),
       () => overlayShape,
       createShapeToolHandlers(
-        activeContext,
+        previewContext,
         renderShape,
         canvasActionDispatcher
       ),
@@ -133,14 +133,14 @@ export const CanvasViewport = memo(
       hostElementRef,
       toolId as DrawToolId,
       toolSettings,
-      activeContext,
+      previewContext,
       (position) => screenToViewportPosition(position, viewport.getValue()),
       createDrawToolHandlers(
-        activeContext,
+        previewContext,
         layers[activeLayerIndex],
         canvasActionDispatcher
       ),
-      !isLocked && isDrawTool(toolId) && !!activeContext
+      !isLocked && isDrawTool(toolId) && !!previewContext
     );
 
     useViewportManipulator(
@@ -166,7 +166,7 @@ export const CanvasViewport = memo(
     return (
       <div
         ref={hostElementRef}
-        style={{ opacity: activeContext !== null ? "1" : "0" }}
+        style={{ opacity: previewContext !== null ? "1" : "0" }}
         className="absolute size-full overflow-hidden cursor-crosshair duration-1000 z-[0]"
       >
         <div
