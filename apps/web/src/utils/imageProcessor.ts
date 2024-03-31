@@ -71,10 +71,12 @@ export class ImageProcessor {
 
   public static fromBlob(blob: Blob) {
     return new ImageProcessor(async () => {
-      const dataUrl = URL.createObjectURL(blob);
-      const image = await imageFromSrc(dataUrl);
-      const context = createCanvasContext(image.width, image.height);
-      context.drawImage(image, 0, 0);
+      const imageBitmap = await createImageBitmap(blob);
+      const context = createCanvasContext(
+        imageBitmap.width,
+        imageBitmap.height
+      );
+      context.drawImage(imageBitmap, 0, 0);
       return context;
     });
   }
