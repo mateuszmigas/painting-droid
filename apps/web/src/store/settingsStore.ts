@@ -1,5 +1,6 @@
 import { create, type StateCreator } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { createPersister } from "./persister";
 
 type ThemeType = "light" | "dark" | "system";
 
@@ -23,10 +24,8 @@ export const settingsStoreCreator: StateCreator<AppSettingsSlice> = (set) => ({
 });
 
 export const useSettingsStore = create<AppSettingsSlice>()(
-  persist(settingsStoreCreator, {
-    version: 1,
-    name: "settings",
-    storage: createJSONStorage(() => localStorage),
-  })
+  persist(
+    settingsStoreCreator,
+    createPersister({ version: 1, name: "settings" })
+  )
 );
-

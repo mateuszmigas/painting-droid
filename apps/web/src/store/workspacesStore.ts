@@ -7,10 +7,11 @@ import type { Size } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { getTranslations } from "@/translations";
 import type { AdjustmentId } from "@/adjustments";
 import type { ImageCompressedData } from "@/utils/imageData";
+import { createPersister } from "./persister";
 
 const translations = getTranslations();
 
@@ -215,21 +216,10 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
 });
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
-  persist(workspacesStoreCreator, {
-    version: 8,
-    name: "workspaces",
-    storage: createJSONStorage(() => localStorage),
-    partialize: (state) => ({
-      ...state,
-      workspaces: state.workspaces.map((workspace) => ({
-        ...workspace,
-        canvasData: {
-          ...workspace.canvasData,
-          history: [],
-        },
-      })),
-    }),
-  })
+  persist(
+    workspacesStoreCreator,
+    createPersister({ version: 8, name: "workspaces" })
+  )
 );
 
 export const activeWorkspaceSelector = (state: AppWorkspacesState) => {

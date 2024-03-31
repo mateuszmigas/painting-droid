@@ -1,5 +1,6 @@
 import { create, type StateCreator } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { createPersister } from "./persister";
 
 export type AppPanelNames = "layers" | "metadata" | "history";
 
@@ -57,9 +58,5 @@ export const settingsStoreCreator: StateCreator<AppLayoutSlice> = (set) => ({
 });
 
 export const useLayoutStore = create<AppLayoutSlice>()(
-  persist(settingsStoreCreator, {
-    version: 3,
-    name: "layout",
-    storage: createJSONStorage(() => localStorage),
-  })
+  persist(settingsStoreCreator, createPersister({ version: 3, name: "layout" }))
 );

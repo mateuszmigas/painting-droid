@@ -1,6 +1,7 @@
 import { defaultToolsSettings, type ToolId } from "@/tools";
 import { create, type StateCreator } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { createPersister } from "./persister";
 
 type AppToolState = {
   selectedToolId: ToolId;
@@ -33,9 +34,5 @@ export const settingsStoreCreator: StateCreator<AppToolSlice> = (set) => ({
 });
 
 export const useToolStore = create<AppToolSlice>()(
-  persist(settingsStoreCreator, {
-    version: 4,
-    name: "tool",
-    storage: createJSONStorage(() => localStorage),
-  })
+  persist(settingsStoreCreator, createPersister({ version: 4, name: "tool" }))
 );
