@@ -6,6 +6,7 @@ import {
   useListener,
   useShapeRenderer,
   useShapeTool,
+  useBlobUrl,
   useStableCallback,
   useSyncCanvasWithLayers,
   useViewportManipulator,
@@ -159,9 +160,8 @@ export const CanvasViewport = memo(
     );
 
     const { position, zoom } = viewport.getValue();
-    const imageOverlaySrc = overlayShape?.captured
-      ? overlayShape.captured.data.data
-      : "";
+
+    const imageOverlayUrl = useBlobUrl(overlayShape?.captured?.data.data);
 
     return (
       <div
@@ -201,11 +201,11 @@ export const CanvasViewport = memo(
           alt=""
           className="pixelated-canvas origin-top-left absolute pointer-events-none left-0 top-0"
           ref={imageOverlayRef}
-          src={imageOverlaySrc}
+          src={imageOverlayUrl}
           style={{
             zIndex: activeLayerIndex + 1,
             willChange: "transform",
-            visibility: imageOverlaySrc ? "visible" : "hidden",
+            visibility: imageOverlayUrl ? "visible" : "hidden",
           }}
         />
         <div

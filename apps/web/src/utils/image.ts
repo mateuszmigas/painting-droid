@@ -1,4 +1,4 @@
-export const imageFromSrc = (dataUrl: string) => {
+export const dataUrlToImage = (dataUrl: string) => {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
     image.src = dataUrl;
@@ -7,5 +7,13 @@ export const imageFromSrc = (dataUrl: string) => {
     };
     image.onerror = reject;
   });
+};
+
+export const base64ToBlob = async (
+  base64: string,
+  format: "image/jpeg" | "image/png" = "image/png"
+) => {
+  const response = await fetch(`data:${format};base64,${base64}`);
+  return await response.blob();
 };
 

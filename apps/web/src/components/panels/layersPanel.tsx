@@ -4,7 +4,7 @@ import { useWorkspacesStore } from "@/store";
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { memo, useMemo } from "react";
 import type { CanvasLayer } from "@/canvas/canvasState";
-import { useCanvasActionDispatcher } from "@/hooks";
+import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
 
 const LayerItem = (props: {
   layer: CanvasLayer;
@@ -13,6 +13,7 @@ const LayerItem = (props: {
   setVisibility: (visible: boolean) => void;
 }) => {
   const { layer, selected, onClick, setVisibility } = props;
+  const layerDataUrl = useBlobUrl(layer.data?.data);
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
@@ -34,7 +35,7 @@ const LayerItem = (props: {
         {layer.data && (
           <img
             className="size-full object-contain"
-            src={layer.data.data}
+            src={layerDataUrl}
             alt={layer.name}
           />
         )}

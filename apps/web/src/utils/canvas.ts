@@ -1,5 +1,4 @@
 import type { CanvasContext } from "./common";
-import { imageFromSrc } from "./image";
 import type { ImageCompressedData, ImageUncompressedData } from "./imageData";
 
 export const createCanvasContext = (width: number, height: number) => {
@@ -19,7 +18,7 @@ export const restoreContextFromCompressed = async (
   compressed: ImageCompressedData
 ) => {
   const { width, height } = compressed;
-  const image = await imageFromSrc(compressed.data);
+  const image = await createImageBitmap(compressed.data);
   context.clearRect(0, 0, width, height);
   context.drawImage(image, 0, 0, width, height);
 };

@@ -4,7 +4,7 @@ import {
   createCanvasContext,
 } from "./canvas";
 import type { CanvasContext, Rectangle } from "./common";
-import { imageFromSrc } from "./image";
+import { dataUrlToImage } from "./image";
 import type { ImageCompressedData, ImageUncompressedData } from "./imageData";
 
 export class ImageProcessor {
@@ -34,9 +34,9 @@ export class ImageProcessor {
     return new ImageProcessor(async () => {
       const { width, height } = images[0];
       const context = createCanvasContext(width, height);
-      for (const compressed of images) {
-        const image = await imageFromSrc(compressed.data);
-        context.drawImage(image, 0, 0, width, height);
+      for (const image of images) {
+        const imageBitmap = await createImageBitmap(image.data);
+        context.drawImage(imageBitmap, 0, 0, width, height);
       }
       return context;
     });
@@ -60,9 +60,20 @@ export class ImageProcessor {
     });
   }
 
+  public static fromBase64(base64: string) {
+    return new ImageProcessor(async () => {
+      const response = await fetch(`data:image/jpeg;base64,${base64}`);
+      const blob = await response.blob();
+      const image = await createImageBitmap(blob);
+      const context = createCanvasContext(image.width, image.height);
+      context.drawImage(image, 0, 0);
+      return context;
+    });
+  }
+
   public static fromDataUrl(dataUrl: string) {
     return new ImageProcessor(async () => {
-      const image = await imageFromSrc(dataUrl);
+      const image = await dataUrlToImage(dataUrl);
       const context = createCanvasContext(image.width, image.height);
       context.drawImage(image, 0, 0);
       return context;
@@ -89,8 +100,11 @@ export class ImageProcessor {
   async toCompressed() {
     await this.runTasks();
     const { width, height } = this.context.canvas;
-    const data = this.context.canvas.toDataURL("image/png");
-    return { width, height, data };
+    return new Promise<ImageCompressedData>((resolve) => {
+      this.context.canvas.toBlob((blob) => {
+        resolve({ width, height, data: blob! });
+      });
+    });
   }
 
   async toContext() {
@@ -110,10 +124,11 @@ export class ImageProcessor {
 
   async toBlob(format: "jpeg" | "png") {
     await this.runTasks();
-
-    const dataUrl = this.context.canvas.toDataURL(`image/${format}`, 1.0);
-    const response = await fetch(dataUrl);
-    return await response.blob();
+    return new Promise<Blob>((resolve) => {
+      this.context.canvas.toBlob((blob) => {
+        resolve(blob!);
+      }, `image/${format}`);
+    });
   }
 
   private async runTasks() {

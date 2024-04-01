@@ -39,22 +39,27 @@ const transformerJsServer = {
     imageData: ImageCompressedData,
     onProgress: (value: number, message: string) => void
   ) => {
-    const pipeline = await objectDetectionPipeline.getPipeline((data) => {
-      onProgress(
-        data.progress,
-        `${sizeToString(data.loaded)} / ${sizeToString(data.total)}`
-      );
-    });
-    const result = await pipeline(imageData.data, {
-      threshold: 0.9,
-      percentage: true,
-    });
-    const output = (Array.isArray(result) ? result : [result]) as {
-      label: string;
-      score: number;
-      box: { xmin: number; ymin: number; xmax: number; ymax: number };
-    }[];
-    return output;
+    const dataUrl = URL.createObjectURL(imageData.data);
+    try {
+      const pipeline = await objectDetectionPipeline.getPipeline((data) => {
+        onProgress(
+          data.progress,
+          `${sizeToString(data.loaded)} / ${sizeToString(data.total)}`
+        );
+      });
+      const result = await pipeline(dataUrl, {
+        threshold: 0.9,
+        percentage: true,
+      });
+      const output = (Array.isArray(result) ? result : [result]) as {
+        label: string;
+        score: number;
+        box: { xmin: number; ymin: number; xmax: number; ymax: number };
+      }[];
+      return output;
+    } finally {
+      URL.revokeObjectURL(dataUrl);
+    }
   },
 };
 

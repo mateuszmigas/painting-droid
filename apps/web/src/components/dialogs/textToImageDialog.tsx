@@ -25,7 +25,7 @@ import {
 import { uuid } from "@/utils/uuid";
 import { textToImageModels } from "@/models/text-to-image";
 import { getTranslations } from "@/translations";
-import { useCanvasActionDispatcher } from "@/hooks";
+import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
 
 const translations = getTranslations();
@@ -56,7 +56,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     },
   });
   const [isGenerating, setIsGenerating] = useState(false);
-  const [imgData, setImgData] = useState<string>("");
+  const [image, setImage] = useState<Blob | null>(null);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);
@@ -68,7 +68,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     demoModel
       .execute(data.prompt, availableSizes[size])
       .then((img) => {
-        setImgData(img.data);
+        setImage(img.data);
         setIsGenerating(false);
       })
       .catch((err) => {
@@ -78,7 +78,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
   };
 
   const apply = async () => {
-    if (imgData === null) {
+    if (image === null) {
       close();
       return;
     }
@@ -97,7 +97,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
         captured: {
           box: { x: 0, y: 0, width: 0, height: 0 },
           data: {
-            data: imgData,
+            data: image,
             width: currentSize.width,
             height: currentSize.height,
           },
@@ -115,6 +115,9 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     { width: 320, height: 320 },
     1
   );
+
+  const imageUrl = useBlobUrl(image);
+
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
@@ -133,10 +136,10 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
               }}
               className=" border-primary border-2 border-dashed object-contain box-content"
             >
-              {imgData && (
+              {image && (
                 <img
                   className="size-full object-contain"
-                  src={imgData}
+                  src={imageUrl}
                   alt=""
                 />
               )}
@@ -214,7 +217,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
             </div>
             <div className="gap-medium flex flex-row justify-end">
               <Button type="submit" variant="secondary" disabled={isGenerating}>
-                {imgData ? "Regenerate" : "Generate"}
+                {image ? "Regenerate" : "Generate"}
                 {isGenerating ? (
                   <Icon
                     className="ml-2 animate-spin"
@@ -224,12 +227,12 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                 ) : (
                   <Icon
                     className="ml-2"
-                    type={imgData ? "check" : "brain"}
+                    type={image ? "check" : "brain"}
                     size="small"
                   />
                 )}
               </Button>
-              <Button type="button" onClick={apply} disabled={!imgData}>
+              <Button type="button" onClick={apply} disabled={!image}>
                 Apply
               </Button>
             </div>

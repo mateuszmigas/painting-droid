@@ -216,10 +216,16 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
 });
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
-  persist(
-    workspacesStoreCreator,
-    createPersister({ version: 8, name: "workspaces" })
-  )
+  persist(workspacesStoreCreator, {
+    ...createPersister({ version: 9, name: "workspaces" }),
+    partialize: (state) => ({
+      ...state,
+      workspaces: state.workspaces.map((workspace) => ({
+        ...workspace,
+        canvasData: defaultCanvasState,
+      })),
+    }),
+  })
 );
 
 export const activeWorkspaceSelector = (state: AppWorkspacesState) => {

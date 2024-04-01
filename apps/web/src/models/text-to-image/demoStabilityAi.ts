@@ -1,6 +1,7 @@
 import { environment } from "@/environment";
 import type { Size } from "@/utils/common";
 import type { TextToImageModel } from "./textToImageModel";
+import { base64ToBlob } from "@/utils/image";
 
 export const model: TextToImageModel = {
   name: "Demo",
@@ -37,7 +38,7 @@ export const model: TextToImageModel = {
     return {
       width: size.width,
       height: size.height,
-      data: `data:image/png;base64,${data.artifacts[0].base64}`,
+      data: await base64ToBlob(data.artifacts[0].base64),
     };
   },
 };
