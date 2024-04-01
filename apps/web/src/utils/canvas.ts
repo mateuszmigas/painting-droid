@@ -2,9 +2,7 @@ import type { CanvasContext } from "./common";
 import type { ImageCompressedData, ImageUncompressedData } from "./imageData";
 
 export const createCanvasContext = (width: number, height: number) => {
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
+  const canvas = new OffscreenCanvas(width, height);
   const context = canvas.getContext("2d") as CanvasContext;
   return context;
 };
@@ -33,4 +31,3 @@ export const restoreContextFromUncompressed = (
     0
   );
 };
-

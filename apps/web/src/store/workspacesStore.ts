@@ -222,7 +222,13 @@ export const useWorkspacesStore = create<AppWorkspacesSlice>()(
       ...state,
       workspaces: state.workspaces.map((workspace) => ({
         ...workspace,
-        canvasData: defaultCanvasState,
+        canvasData: {
+          ...workspace.canvasData,
+          layers: workspace.canvasData.layers.map((layer) => ({
+            ...layer,
+            data: undefined,
+          })),
+        },
       })),
     }),
   })

@@ -100,11 +100,8 @@ export class ImageProcessor {
   async toCompressed() {
     await this.runTasks();
     const { width, height } = this.context.canvas;
-    return new Promise<ImageCompressedData>((resolve) => {
-      this.context.canvas.toBlob((blob) => {
-        resolve({ width, height, data: blob! });
-      });
-    });
+    const blob = await this.context.canvas.convertToBlob({ type: "image/png" });
+    return { width, height, data: blob! };
   }
 
   async toContext() {
@@ -124,11 +121,7 @@ export class ImageProcessor {
 
   async toBlob(format: "jpeg" | "png") {
     await this.runTasks();
-    return new Promise<Blob>((resolve) => {
-      this.context.canvas.toBlob((blob) => {
-        resolve(blob!);
-      }, `image/${format}`);
-    });
+    return this.context.canvas.convertToBlob({ type: `image/${format}` });
   }
 
   private async runTasks() {
@@ -137,4 +130,3 @@ export class ImageProcessor {
     }
   }
 }
-

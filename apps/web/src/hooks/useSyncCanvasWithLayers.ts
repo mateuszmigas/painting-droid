@@ -1,7 +1,7 @@
 import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
 import type { CanvasLayer } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
-import { type RefObject, useEffect } from "react";
+import { type RefObject, useEffect, useRef } from "react";
 import { clearContext, restoreContextFromCompressed } from "@/utils/canvas";
 
 const restoreLayers = async (
@@ -30,6 +30,7 @@ export const useSyncCanvasWithLayers = (
   layers: CanvasLayer[],
   activeLayerIndex: number
 ) => {
+  const contextsMap = useRef(new WeakMap<HTMLCanvasElement, CanvasContext>());
   const { setPreviewContext } = useCanvasPreviewContextStore();
   useEffect(() => {
     if (!canvasElementsRef.current) {
@@ -37,7 +38,15 @@ export const useSyncCanvasWithLayers = (
     }
 
     const newContexts = canvasElementsRef.current.map(
-      (element: HTMLCanvasElement) => element.getContext("2d")!
+      (element: HTMLCanvasElement) => {
+        if (!contextsMap.current.has(element)) {
+          contextsMap.current.set(
+            element,
+            element.transferControlToOffscreen().getContext("2d")!
+          );
+        }
+        return contextsMap.current.get(element)!;
+      }
     );
 
     restoreLayers(layers, newContexts).then(() =>
