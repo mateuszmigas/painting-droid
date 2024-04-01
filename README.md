@@ -1,6 +1,6 @@
 # Painting Droid
 
-[DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓▓▓▓▓░░░░░░░░░░░░░░░ <span>31</span>%
+[DEMO](https://painting-droid-web.vercel.app/) | Progress: ▓▓▓▓▓░░░░░░░░░░░░░░░ <span>32</span>%
 
 [![100 - Commitów](https://img.shields.io/badge/100-Commitów-2ea44f)](https://100commitow.pl/) ![Vercel](https://vercelbadge.vercel.app/api/mateuszmigas/painting-droid) ![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg)
 
@@ -104,8 +104,8 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 
 ### Post MVP
 
-- [ ] Consider using Blob instaed of base64 for storing images
-- [ ] Consider IndexDB instead of localStorage
+- [ ] Use Blob instead of base64 for storing images
+- [ ] Use IndexDB instead of localStorage for image data
 - [ ] More image adjustments
 - [ ] More tools: fill, erase, magic wand, text
 - [ ] Release notes popup
