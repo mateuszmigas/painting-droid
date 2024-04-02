@@ -13,7 +13,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         classNames: {
           closeButton:
-            "opacity-0 group-hover:opacity-100 border bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent",
+            "opacity-0 group-hover:opacity-100 border !border-border !bg-background",
           toast:
             "border group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
           description: "group-[.toast]:text-muted-foreground",
@@ -29,4 +29,3 @@ const Toaster = ({ ...props }: ToasterProps) => {
 };
 
 export { Toaster };
-
