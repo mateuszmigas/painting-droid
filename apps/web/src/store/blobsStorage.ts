@@ -9,7 +9,7 @@ const blobsDb = new IndexedDBStore({
 });
 
 /*
-  Due to bug with storing Blobs in IndexedDB in older versions of Safari (included in Tauri)
+  Due to bug with storing Blobs in IndexedDB in older versions of Safari (happens only in Tauri on macOS),
   we store Blobs as ArrayBuffers and convert them back to Blobs when reading them.
 */
 const useArrayBuffer = !isWindows() && !isWeb();
