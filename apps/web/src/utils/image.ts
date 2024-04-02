@@ -17,3 +17,7 @@ export const base64ToBlob = async (
   return await response.blob();
 };
 
+export const dataUrlToBlob = async (dataUrl: string) => {
+  const response = await fetch(dataUrl);
+  return response.blob();
+};

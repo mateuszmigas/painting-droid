@@ -13,3 +13,14 @@ export const blobToArrayBuffer = (blob: Blob) => {
   });
 };
 
+export const blobToDataUrl = (blob: Blob) => {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("loadend", () => {
+      resolve(reader.result as string);
+    });
+    reader.addEventListener("error", reject);
+    reader.readAsDataURL(blob);
+  });
+};
+
