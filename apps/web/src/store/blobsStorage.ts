@@ -16,27 +16,36 @@ const useArrayBuffer = !isWindows() && !isWeb();
 
 export const blobsStorage = {
   getBlobs: async () => {
-    const result = await blobsDb.getValuesByKey("blobs");
+    try {
+      const result = await blobsDb.getValuesByKey("blobs");
 
-    if (useArrayBuffer) {
-      for (const [key, arrayBuffer] of result) {
-        const blob = await arrayBufferToBlob(arrayBuffer as never);
-        result.set(key, blob);
+      if (useArrayBuffer) {
+        for (const [key, arrayBuffer] of result) {
+          const blob = await arrayBufferToBlob(arrayBuffer as never);
+          result.set(key, blob);
+        }
       }
+      return result;
+    } catch (e) {
+      //todo better error handling
+      console.error(e);
+      return new Map<string, Blob>();
     }
-
-    return result;
   },
   setBlobs: async (blobs: { key: string; value: Blob }[]) => {
-    await blobsDb.deleteAll("blobs");
+    try {
+      await blobsDb.deleteAll("blobs");
 
-    if (useArrayBuffer) {
-      for (const blob of blobs) {
-        blob.value = (await blobToArrayBuffer(blob.value)) as never;
+      if (useArrayBuffer) {
+        for (const blob of blobs) {
+          blob.value = (await blobToArrayBuffer(blob.value)) as never;
+        }
       }
-    }
 
-    await blobsDb.putValuesWithKeys("blobs", blobs);
+      await blobsDb.putValuesWithKeys("blobs", blobs);
+    } catch (e) {
+      console.error(e);
+    }
   },
 };
 
