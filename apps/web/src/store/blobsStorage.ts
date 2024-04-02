@@ -1,6 +1,6 @@
 import { IndexedDBStore } from "@/utils/indexedDBStore";
 import { isWeb, isWindows } from "@/utils/platform";
-import { blobToArrayBuffer, arrayBufferToBlob } from "@/utils/blob";
+import { blobToArrayBuffer, arrayBufferToBlob } from "@/utils/image";
 
 const blobsDb = new IndexedDBStore({
   name: "pd-blobs",
@@ -48,4 +48,3 @@ export const blobsStorage = {
     }
   },
 };
-

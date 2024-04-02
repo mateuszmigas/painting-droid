@@ -1,5 +1,5 @@
 import type { CanvasLayer, CanvasState } from "@/canvas/canvasState";
-import { blobToDataUrl } from "./blob";
+import { blobToDataUrl } from "./image";
 import type { Size } from "./common";
 import { dataUrlToBlob } from "./image";
 
@@ -63,4 +63,3 @@ export const decodePwd = async (text: string) => {
     size,
   };
 };
-
