@@ -1,7 +1,6 @@
 import {
-  defaultCanvasState,
+  createDefaultCanvasState,
   type CanvasState,
-  defaultLayer,
 } from "@/canvas/canvasState";
 import type { Size } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
@@ -37,16 +36,17 @@ export type AppWorkspacesState = {
   activeWorkspaceId: WorkspaceId;
 };
 
-const defaultWorkspace: Workspace = {
+const createDefaultWorkspace = (): Workspace => ({
   id: uuid(),
   name: translations.workspace.defaultName,
   filePath: null,
   size: { width: 800, height: 600 },
   viewport: null,
   popup: null,
-  canvasData: defaultCanvasState,
-};
+  canvasData: createDefaultCanvasState(),
+});
 
+const defaultWorkspace = createDefaultWorkspace();
 const defaultState: AppWorkspacesState = {
   workspaces: [defaultWorkspace],
   activeWorkspaceId: defaultWorkspace.id,
@@ -119,7 +119,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       return {
         ...state,
         workspaces: state.workspaces.map((w) =>
-          w.id === id ? { ...w, canvasData: defaultCanvasState } : w
+          w.id === id ? { ...w, canvasData: createDefaultCanvasState() } : w
         ),
       };
     }),
@@ -137,7 +137,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       workspaces: [
         ...state.workspaces,
         {
-          ...defaultWorkspace,
+          ...createDefaultWorkspace(),
           id: newId,
           name: `Untitled ${state.workspaces.length + 1}`,
           size,
@@ -153,7 +153,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       workspaces: [
         ...state.workspaces,
         {
-          ...defaultWorkspace,
+          ...createDefaultWorkspace(),
           id: newId,
           name,
           size,
@@ -165,18 +165,19 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   createWorkspaceFromImage(name, size, data) {
     const newId = uuid();
+    const canvasData = createDefaultCanvasState();
     return set((state) => ({
       ...state,
       workspaces: [
         ...state.workspaces,
         {
-          ...defaultWorkspace,
+          ...createDefaultWorkspace(),
           id: newId,
           name,
           size,
           canvasData: {
-            ...defaultCanvasState,
-            layers: [{ ...defaultLayer, data }],
+            ...canvasData,
+            layers: [{ ...canvasData.layers[0], data }],
           },
         },
       ],

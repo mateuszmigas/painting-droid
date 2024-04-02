@@ -1,6 +1,7 @@
 import { getTranslations } from "@/translations";
 import type { Rectangle } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
+import { uuid } from "@/utils/uuid";
 
 const translations = getTranslations();
 
@@ -29,16 +30,16 @@ export type CanvasState = {
   overlayShape: CanvasOverlayShape | null;
 };
 
-export const defaultLayer: CanvasLayer = {
-  id: "default",
+export const createDefaultLayer = (): CanvasLayer => ({
+  id: uuid(),
   name: translations.layers.defaultBaseName,
   visible: true,
   locked: false,
   data: null,
-};
+});
 
-export const defaultCanvasState: CanvasState = {
+export const createDefaultCanvasState = (): CanvasState => ({
   activeLayerIndex: 0,
-  layers: [defaultLayer],
+  layers: [createDefaultLayer()],
   overlayShape: null,
-};
+});
