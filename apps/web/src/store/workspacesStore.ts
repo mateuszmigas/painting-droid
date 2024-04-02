@@ -11,7 +11,7 @@ import { type PersistStorage, persist } from "zustand/middleware";
 import { getTranslations } from "@/translations";
 import type { AdjustmentId } from "@/adjustments";
 import type { ImageCompressedData } from "@/utils/imageData";
-import { blobsStore } from "./blobsStorage";
+import { blobsStorage } from "./blobsStorage";
 
 const translations = getTranslations();
 
@@ -224,7 +224,7 @@ const storage: PersistStorage<AppWorkspacesState> = {
         version: number;
       };
 
-      const blobs = await blobsStore.getValuesByKey("blobs");
+      const blobs = await blobsStorage.getBlobs();
 
       const stateWithBlobs = {
         ...result.state,
@@ -259,11 +259,11 @@ const storage: PersistStorage<AppWorkspacesState> = {
       .map((layer) => {
         return {
           key: layer.id,
-          value: layer.data?.data,
+          value: layer.data?.data!,
         };
       });
 
-    await blobsStore.putValuesWithKeys("blobs", blobs);
+    await blobsStorage.setBlobs(blobs);
 
     const stateWithoutBlobs = {
       ...state,

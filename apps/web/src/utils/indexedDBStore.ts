@@ -59,7 +59,7 @@ export class IndexedDBStore<
     });
   }
 
-  async deleteKeys(tableName: TStoresKey, keys: string[]) {
+  async deleteAll(tableName: TStoresKey) {
     await this.lazyInit();
     return new Promise<void>((resolve, reject) => {
       const transaction = this.db.transaction(
@@ -68,10 +68,7 @@ export class IndexedDBStore<
       );
       transaction.oncomplete = () => resolve();
       transaction.onerror = (event) => reject(event);
-
-      keys.forEach((key) => {
-        transaction.objectStore(tableName as string).delete(key);
-      });
+      transaction.objectStore(tableName as string).clear();
     });
   }
 
