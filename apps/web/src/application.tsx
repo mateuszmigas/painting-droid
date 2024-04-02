@@ -7,15 +7,18 @@ import {
   type CommandService,
 } from "./components/commandPaletteHost";
 import { DialogHost, type DialogService } from "./components/dialogHost";
-import { useIdleCallback } from "./hooks";
+import { useHasStoreHydrated, useIdleCallback } from "./hooks";
 import { coreClient } from "./wasm/core/coreClient";
 import { CanvasPreviewContextStoreContext } from "./contexts/canvasPreviewContextStore";
 import type { CanvasContext } from "./utils/common";
 import { useState } from "react";
 import { DialogServiceContext } from "./contexts/dialogService";
 import { CommandServiceContext } from "./contexts/commandService";
+import { useWorkspacesStore } from "./store";
 
 export const App = () => {
+  const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
+
   const [previewContext, setPreviewContext] = useState<CanvasContext | null>(
     null
   );
@@ -30,6 +33,10 @@ export const App = () => {
   useIdleCallback(() => {
     coreClient.init();
   });
+
+  if (!hasStoreHydrated) {
+    return null;
+  }
 
   return (
     <div className="size-full flex flex-col select-none">

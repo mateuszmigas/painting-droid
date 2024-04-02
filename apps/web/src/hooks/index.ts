@@ -15,3 +15,4 @@ export { useShapeRenderer } from "./useShapeRenderer";
 export { useShapeTool } from "./useShapeTool";
 export { useIdleCallback } from "./useIdleCallback";
 export { useBlobUrl } from "./useBlobUrl";
+export { useHasStoreHydrated } from "./useHasStoreHydrated";

@@ -6,12 +6,12 @@ export const useBlobUrl = (blob: Blob | null | undefined) => {
     [blob]
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     return () => {
-      blobUrl && URL.revokeObjectURL(blobUrl);
+      // blobUrl && URL.revokeObjectURL(blobUrl);
     };
   }, [blobUrl]);
 
   return blobUrl;
 };
-

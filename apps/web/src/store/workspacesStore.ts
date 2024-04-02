@@ -7,11 +7,11 @@ import type { Size } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
-import { persist } from "zustand/middleware";
+import { type PersistStorage, persist } from "zustand/middleware";
 import { getTranslations } from "@/translations";
 import type { AdjustmentId } from "@/adjustments";
 import type { ImageCompressedData } from "@/utils/imageData";
-import { createPersister } from "./persister";
+import { blobsStore } from "./blobsStorage";
 
 const translations = getTranslations();
 
@@ -215,10 +215,57 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
     ),
 });
 
-export const useWorkspacesStore = create<AppWorkspacesSlice>()(
-  persist(workspacesStoreCreator, {
-    ...createPersister({ version: 9, name: "workspaces" }),
-    partialize: (state) => ({
+const storage: PersistStorage<AppWorkspacesState> = {
+  getItem: async (name) => {
+    const value = localStorage.getItem(name);
+    if (value) {
+      const result = JSON.parse(value) as {
+        state: AppWorkspacesState;
+        version: number;
+      };
+
+      const blobs = await blobsStore.getValuesByKey("blobs");
+
+      const stateWithBlobs = {
+        ...result.state,
+        workspaces: result.state.workspaces.map((workspace) => ({
+          ...workspace,
+          canvasData: {
+            ...workspace.canvasData,
+            layers: workspace.canvasData.layers.map((layer) => ({
+              ...layer,
+              data:
+                layer.data !== null && blobs.has(layer.id)
+                  ? { ...layer.data, data: blobs.get(layer.id) }
+                  : null,
+            })),
+          },
+        })),
+      } as AppWorkspacesState;
+
+      return {
+        state: stateWithBlobs,
+        version: result.version,
+      };
+    }
+
+    return null;
+  },
+  setItem: async (name, value) => {
+    const { state, version } = value;
+    const blobs = state.workspaces
+      .flatMap((w) => w.canvasData.layers)
+      .filter((layer) => layer.data?.data)
+      .map((layer) => {
+        return {
+          key: layer.id,
+          value: layer.data?.data,
+        };
+      });
+
+    await blobsStore.putValuesWithKeys("blobs", blobs);
+
+    const stateWithoutBlobs = {
       ...state,
       workspaces: state.workspaces.map((workspace) => ({
         ...workspace,
@@ -226,11 +273,30 @@ export const useWorkspacesStore = create<AppWorkspacesSlice>()(
           ...workspace.canvasData,
           layers: workspace.canvasData.layers.map((layer) => ({
             ...layer,
-            data: undefined,
+            data: layer.data !== null ? { ...layer.data, data: null } : null,
           })),
         },
       })),
-    }),
+    };
+
+    localStorage.setItem(
+      name,
+      JSON.stringify({
+        state: stateWithoutBlobs,
+        version,
+      })
+    );
+  },
+  removeItem: (name) => {
+    localStorage.removeItem(name);
+  },
+};
+
+export const useWorkspacesStore = create<AppWorkspacesSlice>()(
+  persist(workspacesStoreCreator, {
+    version: 10,
+    name: "workspaces",
+    storage,
   })
 );
 

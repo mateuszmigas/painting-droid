@@ -1,6 +1,6 @@
 import { create, type StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
-import { createPersister } from "./persister";
+import { createSyncStorage } from "./syncStorage";
 
 export type AppPanelNames = "layers" | "metadata" | "history";
 
@@ -58,5 +58,8 @@ export const settingsStoreCreator: StateCreator<AppLayoutSlice> = (set) => ({
 });
 
 export const useLayoutStore = create<AppLayoutSlice>()(
-  persist(settingsStoreCreator, createPersister({ version: 3, name: "layout" }))
+  persist(
+    settingsStoreCreator,
+    createSyncStorage({ version: 3, name: "layout" })
+  )
 );
