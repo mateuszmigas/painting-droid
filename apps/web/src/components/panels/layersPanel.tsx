@@ -5,6 +5,7 @@ import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { memo, useMemo } from "react";
 import type { CanvasLayer } from "@/canvas/canvasState";
 import { useCanvasActionDispatcher } from "@/hooks";
+import { ImageFromBlob } from "../image/imageFromBlob";
 
 const LayerItem = (props: {
   layer: CanvasLayer;
@@ -32,9 +33,10 @@ const LayerItem = (props: {
       />
       <div className="w-16 h-16 border box-content alpha-background">
         {layer.data && (
-          <img
-            className="size-full object-contain"
-            src={layer.data.data}
+          <ImageFromBlob
+            style={{ opacity: layer.data?.data ? 1 : 0 }}
+            className="size-full object-contain transition-opacity duration-standard"
+            blob={layer.data?.data}
             alt={layer.name}
           />
         )}

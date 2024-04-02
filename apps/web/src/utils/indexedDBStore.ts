@@ -13,34 +13,13 @@ export class IndexedDBStore<
 > {
   private db!: IDBDatabase;
 
-  init(schema: IndexedDBSchema<TStores>) {
-    return new Promise<void>((resolve, reject) => {
-      const request = window.indexedDB.open(schema.name, schema.version);
-      request.onerror = () => {
-        reject();
-      };
-      request.onsuccess = (e) => {
-        const event = e as never as EventWithDb;
-        this.db = event.target?.result as IDBDatabase;
-        resolve();
-      };
-      request.onupgradeneeded = (e) => {
-        const event = e as never as EventWithDb;
-        this.db = event.target?.result as IDBDatabase;
+  constructor(private schema: IndexedDBSchema<TStores>) {}
 
-        Object.keys(schema.stores).forEach((name) => {
-          if (!this.db.objectStoreNames.contains(name)) {
-            this.db.createObjectStore(name);
-          }
-        });
-      };
-    });
-  }
-
-  putValuesWithKeys<T>(
+  async putValuesWithKeys<T>(
     tableName: TStoresKey,
     entries: { key: string; value: T }[]
   ) {
+    await this.lazyInit();
     return new Promise<void>((resolve, reject) => {
       const transaction = this.db.transaction(
         [tableName as string],
@@ -57,19 +36,20 @@ export class IndexedDBStore<
     });
   }
 
-  getValuesWithKeys<T>(tableName: TStoresKey) {
-    return new Promise<{ key: string; value: T }[]>((resolve, reject) => {
+  async getValuesByKey<T>(tableName: TStoresKey) {
+    await this.lazyInit();
+    return new Promise<Map<string, T>>((resolve, reject) => {
       const request = this.db
         .transaction([tableName as string], "readonly")
         .objectStore(tableName as string)
         .openCursor();
 
-      const result: { key: string; value: T }[] = [];
+      const result = new Map<string, T>();
       request.onsuccess = (e) => {
         const event = e as never as EventWithCursor;
         const cursor = event.target.result;
         if (cursor) {
-          result.push({ key: cursor.key as string, value: cursor.value as T });
+          result.set(cursor.key as string, cursor.value as T);
           cursor.continue();
         } else {
           resolve(result);
@@ -79,7 +59,8 @@ export class IndexedDBStore<
     });
   }
 
-  deleteKeys(tableName: TStoresKey, keys: string[]) {
+  async deleteAll(tableName: TStoresKey) {
+    await this.lazyInit();
     return new Promise<void>((resolve, reject) => {
       const transaction = this.db.transaction(
         [tableName as string],
@@ -87,11 +68,37 @@ export class IndexedDBStore<
       );
       transaction.oncomplete = () => resolve();
       transaction.onerror = (event) => reject(event);
+      transaction.objectStore(tableName as string).clear();
+    });
+  }
 
-      keys.forEach((key) => {
-        transaction.objectStore(tableName as string).delete(key);
-      });
+  private async lazyInit() {
+    if (this.db) {
+      return;
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      const request = window.indexedDB.open(
+        this.schema.name,
+        this.schema.version
+      );
+      request.onerror = () => {
+        reject();
+      };
+      request.onsuccess = (e) => {
+        const event = e as never as EventWithDb;
+        this.db = event.target?.result as IDBDatabase;
+        resolve();
+      };
+      request.onupgradeneeded = (e) => {
+        const event = e as never as EventWithDb;
+        const db = event.target.result as IDBDatabase;
+        Object.keys(this.schema.stores).forEach((name) => {
+          if (!db.objectStoreNames.contains(name)) {
+            db.createObjectStore(name);
+          }
+        });
+      };
     });
   }
 }
-

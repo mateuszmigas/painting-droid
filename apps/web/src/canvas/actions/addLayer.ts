@@ -1,4 +1,4 @@
-import { defaultLayer } from "./../canvasState";
+import { createDefaultLayer } from "./../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { uuid } from "@/utils/uuid";
@@ -29,7 +29,7 @@ export const createCanvasAction = (
         layers: [
           ...state.layers,
           {
-            ...defaultLayer,
+            ...createDefaultLayer(),
             id: capturedData.id,
             name: capturedData.name,
             data: data || null,

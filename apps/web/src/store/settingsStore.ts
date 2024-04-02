@@ -1,6 +1,6 @@
 import { create, type StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
-import { createPersister } from "./persister";
+import { createSyncStorage } from "./syncStorage";
 
 type ThemeType = "light" | "dark" | "system";
 
@@ -26,6 +26,6 @@ export const settingsStoreCreator: StateCreator<AppSettingsSlice> = (set) => ({
 export const useSettingsStore = create<AppSettingsSlice>()(
   persist(
     settingsStoreCreator,
-    createPersister({ version: 1, name: "settings" })
+    createSyncStorage({ version: 1, name: "settings" })
   )
 );

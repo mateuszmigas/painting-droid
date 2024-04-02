@@ -1,11 +1,8 @@
 import type { CanvasContext } from "./common";
-import { imageFromSrc } from "./image";
 import type { ImageCompressedData, ImageUncompressedData } from "./imageData";
 
 export const createCanvasContext = (width: number, height: number) => {
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
+  const canvas = new OffscreenCanvas(width, height);
   const context = canvas.getContext("2d") as CanvasContext;
   return context;
 };
@@ -19,7 +16,7 @@ export const restoreContextFromCompressed = async (
   compressed: ImageCompressedData
 ) => {
   const { width, height } = compressed;
-  const image = await imageFromSrc(compressed.data);
+  const image = await createImageBitmap(compressed.data);
   context.clearRect(0, 0, width, height);
   context.drawImage(image, 0, 0, width, height);
 };
@@ -34,4 +31,3 @@ export const restoreContextFromUncompressed = (
     0
   );
 };
-

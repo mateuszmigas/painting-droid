@@ -4,6 +4,7 @@ import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { workspace } from "@/contants";
 import { getTranslations } from "@/translations";
 import { fileSystem } from "@/utils/file-system";
+import { encodePwd } from "@/utils/pdwFormat";
 
 const translations = getTranslations();
 
@@ -16,11 +17,8 @@ export const command = createCommand({
     const { canvasData, name, size } = activeWorkspaceSelector(
       context.stores.workspaces()
     );
-    const text = JSON.stringify({
-      version: workspace.version,
-      size,
-      data: canvasData,
-    });
+
+    const text = await encodePwd(canvasData, workspace.version, size);
     fileSystem.saveTextToFile(text, name, workspace.format);
   },
 });

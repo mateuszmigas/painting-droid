@@ -18,7 +18,7 @@ import {
 } from "../ui/select";
 import { useWorkspacesStore } from "@/store";
 import { activeWorkspaceActiveLayerSelector } from "@/store/workspacesStore";
-import { useCanvasActionDispatcher } from "@/hooks";
+import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
 import { ImageProcessor } from "@/utils/imageProcessor";
 
 const colors = [
@@ -133,6 +133,8 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
     close();
   };
 
+  const imageDataUrl = useBlobUrl(imageData?.data);
+
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogTitle>{translations.models.objectDetection.name}</DialogTitle>
@@ -147,7 +149,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
           containerClassName="border-primary border-2 border-dashed box-content self-center"
           imageClassName="alpha-background"
           containerSize={{ width: 320, height: 320 }}
-          src={imageData?.data ?? ""}
+          src={imageDataUrl}
         />
 
         <div className="flex flex-col gap-big justify-between min-w-64">

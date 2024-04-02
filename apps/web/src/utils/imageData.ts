@@ -7,5 +7,5 @@ export type ImageUncompressedData = {
 export type ImageCompressedData = {
   width: number;
   height: number;
-  data: string;
+  data: Blob;
 };

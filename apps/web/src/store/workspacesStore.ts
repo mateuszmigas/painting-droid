@@ -1,17 +1,16 @@
 import {
-  defaultCanvasState,
+  createDefaultCanvasState,
   type CanvasState,
-  defaultLayer,
 } from "@/canvas/canvasState";
 import type { Size } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
 import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
-import { persist } from "zustand/middleware";
+import { type PersistStorage, persist } from "zustand/middleware";
 import { getTranslations } from "@/translations";
 import type { AdjustmentId } from "@/adjustments";
 import type { ImageCompressedData } from "@/utils/imageData";
-import { createPersister } from "./persister";
+import { blobsStorage } from "./blobsStorage";
 
 const translations = getTranslations();
 
@@ -37,16 +36,17 @@ export type AppWorkspacesState = {
   activeWorkspaceId: WorkspaceId;
 };
 
-const defaultWorkspace: Workspace = {
+const createDefaultWorkspace = (): Workspace => ({
   id: uuid(),
   name: translations.workspace.defaultName,
   filePath: null,
   size: { width: 800, height: 600 },
   viewport: null,
   popup: null,
-  canvasData: defaultCanvasState,
-};
+  canvasData: createDefaultCanvasState(),
+});
 
+const defaultWorkspace = createDefaultWorkspace();
 const defaultState: AppWorkspacesState = {
   workspaces: [defaultWorkspace],
   activeWorkspaceId: defaultWorkspace.id,
@@ -119,7 +119,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       return {
         ...state,
         workspaces: state.workspaces.map((w) =>
-          w.id === id ? { ...w, canvasData: defaultCanvasState } : w
+          w.id === id ? { ...w, canvasData: createDefaultCanvasState() } : w
         ),
       };
     }),
@@ -137,7 +137,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       workspaces: [
         ...state.workspaces,
         {
-          ...defaultWorkspace,
+          ...createDefaultWorkspace(),
           id: newId,
           name: `Untitled ${state.workspaces.length + 1}`,
           size,
@@ -153,7 +153,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       workspaces: [
         ...state.workspaces,
         {
-          ...defaultWorkspace,
+          ...createDefaultWorkspace(),
           id: newId,
           name,
           size,
@@ -165,18 +165,19 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   createWorkspaceFromImage(name, size, data) {
     const newId = uuid();
+    const canvasData = createDefaultCanvasState();
     return set((state) => ({
       ...state,
       workspaces: [
         ...state.workspaces,
         {
-          ...defaultWorkspace,
+          ...createDefaultWorkspace(),
           id: newId,
           name,
           size,
           canvasData: {
-            ...defaultCanvasState,
-            layers: [{ ...defaultLayer, data }],
+            ...canvasData,
+            layers: [{ ...canvasData.layers[0], data }],
           },
         },
       ],
@@ -215,11 +216,89 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
     ),
 });
 
+const storage: PersistStorage<AppWorkspacesState> = {
+  getItem: async (name) => {
+    const value = localStorage.getItem(name);
+    if (value) {
+      const result = JSON.parse(value) as {
+        state: AppWorkspacesState;
+        version: number;
+      };
+
+      const blobs = await blobsStorage.getBlobs();
+
+      const stateWithBlobs = {
+        ...result.state,
+        workspaces: result.state.workspaces.map((workspace) => ({
+          ...workspace,
+          canvasData: {
+            ...workspace.canvasData,
+            layers: workspace.canvasData.layers.map((layer) => ({
+              ...layer,
+              data:
+                layer.data !== null && blobs.has(layer.id)
+                  ? { ...layer.data, data: blobs.get(layer.id) }
+                  : null,
+            })),
+          },
+        })),
+      } as AppWorkspacesState;
+
+      return {
+        state: stateWithBlobs,
+        version: result.version,
+      };
+    }
+
+    return null;
+  },
+  setItem: async (name, value) => {
+    const { state, version } = value;
+    const blobs = state.workspaces
+      .flatMap((w) => w.canvasData.layers)
+      .filter((layer) => layer.data?.data)
+      .map((layer) => {
+        return {
+          key: layer.id,
+          value: layer.data?.data!,
+        };
+      });
+
+    await blobsStorage.setBlobs(blobs);
+
+    const stateWithoutBlobs = {
+      ...state,
+      workspaces: state.workspaces.map((workspace) => ({
+        ...workspace,
+        canvasData: {
+          ...workspace.canvasData,
+          layers: workspace.canvasData.layers.map((layer) => ({
+            ...layer,
+            data: layer.data !== null ? { ...layer.data, data: null } : null,
+          })),
+        },
+      })),
+    };
+
+    localStorage.setItem(
+      name,
+      JSON.stringify({
+        state: stateWithoutBlobs,
+        version,
+      })
+    );
+  },
+  removeItem: (name) => {
+    localStorage.removeItem(name);
+  },
+};
+
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
-  persist(
-    workspacesStoreCreator,
-    createPersister({ version: 8, name: "workspaces" })
-  )
+  persist(workspacesStoreCreator, {
+    version: 11,
+    name: "workspaces",
+    storage,
+  })
 );
 
 export const activeWorkspaceSelector = (state: AppWorkspacesState) => {
