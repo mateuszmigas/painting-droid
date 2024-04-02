@@ -9,6 +9,11 @@ export const dataUrlToImage = (dataUrl: string) => {
   });
 };
 
+export const dataUrlToBlob = async (dataUrl: string) => {
+  const response = await fetch(dataUrl);
+  return response.blob();
+};
+
 export const base64ToBlob = async (
   base64: string,
   format: "image/jpeg" | "image/png" = "image/png"
@@ -17,7 +22,28 @@ export const base64ToBlob = async (
   return await response.blob();
 };
 
-export const dataUrlToBlob = async (dataUrl: string) => {
-  const response = await fetch(dataUrl);
-  return response.blob();
+export const arrayBufferToBlob = (buffer: ArrayBuffer, type = "image/png") => {
+  return new Blob([buffer], { type });
+};
+
+export const blobToArrayBuffer = (blob: Blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("loadend", () => {
+      resolve(reader.result);
+    });
+    reader.addEventListener("error", reject);
+    reader.readAsArrayBuffer(blob);
+  });
+};
+
+export const blobToDataUrl = (blob: Blob) => {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("loadend", () => {
+      resolve(reader.result as string);
+    });
+    reader.addEventListener("error", reject);
+    reader.readAsDataURL(blob);
+  });
 };
