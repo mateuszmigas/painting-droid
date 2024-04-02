@@ -25,8 +25,9 @@ import {
 import { uuid } from "@/utils/uuid";
 import { textToImageModels } from "@/models/text-to-image";
 import { getTranslations } from "@/translations";
-import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
+import { useCanvasActionDispatcher } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
+import { ImageFromBlob } from "../image/imageFromBlob";
 
 const translations = getTranslations();
 
@@ -116,8 +117,6 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     1
   );
 
-  const imageUrl = useBlobUrl(image);
-
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
@@ -137,9 +136,9 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
               className=" border-primary border-2 border-dashed object-contain box-content"
             >
               {image && (
-                <img
+                <ImageFromBlob
                   className="size-full object-contain"
-                  src={imageUrl}
+                  blob={image}
                   alt=""
                 />
               )}

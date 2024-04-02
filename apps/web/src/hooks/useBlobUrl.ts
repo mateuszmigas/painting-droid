@@ -1,17 +1,15 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 export const useBlobUrl = (blob: Blob | null | undefined) => {
-  const blobUrl = useMemo(
-    () => (blob ? URL.createObjectURL(blob) : ""),
-    [blob]
-  );
+  const [src, setSrc] = useState("");
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    return () => {
-      // blobUrl && URL.revokeObjectURL(blobUrl);
-    };
-  }, [blobUrl]);
+    if (blob) {
+      const objectUrl = URL.createObjectURL(blob);
+      setSrc(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [blob]);
 
-  return blobUrl;
+  return src;
 };

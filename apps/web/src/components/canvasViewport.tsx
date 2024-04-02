@@ -6,7 +6,6 @@ import {
   useListener,
   useShapeRenderer,
   useShapeTool,
-  useBlobUrl,
   useStableCallback,
   useSyncCanvasWithLayers,
   useViewportManipulator,
@@ -26,6 +25,7 @@ import {
   createDrawToolHandlers,
   createShapeToolHandlers,
 } from "./toolHandlers";
+import { ImageFromBlob } from "./image/imageFromBlob";
 
 const alphaGridCellSize = 20;
 
@@ -161,8 +161,6 @@ export const CanvasViewport = memo(
 
     const { position, zoom } = viewport.getValue();
 
-    const imageOverlayUrl = useBlobUrl(overlayShape?.captured?.data.data);
-
     return (
       <div
         ref={hostElementRef}
@@ -197,15 +195,17 @@ export const CanvasViewport = memo(
             height={size.height}
           />
         ))}
-        <img
+        <ImageFromBlob
           alt=""
           className="pixelated-canvas origin-top-left absolute pointer-events-none left-0 top-0"
-          ref={imageOverlayRef}
-          src={imageOverlayUrl}
+          imgRef={imageOverlayRef}
+          blob={overlayShape?.captured?.data.data}
           style={{
             zIndex: activeLayerIndex + 1,
             willChange: "transform",
-            visibility: imageOverlayUrl ? "visible" : "hidden",
+            visibility: overlayShape?.captured?.data.data
+              ? "visible"
+              : "hidden",
           }}
         />
         <div

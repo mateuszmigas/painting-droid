@@ -4,7 +4,8 @@ import { useWorkspacesStore } from "@/store";
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { memo, useMemo } from "react";
 import type { CanvasLayer } from "@/canvas/canvasState";
-import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
+import { useCanvasActionDispatcher } from "@/hooks";
+import { ImageFromBlob } from "../image/imageFromBlob";
 
 const LayerItem = (props: {
   layer: CanvasLayer;
@@ -13,7 +14,6 @@ const LayerItem = (props: {
   setVisibility: (visible: boolean) => void;
 }) => {
   const { layer, selected, onClick, setVisibility } = props;
-  const layerDataUrl = useBlobUrl(layer.data?.data);
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
@@ -33,9 +33,10 @@ const LayerItem = (props: {
       />
       <div className="w-16 h-16 border box-content alpha-background">
         {layer.data && (
-          <img
-            className="size-full object-contain"
-            src={layerDataUrl}
+          <ImageFromBlob
+            style={{ opacity: layer.data?.data ? 1 : 0 }}
+            className="size-full object-contain transition-opacity duration-standard"
+            blob={layer.data?.data}
             alt={layer.name}
           />
         )}
