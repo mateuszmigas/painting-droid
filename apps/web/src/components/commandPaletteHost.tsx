@@ -24,6 +24,7 @@ import type { CommandContext } from "@/commands/context";
 import { useDialogService } from "@/contexts/dialogService";
 import { sortBySelector } from "@/utils/array";
 import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
+import { useNotificationService } from "@/contexts/notificationService";
 
 export type CommandService = {
   executeCommandWithDefaults: ExecuteCommandWithDefaults;
@@ -38,6 +39,7 @@ export const CommandPaletteHost = memo(
     const { previewContext } = useCanvasPreviewContextStore();
     const getActiveCanvasContext = useStableCallback(() => previewContext);
     const dialogService = useDialogService();
+    const notificationService = useNotificationService();
     const commandService = useMemo<CommandService>(() => {
       const createContext = (): CommandContext => ({
         stores: {
@@ -47,6 +49,7 @@ export const CommandPaletteHost = memo(
           tool: () => useToolStore.getState(),
         },
         dialogService,
+        notificationService,
         canvasActionDispatcher,
         getActiveCanvasContext,
       });
@@ -66,7 +69,12 @@ export const CommandPaletteHost = memo(
         executeCommand,
         executeCommandWithDefaults,
       };
-    }, [dialogService, canvasActionDispatcher, getActiveCanvasContext]);
+    }, [
+      dialogService,
+      notificationService,
+      canvasActionDispatcher,
+      getActiveCanvasContext,
+    ]);
 
     useEffect(() => {
       setCommandService(commandService);
