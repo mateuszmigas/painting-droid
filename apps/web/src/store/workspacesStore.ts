@@ -272,6 +272,7 @@ const storage: PersistStorage<AppWorkspacesState> = {
         ...workspace,
         canvasData: {
           ...workspace.canvasData,
+          overlayShape: null,
           layers: workspace.canvasData.layers.map((layer) => ({
             ...layer,
             data: layer.data !== null ? { ...layer.data, data: null } : null,
@@ -295,7 +296,7 @@ const storage: PersistStorage<AppWorkspacesState> = {
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   persist(workspacesStoreCreator, {
-    version: 12,
+    version: 13,
     name: "workspaces",
     storage,
   })
