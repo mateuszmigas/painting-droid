@@ -295,7 +295,7 @@ const storage: PersistStorage<AppWorkspacesState> = {
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   persist(workspacesStoreCreator, {
-    version: 11,
+    version: 12,
     name: "workspaces",
     storage,
   })
