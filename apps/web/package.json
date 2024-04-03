@@ -6,12 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
+    "serve": "vite build && vite preview",
     "check-types": "tsc --noEmit",
     "check-types:watch": "tsc --noEmit --watch",
     "test:unit": "vitest run",
+    "test:e2e": "npx playwright test",
+    "test:e2e:debug": "npx playwright test --debug",
     "validate": "pnpm run check-types && pnpm run test:unit && pnpm run lint",
-    "lint": "biome lint src"
+    "lint": "biome lint src",
+    "analyze-bundle": "npx vite-bundle-visualizer -t sunburst"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -58,6 +61,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.6.0",
+    "@playwright/test": "^1.42.1",
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.isequal": "^4.5.8",
     "@types/lodash.throttle": "^4.1.9",
@@ -75,3 +79,4 @@
     "vitest": "^1.3.1"
   }
 }
+

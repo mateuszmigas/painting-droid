@@ -2,6 +2,7 @@ import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import solidPlugin from "vite-plugin-solid";
+import { splitVendorChunkPlugin } from "vite";
 
 const isDesktop = "TAURI_ENV_PLATFORM" in process.env;
 
@@ -23,7 +24,11 @@ export default defineConfig(async () => ({
     react({ exclude: /\.solid\.tsx$/ }),
     solidPlugin({ include: /\.solid\.tsx$/ }),
     configureResponse(),
+    splitVendorChunkPlugin(),
   ],
+  build: {
+    chunkSizeWarningLimit: 1024,
+  },
   define: {
     "import.meta.env.platform": JSON.stringify(
       "TAURI_ENV_PLATFORM" in process.env
@@ -42,5 +47,8 @@ export default defineConfig(async () => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  test: {
+    include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
   },
 }));
