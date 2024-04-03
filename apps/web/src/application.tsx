@@ -15,11 +15,11 @@ import { useState } from "react";
 import { DialogServiceContext } from "./contexts/dialogService";
 import { CommandServiceContext } from "./contexts/commandService";
 import { useWorkspacesStore } from "./store";
+import { Toaster } from "@/components/ui/sonner";
 import {
   NotificationServiceContext,
   notificationService,
 } from "./contexts/notificationService";
-import { Toaster } from "./components/ui/toaster";
 
 export const App = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
@@ -58,7 +58,7 @@ export const App = () => {
                   <AppHeaderBar />
                   <AppContent />
                   <AppStatusBar />
-                  <Toaster />
+                  <Toaster closeButton />
                 </>
               )}
             </CommandServiceContext.Provider>
