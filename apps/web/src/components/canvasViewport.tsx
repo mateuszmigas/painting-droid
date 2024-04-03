@@ -197,6 +197,7 @@ export const CanvasViewport = memo(
         ))}
         <ImageFromBlob
           alt=""
+          key={overlayShape?.id}
           className="pixelated-canvas origin-top-left absolute pointer-events-none left-0 top-0"
           imgRef={imageOverlayRef}
           blob={overlayShape?.captured?.data.data}

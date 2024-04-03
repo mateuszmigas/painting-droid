@@ -88,6 +88,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     await canvasActionDispatcher.execute("drawOverlayShape", {
       display: translations.models.textToImage.name,
       overlayShape: {
+        id: uuid(),
         type: "rectangle",
         boundingBox: {
           x: 0,

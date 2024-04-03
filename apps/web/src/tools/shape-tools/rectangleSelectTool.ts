@@ -3,6 +3,7 @@ import type { ShapePayload, ShapeTool, ShapeToolMetadata } from "./shapeTool";
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import { fastRound } from "@/utils/math";
 import { getTranslations } from "@/translations";
+import { uuid } from "@/utils/uuid";
 
 const translations = getTranslations().tools.shape.rectangleSelect;
 
@@ -46,6 +47,7 @@ export class RectangleSelectTool implements ShapeTool {
     }
 
     return {
+      id: uuid(),
       type: "rectangle",
       boundingBox: { x, y, width, height },
       captured: null,

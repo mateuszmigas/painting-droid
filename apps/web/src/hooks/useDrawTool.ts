@@ -59,6 +59,7 @@ export const useDrawTool = (
     const tool = toolRef.current;
     let ticksCount = 0;
     let isDrawing = false;
+    let hasDrawn = false;
     let currentPointerPosition: Position | null = null;
 
     const { start, stop, cancel } = createRaf((time) => {
@@ -77,6 +78,7 @@ export const useDrawTool = (
 
     const onManipulationUpdate = (position: Position) => {
       if (!isDrawing) return;
+      hasDrawn = true;
       currentPointerPosition = transformToCanvasPositionStable(position);
     };
 
@@ -84,8 +86,9 @@ export const useDrawTool = (
       if (!isDrawing) return;
       stop();
       tool.reset();
+      hasDrawn && commitStable(drawToolId!);
       isDrawing = false;
-      commitStable(drawToolId!);
+      hasDrawn = false;
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {

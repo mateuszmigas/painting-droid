@@ -16,6 +16,7 @@ export type CanvasLayer = {
 };
 
 export type CanvasOverlayShape = {
+  id: string;
   type: "rectangle";
   boundingBox: Rectangle;
   captured: {
