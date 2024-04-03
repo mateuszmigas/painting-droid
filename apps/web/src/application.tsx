@@ -15,11 +15,6 @@ import { useState } from "react";
 import { DialogServiceContext } from "./contexts/dialogService";
 import { CommandServiceContext } from "./contexts/commandService";
 import { useWorkspacesStore } from "./store";
-import { Toaster } from "@/components/ui/sonner";
-import {
-  NotificationServiceContext,
-  notificationService,
-} from "./contexts/notificationService";
 
 export const App = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
@@ -48,22 +43,19 @@ export const App = () => {
       <CanvasPreviewContextStoreContext.Provider
         value={{ previewContext, setPreviewContext }}
       >
-        <NotificationServiceContext.Provider value={notificationService}>
-          <DialogServiceContext.Provider value={dialogService!}>
-            <CommandServiceContext.Provider value={commandService!}>
-              <DialogHost setDialogService={setDialogService} />
-              <CommandPaletteHost setCommandService={setCommandService} />
-              {commandService && dialogService && (
-                <>
-                  <AppHeaderBar />
-                  <AppContent />
-                  <AppStatusBar />
-                  <Toaster closeButton />
-                </>
-              )}
-            </CommandServiceContext.Provider>
-          </DialogServiceContext.Provider>
-        </NotificationServiceContext.Provider>
+        <DialogServiceContext.Provider value={dialogService!}>
+          <CommandServiceContext.Provider value={commandService!}>
+            <DialogHost setDialogService={setDialogService} />
+            <CommandPaletteHost setCommandService={setCommandService} />
+            {commandService && dialogService && (
+              <>
+                <AppHeaderBar />
+                <AppContent />
+                <AppStatusBar />
+              </>
+            )}
+          </CommandServiceContext.Provider>
+        </DialogServiceContext.Provider>
       </CanvasPreviewContextStoreContext.Provider>
     </div>
   );
