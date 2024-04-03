@@ -12,6 +12,7 @@
     "test:unit": "vitest run",
     "test:e2e": "npx playwright test",
     "test:e2e:debug": "npx playwright test --debug",
+    "test:e2e:install-browsers": "pnpm exec playwright install --with-deps",
     "validate": "pnpm run check-types && pnpm run test:unit && pnpm run lint",
     "lint": "biome lint src",
     "analyze-bundle": "npx vite-bundle-visualizer -t sunburst"

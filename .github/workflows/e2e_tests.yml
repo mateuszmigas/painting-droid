@@ -28,7 +28,7 @@ jobs:
         run: pnpm install --prefer-offline
 
       - name: Install browsers
-        run: pnpm exec playwright install --with-deps
+        run: pnpm --filter @painting-droid/web test:e2e:install-browsers
 
       - name: Run e2e tests
         run: pnpm --filter @painting-droid/web test:e2e
