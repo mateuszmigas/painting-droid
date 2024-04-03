@@ -1,15 +1,9 @@
+import { toast } from "@/components/ui/use-toast";
 import { createContext, useContext } from "react";
-import { toast } from "sonner";
 
 export class NotificationService {
-  showInfo(message: string) {
-    toast.info(message);
-  }
-  showError(message: string) {
-    toast.error(message);
-  }
-  showSuccess(message: string) {
-    toast.success(message);
+  showInfo(title: string, description: string) {
+    toast({ title, description });
   }
 }
 

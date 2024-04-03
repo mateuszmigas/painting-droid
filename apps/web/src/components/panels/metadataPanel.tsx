@@ -23,9 +23,7 @@ export const MetadataPanel = () => {
         </Button>
         <Button
           variant="secondary"
-          onClick={() => {
-            showInfo("Some test message");
-          }}
+          onClick={() => showInfo("Hey", "Some test message")}
         >
           Notification Test
         </Button>
