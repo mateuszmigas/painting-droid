@@ -111,21 +111,23 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
 
   private onPointerDown = (e: PointerEvent) => {
     if (e.button === 1) {
-      this.pointerPosition = { x: e.offsetX, y: e.offsetY };
+      this.pointerPosition = this.getPointerPosition(e);
       this.isMoving = true;
     }
   };
 
   private onPointerMove = (e: PointerEvent) => {
+    const position = this.getPointerPosition(e);
+
     if (this.isMoving) {
       this.dispatchAction({
         type: "translate",
-        offsetX: e.offsetX - this.pointerPosition.x,
-        offsetY: e.offsetY - this.pointerPosition.y,
+        offsetX: position.x - this.pointerPosition.x,
+        offsetY: position.y - this.pointerPosition.y,
       });
     }
 
-    this.pointerPosition = { x: e.offsetX, y: e.offsetY };
+    this.pointerPosition = position;
   };
 
   private onPointerUp = () => {
@@ -141,8 +143,15 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
 
     this.dispatchAction({
       type: action,
-      position: { x: e.offsetX, y: e.offsetY },
+      position: this.getPointerPosition(e),
     });
+  };
+
+  private getPointerPosition = (e: PointerEvent | WheelEvent) => {
+    return {
+      x: e.clientX - this.elementRect.x,
+      y: e.clientY - this.elementRect.y,
+    };
   };
 
   private calculateTouchDistance = (e: TouchEvent) => {

@@ -1,3 +1,5 @@
+import type { Rectangle } from "../common";
+
 export type EventType = keyof HTMLElementEventMap;
 export type EventHandler<T extends Event> = (event: T) => void;
 
@@ -5,12 +7,26 @@ export class ThrottleHtmlManipulator {
   animationFrameHandle = 0;
   eventListeners = new Map<string, EventHandler<Event>>();
   events = new Map<string, Event>();
+  elementRect: Rectangle = { x: 0, y: 0, width: 0, height: 0 };
+  resizeObserver: ResizeObserver;
 
   constructor(protected readonly element: HTMLElement) {
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        const { x, y } = element.getBoundingClientRect();
+        this.elementRect = { x, y, width, height };
+      }
+    });
+    const { x, y, width, height } = element.getBoundingClientRect();
+    this.elementRect = { x, y, width, height };
+
     this.requestProcessEvents();
   }
 
   dispose() {
+    this.resizeObserver.unobserve(this.element);
+    this.resizeObserver.disconnect();
     this.eventListeners.forEach((_, key) =>
       this.element.removeEventListener(key, this.onEventTriggered)
     );
