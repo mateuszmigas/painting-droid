@@ -3,6 +3,7 @@ import type { CanvasLayer } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { clearContext, restoreContextFromCompressed } from "@/utils/canvas";
+import { features } from "@/contants";
 
 const restoreLayers = async (
   layers: CanvasLayer[],
@@ -42,7 +43,9 @@ export const useSyncCanvasWithLayers = (
         if (!contextsMap.current.has(element)) {
           contextsMap.current.set(
             element,
-            element.transferControlToOffscreen().getContext("2d")!
+            features.offscreenCanvas
+              ? element.transferControlToOffscreen().getContext("2d")!
+              : element.getContext("2d")!
           );
         }
         return contextsMap.current.get(element)!;

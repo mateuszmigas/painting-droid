@@ -77,7 +77,9 @@ export const scaleRectangleToFitParent = (
 
 export type Color = string;
 
-export type CanvasContext = OffscreenCanvasRenderingContext2D;
+export type CanvasContext =
+  | CanvasRenderingContext2D
+  | OffscreenCanvasRenderingContext2D;
 
 export const calculateScaleToFit = (child: Size, parent: Size) => {
   const childRatio = child.width / child.height;

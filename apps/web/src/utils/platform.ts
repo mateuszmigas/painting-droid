@@ -5,4 +5,9 @@ export const isWindows = () =>
 
 export const isWeb = () => import.meta.env.platform === "web";
 export const isMobile = () => window.navigator.userAgent.includes("Mobi");
-
+export const isSafari = () =>
+  window.navigator.userAgent.includes("Safari") &&
+  !window.navigator.userAgent.includes("Chrome") &&
+  !window.navigator.userAgent.includes("Firefox");
+export const isFirefox = () => window.navigator.userAgent.includes("Firefox");
+export const isChrome = () => window.navigator.userAgent.includes("Chrome");

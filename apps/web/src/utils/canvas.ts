@@ -11,6 +11,15 @@ export const clearContext = (context: CanvasContext) => {
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 };
 
+export const convertToBlob = (context: CanvasContext, type: string) => {
+  if (context instanceof OffscreenCanvasRenderingContext2D) {
+    return context.canvas.convertToBlob({ type });
+  }
+  return new Promise<Blob>((resolve) =>
+    context.canvas.toBlob((blob) => resolve(blob!), type)
+  );
+};
+
 export const restoreContextFromCompressed = async (
   context: CanvasContext,
   compressed: ImageCompressedData

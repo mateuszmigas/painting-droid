@@ -2,6 +2,7 @@ import {
   restoreContextFromUncompressed,
   restoreContextFromCompressed,
   createCanvasContext,
+  convertToBlob,
 } from "./canvas";
 import type { CanvasContext, Rectangle } from "./common";
 import { dataUrlToImage } from "./image";
@@ -100,7 +101,7 @@ export class ImageProcessor {
   async toCompressed() {
     await this.runTasks();
     const { width, height } = this.context.canvas;
-    const blob = await this.context.canvas.convertToBlob({ type: "image/png" });
+    const blob = await convertToBlob(this.context, "image/png");
     return { width, height, data: blob! };
   }
 
@@ -121,7 +122,7 @@ export class ImageProcessor {
 
   async toBlob(format: "jpeg" | "png") {
     await this.runTasks();
-    return this.context.canvas.convertToBlob({ type: `image/${format}` });
+    return convertToBlob(this.context, `image/${format}`);
   }
 
   private async runTasks() {

@@ -2,6 +2,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { coreClient } from "@/wasm/core/coreClient";
 import { useNotificationService } from "@/contexts/notificationService";
+import { features } from "@/contants";
 
 export const MetadataPanel = () => {
   const [result, setResult] = useState<string>("");
@@ -30,7 +31,11 @@ export const MetadataPanel = () => {
           Notification Test
         </Button>
       </div>
-      <div className="p-small">{result}</div>
+      <div className="p-small text-xs">
+        <div>Features:</div>
+        <div>Offscreen canvas: {features.offscreenCanvas.toString()}</div>
+        <div className="p-small">{result}</div>
+      </div>
     </div>
   );
 };
