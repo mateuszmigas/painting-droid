@@ -37,7 +37,7 @@ const restoreLayers = async (
   }
 
   if (overlayShape !== null) {
-    const { width, height } = overlayShape.captured!.data;
+    const { width, height } = overlayShape.boundingBox;
     const image = await createImageBitmap(overlayShape.captured!.data.data);
     canvasOperations.push(() => {
       overlayContext!.canvas.width = width;

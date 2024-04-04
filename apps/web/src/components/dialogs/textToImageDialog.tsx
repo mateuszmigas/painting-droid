@@ -93,8 +93,8 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
         boundingBox: {
           x: 0,
           y: 0,
-          width: currentSize.width / 2,
-          height: currentSize.height / 2,
+          width: currentSize.width,
+          height: currentSize.height,
         },
         captured: {
           box: { x: 0, y: 0, width: 0, height: 0 },

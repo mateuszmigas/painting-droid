@@ -40,7 +40,7 @@ const createDefaultWorkspace = (): Workspace => ({
   id: uuid(),
   name: translations.workspace.defaultName,
   filePath: null,
-  size: { width: 800, height: 600 },
+  size: { width: 1024, height: 1024 },
   viewport: null,
   popup: null,
   canvasData: createDefaultCanvasState(),
