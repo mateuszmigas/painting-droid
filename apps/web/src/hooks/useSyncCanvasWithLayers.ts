@@ -1,9 +1,9 @@
-import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
 import type { CanvasLayer, CanvasOverlayShape } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { clearContext } from "@/utils/canvas";
 import { features } from "@/contants";
+import { useStableCallback } from ".";
 
 const blobsCache = new Map<string, Blob | undefined | null>();
 
@@ -15,6 +15,19 @@ const restoreLayers = async (
 ) => {
   //run all operations together to avoid flickering
   const canvasOperations: (() => void)[] = [];
+
+  if (overlayShape !== null) {
+    const { width, height } = overlayShape.boundingBox;
+    const image = await createImageBitmap(overlayShape.captured!.data.data);
+    canvasOperations.push(() => {
+      overlayContext!.canvas.width = width;
+      overlayContext!.canvas.height = height;
+      overlayContext!.clearRect(0, 0, width, height);
+      overlayContext!.drawImage(image, 0, 0, width, height);
+    });
+  } else {
+    canvasOperations.push(() => clearContext(overlayContext!));
+  }
 
   for (let i = 0; i < layers.length; i++) {
     const layer = layers[i];
@@ -36,19 +49,6 @@ const restoreLayers = async (
     blobsCache.set(layer.id, layer.data?.data);
   }
 
-  if (overlayShape !== null) {
-    const { width, height } = overlayShape.boundingBox;
-    const image = await createImageBitmap(overlayShape.captured!.data.data);
-    canvasOperations.push(() => {
-      overlayContext!.canvas.width = width;
-      overlayContext!.canvas.height = height;
-      overlayContext!.clearRect(0, 0, width, height);
-      overlayContext!.drawImage(image, 0, 0, width, height);
-    });
-  } else {
-    canvasOperations.push(() => clearContext(overlayContext!));
-  }
-
   canvasOperations.forEach((operation) => operation());
 };
 
@@ -57,14 +57,16 @@ export const useSyncCanvasWithLayers = (
   canvasOverlayRef: RefObject<HTMLCanvasElement>,
   layers: CanvasLayer[],
   activeLayerIndex: number,
-  overlayShape: CanvasOverlayShape | null
+  overlayShape: CanvasOverlayShape | null,
+  onFinished: (activeLayerContext: CanvasContext) => void
 ) => {
   const contextsMap = useRef(new WeakMap<HTMLCanvasElement, CanvasContext>());
-  const { setPreviewContext } = useCanvasPreviewContextStore();
+  const onFinishedStable = useStableCallback(onFinished);
 
   useEffect(() => {
     return () => blobsCache.clear();
   }, []);
+
   useEffect(() => {
     if (!canvasStackRef.current) {
       return;
@@ -94,14 +96,14 @@ export const useSyncCanvasWithLayers = (
       contextsMap.current.get(canvasOverlayRef.current!) ?? null;
 
     restoreLayers(stackContexts, overlayContext, layers, overlayShape).then(
-      () => setPreviewContext(stackContexts[activeLayerIndex])
+      () => onFinishedStable(stackContexts[activeLayerIndex])
     );
   }, [
-    setPreviewContext,
     layers,
     activeLayerIndex,
     overlayShape,
     canvasStackRef,
     canvasOverlayRef,
+    onFinishedStable,
   ]);
 };

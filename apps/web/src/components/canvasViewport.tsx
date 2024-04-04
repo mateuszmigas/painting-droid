@@ -78,6 +78,8 @@ export const CanvasViewport = memo(
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
     const canvasOverlayRef = useRef<HTMLCanvasElement>(null);
     const shapeOverlayRef = useRef<HTMLDivElement>(null);
+    const { previewContext, setPreviewContext } =
+      useCanvasPreviewContextStore();
     const { layers, activeLayerIndex, overlayShape } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
@@ -87,9 +89,17 @@ export const CanvasViewport = memo(
       canvasOverlayRef,
       layers,
       activeLayerIndex,
-      overlayShape
+      overlayShape,
+      (newActiveContext) => {
+        setPreviewContext(newActiveContext);
+        applyCanvasOverlayTransform(
+          canvasOverlayRef.current,
+          viewport.getValue(),
+          overlayShape
+        );
+      }
     );
-    const { previewContext } = useCanvasPreviewContextStore();
+
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
     const canvasActionDispatcher = useCanvasActionDispatcher();
@@ -107,8 +117,8 @@ export const CanvasViewport = memo(
     );
 
     useEffect(() => {
-      renderShape(overlayShape);
-    }, [renderShape, overlayShape]);
+      render(overlayShape);
+    }, [render, overlayShape]);
 
     useShapeTool(
       hostElementRef,
