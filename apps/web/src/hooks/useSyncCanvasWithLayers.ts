@@ -1,44 +1,73 @@
 import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
-import type { CanvasLayer } from "@/canvas/canvasState";
+import type { CanvasLayer, CanvasOverlayShape } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
-import { clearContext, restoreContextFromCompressed } from "@/utils/canvas";
+import { clearContext } from "@/utils/canvas";
 import { features } from "@/contants";
 
+const blobsCache = new Map<string, Blob | undefined | null>();
+
 const restoreLayers = async (
+  contextStack: CanvasContext[],
+  overlayContext: CanvasContext | null,
   layers: CanvasLayer[],
-  contexts: CanvasContext[]
+  overlayShape: CanvasOverlayShape | null
 ) => {
+  //run all operations together to avoid flickering
+  const canvasOperations: (() => void)[] = [];
+
   for (let i = 0; i < layers.length; i++) {
     const layer = layers[i];
-    const context = contexts[i];
+    const context = contextStack[i];
 
-    if (layer.visible && layer.data) {
-      await restoreContextFromCompressed(context, layer.data);
-
-      // if (i === activeLayerIndex && overlayShape?.captured) {
-      //   // const rect = overlayShape.captured.box;
-      //   // context.clearRect(rect.x, rect.y, rect.width, rect.height);
-      // }
-    } else {
-      clearContext(context);
+    const previousData = blobsCache.get(layer.id);
+    if (previousData !== layer.data?.data) {
+      if (layer.visible && layer.data) {
+        const { width, height } = layer.data;
+        const image = await createImageBitmap(layer.data.data);
+        canvasOperations.push(() => {
+          context.clearRect(0, 0, width, height);
+          context.drawImage(image, 0, 0, width, height);
+        });
+      } else {
+        canvasOperations.push(() => clearContext(context));
+      }
     }
+    blobsCache.set(layer.id, layer.data?.data);
   }
+
+  if (overlayShape !== null) {
+    const { width, height } = overlayShape.captured!.data;
+    const image = await createImageBitmap(overlayShape.captured!.data.data);
+    canvasOperations.push(() => {
+      overlayContext!.canvas.width = width;
+      overlayContext!.canvas.height = height;
+      overlayContext!.clearRect(0, 0, width, height);
+      overlayContext!.drawImage(image, 0, 0, width, height);
+    });
+  } else {
+    canvasOperations.push(() => clearContext(overlayContext!));
+  }
+
+  canvasOperations.forEach((operation) => operation());
 };
 
 export const useSyncCanvasWithLayers = (
-  canvasElementsRef: RefObject<HTMLCanvasElement[]>,
+  canvasStackRef: RefObject<HTMLCanvasElement[]>,
+  canvasOverlayRef: RefObject<HTMLCanvasElement>,
   layers: CanvasLayer[],
-  activeLayerIndex: number
+  activeLayerIndex: number,
+  overlayShape: CanvasOverlayShape | null
 ) => {
   const contextsMap = useRef(new WeakMap<HTMLCanvasElement, CanvasContext>());
   const { setPreviewContext } = useCanvasPreviewContextStore();
+
   useEffect(() => {
-    if (!canvasElementsRef.current) {
+    if (!canvasStackRef.current) {
       return;
     }
 
-    const newContexts = canvasElementsRef.current.map(
+    const stackContexts = canvasStackRef.current.map(
       (element: HTMLCanvasElement) => {
         if (!contextsMap.current.has(element)) {
           contextsMap.current.set(
@@ -52,8 +81,24 @@ export const useSyncCanvasWithLayers = (
       }
     );
 
-    restoreLayers(layers, newContexts).then(() =>
-      setPreviewContext(newContexts[activeLayerIndex])
+    if (!contextsMap.current.has(canvasOverlayRef.current!)) {
+      contextsMap.current.set(
+        canvasOverlayRef.current!,
+        canvasOverlayRef.current!.getContext("2d")!
+      );
+    }
+    const overlayContext =
+      contextsMap.current.get(canvasOverlayRef.current!) ?? null;
+
+    restoreLayers(stackContexts, overlayContext, layers, overlayShape).then(
+      () => setPreviewContext(stackContexts[activeLayerIndex])
     );
-  }, [layers, setPreviewContext, activeLayerIndex, canvasElementsRef]);
+  }, [
+    setPreviewContext,
+    layers,
+    activeLayerIndex,
+    overlayShape,
+    canvasStackRef,
+    canvasOverlayRef,
+  ]);
 };

@@ -31,7 +31,6 @@ export const createShapeToolHandlers = (
       }
 
       const box = shape.boundingBox;
-
       await canvasActionDispatcher.execute("drawOverlayShape", {
         overlayShape: {
           ...shape,
@@ -51,23 +50,13 @@ export const createShapeToolHandlers = (
         !areRectanglesEqual(shape.boundingBox, shape.captured.box);
 
       if (apply) {
-        const capturedContext = await ImageProcessor.fromCompressed(
-          shape.captured!.data
-        ).toContext();
-
-        //todo move inside shape
-        const data = await ImageProcessor.processContext(activeContext!)
-          .useContext(async (context) => {
-            const { x, y, width, height } = shape.boundingBox;
-            context.drawImage(capturedContext.canvas, x, y, width, height);
-          })
-          .toCompressed();
-
-        canvasActionDispatcher.execute("applyOverlayShape", {
-          activeLayerData: data,
-        });
+        await canvasActionDispatcher.execute("applyOverlayShape", undefined);
       } else {
-        shape && canvasActionDispatcher.execute("clearOverlayShape", undefined);
+        shape &&
+          (await canvasActionDispatcher.execute(
+            "clearOverlayShape",
+            undefined
+          ));
       }
     },
   };

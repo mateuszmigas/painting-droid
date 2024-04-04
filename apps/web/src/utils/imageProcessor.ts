@@ -93,6 +93,10 @@ export class ImageProcessor {
     });
   }
 
+  public static fromEmpty(width: number, height: number) {
+    return new ImageProcessor(async () => createCanvasContext(width, height));
+  }
+
   useContext(callback: (context: CanvasContext) => Promise<void>) {
     this.tasks.push(() => callback(this.context!));
     return this;

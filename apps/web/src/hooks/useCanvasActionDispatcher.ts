@@ -35,13 +35,19 @@ export const useCanvasActionDispatcher = () => {
 
     if (!dispatchersCache[workspaceId]) {
       const dispatcher = new CanvasActionDispatcher();
-      dispatcher.attachExternalStore({
-        getState: () =>
-          activeWorkspaceSelector(useWorkspacesStore.getState()).canvasData,
-        setState: (state) => {
-          return useWorkspacesStore.getState().setCanvasData(state);
+      dispatcher.init(
+        {
+          getState: () =>
+            activeWorkspaceSelector(useWorkspacesStore.getState()).canvasData,
+          setState: (state) => {
+            return useWorkspacesStore.getState().setCanvasData(state);
+          },
         },
-      });
+        {
+          getSize: () =>
+            activeWorkspaceSelector(useWorkspacesStore.getState()).size,
+        }
+      );
       dispatchersCache[workspaceId] = dispatcher;
     }
 
@@ -50,4 +56,3 @@ export const useCanvasActionDispatcher = () => {
 
   return canvasActionDispatcher;
 };
-

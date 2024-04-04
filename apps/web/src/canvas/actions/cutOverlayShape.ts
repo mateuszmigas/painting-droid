@@ -5,13 +5,13 @@ import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
-export const createCanvasAction = (
+export const createCanvasAction = async (
   context: CanvasActionContext,
   payload: {
     display?: string;
     icon?: IconType;
   }
-): CanvasAction => {
+): Promise<CanvasAction> => {
   const { display, icon } = payload;
   const state = context.getState();
   const previousOverlayShape = state.overlayShape;

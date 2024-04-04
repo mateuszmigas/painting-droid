@@ -13,14 +13,14 @@ const translate = (shape: CanvasOverlayShape) => {
   return translations.general.unknown;
 };
 
-export const createCanvasAction = (
+export const createCanvasAction = async (
   context: CanvasActionContext,
   payload: {
     overlayShape: CanvasOverlayShape;
     display?: string;
     icon?: IconType;
   }
-): CanvasAction => {
+): Promise<CanvasAction> => {
   const { overlayShape, display, icon } = payload;
   const state = context.getState();
   const previousOverlayShape = state.overlayShape;

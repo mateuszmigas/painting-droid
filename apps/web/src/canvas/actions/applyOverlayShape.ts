@@ -1,23 +1,43 @@
 import { getTranslations } from "@/translations";
-import type { ImageCompressedData } from "@/utils/imageData";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
+import { ImageProcessor } from "@/utils/imageProcessor";
 
 const translations = getTranslations();
 
-export const createCanvasAction = (
-  context: CanvasActionContext,
-  payload: {
-    activeLayerData: ImageCompressedData | null;
-  }
-): CanvasAction => {
+export const createCanvasAction = async (
+  context: CanvasActionContext
+): Promise<CanvasAction> => {
   const state = context.getState();
+  const size = context.getSize();
+
+  if (!state.overlayShape?.captured) {
+    throw new Error("No overlay shape to apply");
+  }
+
+  const overlayShape = state.overlayShape;
+  const overlayShapeContext = await ImageProcessor.fromCompressed(
+    overlayShape.captured!.data
+  ).toContext();
+
+  const layerData = state.layers[state.activeLayerIndex].data;
+  const processor =
+    layerData === null
+      ? ImageProcessor.fromEmpty(size.width, size.height)
+      : ImageProcessor.fromCompressed(layerData);
+
+  const newLayerData = await processor
+    .useContext(async (context) => {
+      const { x, y, width, height } = overlayShape.boundingBox;
+      context.drawImage(overlayShapeContext.canvas, x, y, width, height);
+    })
+    .toCompressed();
 
   const capturedData = {
-    previousOverlayShape: state.overlayShape,
-    previousLayerData: state.layers[state.activeLayerIndex].data,
+    previousOverlayShape: overlayShape,
+    previousLayerData: layerData,
     newOverlayShape: null,
-    newLayerData: payload.activeLayerData,
+    newLayerData,
   };
 
   return {
@@ -28,7 +48,7 @@ export const createCanvasAction = (
         ...state,
         layers: state.layers.map((layer, index) => {
           if (index === state.activeLayerIndex) {
-            return { ...layer, data: payload.activeLayerData };
+            return { ...layer, data: capturedData.newLayerData };
           }
           return layer;
         }),

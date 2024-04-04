@@ -12,12 +12,12 @@ const translate = (shape: CanvasOverlayShape) => {
   return translations.general.unknown;
 };
 
-export const createCanvasAction = (
+export const createCanvasAction = async (
   context: CanvasActionContext,
   payload: {
     overlayShape: CanvasOverlayShape;
   }
-): CanvasAction => {
+): Promise<CanvasAction> => {
   const { overlayShape } = payload;
   const state = context.getState();
   const previousOverlayShape = state.overlayShape;
@@ -44,4 +44,3 @@ export const createCanvasAction = (
     },
   };
 };
-

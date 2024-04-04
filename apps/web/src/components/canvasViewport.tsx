@@ -17,7 +17,7 @@ import {
 } from "@/store/workspacesStore";
 import { isDrawTool, isShapeTool } from "@/tools";
 import type { DrawToolId } from "@/tools/draw-tools";
-import type { Rectangle, Size } from "@/utils/common";
+import type { Size } from "@/utils/common";
 import { type Viewport, screenToViewportPosition } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
 import { memo, useRef, useEffect } from "react";
@@ -25,38 +25,45 @@ import {
   createDrawToolHandlers,
   createShapeToolHandlers,
 } from "./toolHandlers";
-import { ImageFromBlob } from "./image/imageFromBlob";
 
 const alphaGridCellSize = 20;
 
-const applyTransform = (
+const applyCanvasBackgroundTransform = (
+  canvasBackground: HTMLElement | null,
   viewport: Viewport,
-  size: Size,
-  canvasBackground: HTMLElement,
-  canvasStack: HTMLCanvasElement[]
+  size: Size
 ) => {
+  if (!canvasBackground) {
+    return;
+  }
   canvasBackground.style.transform = `translate(${viewport.position.x}px, ${viewport.position.y}px)`;
   canvasBackground.style.width = `${size.width * viewport.zoom}px`;
   canvasBackground.style.height = `${size.height * viewport.zoom}px`;
+};
 
+const applyCanvasStackTransform = (
+  canvasStack: HTMLCanvasElement[],
+  viewport: Viewport
+) => {
   canvasStack.forEach((element) => {
     element.style.transform = `translate(${viewport.position.x}px, ${viewport.position.y}px) scale(${viewport.zoom})`;
   });
 };
 
-const applyImageOverlayTransform = (
-  image: HTMLImageElement,
+const applyCanvasOverlayTransform = (
+  canvasOverlay: HTMLCanvasElement | null,
   viewport: Viewport,
-  boundingBox: Rectangle
+  overlayShape: CanvasOverlayShape | null
 ) => {
-  image.style.transform = `translate(${
-    viewport.position.x + boundingBox.x * viewport.zoom
-  }px, ${viewport.position.y + boundingBox.y * viewport.zoom}px) scale(${
-    viewport.zoom
-  })`;
+  if (!canvasOverlay || !overlayShape?.captured) {
+    return;
+  }
 
-  image.style.maxWidth = `${boundingBox.width}px`;
-  image.style.maxHeight = `${boundingBox.height}px`;
+  canvasOverlay.style.transform = `translate(${
+    viewport.position.x + overlayShape.boundingBox.x * viewport.zoom
+  }px, ${
+    viewport.position.y + overlayShape.boundingBox.y * viewport.zoom
+  }px) scale(${viewport.zoom})`;
 };
 
 export const CanvasViewport = memo(
@@ -69,47 +76,33 @@ export const CanvasViewport = memo(
     const hostElementRef = useRef<HTMLDivElement>(null);
     const canvasBackgroundRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
+    const canvasOverlayRef = useRef<HTMLCanvasElement>(null);
     const shapeOverlayRef = useRef<HTMLDivElement>(null);
-    const imageOverlayRef = useRef<HTMLImageElement>(null);
     const { layers, activeLayerIndex, overlayShape } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
 
-    useSyncCanvasWithLayers(canvasStackRef, layers, activeLayerIndex);
+    useSyncCanvasWithLayers(
+      canvasStackRef,
+      canvasOverlayRef,
+      layers,
+      activeLayerIndex,
+      overlayShape
+    );
     const { previewContext } = useCanvasPreviewContextStore();
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
     const canvasActionDispatcher = useCanvasActionDispatcher();
     const { render } = useShapeRenderer(shapeOverlayRef, viewport);
 
-    const applySelectedImageTransform = useStableCallback(
-      (overlayShape: CanvasOverlayShape | null, viewport: Viewport) => {
-        imageOverlayRef.current &&
-          overlayShape?.captured &&
-          applyImageOverlayTransform(
-            imageOverlayRef.current,
-            viewport,
-            overlayShape.boundingBox
-          );
-      }
-    );
-
-    const applyCanvasesTransform = useStableCallback(
-      (viewport: Viewport, size: Size) => {
-        canvasBackgroundRef.current &&
-          applyTransform(
-            viewport,
-            size,
-            canvasBackgroundRef.current,
-            canvasStackRef.current
-          );
-      }
-    );
-
     const renderShape = useStableCallback(
       (shape: CanvasOverlayShape | null) => {
         render(shape);
-        shape && applySelectedImageTransform(shape, viewport.getValue());
+        applyCanvasOverlayTransform(
+          canvasOverlayRef.current,
+          viewport.getValue(),
+          shape
+        );
       }
     );
 
@@ -153,8 +146,17 @@ export const CanvasViewport = memo(
     useListener(
       viewport,
       (newViewport) => {
-        applyCanvasesTransform(newViewport, size);
-        applySelectedImageTransform(overlayShape, newViewport);
+        applyCanvasBackgroundTransform(
+          canvasBackgroundRef.current,
+          newViewport,
+          size
+        );
+        applyCanvasStackTransform(canvasStackRef.current, newViewport);
+        applyCanvasOverlayTransform(
+          canvasOverlayRef.current,
+          newViewport,
+          overlayShape
+        );
       },
       { triggerOnMount: true }
     );
@@ -167,6 +169,7 @@ export const CanvasViewport = memo(
         style={{ opacity: previewContext !== null ? "1" : "0" }}
         className="absolute size-full overflow-hidden cursor-crosshair duration-1000 z-[0]"
       >
+        {/* show background */}
         <div
           ref={canvasBackgroundRef}
           style={
@@ -176,6 +179,7 @@ export const CanvasViewport = memo(
           }
           className="origin-top-left absolute pointer-events-none outline outline-border shadow-2xl box-content alpha-background"
         />
+        {/* show canvas layers */}
         {layers.map((layer, index) => (
           <canvas
             key={layer.id}
@@ -195,20 +199,15 @@ export const CanvasViewport = memo(
             height={size.height}
           />
         ))}
-        <ImageFromBlob
-          alt=""
-          key={overlayShape?.id}
-          className="pixelated-canvas origin-top-left absolute pointer-events-none left-0 top-0"
-          imgRef={imageOverlayRef}
-          blob={overlayShape?.captured?.data.data}
+        {/* show overlay content of captured data in selected area */}
+        <canvas
+          className="bg-transparent pixelated-canvas origin-top-left absolute pointer-events-none left-0 top-0"
+          ref={canvasOverlayRef}
           style={{
             zIndex: activeLayerIndex + 1,
-            willChange: "transform",
-            visibility: overlayShape?.captured?.data.data
-              ? "visible"
-              : "hidden",
           }}
         />
+        {/* show overlay shape, border and handles */}
         <div
           className="size-full origin-top-left absolute pointer-events-none left-0 top-0"
           ref={shapeOverlayRef}

@@ -6,10 +6,10 @@ import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
-export const createCanvasAction = (
+export const createCanvasAction = async (
   context: CanvasActionContext,
   payload: { layerId: CanvasLayerId }
-): CanvasAction => {
+): Promise<CanvasAction> => {
   const { layerId } = payload;
   const state = context.getState();
 

@@ -7,10 +7,10 @@ import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
-export const createCanvasAction = (
+export const createCanvasAction = async (
   context: CanvasActionContext,
   payload: { data?: CanvasLayerData }
-): CanvasAction => {
+): Promise<CanvasAction> => {
   const { data } = payload;
   const state = context.getState();
 

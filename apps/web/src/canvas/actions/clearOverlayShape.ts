@@ -4,9 +4,9 @@ import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
-export const createCanvasAction = (
+export const createCanvasAction = async (
   context: CanvasActionContext
-): CanvasAction => {
+): Promise<CanvasAction> => {
   const state = context.getState();
   const previousOverlayShape = state.overlayShape;
 

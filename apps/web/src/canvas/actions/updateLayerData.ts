@@ -3,7 +3,7 @@ import type { CanvasLayerId, CanvasLayerData } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 
-export const createCanvasAction = (
+export const createCanvasAction = async (
   context: CanvasActionContext,
   payload: {
     layerId: CanvasLayerId;
@@ -11,7 +11,7 @@ export const createCanvasAction = (
     icon: IconType;
     data: CanvasLayerData | null;
   }
-): CanvasAction => {
+): Promise<CanvasAction> => {
   const { layerId, display: source, icon, data } = payload;
   const state = context.getState();
 
