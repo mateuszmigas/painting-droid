@@ -5,6 +5,10 @@ import { isWindows } from "@/utils/platform";
 import { getTranslations } from "@/translations";
 import { clipboard } from "@/utils/clipboard";
 import { uuid } from "@/utils/uuid";
+import { domNames } from "@/contants";
+import { calculateMousePosition } from "@/utils/manipulation";
+import { activeWorkspaceSelector } from "@/store/workspacesStore";
+import { observableMousePosition } from "@/utils/mousePositionWatcher";
 
 const translations = getTranslations();
 
@@ -23,13 +27,19 @@ export const command = createCommand({
       return;
     }
 
+    const position = calculateMousePosition(
+      activeWorkspaceSelector(context.stores.workspaces()).viewport!,
+      observableMousePosition.getValue(),
+      document.getElementById(domNames.workspaceViewport)!
+    );
+
     await context.canvasActionDispatcher.execute("drawOverlayShape", {
       display: translations.commands.pasteImage,
       icon: "clipboard-paste",
       overlayShape: {
         id: uuid(),
         type: "rectangle",
-        boundingBox: { x: 0, y: 0, width: data.width, height: data.height },
+        boundingBox: { ...position, width: data.width, height: data.height },
         captured: { box: { x: 0, y: 0, width: 0, height: 0 }, data },
       },
     });

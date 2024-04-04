@@ -3,6 +3,7 @@ import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
+import { domNames } from "@/contants";
 
 const translations = getTranslations();
 
@@ -15,7 +16,7 @@ export const command = createCommand({
     const { size } = activeWorkspaceSelector(context.stores.workspaces());
 
     const { width, height } = document
-      .getElementById("workspace-viewport")!
+      .getElementById(domNames.workspaceViewport)!
       .getBoundingClientRect();
 
     const margin = Math.min(width, height) * 0.1;

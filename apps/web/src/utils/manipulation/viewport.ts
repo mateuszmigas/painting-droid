@@ -40,6 +40,19 @@ export const calculateFitViewport = (
   };
 };
 
+export const calculateMousePosition = (
+  viewport: Viewport,
+  mousePosition: Position,
+  element: HTMLElement
+) => {
+  const elementRect = element.getBoundingClientRect();
+  const position = {
+    x: mousePosition.x - elementRect.x,
+    y: mousePosition.y - elementRect.y,
+  };
+  return screenToViewportPosition(position, viewport);
+};
+
 export const screenToViewportPosition = (
   position: Position,
   viewport: Viewport

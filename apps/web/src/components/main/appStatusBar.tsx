@@ -5,11 +5,13 @@ import {
 import { Icon } from "../icons/icon";
 import type { Position } from "@/utils/common";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { useMousePosition } from "@/hooks";
+import { useListener } from "@/hooks";
 import { memo, useRef } from "react";
 import { screenToViewportPosition } from "@/utils/manipulation";
 import { fastRound } from "@/utils/math";
 import { CommandIconButton } from "../commandIconButton";
+import { domNames } from "@/contants";
+import { observableMousePosition } from "@/utils/mousePositionWatcher";
 
 const formatPosition = (position: Position) =>
   `${fastRound(position.x)}, ${fastRound(position.y)}`;
@@ -26,11 +28,11 @@ export const AppStatusBar = memo(() => {
     (state) => activeWorkspaceSelector(state).viewport
   );
 
-  useResizeObserver("workspace-viewport", ({ x, y }) => {
+  useResizeObserver(domNames.workspaceViewport, ({ x, y }) => {
     workspaceElementPositionRef.current = { x, y };
   });
 
-  useMousePosition((position) => {
+  useListener(observableMousePosition, (position) => {
     if (positionElementRef.current && viewport) {
       const canvasPosition = {
         x: position.x - workspaceElementPositionRef.current.x,
@@ -58,4 +60,3 @@ export const AppStatusBar = memo(() => {
     </div>
   );
 });
-
