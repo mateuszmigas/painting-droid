@@ -39,7 +39,12 @@ export const command = createCommand({
       overlayShape: {
         id: uuid(),
         type: "rectangle",
-        boundingBox: { ...position, width: data.width, height: data.height },
+        boundingBox: {
+          x: position.x - data.width / 2,
+          y: position.y - data.height / 2,
+          width: data.width,
+          height: data.height,
+        },
         captured: { box: { x: 0, y: 0, width: 0, height: 0 }, data },
       },
     });

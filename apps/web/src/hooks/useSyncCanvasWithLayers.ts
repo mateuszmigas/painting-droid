@@ -5,8 +5,6 @@ import { clearContext } from "@/utils/canvas";
 import { features } from "@/contants";
 import { useStableCallback } from ".";
 
-const blobsCache = new Map<string, Blob | undefined | null>();
-
 const restoreLayers = async (
   contextStack: CanvasContext[],
   overlayContext: CanvasContext | null,
@@ -33,20 +31,16 @@ const restoreLayers = async (
     const layer = layers[i];
     const context = contextStack[i];
 
-    const previousData = blobsCache.get(layer.id);
-    if (previousData !== layer.data?.data) {
-      if (layer.visible && layer.data) {
-        const { width, height } = layer.data;
-        const image = await createImageBitmap(layer.data.data);
-        canvasOperations.push(() => {
-          context.clearRect(0, 0, width, height);
-          context.drawImage(image, 0, 0, width, height);
-        });
-      } else {
-        canvasOperations.push(() => clearContext(context));
-      }
+    if (layer.visible && layer.data) {
+      const { width, height } = layer.data;
+      const image = await createImageBitmap(layer.data.data);
+      canvasOperations.push(() => {
+        context.clearRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
+      });
+    } else {
+      canvasOperations.push(() => clearContext(context));
     }
-    blobsCache.set(layer.id, layer.data?.data);
   }
 
   canvasOperations.forEach((operation) => operation());
@@ -62,10 +56,6 @@ export const useSyncCanvasWithLayers = (
 ) => {
   const contextsMap = useRef(new WeakMap<HTMLCanvasElement, CanvasContext>());
   const onFinishedStable = useStableCallback(onFinished);
-
-  useEffect(() => {
-    return () => blobsCache.clear();
-  }, []);
 
   useEffect(() => {
     if (!canvasStackRef.current) {

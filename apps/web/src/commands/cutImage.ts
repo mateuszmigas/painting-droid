@@ -23,11 +23,13 @@ export const command = createCommand({
 
     if (canvasData.overlayShape?.captured) {
       await clipboard.copyImage(canvasData.overlayShape.captured.data);
-      await context.canvasActionDispatcher.execute("cutOverlayShape", {
-        display: translations.commands.cutImage,
-        icon: "clipboard-cut",
-      });
+
+      if (canvasData.layers[canvasData.activeLayerIndex].data !== null) {
+        await context.canvasActionDispatcher.execute("cutOverlayShape", {
+          display: translations.commands.cutImage,
+          icon: "clipboard-cut",
+        });
+      }
     }
   },
 });
-
