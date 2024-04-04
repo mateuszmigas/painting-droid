@@ -111,6 +111,7 @@ const translations = {
   errors: {
     noImageData: "No image data",
     processingError: "Processing error",
+    copyClipboardError: "Copy to clipboard error. Operation not supported.",
   },
 };
 

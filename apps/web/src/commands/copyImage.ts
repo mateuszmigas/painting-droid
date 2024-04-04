@@ -22,8 +22,13 @@ export const command = createCommand({
     );
 
     if (canvasData.overlayShape?.captured) {
-      await clipboard.copyImage(canvasData.overlayShape.captured.data);
+      try {
+        await clipboard.copyImage(canvasData.overlayShape.captured.data);
+      } catch {
+        context.notificationService.showError(
+          translations.errors.copyClipboardError
+        );
+      }
     }
   },
 });
-
