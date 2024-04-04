@@ -63,6 +63,9 @@ export const useSyncCanvasWithLayers = (
   const { setPreviewContext } = useCanvasPreviewContextStore();
 
   useEffect(() => {
+    return () => blobsCache.clear();
+  }, []);
+  useEffect(() => {
     if (!canvasStackRef.current) {
       return;
     }
