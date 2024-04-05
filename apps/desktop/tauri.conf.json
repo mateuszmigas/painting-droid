@@ -17,10 +17,11 @@
     ]
   },
   "productName": "Painting Droid",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "identifier": "com.painting-droid.dev",
   "plugins": {
     "updater": {
+      "active": true,
       "endpoints": [
         "https://github.com/mateuszmigas/painting-droid/releases/latest/download/latest.json"
       ],
