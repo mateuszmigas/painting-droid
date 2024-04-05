@@ -4,18 +4,18 @@ import { isWeb } from "./platform";
 
 export const checkForUpdates = async () => {
   if (isWeb()) {
-    return false;
+    return null;
   }
 
   const update = await check();
+
+  if (!update?.available) {
+    return null;
+  }
+
   return {
-    available: update?.available,
-    version: update?.version,
-    downloadAndInstall: async () => {
-      if (update?.available) {
-        await update.downloadAndInstall();
-      }
-    },
+    version: update.version,
+    downloadAndInstall: () => update.downloadAndInstall(),
     restart: () => relaunch(),
   };
 };
