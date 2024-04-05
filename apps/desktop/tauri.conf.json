@@ -19,7 +19,15 @@
   "productName": "Painting Droid",
   "version": "0.1.0",
   "identifier": "com.painting-droid.dev",
-  "plugins": {},
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://releases.myapp.com/{{target}}/{{arch}}/{{current_version}}"
+      ],
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IENGRTg3MDU3QjNBOThEQkMKUldTOGphbXpWM0RvencxbVpSNktsZExibjAvcDJSYjdKQXd3VW9HaGsyS1ZSY1pwTE9GeFRaaDAK"
+    }
+  },
   "app": {
     "security": {
       "csp": null
