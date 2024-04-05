@@ -5,12 +5,10 @@ import { createSyncStorage } from "./syncStorage";
 type ThemeType = "light" | "dark" | "system";
 
 type AppSettingsState = {
-  value: number;
   theme: ThemeType;
 };
 
 const defaultState: AppSettingsState = {
-  value: 3,
   theme: "system",
 };
 
@@ -26,6 +24,6 @@ export const settingsStoreCreator: StateCreator<AppSettingsSlice> = (set) => ({
 export const useSettingsStore = create<AppSettingsSlice>()(
   persist(
     settingsStoreCreator,
-    createSyncStorage({ version: 1, name: "settings" })
+    createSyncStorage({ version: 2, name: "settings" })
   )
 );
