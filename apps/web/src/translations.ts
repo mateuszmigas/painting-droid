@@ -116,6 +116,7 @@ const translations = {
   },
   updater: {
     available: "Update available",
+    notAvailable: "No updates available",
     installed: "Update installed",
     restart: "Restart",
     install: "Install",

@@ -12,9 +12,12 @@ export const command = createCommand({
   display: translations.commands.checkForUpdate,
   icon: "download",
   options: { showInPalette: !isWeb() },
-  execute: async (_: CommandContext) => {
+  execute: async (_: CommandContext, payload: { silent?: boolean }) => {
     const update = await checkForUpdates();
     if (!update) {
+      if (!payload?.silent) {
+        notificationService.showInfo(translations.updater.notAvailable);
+      }
       return;
     }
 

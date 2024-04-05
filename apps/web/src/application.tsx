@@ -40,7 +40,11 @@ export const App = () => {
     coreClient.init();
 
     if (!isWeb()) {
-      setTimeout(() => commandService?.executeCommand("checkForUpdate"), 1000);
+      setTimeout(
+        () =>
+          commandService?.executeCommand("checkForUpdate", { silent: true }),
+        1000
+      );
     }
   });
 
