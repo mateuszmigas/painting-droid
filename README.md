@@ -94,7 +94,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Some Offline JS Model
 - [ ] Image resize/crop
 - [x] Clipboard support
-- [ ] Desktop app releases and autoupdate
+- [x] Desktop app releases and autoupdate
 
 ### AI features (Desktop only)
 
