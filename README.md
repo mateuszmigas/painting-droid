@@ -9,7 +9,7 @@
 
 <div align="center">
 
-  <img src="assets/logo.webp" width="200" height="200">
+  <img src="assets/logo_big.webp" width="200" height="200">
 
 </div>
 
