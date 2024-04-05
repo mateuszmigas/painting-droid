@@ -17,7 +17,7 @@
     ]
   },
   "productName": "Painting Droid",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "identifier": "com.painting-droid.dev",
   "plugins": {
     "updater": {

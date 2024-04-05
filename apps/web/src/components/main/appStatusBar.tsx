@@ -6,12 +6,18 @@ import { Icon } from "../icons/icon";
 import type { Position } from "@/utils/common";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
 import { useListener } from "@/hooks";
-import { memo, useRef } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { screenToViewportPosition } from "@/utils/manipulation";
 import { fastRound } from "@/utils/math";
 import { CommandIconButton } from "../commandIconButton";
 import { domNames } from "@/contants";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";
+import { Button } from "../ui/button";
+import { type Update, checkForUpdates } from "@/utils/updater";
+import { isWeb } from "@/utils/platform";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 const formatPosition = (position: Position) =>
   `${fastRound(position.x)}, ${fastRound(position.y)}`;
@@ -24,6 +30,10 @@ export const AppStatusBar = memo(() => {
   const size = useWorkspacesStore(
     (state) => activeWorkspaceSelector(state).size
   );
+  const [update, setUpdate] = useState<Update | null>(null);
+  const [updateState, setUpdateState] = useState<
+    "checking" | "available" | "downloading" | "finished"
+  >("checking");
   const viewport = useWorkspacesStore(
     (state) => activeWorkspaceSelector(state).viewport
   );
@@ -31,6 +41,18 @@ export const AppStatusBar = memo(() => {
   useResizeObserver(domNames.workspaceViewport, ({ x, y }) => {
     workspaceElementPositionRef.current = { x, y };
   });
+
+  useEffect(() => {
+    if (isWeb()) {
+      return;
+    }
+    checkForUpdates().then((update) => {
+      if (update) {
+        setUpdate(update);
+        setUpdateState("available");
+      }
+    });
+  }, []);
 
   useListener(observableMousePosition, (position) => {
     if (positionElementRef.current && viewport) {
@@ -56,7 +78,37 @@ export const AppStatusBar = memo(() => {
           <div ref={positionElementRef} className="text-xs" />
         </div>
       </div>
-      <CommandIconButton commandId="fitCanvasToWindow" />
+      <div className="flex flex-row items-center gap-small">
+        {updateState === "downloading" && (
+          <div className="flex flex-row items-center gap-very-small">
+            <div className="text-xs">{translations.updater.downloading}</div>
+            <Icon className="ml-2 animate-spin" type="loader" size="small" />
+          </div>
+        )}
+        {updateState === "available" && update && (
+          <Button
+            className="h-[18px] px-medium"
+            variant="default"
+            onClick={async () => {
+              setUpdateState("downloading");
+              await update.downloadAndInstall();
+              setUpdateState("finished");
+            }}
+          >
+            {translations.updater.available}: v{update.version}
+          </Button>
+        )}
+        {updateState === "finished" && update && (
+          <Button
+            className="h-[18px] px-medium"
+            variant="default"
+            onClick={() => update.restart()}
+          >
+            {translations.updater.installedAndRestart}
+          </Button>
+        )}
+        <CommandIconButton commandId="fitCanvasToWindow" />
+      </div>
     </div>
   );
 });
