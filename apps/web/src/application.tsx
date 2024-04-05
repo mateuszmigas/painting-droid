@@ -20,6 +20,7 @@ import {
   NotificationServiceContext,
   notificationService,
 } from "./contexts/notificationService";
+import { isWeb } from "./utils/platform";
 
 export const App = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
@@ -37,6 +38,10 @@ export const App = () => {
   useSyncTheme();
   useIdleCallback(() => {
     coreClient.init();
+
+    if (!isWeb()) {
+      setTimeout(() => commandService?.executeCommand("checkForUpdate"), 1000);
+    }
   });
 
   if (!hasStoreHydrated) {

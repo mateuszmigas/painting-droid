@@ -24,6 +24,7 @@ import { command as openTextToImageDialog } from "./openTextToImageDialog";
 import { command as copyImage } from "./copyImage";
 import { command as pasteImage } from "./pasteImage";
 import { command as cutImage } from "./cutImage";
+import { command as checkForUpdate } from "./checkForUpdate";
 
 export const commands = {
   saveAsPng,
@@ -52,6 +53,7 @@ export const commands = {
   copyImage,
   pasteImage,
   cutImage,
+  checkForUpdate,
 } as const;
 
 export type CommandId = keyof typeof commands;

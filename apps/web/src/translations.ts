@@ -90,6 +90,7 @@ const translations = {
     pasteImage: "Paste Image",
     copyImage: "Copy Image",
     cutImage: "Cut Image",
+    checkForUpdate: "Check for Update",
   },
   layers: {
     defaultBaseName: "Background",
@@ -112,6 +113,12 @@ const translations = {
     noImageData: "No image data",
     processingError: "Processing error",
     copyClipboardError: "Copy to clipboard error. Operation not supported.",
+  },
+  updater: {
+    available: "Update available",
+    installed: "Update installed",
+    restart: "Restart",
+    install: "Install",
   },
 };
 

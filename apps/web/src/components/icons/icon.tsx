@@ -44,6 +44,7 @@ import {
   ClipboardPaste,
   ClipboardX,
   Eraser,
+  Download,
 } from "lucide-react";
 import { Deselect } from "./deselect";
 
@@ -89,7 +90,8 @@ export type IconType =
   | "clipboard-copy"
   | "clipboard-paste"
   | "clipboard-cut"
-  | "eraser";
+  | "eraser"
+  | "download";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -192,6 +194,8 @@ const renderLucideIcon = (
       return <ClipboardX className={className} size={fontSize} />;
     case "eraser":
       return <Eraser className={className} size={fontSize} />;
+    case "download":
+      return <Download className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

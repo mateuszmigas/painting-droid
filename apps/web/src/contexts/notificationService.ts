@@ -1,9 +1,16 @@
 import { createContext, useContext } from "react";
 import { toast } from "sonner";
 
+type NotificationOptions = {
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+};
+
 export class NotificationService {
-  showInfo(message: string) {
-    toast.info(message);
+  showInfo(message: string, options?: NotificationOptions) {
+    toast(message, options);
   }
   showError(message: string) {
     toast.error(message);
