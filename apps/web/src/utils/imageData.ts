@@ -1,11 +1,13 @@
-export type ImageUncompressedData = {
+export type ImageUncompressedData = Uint8ClampedArray;
+export type ImageUncompressed = {
   width: number;
   height: number;
-  data: Uint8ClampedArray;
+  data: ImageUncompressedData;
 };
 
-export type ImageCompressedData = {
+export type ImageCompressedData = Blob;
+export type ImageCompressed = {
   width: number;
   height: number;
-  data: Blob;
+  data: ImageCompressedData;
 };

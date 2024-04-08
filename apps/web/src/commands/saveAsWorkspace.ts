@@ -14,11 +14,11 @@ export const command = createCommand({
   icon: "save",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
-    const { canvasData, name, size } = activeWorkspaceSelector(
+    const { canvasData, name } = activeWorkspaceSelector(
       context.stores.workspaces()
     );
 
-    const text = await encodePwd(canvasData, workspace.version, size);
+    const text = await encodePwd(canvasData, workspace.version);
     fileSystem.saveTextToFile(text, name, workspace.format);
   },
 });

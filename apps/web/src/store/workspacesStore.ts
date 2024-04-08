@@ -25,7 +25,6 @@ export type Workspace = {
   id: WorkspaceId;
   name: string;
   filePath: string | null;
-  size: Size;
   viewport: Viewport | null;
   popup: WorkspacePopup | null;
   canvasData: CanvasState;
@@ -36,17 +35,19 @@ export type AppWorkspacesState = {
   activeWorkspaceId: WorkspaceId;
 };
 
-const createDefaultWorkspace = (): Workspace => ({
+const createDefaultWorkspace = (size: Size): Workspace => ({
   id: uuid(),
   name: translations.workspace.defaultName,
   filePath: null,
-  size: { width: 1024, height: 1024 },
   viewport: null,
   popup: null,
-  canvasData: createDefaultCanvasState(),
+  canvasData: createDefaultCanvasState(size),
 });
 
-const defaultWorkspace = createDefaultWorkspace();
+const defaultWorkspace = createDefaultWorkspace({
+  width: 1024,
+  height: 1024,
+});
 const defaultState: AppWorkspacesState = {
   workspaces: [defaultWorkspace],
   activeWorkspaceId: defaultWorkspace.id,
@@ -60,7 +61,6 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   addNewActiveWorkspace: (size: Size) => void;
   createWorkspaceFromCanvasData: (
     name: string,
-    size: Size,
     canvasData: CanvasState
   ) => void;
   createWorkspaceFromImage: (
@@ -119,7 +119,9 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       return {
         ...state,
         workspaces: state.workspaces.map((w) =>
-          w.id === id ? { ...w, canvasData: createDefaultCanvasState() } : w
+          w.id === id
+            ? { ...w, canvasData: createDefaultCanvasState(w.canvasData.size) }
+            : w
         ),
       };
     }),
@@ -137,26 +139,24 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       workspaces: [
         ...state.workspaces,
         {
-          ...createDefaultWorkspace(),
+          ...createDefaultWorkspace(size),
           id: newId,
           name: `Untitled ${state.workspaces.length + 1}`,
-          size,
         },
       ],
       activeWorkspaceId: newId,
     }));
   },
-  createWorkspaceFromCanvasData: (name, size, canvasData) => {
+  createWorkspaceFromCanvasData: (name, canvasData) => {
     const newId = uuid();
     return set((state) => ({
       ...state,
       workspaces: [
         ...state.workspaces,
         {
-          ...createDefaultWorkspace(),
+          ...createDefaultWorkspace(canvasData.size),
           id: newId,
           name,
-          size,
           canvasData,
         },
       ],
@@ -165,19 +165,18 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
   },
   createWorkspaceFromImage(name, size, data) {
     const newId = uuid();
-    const canvasData = createDefaultCanvasState();
+    const workspace = createDefaultWorkspace(size);
     return set((state) => ({
       ...state,
       workspaces: [
         ...state.workspaces,
         {
-          ...createDefaultWorkspace(),
+          ...workspace,
           id: newId,
           name,
-          size,
           canvasData: {
-            ...canvasData,
-            layers: [{ ...canvasData.layers[0], data }],
+            ...workspace.canvasData,
+            layers: [{ ...workspace.canvasData.layers[0], data }],
           },
         },
       ],
@@ -235,10 +234,7 @@ const storage: PersistStorage<AppWorkspacesState> = {
             ...workspace.canvasData,
             layers: workspace.canvasData.layers.map((layer) => ({
               ...layer,
-              data:
-                layer.data !== null && blobs.has(layer.id)
-                  ? { ...layer.data, data: blobs.get(layer.id) }
-                  : null,
+              data: blobs.has(layer.id) ? blobs.get(layer.id) : null,
             })),
           },
         })),
@@ -256,11 +252,11 @@ const storage: PersistStorage<AppWorkspacesState> = {
     const { state, version } = value;
     const blobs = state.workspaces
       .flatMap((w) => w.canvasData.layers)
-      .filter((layer) => layer.data?.data)
+      .filter((layer) => layer.data)
       .map((layer) => {
         return {
           key: layer.id,
-          value: layer.data?.data!,
+          value: layer.data!,
         };
       });
 
@@ -275,7 +271,7 @@ const storage: PersistStorage<AppWorkspacesState> = {
           overlayShape: null,
           layers: workspace.canvasData.layers.map((layer) => ({
             ...layer,
-            data: layer.data !== null ? { ...layer.data, data: null } : null,
+            data: null,
           })),
         },
       })),
@@ -296,7 +292,7 @@ const storage: PersistStorage<AppWorkspacesState> = {
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   persist(workspacesStoreCreator, {
-    version: 13,
+    version: 14,
     name: "workspaces",
     storage,
   })

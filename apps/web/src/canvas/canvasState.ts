@@ -1,5 +1,5 @@
 import { getTranslations } from "@/translations";
-import type { Rectangle } from "@/utils/common";
+import type { Rectangle, Size } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { uuid } from "@/utils/uuid";
 
@@ -29,6 +29,7 @@ export type CanvasState = {
   activeLayerIndex: number;
   layers: CanvasLayer[];
   overlayShape: CanvasOverlayShape | null;
+  size: Size;
 };
 
 export const createDefaultLayer = (): CanvasLayer => ({
@@ -39,8 +40,9 @@ export const createDefaultLayer = (): CanvasLayer => ({
   data: null,
 });
 
-export const createDefaultCanvasState = (): CanvasState => ({
+export const createDefaultCanvasState = (size: Size): CanvasState => ({
   activeLayerIndex: 0,
   layers: [createDefaultLayer()],
   overlayShape: null,
+  size,
 });

@@ -1,4 +1,5 @@
 import {
+  activeWorkspaceCanvasDataSelector,
   activeWorkspaceSelector,
   useWorkspacesStore,
 } from "@/store/workspacesStore";
@@ -28,7 +29,7 @@ export const AppStatusBar = memo(() => {
   const positionElementRef = useRef<HTMLDivElement>(null);
   const workspaceElementPositionRef = useRef<Position>({ x: 0, y: 0 });
   const size = useWorkspacesStore(
-    (state) => activeWorkspaceSelector(state).size
+    (state) => activeWorkspaceCanvasDataSelector(state).size
   );
   const [update, setUpdate] = useState<Update | null>(null);
   const [updateState, setUpdateState] = useState<

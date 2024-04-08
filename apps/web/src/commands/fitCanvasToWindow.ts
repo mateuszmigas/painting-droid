@@ -1,7 +1,7 @@
 import { calculateFitViewport } from "@/utils/manipulation";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { activeWorkspaceSelector } from "@/store/workspacesStore";
+import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
 import { domNames } from "@/contants";
 
@@ -13,7 +13,9 @@ export const command = createCommand({
   icon: "fullscreen",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
-    const { size } = activeWorkspaceSelector(context.stores.workspaces());
+    const { size } = activeWorkspaceCanvasDataSelector(
+      context.stores.workspaces()
+    );
 
     const { width, height } = document
       .getElementById(domNames.workspaceViewport)!

@@ -16,7 +16,7 @@ const restoreLayers = async (
 
   if (overlayShape !== null) {
     const { width, height } = overlayShape.boundingBox;
-    const image = await createImageBitmap(overlayShape.captured!.data.data);
+    const image = await createImageBitmap(overlayShape.captured!.data);
     canvasOperations.push(() => {
       overlayContext!.canvas.width = width;
       overlayContext!.canvas.height = height;
@@ -32,8 +32,8 @@ const restoreLayers = async (
     const context = contextStack[i];
 
     if (layer.visible && layer.data) {
-      const { width, height } = layer.data;
-      const image = await createImageBitmap(layer.data.data);
+      const image = await createImageBitmap(layer.data);
+      const { width, height } = image;
       canvasOperations.push(() => {
         context.clearRect(0, 0, width, height);
         context.drawImage(image, 0, 0, width, height);

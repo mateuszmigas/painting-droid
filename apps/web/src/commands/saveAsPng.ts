@@ -21,9 +21,10 @@ export const command = createCommand({
       .filter((layer) => layer.data)
       .map((layer) => layer.data!);
 
-    const blob = await ImageProcessor.fromMergedCompressed(layersData).toBlob(
-      format
-    );
+    const blob = await ImageProcessor.fromMergedCompressed(
+      layersData,
+      canvasData.size
+    ).toBlob(format);
     fileSystem.saveBlobToFile(blob, name, format);
   },
 });

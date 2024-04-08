@@ -27,19 +27,21 @@ export const command = createCommand({
 
         if (extension?.toLocaleLowerCase() === workspace.format) {
           const text = await fileSystem.readFileAsText(result.path);
-          const { size, data } = await decodePwd(text);
+          const { data } = await decodePwd(text);
           context.stores
             .workspaces()
-            .createWorkspaceFromCanvasData(fileName, size, data);
+            .createWorkspaceFromCanvasData(fileName, data);
         } else {
           const dataUrl = await fileSystem.readFileAsDataURL(result.path);
-          const data = await ImageProcessor.fromDataUrl(dataUrl).toCompressed();
+          const image = await ImageProcessor.fromDataUrl(
+            dataUrl
+          ).toCompressed();
           context.stores
             .workspaces()
             .createWorkspaceFromImage(
               fileName,
-              { width: data.width, height: data.height },
-              data
+              { width: image.width, height: image.height },
+              image.data
             );
         }
       });

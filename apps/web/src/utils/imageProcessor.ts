@@ -1,12 +1,11 @@
 import {
   restoreContextFromUncompressed,
-  restoreContextFromCompressed,
   createCanvasContext,
   convertToBlob,
 } from "./canvas";
-import type { CanvasContext, Rectangle } from "./common";
+import type { CanvasContext, Rectangle, Size } from "./common";
 import { dataUrlToImage } from "./image";
-import type { ImageCompressedData, ImageUncompressedData } from "./imageData";
+import type { ImageCompressedData, ImageUncompressed } from "./imageData";
 
 export class ImageProcessor {
   private context!: CanvasContext;
@@ -23,27 +22,32 @@ export class ImageProcessor {
     return new ImageProcessor(() => Promise.resolve(context));
   }
 
-  public static fromCompressed(image: ImageCompressedData) {
+  public static fromCompressedData(imageData: ImageCompressedData) {
     return new ImageProcessor(async () => {
-      const context = createCanvasContext(image.width, image.height);
-      await restoreContextFromCompressed(context, image);
+      const image = await createImageBitmap(imageData);
+      const { width, height } = image;
+      const context = createCanvasContext(width, height);
+      context.drawImage(image, 0, 0, width, height);
       return context;
     });
   }
 
-  public static fromMergedCompressed(images: ImageCompressedData[]) {
+  public static fromMergedCompressed(
+    imagesData: ImageCompressedData[],
+    size: Size
+  ) {
     return new ImageProcessor(async () => {
-      const { width, height } = images[0];
+      const { width, height } = size;
       const context = createCanvasContext(width, height);
-      for (const image of images) {
-        const imageBitmap = await createImageBitmap(image.data);
-        context.drawImage(imageBitmap, 0, 0, width, height);
+      for (const imageData of imagesData) {
+        const image = await createImageBitmap(imageData);
+        context.drawImage(image, 0, 0, width, height);
       }
       return context;
     });
   }
 
-  public static fromUncompressed(image: ImageUncompressedData) {
+  public static fromUncompressed(image: ImageUncompressed) {
     return new ImageProcessor(() => {
       const context = createCanvasContext(image.width, image.height);
       restoreContextFromUncompressed(context, image);
@@ -107,6 +111,11 @@ export class ImageProcessor {
     const { width, height } = this.context.canvas;
     const blob = await convertToBlob(this.context, "image/png");
     return { width, height, data: blob! };
+  }
+
+  async toCompressedData() {
+    await this.runTasks();
+    return convertToBlob(this.context, "image/png")!;
   }
 
   async toContext() {

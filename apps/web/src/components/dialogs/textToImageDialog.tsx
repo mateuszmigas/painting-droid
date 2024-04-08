@@ -98,11 +98,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
         },
         captured: {
           box: { x: 0, y: 0, width: 0, height: 0 },
-          data: {
-            data: image,
-            width: currentSize.width,
-            height: currentSize.height,
-          },
+          data: image,
         },
       },
     });

@@ -1,5 +1,5 @@
 import type { CanvasContext } from "./common";
-import type { ImageCompressedData, ImageUncompressedData } from "./imageData";
+import type { ImageCompressedData, ImageUncompressed } from "./imageData";
 
 export const createCanvasContext = (width: number, height: number) => {
   const canvas = new OffscreenCanvas(width, height);
@@ -22,17 +22,17 @@ export const convertToBlob = (context: CanvasContext, type: string) => {
 
 export const restoreContextFromCompressed = async (
   context: CanvasContext,
-  compressed: ImageCompressedData
+  data: ImageCompressedData
 ) => {
-  const { width, height } = compressed;
-  const image = await createImageBitmap(compressed.data);
+  const image = await createImageBitmap(data);
+  const { width, height } = image;
   context.clearRect(0, 0, width, height);
   context.drawImage(image, 0, 0, width, height);
 };
 
 export const restoreContextFromUncompressed = (
   context: CanvasContext,
-  uncompressed: ImageUncompressedData
+  uncompressed: ImageUncompressed
 ) => {
   context.putImageData(
     new ImageData(uncompressed.data, uncompressed.width, uncompressed.height),

@@ -9,7 +9,7 @@ export const createCanvasAction = async (
     layerId: CanvasLayerId;
     display: string;
     icon: IconType;
-    data: CanvasLayerData | null;
+    data: CanvasLayerData;
   }
 ): Promise<CanvasAction> => {
   const { layerId, display: source, icon, data } = payload;

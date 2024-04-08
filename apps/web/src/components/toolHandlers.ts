@@ -39,7 +39,7 @@ export const createShapeToolHandlers = (
             data: await ImageProcessor.fromCropContext(
               activeContext!,
               box
-            ).toCompressed(),
+            ).toCompressedData(),
           },
         },
       });
@@ -78,11 +78,14 @@ export const createDrawToolHandlers = (
 
       const data =
         !activeLayer.visible && activeLayer.data
-          ? await ImageProcessor.fromMergedCompressed([
-              activeLayer.data,
-              contextData,
-            ]).toCompressed()
-          : contextData;
+          ? await ImageProcessor.fromMergedCompressed(
+              [activeLayer.data, contextData.data],
+              {
+                width: contextData.width,
+                height: contextData.height,
+              }
+            ).toCompressedData()
+          : contextData.data;
 
       canvasActionDispatcher.execute("updateLayerData", {
         layerId: activeLayer.id,

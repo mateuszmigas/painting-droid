@@ -1,5 +1,5 @@
 import type { Rectangle } from "@/utils/common";
-import type { ImageCompressedData } from "@/utils/imageData";
+import type { ImageCompressed } from "@/utils/imageData";
 
 export type ObjectDetectionResult = {
   label: string;
@@ -13,8 +13,7 @@ export type ObjectDetectionModel = {
   url?: string;
   settings: Record<string, unknown>;
   execute: (
-    imageData: ImageCompressedData,
+    image: ImageCompressed,
     onProgress: (value: number, message: string) => void
   ) => Promise<ObjectDetectionResult>;
 };
-

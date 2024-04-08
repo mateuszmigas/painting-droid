@@ -17,7 +17,10 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useWorkspacesStore } from "@/store";
-import { activeWorkspaceActiveLayerSelector } from "@/store/workspacesStore";
+import {
+  activeWorkspaceActiveLayerSelector,
+  activeWorkspaceCanvasDataSelector,
+} from "@/store/workspacesStore";
 import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
 import { ImageProcessor } from "@/utils/imageProcessor";
 
@@ -41,10 +44,10 @@ const models = Object.entries(objectDetectionModels).map(([key, value]) => ({
 }));
 
 const applyResultToImage = (
-  image: ImageCompressedData,
+  imageData: ImageCompressedData,
   result: ObjectDetectionResult
 ) => {
-  return ImageProcessor.fromCompressed(image)
+  return ImageProcessor.fromCompressedData(imageData)
     .useContext(async (context) => {
       context.lineWidth = 4;
 
@@ -62,7 +65,7 @@ const applyResultToImage = (
         context.fillText(item.label, item.box.x + 5, item.box.y + 16);
       }
     })
-    .toCompressed();
+    .toCompressedData();
 };
 
 export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
@@ -70,6 +73,9 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
 
   const activeLayer = useWorkspacesStore((state) =>
     activeWorkspaceActiveLayerSelector(state)
+  );
+  const size = useWorkspacesStore(
+    (state) => activeWorkspaceCanvasDataSelector(state).size
   );
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const [selectedModel, setSelectedModel] = useState(models[0].value);
@@ -99,7 +105,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
           selectedModel as keyof typeof objectDetectionModels
         ];
       const result = await model.execute(
-        activeLayer.data!,
+        { data: activeLayer.data!, ...size },
         (progress, message) => {
           progress && setProgress(progress);
           progress && message && setProgressMessage(message);
@@ -133,7 +139,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
     close();
   };
 
-  const imageDataUrl = useBlobUrl(imageData?.data);
+  const imageDataUrl = useBlobUrl(imageData);
 
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>

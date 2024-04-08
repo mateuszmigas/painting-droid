@@ -23,12 +23,12 @@ export const createCanvasAction = async (
     throw new Error("No layer data to cut");
   }
 
-  const newLayerData = await ImageProcessor.fromCompressed(layerData)
+  const newLayerData = await ImageProcessor.fromCompressedData(layerData)
     .useContext(async (context) => {
       const { x, y, width, height } = state.overlayShape!.boundingBox;
       context.clearRect(x, y, width, height);
     })
-    .toCompressed();
+    .toCompressedData();
 
   const capturedData = {
     previousOverlayShape,

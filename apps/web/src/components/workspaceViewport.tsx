@@ -3,6 +3,7 @@ import { memo, useRef } from "react";
 import { useObservableWatcher, useAfterPaintEffect } from "@/hooks";
 import { CanvasRulers } from "./canvasRulers";
 import {
+  activeWorkspaceCanvasDataSelector,
   activeWorkspaceSelector,
   useWorkspacesStore,
 } from "@/store/workspacesStore";
@@ -25,7 +26,7 @@ export const WorkspaceViewport = memo(() => {
     (store) => activeWorkspaceSelector(store).viewport
   );
   const workspaceSize = useWorkspacesStore(
-    (store) => activeWorkspaceSelector(store).size
+    (store) => activeWorkspaceCanvasDataSelector(store).size
   );
   const observableViewport = useObservableWatcher<Viewport | null>(
     workspaceViewport,

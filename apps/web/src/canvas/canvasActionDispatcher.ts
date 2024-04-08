@@ -4,7 +4,6 @@ import { canvasActions } from "./actions";
 import type { CanvasAction } from "./actions/action";
 import type { CanvasState } from "./canvasState";
 import { getTranslations } from "@/translations";
-import type { Size } from "@/utils/common";
 
 const translations = getTranslations();
 
@@ -35,13 +34,10 @@ export class CanvasActionDispatcher {
   private actionsStack: Array<CanvasAction> = [initAction];
   private actionsCursor = 0;
   private store: CanvasStore | undefined;
-  private dataProviders: { getSize: () => Size } | undefined;
-
   private promiseQueue = new PromiseQueue();
 
-  init(store: CanvasStore, dataProviders: { getSize: () => Size }) {
+  init(store: CanvasStore) {
     this.store = store;
-    this.dataProviders = dataProviders;
   }
 
   async execute<T extends ActionId>(name: T, payload: GetActionPayload<T>) {
@@ -52,7 +48,6 @@ export class CanvasActionDispatcher {
 
       const context = {
         getState: this.store.getState,
-        getSize: () => this.dataProviders!.getSize(),
       };
 
       const action = await canvasActions[name](context, payload as never);

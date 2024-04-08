@@ -1,5 +1,5 @@
 import { createProxyServer } from "@/utils/worker";
-import type { ImageCompressedData } from "@/utils/imageData";
+import type { ImageCompressed } from "@/utils/imageData";
 import { pipeline, env } from "@xenova/transformers";
 import { sizeToString } from "@/utils/format";
 
@@ -36,7 +36,7 @@ const objectDetectionPipeline = createLazyPipeline(
 
 const transformerJsServer = {
   detectObjects: async (
-    imageData: ImageCompressedData,
+    imageData: ImageCompressed,
     onProgress: (value: number, message: string) => void
   ) => {
     const dataUrl = URL.createObjectURL(imageData.data);

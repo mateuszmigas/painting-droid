@@ -7,7 +7,6 @@ import {
   activeWorkspaceSelector,
 } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
-import type { ImageUncompressedData } from "@/utils/imageData";
 import { coreClient } from "@/wasm/core/coreClient";
 import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
 import { adjustmentsMetadata } from "@/adjustments";
@@ -39,7 +38,7 @@ export const AdjustmentsPopup = memo(() => {
     if (!data) {
       return null;
     }
-    const input = await ImageProcessor.fromCompressed(data).toImageData();
+    const input = await ImageProcessor.fromCompressedData(data).toImageData();
     return await coreClient[popup.adjustmentId](input);
   });
 
@@ -52,7 +51,7 @@ export const AdjustmentsPopup = memo(() => {
 
     const data = await ImageProcessor.fromUncompressed(
       imageData
-    ).toCompressed();
+    ).toCompressedData();
 
     await canvasDispatcher.execute("updateLayerData", {
       layerId: activeLayer.id,
@@ -70,10 +69,7 @@ export const AdjustmentsPopup = memo(() => {
         return;
       }
       previewContext &&
-        restoreContextFromUncompressed(
-          previewContext,
-          imageData as ImageUncompressedData
-        );
+        restoreContextFromUncompressed(previewContext, imageData);
     };
     run();
   }, [previewContext, runAdjustment]);

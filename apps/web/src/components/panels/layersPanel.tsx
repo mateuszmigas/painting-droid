@@ -34,9 +34,9 @@ const LayerItem = (props: {
       <div className="w-16 h-16 border box-content alpha-background">
         {layer.data && (
           <ImageFromBlob
-            style={{ opacity: layer.data?.data ? 1 : 0 }}
+            style={{ opacity: layer.data ? 1 : 0 }}
             className="size-full object-contain transition-opacity duration-standard"
-            blob={layer.data?.data}
+            blob={layer.data}
             alt={layer.name}
           />
         )}

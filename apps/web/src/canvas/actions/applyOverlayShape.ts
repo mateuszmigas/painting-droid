@@ -9,14 +9,14 @@ export const createCanvasAction = async (
   context: CanvasActionContext
 ): Promise<CanvasAction> => {
   const state = context.getState();
-  const size = context.getSize();
+  const { size } = state;
 
   if (!state.overlayShape?.captured) {
     throw new Error("No overlay shape to apply");
   }
 
   const overlayShape = state.overlayShape;
-  const overlayShapeContext = await ImageProcessor.fromCompressed(
+  const overlayShapeContext = await ImageProcessor.fromCompressedData(
     overlayShape.captured!.data
   ).toContext();
 
@@ -24,14 +24,14 @@ export const createCanvasAction = async (
   const processor =
     layerData === null
       ? ImageProcessor.fromEmpty(size.width, size.height)
-      : ImageProcessor.fromCompressed(layerData);
+      : ImageProcessor.fromCompressedData(layerData);
 
   const newLayerData = await processor
     .useContext(async (context) => {
       const { x, y, width, height } = overlayShape.boundingBox;
       context.drawImage(overlayShapeContext.canvas, x, y, width, height);
     })
-    .toCompressed();
+    .toCompressedData();
 
   const capturedData = {
     previousOverlayShape: overlayShape,

@@ -1,7 +1,7 @@
 import { createProxyServer } from "@/utils/worker";
 import init, { greet, grayscale, sepia } from "./core";
 import coreUrl from "./core_bg.wasm?url";
-import { ImageUncompressedData } from "@/utils/imageData";
+import { ImageUncompressed } from "@/utils/imageData";
 
 const coreServer = {
   init: () => Promise.resolve(),
@@ -9,8 +9,8 @@ const coreServer = {
     return { result: greet(name) };
   },
   grayscale: async (
-    imageData: ImageUncompressedData
-  ): Promise<ImageUncompressedData> => {
+    imageData: ImageUncompressed
+  ): Promise<ImageUncompressed> => {
     const view = new Uint8Array(imageData.data.buffer);
     const result = grayscale(view, imageData.width, imageData.height);
 
@@ -20,9 +20,7 @@ const coreServer = {
       data: new Uint8ClampedArray(result.buffer),
     };
   },
-  sepia: async (
-    imageData: ImageUncompressedData
-  ): Promise<ImageUncompressedData> => {
+  sepia: async (imageData: ImageUncompressed): Promise<ImageUncompressed> => {
     const view = new Uint8Array(imageData.data.buffer);
     const result = sepia(view, imageData.width, imageData.height);
 

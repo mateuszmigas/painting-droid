@@ -33,6 +33,8 @@ export const command = createCommand({
       document.getElementById(domNames.workspaceViewport)!
     );
 
+    const { width, height } = await createImageBitmap(data);
+
     await context.canvasActionDispatcher.execute("drawOverlayShape", {
       display: translations.commands.pasteImage,
       icon: "clipboard-paste",
@@ -40,10 +42,10 @@ export const command = createCommand({
         id: uuid(),
         type: "rectangle",
         boundingBox: {
-          x: position.x - data.width / 2,
-          y: position.y - data.height / 2,
-          width: data.width,
-          height: data.height,
+          x: position.x - width / 2,
+          y: position.y - height / 2,
+          width: width,
+          height: height,
         },
         captured: { box: { x: 0, y: 0, width: 0, height: 0 }, data },
       },
