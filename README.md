@@ -92,7 +92,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Online Demo Model for Web
 - [x] WASM adjustments mechanism
 - [x] Some Offline JS Model
-- [ ] Image resize/crop
+- [x] Image resize/crop
 - [x] Clipboard support
 - [x] Desktop app releases and autoupdate
 
