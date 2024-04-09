@@ -26,6 +26,7 @@ import { command as pasteImage } from "./pasteImage";
 import { command as cutImage } from "./cutImage";
 import { command as checkForUpdate } from "./checkForUpdate";
 import { command as openCropCanvasDialog } from "./openCropCanvasDialog";
+import { command as openResizeCanvasDialog } from "./openResizeCanvasDialog";
 
 export const commands = {
   saveAsPng,
@@ -56,6 +57,7 @@ export const commands = {
   cutImage,
   checkForUpdate,
   openCropCanvasDialog,
+  openResizeCanvasDialog,
 } as const;
 
 export type CommandId = keyof typeof commands;

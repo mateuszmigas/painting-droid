@@ -106,6 +106,7 @@ export const createMenuBarDefinition = (
       label: translations.adjustments.name,
       items: [
         itemFromCommand("openCropCanvasDialog", executeCommand),
+        itemFromCommand("openResizeCanvasDialog", executeCommand),
         { type: "separator" },
         ...Object.entries(adjustmentsMetadata).map(
           ([id, metadata]) =>

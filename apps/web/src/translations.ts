@@ -1,4 +1,4 @@
-import type { Rectangle } from "./utils/common";
+import type { Rectangle, Size } from "./utils/common";
 
 const translations = {
   panels: {
@@ -26,6 +26,7 @@ const translations = {
     selectLayer: "Select Layer",
     cutOverlayShape: "Cut Selection",
     cropCanvas: "Crop Canvas",
+    resizeCanvas: "Resize Canvas",
   },
   adjustments: {
     name: "Adjustments",
@@ -78,11 +79,23 @@ const translations = {
         absolute: "Absolute",
         offset: "Offset",
       },
-      cropOutput: (crop: Rectangle) =>
+      printCrop: (crop: Rectangle) =>
         `Crop x: ${crop.x}, y: ${crop.y}, width: ${crop.width}, height: ${crop.height}`,
       errors: {
         tooSmall: "Crop area too small",
         outOfBounds: "Crop area out of bounds",
+      },
+    },
+    resizeCanvas: {
+      title: "Resize Canvas",
+      types: {
+        percentage: "Percentage",
+        absolute: "Absolute",
+      },
+      printSize: (size: Size) => `Width: ${size.width}, Height: ${size.height}`,
+      errors: {
+        tooBig: "Canvas size too big",
+        tooSmall: "Canvas size too small",
       },
     },
   },
@@ -91,6 +104,7 @@ const translations = {
     closeActiveWorkspace: "Close Workspace",
     newActiveWorkspace: "New Workspace",
     openCropCanvasDialog: "Crop Canvas",
+    openResizeCanvasDialog: "Resize Canvas",
     fitCanvasToWindow: "Fit Canvas to Window",
     openCommandPalette: "Open Command Palette",
     openFile: "Open File",
@@ -122,6 +136,7 @@ const translations = {
   },
   general: {
     apply: "Apply",
+    resize: "Resize",
     cancel: "Cancel",
     unknown: "Unknown",
     process: "Process",

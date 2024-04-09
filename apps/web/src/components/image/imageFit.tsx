@@ -7,6 +7,8 @@ export const ImageFit = (props: {
   containerScale?: "contain" | "cover";
   containerClassName?: string;
   imageClassName?: string;
+  imageStyle?: React.CSSProperties;
+  originalImageSize?: Size;
   overlayNode?: React.ReactNode;
 }) => {
   const {
@@ -14,6 +16,8 @@ export const ImageFit = (props: {
     src,
     containerClassName,
     imageClassName,
+    imageStyle = {},
+    originalImageSize,
     overlayNode,
     containerScale: scale = "contain",
   } = props;
@@ -32,7 +36,10 @@ export const ImageFit = (props: {
       <img
         className={cn("object-contain", imageClassName)}
         src={src}
+        width={originalImageSize?.width}
+        height={originalImageSize?.height}
         style={{
+          ...imageStyle,
           maxWidth: containerSize.width,
           maxHeight: containerSize.height,
         }}

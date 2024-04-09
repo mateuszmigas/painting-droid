@@ -117,6 +117,16 @@ export class ImageProcessor {
     return this;
   }
 
+  resize(size: Size) {
+    this.tasks.push(async () => {
+      const { width, height } = size;
+      const resizeContext = createCanvasContext(width, height);
+      resizeContext.drawImage(this.context.canvas, 0, 0, width, height);
+      this.context = resizeContext;
+    });
+    return this;
+  }
+
   async toCompressed() {
     await this.runTasks();
     const { width, height } = this.context.canvas;

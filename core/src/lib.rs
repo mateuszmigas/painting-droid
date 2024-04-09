@@ -1,7 +1,15 @@
+use image::imageops::FilterType;
 use wasm_bindgen::prelude::*;
+extern crate web_sys;
+
+macro_rules! _log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
 
 #[wasm_bindgen]
-pub fn grayscale(pixels: Vec<u8>, _width: u32, _height: u32) -> Vec<u8> {
+pub fn grayscale(pixels: Vec<u8>) -> Vec<u8> {
     let mut result = Vec::new();
     for i in 0..pixels.len() / 4 {
         let r = pixels[i * 4] as f32;
@@ -17,7 +25,7 @@ pub fn grayscale(pixels: Vec<u8>, _width: u32, _height: u32) -> Vec<u8> {
 }
 
 #[wasm_bindgen]
-pub fn sepia(pixels: Vec<u8>, _width: u32, _height: u32) -> Vec<u8> {
+pub fn sepia(pixels: Vec<u8>) -> Vec<u8> {
     let mut result = Vec::new();
     for i in 0..pixels.len() / 4 {
         let r = pixels[i * 4] as f32;
@@ -36,6 +44,20 @@ pub fn sepia(pixels: Vec<u8>, _width: u32, _height: u32) -> Vec<u8> {
         result.push(255); // Alpha value, kept at 255 for full opacity
     }
     result
+}
+
+#[wasm_bindgen]
+pub fn resize(
+    pixels: Vec<u8>,
+    width: u32,
+    height: u32,
+    new_width: u32,
+    new_height: u32,
+) -> Vec<u8> {
+    let img =
+        image::ImageBuffer::<image::Rgba<u8>, Vec<u8>>::from_raw(width, height, pixels).unwrap();
+    let resized = image::imageops::resize(&img, new_width, new_height, FilterType::Nearest);
+    resized.into_vec()
 }
 
 #[wasm_bindgen]

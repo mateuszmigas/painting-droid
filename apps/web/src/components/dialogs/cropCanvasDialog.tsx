@@ -168,6 +168,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
             <ImageFit
               containerClassName="relative border box-content self-center overflow-hidden"
               imageClassName="alpha-background"
+              originalImageSize={canvasData.size}
               containerSize={{ width: 320, height: 320 }}
               containerScale="cover"
               src={imageDataUrl}
@@ -187,7 +188,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
             <FormMessage
               className={error ? "text-destructive" : "text-primary"}
             >
-              {error ? error : dialogTranslations.cropOutput(crop)}
+              {error ? error : dialogTranslations.printCrop(crop)}
             </FormMessage>
           </div>
           <div className="flex h-full flex-col gap-big justify-between min-w-48">
@@ -331,4 +332,3 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

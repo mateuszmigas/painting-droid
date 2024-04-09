@@ -55,6 +55,7 @@ import {
   MoveDownLeft,
   MoveDownRight,
   ArrowDownFromLine,
+  Scaling,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -119,7 +120,8 @@ export type IconType =
   | "anchor-top-left"
   | "anchor-top-right"
   | "anchor-bottom-left"
-  | "anchor-bottom-right";
+  | "anchor-bottom-right"
+  | "resize";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -279,6 +281,8 @@ const renderLucideIcon = (
       return (
         <AnchorTopLeft className={`rotate-180 ${className}`} size={fontSize} />
       );
+    case "resize":
+      return <Scaling className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
