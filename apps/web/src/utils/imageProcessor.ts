@@ -18,7 +18,7 @@ export class ImageProcessor {
     });
   }
 
-  public static processContext(context: CanvasContext) {
+  public static fromContext(context: CanvasContext) {
     return new ImageProcessor(() => Promise.resolve(context));
   }
 
@@ -103,6 +103,17 @@ export class ImageProcessor {
 
   useContext(callback: (context: CanvasContext) => Promise<void>) {
     this.tasks.push(() => callback(this.context!));
+    return this;
+  }
+
+  crop(rectangle: Rectangle) {
+    this.tasks.push(async () => {
+      const { x, y, width, height } = rectangle;
+      const data = this.context.getImageData(x, y, width, height);
+      const cropContext = createCanvasContext(width, height);
+      cropContext.putImageData(data, 0, 0);
+      this.context = cropContext;
+    });
     return this;
   }
 

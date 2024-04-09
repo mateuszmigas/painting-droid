@@ -45,6 +45,15 @@ import {
   ClipboardX,
   Eraser,
   Download,
+  Crop,
+  MoveLeft,
+  MoveRight,
+  MoveUp,
+  MoveDown,
+  MoveUpLeft,
+  MoveUpRight,
+  MoveDownLeft,
+  MoveDownRight,
 } from "lucide-react";
 import { Deselect } from "./deselect";
 
@@ -91,7 +100,16 @@ export type IconType =
   | "clipboard-paste"
   | "clipboard-cut"
   | "eraser"
-  | "download";
+  | "download"
+  | "crop"
+  | "move-left"
+  | "move-right"
+  | "move-up"
+  | "move-down"
+  | "move-up-left"
+  | "move-up-right"
+  | "move-down-left"
+  | "move-down-right";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -196,6 +214,24 @@ const renderLucideIcon = (
       return <Eraser className={className} size={fontSize} />;
     case "download":
       return <Download className={className} size={fontSize} />;
+    case "crop":
+      return <Crop className={className} size={fontSize} />;
+    case "move-left":
+      return <MoveLeft className={className} size={fontSize} />;
+    case "move-right":
+      return <MoveRight className={className} size={fontSize} />;
+    case "move-up":
+      return <MoveUp className={className} size={fontSize} />;
+    case "move-down":
+      return <MoveDown className={className} size={fontSize} />;
+    case "move-up-left":
+      return <MoveUpLeft className={className} size={fontSize} />;
+    case "move-up-right":
+      return <MoveUpRight className={className} size={fontSize} />;
+    case "move-down-left":
+      return <MoveDownLeft className={className} size={fontSize} />;
+    case "move-down-right":
+      return <MoveDownRight className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

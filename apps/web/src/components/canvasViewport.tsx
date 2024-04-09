@@ -66,6 +66,9 @@ const applyCanvasOverlayTransform = (
   }px) scale(${viewport.zoom})`;
 };
 
+const createCanvasKey = (layerId: string, size: Size) =>
+  `canvas-${layerId}-${size.width}-${size.height}`;
+
 export const CanvasViewport = memo(
   (props: {
     viewport: Observable<Viewport>;
@@ -116,6 +119,22 @@ export const CanvasViewport = memo(
       }
     );
 
+    const applyTransforms = useStableCallback(
+      (viewport: Viewport, size: Size) => {
+        applyCanvasBackgroundTransform(
+          canvasBackgroundRef.current,
+          viewport,
+          size
+        );
+        applyCanvasStackTransform(canvasStackRef.current, viewport);
+        applyCanvasOverlayTransform(
+          canvasOverlayRef.current,
+          viewport,
+          overlayShape
+        );
+      }
+    );
+
     useEffect(() => {
       render(overlayShape);
     }, [render, overlayShape]);
@@ -153,23 +172,13 @@ export const CanvasViewport = memo(
       (newViewport) => viewport.setValue(newViewport)
     );
 
-    useListener(
-      viewport,
-      (newViewport) => {
-        applyCanvasBackgroundTransform(
-          canvasBackgroundRef.current,
-          newViewport,
-          size
-        );
-        applyCanvasStackTransform(canvasStackRef.current, newViewport);
-        applyCanvasOverlayTransform(
-          canvasOverlayRef.current,
-          newViewport,
-          overlayShape
-        );
-      },
-      { triggerOnMount: true }
-    );
+    useListener(viewport, (newViewport) => applyTransforms(newViewport, size), {
+      triggerOnMount: true,
+    });
+
+    useEffect(() => {
+      applyTransforms(viewport.getValue(), size);
+    }, [applyTransforms, size, viewport]);
 
     const { position, zoom } = viewport.getValue();
 
@@ -192,7 +201,7 @@ export const CanvasViewport = memo(
         {/* show canvas layers */}
         {layers.map((layer, index) => (
           <canvas
-            key={layer.id}
+            key={createCanvasKey(layer.id, size)}
             ref={(element) => {
               if (element) {
                 canvasStackRef.current[index] = element;

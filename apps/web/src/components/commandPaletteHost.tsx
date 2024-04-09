@@ -40,7 +40,10 @@ export const CommandPaletteHost = memo(
     const getActiveCanvasContext = useStableCallback(() => previewContext);
     const dialogService = useDialogService();
     const notificationService = useNotificationService();
-    const commandService = useMemo<CommandService>(() => {
+    const commandService = useMemo<CommandService | null>(() => {
+      if (!dialogService || !notificationService || !canvasActionDispatcher) {
+        return null;
+      }
       const createContext = (): CommandContext => ({
         stores: {
           workspaces: () => useWorkspacesStore.getState(),
@@ -77,7 +80,7 @@ export const CommandPaletteHost = memo(
     ]);
 
     useEffect(() => {
-      setCommandService(commandService);
+      commandService && setCommandService(commandService);
     }, [setCommandService, commandService]);
 
     const sortedCommands = sortBySelector(
@@ -96,7 +99,7 @@ export const CommandPaletteHost = memo(
           {sortedCommands.map((command) => (
             <CommandItem
               onSelect={() => {
-                commandService.executeCommand(command.id as never);
+                commandService!.executeCommand(command.id as never);
                 setIsOpen(false);
               }}
               key={command.display}

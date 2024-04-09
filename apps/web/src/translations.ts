@@ -1,3 +1,5 @@
+import type { Rectangle } from "./utils/common";
+
 const translations = {
   panels: {
     layers: { title: "Layers" },
@@ -23,6 +25,7 @@ const translations = {
     removeLayer: "Remove Layer",
     selectLayer: "Select Layer",
     cutOverlayShape: "Cut Selection",
+    cropCanvas: "Crop Canvas",
   },
   adjustments: {
     name: "Adjustments",
@@ -67,10 +70,27 @@ const translations = {
       },
     },
   },
+  dialogs: {
+    cropCanvas: {
+      title: "Crop Canvas",
+      types: {
+        percentage: "Percentage",
+        absolute: "Absolute",
+        offset: "Offset",
+      },
+      cropOutput: (crop: Rectangle) =>
+        `Crop x: ${crop.x}, y: ${crop.y}, width: ${crop.width}, height: ${crop.height}`,
+      errors: {
+        tooSmall: "Crop area too small",
+        outOfBounds: "Crop area out of bounds",
+      },
+    },
+  },
   commands: {
     clearActiveWorkspace: "Clear Workspace",
     closeActiveWorkspace: "Close Workspace",
     newActiveWorkspace: "New Workspace",
+    openCropCanvasDialog: "Crop Canvas",
     fitCanvasToWindow: "Fit Canvas to Window",
     openCommandPalette: "Open Command Palette",
     openFile: "Open File",
@@ -108,6 +128,12 @@ const translations = {
     result: "Result",
     loading: "Loading",
     images: "Images",
+    width: "Width",
+    height: "Height",
+    widthPercentage: "Width (%)",
+    heightPercentage: "Height (%)",
+    anchor: "Anchor",
+    offsets: "Offsets",
   },
   errors: {
     noImageData: "No image data",

@@ -104,16 +104,23 @@ export const createMenuBarDefinition = (
     {
       type: "parent",
       label: translations.adjustments.name,
-      items: Object.entries(adjustmentsMetadata).map(([id, metadata]) => ({
-        type: "leaf",
-        label: metadata.name,
-        action: {
-          onClick: () =>
-            executeCommand("openAdjustmentsPopup", {
-              adjustmentId: id as AdjustmentId,
-            }),
-        },
-      })),
+      items: [
+        itemFromCommand("openCropCanvasDialog", executeCommand),
+        { type: "separator" },
+        ...Object.entries(adjustmentsMetadata).map(
+          ([id, metadata]) =>
+            ({
+              type: "leaf",
+              label: metadata.name,
+              action: {
+                onClick: () =>
+                  executeCommand("openAdjustmentsPopup", {
+                    adjustmentId: id as AdjustmentId,
+                  }),
+              },
+            } as const)
+        ),
+      ],
     },
     {
       type: "parent",

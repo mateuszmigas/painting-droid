@@ -24,7 +24,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         ref={ref}
         {...rest}
         className={cn(
-          "hover:bg-accent rounded-md hover:text-accent-foreground p-1 disabled:pointer-events-none disabled:opacity-50",
+          "focus:outline-primary hover:bg-accent rounded-md hover:text-accent-foreground p-1 disabled:pointer-events-none disabled:opacity-50",
           className
         )}
         onClick={onClick}
@@ -34,4 +34,3 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     );
   }
 );
-

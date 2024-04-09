@@ -72,7 +72,7 @@ export const createDrawToolHandlers = (
       if (!activeContext) return;
 
       const { name, icon } = toolsMetadata[drawToolId!];
-      const contextData = await ImageProcessor.processContext(
+      const contextData = await ImageProcessor.fromContext(
         activeContext
       ).toCompressed();
 
