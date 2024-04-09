@@ -36,15 +36,21 @@ export const ImageAnchor = (props: {
       }}
       className="grid w-[86px] h-[86px] gap-small place-items-center"
     >
-      <IconButton {...createCellProps("top-left")} type="move-up-left" />
-      <IconButton {...createCellProps("top")} type="move-up" />
-      <IconButton {...createCellProps("top-right")} type="move-up-right" />
-      <IconButton {...createCellProps("left")} type="move-left" />
+      <IconButton {...createCellProps("top-left")} type="anchor-top-left" />
+      <IconButton {...createCellProps("top")} type="anchor-top" />
+      <IconButton {...createCellProps("top-right")} type="anchor-top-right" />
+      <IconButton {...createCellProps("left")} type="anchor-left" />
       <IconButton {...createCellProps("center")} type="image" />
-      <IconButton {...createCellProps("right")} type="move-right" />
-      <IconButton {...createCellProps("bottom-left")} type="move-down-left" />
-      <IconButton {...createCellProps("bottom")} type="move-down" />
-      <IconButton {...createCellProps("bottom-right")} type="move-down-right" />
+      <IconButton {...createCellProps("right")} type="anchor-right" />
+      <IconButton
+        {...createCellProps("bottom-left")}
+        type="anchor-bottom-left"
+      />
+      <IconButton {...createCellProps("bottom")} type="anchor-bottom" />
+      <IconButton
+        {...createCellProps("bottom-right")}
+        type="anchor-bottom-right"
+      />
     </div>
   );
 };

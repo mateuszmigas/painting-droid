@@ -54,8 +54,10 @@ import {
   MoveUpRight,
   MoveDownLeft,
   MoveDownRight,
+  ArrowDownFromLine,
 } from "lucide-react";
-import { Deselect } from "./deselect";
+import { Deselect } from "./custom/deselect";
+import { AnchorTopLeft } from "./custom/anchorTopLeft";
 
 export type IconType =
   | "pen"
@@ -109,7 +111,15 @@ export type IconType =
   | "move-up-left"
   | "move-up-right"
   | "move-down-left"
-  | "move-down-right";
+  | "move-down-right"
+  | "anchor-top"
+  | "anchor-bottom"
+  | "anchor-left"
+  | "anchor-right"
+  | "anchor-top-left"
+  | "anchor-top-right"
+  | "anchor-bottom-left"
+  | "anchor-bottom-right";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -232,6 +242,43 @@ const renderLucideIcon = (
       return <MoveDownLeft className={className} size={fontSize} />;
     case "move-down-right":
       return <MoveDownRight className={className} size={fontSize} />;
+    case "anchor-top":
+      return <ArrowDownFromLine className={className} size={fontSize} />;
+    case "anchor-bottom":
+      return (
+        <ArrowDownFromLine
+          className={`rotate-180 ${className}`}
+          size={fontSize}
+        />
+      );
+    case "anchor-left":
+      return (
+        <ArrowDownFromLine
+          className={`-rotate-90 ${className}`}
+          size={fontSize}
+        />
+      );
+    case "anchor-right":
+      return (
+        <ArrowDownFromLine
+          className={`rotate-90 ${className}`}
+          size={fontSize}
+        />
+      );
+    case "anchor-top-left":
+      return <AnchorTopLeft className={className} size={fontSize} />;
+    case "anchor-top-right":
+      return (
+        <AnchorTopLeft className={`rotate-90 ${className}`} size={fontSize} />
+      );
+    case "anchor-bottom-left":
+      return (
+        <AnchorTopLeft className={`-rotate-90 ${className}`} size={fontSize} />
+      );
+    case "anchor-bottom-right":
+      return (
+        <AnchorTopLeft className={`rotate-180 ${className}`} size={fontSize} />
+      );
     default:
       return assertNever(icon);
   }
