@@ -30,7 +30,7 @@ jobs:
       - name: Install browsers
         run: pnpm --filter @painting-droid/web test:e2e:install-browsers
 
-      - name: Run unit tests, typeScript checks and linting
+      - name: Run unit tests, typescript checks and linting
         run: pnpm validate
 
       - name: Run e2e tests

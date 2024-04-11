@@ -2,7 +2,7 @@
 
 [Try It Online](https://painting-droid-web.vercel.app/) | [Download Desktop App](https://github.com/mateuszmigas/painting-droid/releases) | Progress: ▓▓▓▓▓▓▓▓░░░░░░░░░░░░ <span>41</span>%
 
-[![100 - Commitów](https://img.shields.io/badge/100-Commitów-2ea44f)](https://100commitow.pl/) ![Vercel](https://vercelbadge.vercel.app/api/mateuszmigas/painting-droid) ![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg) ![E2E](https://github.com/mateuszmigas/painting-droid/actions/workflows/e2e_tests.yml/badge.svg)
+[![100 - Commitów](https://img.shields.io/badge/100-Commitów-2ea44f)](https://100commitow.pl/) ![Vercel](https://vercelbadge.vercel.app/api/mateuszmigas/painting-droid) ![Validate](https://github.com/mateuszmigas/painting-droid/actions/workflows/validate.yml/badge.svg)
 ![](https://img.shields.io/badge/Lighthouse-100/83/100/100-blue)
 
 ---

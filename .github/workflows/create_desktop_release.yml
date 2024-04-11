@@ -1,13 +1,50 @@
-name: Desktop Publish
+name: Create Desktop Release
 
 on:
-  push:
-    branches:
-      - release
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Bump version"
+        required: true
+        default: "patch"
 
 jobs:
-  publish-tauri:
+  validate:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install packages
+        run: pnpm install --prefer-offline
+
+      - name: Install browsers
+        run: pnpm --filter @painting-droid/web test:e2e:install-browsers
+
+      - name: Run unit tests, typescript checks and linting
+        run: pnpm validate
+
+      - name: Run e2e tests
+        run: pnpm --filter @painting-droid/web test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 30
+
+  publish:
     permissions:
       contents: write
     strategy:
@@ -26,6 +63,10 @@ jobs:
     runs-on: ${{ matrix.settings.platform }}
     steps:
       - uses: actions/checkout@v2
+
+      - name: Bump version
+        run: |
+          echo "new_version=$(npm version --commit-hooks false --git-tag-version false ${{ github.event.inputs.version }})" >> $GITHUB_ENV
 
       - name: Set up Node
         uses: actions/setup-node@v3
@@ -72,3 +113,20 @@ jobs:
           prerelease: false
           args: ${{ matrix.settings.args }}
 
+  update-version:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Bump version
+        run: |
+          echo "new_version=$(npm version --commit-hooks false --git-tag-version false ${{ github.event.inputs.version }})" >> $GITHUB_ENV
+
+      - name: Commit version
+        run: |
+          git config --global user.email "github-actions@noreply.github.com"
+          git config --global user.name "github-actions"
+          git add .
+          git commit -m "Bump version to ${{ env.new_version }}"
+          git push
