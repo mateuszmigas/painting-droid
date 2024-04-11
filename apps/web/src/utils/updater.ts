@@ -13,16 +13,20 @@ export const checkForUpdates = async () => {
     return null;
   }
 
-  const update = await check();
+  try {
+    const update = await check();
 
-  if (!update?.available) {
+    if (!update?.available) {
+      return null;
+    }
+
+    return {
+      version: update.version,
+      downloadAndInstall: () => update.downloadAndInstall(),
+      restart: () => relaunch(),
+    };
+  } catch {
+    // Ignore errors
     return null;
   }
-
-  return {
-    version: update.version,
-    downloadAndInstall: () => update.downloadAndInstall(),
-    restart: () => relaunch(),
-  };
 };
-
