@@ -45,6 +45,7 @@ jobs:
           retention-days: 30
 
   publish:
+    needs: validate
     permissions:
       contents: write
     strategy:
