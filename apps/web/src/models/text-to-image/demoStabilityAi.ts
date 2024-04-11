@@ -2,6 +2,7 @@ import { environment } from "@/environment";
 import type { Size } from "@/utils/common";
 import type { TextToImageModel } from "./textToImageModel";
 import { base64ToBlob } from "@/utils/image";
+import { apiClient } from "@/utils/api-client";
 
 export const model: TextToImageModel = {
   name: "Demo",
@@ -18,18 +19,18 @@ export const model: TextToImageModel = {
     { width: 896, height: 1152 },
   ],
   execute: async (prompt: string, size: Size) => {
-    const result = await fetch(environment.DEMO_API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, size }),
+    const result = await apiClient.post(environment.DEMO_API_URL, {
+      type: "json",
+      data: JSON.stringify({ prompt, size }),
     });
+
     if (result.status === 429) {
       throw new Error("Rate limit exceeded");
     }
     if (result.status !== 200) {
       throw new Error("Failed to fetch image");
     }
-    const data = (await result.json()) as {
+    const data = JSON.parse(result.data) as {
       artifacts: { base64: string }[];
     };
     if (!data.artifacts.length) {
@@ -42,3 +43,4 @@ export const model: TextToImageModel = {
     };
   },
 };
+
