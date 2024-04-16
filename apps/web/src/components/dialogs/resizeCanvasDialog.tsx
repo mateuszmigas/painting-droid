@@ -1,7 +1,7 @@
 import { getTranslations } from "@/translations";
 import { memo, useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { DialogContent, DialogTitle } from "../ui/dialog";
+import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { ImageFit } from "../image/imageFit";
 import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
@@ -101,7 +101,9 @@ export const ResizeCanvasDialog = memo((props: { close: () => void }) => {
 
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
-      <DialogTitle>{dialogTranslations.title}</DialogTitle>
+      <DialogHeader>
+        <DialogTitle>{dialogTranslations.title}</DialogTitle>
+      </DialogHeader>
       <Form {...form}>
         <form
           className="flex flex-col gap-big sm:flex-row relative sm:items-start items-center"

@@ -4,7 +4,7 @@ import type { ImageCompressedData } from "@/utils/imageData";
 import { memo, useState } from "react";
 import { Icon } from "../icons/icon";
 import { Button } from "../ui/button";
-import { DialogContent, DialogTitle } from "../ui/dialog";
+import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { objectDetectionModels } from "@/models/object-detection";
 import { ImageFit } from "../image/imageFit";
 import { Label } from "../ui/label";
@@ -143,9 +143,11 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
 
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
-      <DialogTitle>{translations.models.objectDetection.name}</DialogTitle>
+      <DialogHeader>
+        <DialogTitle>{translations.models.objectDetection.name}</DialogTitle>
+      </DialogHeader>
       <form
-        className="flex flex-col gap-big sm:flex-row "
+        className="flex flex-col gap-big sm:flex-row"
         onSubmit={(e) => {
           e.preventDefault();
           process();
@@ -244,3 +246,4 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
+

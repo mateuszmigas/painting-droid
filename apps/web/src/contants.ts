@@ -14,3 +14,6 @@ export const features = {
 export const domNames = {
   workspaceViewport: "workspace-viewport",
 };
+
+export const themes = ["light", "dark", "system"] as const;
+

@@ -86,6 +86,13 @@ const translations = {
         outOfBounds: "Crop area out of bounds",
       },
     },
+    settings: {
+      title: "Settings",
+      types: {
+        general: "General",
+        models: "Models",
+      },
+    },
     resizeCanvas: {
       title: "Resize Canvas",
       types: {
@@ -99,12 +106,18 @@ const translations = {
       },
     },
   },
+  themes: {
+    light: "Light",
+    dark: "Dark",
+    system: "System",
+  },
   commands: {
     clearActiveWorkspace: "Clear Workspace",
     closeActiveWorkspace: "Close Workspace",
     newActiveWorkspace: "New Workspace",
     openCropCanvasDialog: "Crop Canvas",
     openResizeCanvasDialog: "Resize Canvas",
+    openSettingsDialog: "Open Settings",
     fitCanvasToWindow: "Fit Canvas to Window",
     openCommandPalette: "Open Command Palette",
     openFile: "Open File",
@@ -135,20 +148,22 @@ const translations = {
     defaultName: "Untitled",
   },
   general: {
-    apply: "Apply",
-    resize: "Resize",
-    cancel: "Cancel",
-    unknown: "Unknown",
-    process: "Process",
-    result: "Result",
-    loading: "Loading",
-    images: "Images",
-    width: "Width",
-    height: "Height",
-    widthPercentage: "Width (%)",
-    heightPercentage: "Height (%)",
     anchor: "Anchor",
+    apply: "Apply",
+    cancel: "Cancel",
+    close: "Close",
+    height: "Height",
+    heightPercentage: "Height (%)",
+    images: "Images",
+    loading: "Loading",
     offsets: "Offsets",
+    process: "Process",
+    resize: "Resize",
+    result: "Result",
+    theme: "Theme",
+    unknown: "Unknown",
+    width: "Width",
+    widthPercentage: "Width (%)",
   },
   errors: {
     noImageData: "No image data",
@@ -167,3 +182,4 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
+

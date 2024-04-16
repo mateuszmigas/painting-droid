@@ -27,6 +27,7 @@ import { command as cutImage } from "./cutImage";
 import { command as checkForUpdate } from "./checkForUpdate";
 import { command as openCropCanvasDialog } from "./openCropCanvasDialog";
 import { command as openResizeCanvasDialog } from "./openResizeCanvasDialog";
+import { command as openSettingsDialog } from "./openSettingsDialog";
 
 export const commands = {
   saveAsPng,
@@ -58,6 +59,7 @@ export const commands = {
   checkForUpdate,
   openCropCanvasDialog,
   openResizeCanvasDialog,
+  openSettingsDialog,
 } as const;
 
 export type CommandId = keyof typeof commands;
@@ -74,3 +76,4 @@ export type ExecuteCommand = (
 ) => Promise<void>;
 
 export type ExecuteCommandWithDefaults = (id: CommandId) => Promise<void>;
+

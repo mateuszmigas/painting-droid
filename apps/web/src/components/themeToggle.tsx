@@ -6,6 +6,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSettingsStore } from "@/store";
 import { Icon } from "./icons/icon";
+import { themes } from "@/contants";
+import { getTranslations } from "@/translations";
+const translations = getTranslations();
 
 export const ModeToggle = () => {
   const setTheme = useSettingsStore((state) => state.setTheme);
@@ -33,15 +36,11 @@ export const ModeToggle = () => {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
+        {themes.map((theme) => (
+          <DropdownMenuItem key={theme} onClick={() => setTheme(theme)}>
+            {translations.themes[theme]}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

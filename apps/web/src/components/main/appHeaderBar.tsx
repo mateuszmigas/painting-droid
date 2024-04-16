@@ -79,6 +79,7 @@ export const AppHeaderBar = memo(() => {
       </div>
       <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
       <div className="flex flex-row justify-center items-center pr-small gap-small">
+        <CommandIconButton commandId="openSettingsDialog" />
         <IconAnchor
           type="bug"
           size="small"
@@ -95,3 +96,4 @@ export const AppHeaderBar = memo(() => {
     </div>
   );
 });
+

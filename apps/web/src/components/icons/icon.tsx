@@ -56,6 +56,7 @@ import {
   MoveDownRight,
   ArrowDownFromLine,
   Scaling,
+  Settings,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -121,7 +122,8 @@ export type IconType =
   | "anchor-top-right"
   | "anchor-bottom-left"
   | "anchor-bottom-right"
-  | "resize";
+  | "resize"
+  | "settings";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -283,6 +285,8 @@ const renderLucideIcon = (
       );
     case "resize":
       return <Scaling className={className} size={fontSize} />;
+    case "settings":
+      return <Settings className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
@@ -296,3 +300,4 @@ export const Icon = (props: {
   const { type, size, className } = props;
   return renderLucideIcon(type, size, className);
 };
+
