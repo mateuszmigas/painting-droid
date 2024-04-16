@@ -39,7 +39,7 @@ export default defineConfig(async () => ({
   clearScreen: false,
   server: {
     open: !isDesktop,
-    port: 1420,
+    port: isDesktop ? 1420 : 1421,
     strictPort: true,
     watch: {},
   },
@@ -52,3 +52,4 @@ export default defineConfig(async () => ({
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
   },
 }));
+
