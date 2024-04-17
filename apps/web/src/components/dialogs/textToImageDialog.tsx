@@ -23,11 +23,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { uuid } from "@/utils/uuid";
-import { textToImageModels } from "@/models/text-to-image";
 import { getTranslations } from "@/translations";
 import { useCanvasActionDispatcher } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
 import { ImageFromBlob } from "../image/imageFromBlob";
+import { useSettingsStore } from "@/store";
+import { modelDefinitions, textToImageModelTypes } from "@/models/definitions";
+import type { TextToImageModel } from "@/models/types/textToImageModel";
 
 const translations = getTranslations();
 
@@ -35,39 +37,54 @@ const FormSchema = z.object({
   prompt: z.string().min(10, {
     message: "Prompt must be at least 10 characters.",
   }),
-  model: z.string(),
-  size: z.string(),
+  modelId: z.string(),
+  sizeId: z.string(),
 });
 
-const demoModel = textToImageModels.demo_stability_ai;
-const availableSizes = demoModel.sizes.map((size) => {
-  return { id: uuid(), width: size.width, height: size.height };
-});
+const sizeToId = (size: Size) => `${size.width}x${size.height}`;
+const sizeFromId = (id: string) => {
+  const [width, height] = id.split("x").map(Number);
+  return { width, height };
+};
 
 export const TextToImageDialog = memo((props: { close: () => void }) => {
   const { close } = props;
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const { executeCommand } = useCommandService();
+  const userModels = useSettingsStore((state) => state.userModels);
+  const allModels = userModels
+    .filter((model) => textToImageModelTypes.includes(model.type))
+    .map((model) => ({
+      data: model,
+      definition: modelDefinitions.find(
+        (md) => md.type === model.type
+      ) as TextToImageModel,
+    }));
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       prompt: "a cat with a nice hat",
-      model: "demo",
-      size: availableSizes[0].id,
+      modelId: allModels[0].data.id,
+      sizeId: sizeToId(allModels[0].definition.textToImage.sizes[0]),
     },
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [image, setImage] = useState<Blob | null>(null);
+  const availableSizes =
+    allModels.find((model) => model.data.id === form.watch("modelId"))
+      ?.definition.textToImage.sizes || [];
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);
 
-    const size = availableSizes.findIndex(
-      (size) => size.id === form.watch("size")
-    );
+    const size = sizeFromId(form.watch("sizeId"));
+    const modelDefinition = allModels.find(
+      (model) => model.data.id === data.modelId
+    )!.definition;
 
-    demoModel
-      .execute(data.prompt, availableSizes[size])
+    modelDefinition.textToImage
+      .execute(data.prompt, size)
       .then((img) => {
         setImage(img.data);
         setIsGenerating(false);
@@ -105,9 +122,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     close();
   };
 
-  const currentSize = availableSizes[
-    availableSizes.findIndex((size) => size.id === form.watch("size"))
-  ] as Size;
+  const currentSize = sizeFromId(form.watch("sizeId"));
   const { scale } = scaleRectangleToFitParent(
     { x: 0, y: 0, ...currentSize },
     { width: 320, height: 320 },
@@ -146,7 +161,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
               <div className="w-full flex flex-row gap-big">
                 <FormField
                   control={form.control}
-                  name="model"
+                  name="modelId"
                   render={({ field }) => (
                     <FormItem className="w-[50%]">
                       <FormLabel>Model</FormLabel>
@@ -160,7 +175,14 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="demo">Demo</SelectItem>
+                          {allModels.map((model) => (
+                            <SelectItem
+                              key={model.data.id}
+                              value={model.data.id}
+                            >
+                              {model.data.display}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -169,7 +191,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                 />
                 <FormField
                   control={form.control}
-                  name="size"
+                  name="sizeId"
                   render={({ field }) => (
                     <FormItem className="w-[50%]">
                       <FormLabel>Size</FormLabel>
@@ -183,11 +205,14 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {availableSizes.map((size) => (
-                            <SelectItem key={size.id} value={size.id}>
-                              {size.width}x{size.height}
-                            </SelectItem>
-                          ))}
+                          {availableSizes.map((size) => {
+                            const id = sizeToId(size);
+                            return (
+                              <SelectItem key={id} value={id}>
+                                {size.width}x{size.height}
+                              </SelectItem>
+                            );
+                          })}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -238,3 +263,4 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
+

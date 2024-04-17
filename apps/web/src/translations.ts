@@ -90,7 +90,7 @@ const translations = {
       title: "Settings",
       types: {
         general: "General",
-        models: "Models",
+        models: "AI Models",
       },
     },
     resizeCanvas: {

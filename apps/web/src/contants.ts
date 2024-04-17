@@ -17,3 +17,13 @@ export const domNames = {
 
 export const themes = ["light", "dark", "system"] as const;
 
+export const markerColors = [
+  "#6895D2",
+  "#007F73",
+  "#F3B95F",
+  "#D04848",
+  "#0802A3",
+  "#4CCD99",
+  "#FFF455",
+];
+

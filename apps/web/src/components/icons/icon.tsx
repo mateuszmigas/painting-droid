@@ -57,6 +57,9 @@ import {
   ArrowDownFromLine,
   Scaling,
   Settings,
+  Trash2,
+  PlusCircle,
+  ExternalLink,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -123,7 +126,10 @@ export type IconType =
   | "anchor-bottom-left"
   | "anchor-bottom-right"
   | "resize"
-  | "settings";
+  | "settings"
+  | "trash"
+  | "plus-circle"
+  | "external-link";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -287,6 +293,12 @@ const renderLucideIcon = (
       return <Scaling className={className} size={fontSize} />;
     case "settings":
       return <Settings className={className} size={fontSize} />;
+    case "trash":
+      return <Trash2 className={className} size={fontSize} />;
+    case "plus-circle":
+      return <PlusCircle className={className} size={fontSize} />;
+    case "external-link":
+      return <ExternalLink className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
