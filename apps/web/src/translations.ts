@@ -72,6 +72,17 @@ const translations = {
     },
   },
   dialogs: {
+    settingsDialog: {
+      title: "Settings",
+      tabs: {
+        general: {
+          title: "General",
+        },
+        models: {
+          title: "AI Models",
+        },
+      },
+    },
     cropCanvas: {
       title: "Crop Canvas",
       types: {
@@ -182,4 +193,3 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
-

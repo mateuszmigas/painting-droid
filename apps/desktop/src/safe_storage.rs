@@ -18,4 +18,15 @@ impl SafeStorage {
     pub fn get_password(&self) -> Result<String> {
         self.entry.get_password()
     }
+
+    pub fn delete_password(&self) -> Result<()> {
+        self.entry.delete_password()
+    }
+
+    pub fn has_password(&self) -> Result<bool> {
+        match self.entry.get_password() {
+            Ok(_) => Ok(true),
+            Err(_) => Ok(false),
+        }
+    }
 }

@@ -1,7 +1,9 @@
 export type ApiClient = {
   post: (
     url: string,
-    body: { type: "json"; data: string }
+    options: {
+      body: string;
+      headers: Record<string, string>;
+    }
   ) => Promise<{ status: number; data: string }>;
 };
-

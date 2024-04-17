@@ -1,4 +1,3 @@
-import { environment } from "@/environment";
 import type { Size } from "@/utils/common";
 import type { TextToImageModel } from "./types/textToImageModel";
 import { base64ToBlob } from "@/utils/image";
@@ -9,6 +8,7 @@ export const model = {
   defaultName: "Stability AI",
   predefined: false,
   url: "https://stability.ai/",
+  useApiKey: true,
   textToImage: {
     sizes: [
       { width: 1024, height: 1024 },
@@ -22,9 +22,28 @@ export const model = {
       { width: 896, height: 1152 },
     ],
     execute: async (prompt: string, size: Size) => {
-      const result = await apiClient.post(environment.DEMO_API_URL, {
-        type: "json",
-        data: JSON.stringify({ prompt, size }),
+      const url =
+        "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image";
+
+      const body = {
+        steps: 10,
+        width: size.width,
+        height: size.height,
+        seed: 0,
+        cfg_scale: 5,
+        samples: 1,
+        text_prompts: [{ text: prompt, weight: 1 }],
+      };
+
+      const headers = {
+        "content-type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer __API_KEY__",
+      };
+
+      const result = await apiClient.post(url, {
+        body: JSON.stringify(body),
+        headers,
       });
 
       if (result.status === 429) {
@@ -47,4 +66,3 @@ export const model = {
     },
   },
 } as const satisfies TextToImageModel;
-

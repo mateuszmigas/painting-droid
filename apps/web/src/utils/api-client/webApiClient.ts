@@ -1,11 +1,17 @@
 import type { ApiClient } from "./apiClient";
 
 export const webApiClient: ApiClient = {
-  post: async (url: string, body: { type: "json"; data: string }) => {
+  post: async (
+    url: string,
+    options: {
+      body: string;
+      headers: Record<string, string>;
+    }
+  ) => {
     const result = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": `application/${body.type}` },
-      body: body.data,
+      headers: options.headers,
+      body: options.body,
     });
     if (result.status === 200) {
       return {
@@ -16,4 +22,3 @@ export const webApiClient: ApiClient = {
     return { status: result.status, data: "" };
   },
 };
-

@@ -6,9 +6,9 @@ import { apiClient } from "@/utils/api-client";
 
 export const model = {
   type: "demo",
-  defaultName: "Demo Stability AI",
+  defaultName: "Demo",
   predefined: true,
-  url: "https://stability.ai/",
+  url: "https://painting-droid-web.vercel.app",
   textToImage: {
     sizes: [
       { width: 1024, height: 1024 },
@@ -22,9 +22,17 @@ export const model = {
       { width: 896, height: 1152 },
     ],
     execute: async (prompt: string, size: Size) => {
-      const result = await apiClient.post(environment.DEMO_API_URL, {
-        type: "json",
-        data: JSON.stringify({ prompt, size }),
+      const url = environment.DEMO_API_URL;
+      const body = { prompt, size };
+
+      const headers = {
+        "content-type": "application/json",
+        Accept: "application/json",
+      };
+
+      const result = await apiClient.post(url, {
+        body: JSON.stringify(body),
+        headers,
       });
 
       if (result.status === 429) {
@@ -47,4 +55,3 @@ export const model = {
     },
   },
 } as const satisfies TextToImageModel;
-

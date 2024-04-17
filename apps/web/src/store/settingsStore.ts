@@ -30,11 +30,26 @@ const defaultState: AppSettingsState = {
 
 type AppSettingsSlice = AppSettingsState & {
   setTheme: (theme: ThemeType) => void;
+  addModel: (model: AppUserModelState) => void;
+  updateModel: (id: string, model: Partial<AppUserModelState>) => void;
+  removeModel: (id: string) => void;
 };
 
 export const settingsStoreCreator: StateCreator<AppSettingsSlice> = (set) => ({
   ...defaultState,
   setTheme: (theme) => set({ theme }),
+  addModel: (model) =>
+    set((state) => ({ userModels: [...state.userModels, model] })),
+  updateModel: (id, model) =>
+    set((state) => ({
+      userModels: state.userModels.map((existing) =>
+        existing.id === id ? { ...existing, ...model } : existing
+      ),
+    })),
+  removeModel: (id) =>
+    set((state) => ({
+      userModels: state.userModels.filter((m) => m.id !== id),
+    })),
 });
 
 export const useSettingsStore = create<AppSettingsSlice>()(
@@ -43,4 +58,3 @@ export const useSettingsStore = create<AppSettingsSlice>()(
     createSyncStorage({ version: 4, name: "settings" })
   )
 );
-

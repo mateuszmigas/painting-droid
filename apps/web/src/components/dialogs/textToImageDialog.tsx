@@ -54,33 +54,37 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
   const userModels = useSettingsStore((state) => state.userModels);
   const allModels = userModels
     .filter((model) => textToImageModelTypes.includes(model.type))
-    .map((model) => ({
-      data: model,
-      definition: modelDefinitions.find(
-        (md) => md.type === model.type
-      ) as TextToImageModel,
-    }));
+    .map((model) => {
+      const definition = modelDefinitions.find(
+        (modelDefinition) => modelDefinition.type === model.type
+      ) as TextToImageModel;
+      return {
+        id: model.id,
+        display: model.display.trim() ? model.display : definition.defaultName,
+        definition,
+      };
+    });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       prompt: "a cat with a nice hat",
-      modelId: allModels[0].data.id,
+      modelId: allModels[0].id,
       sizeId: sizeToId(allModels[0].definition.textToImage.sizes[0]),
     },
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [image, setImage] = useState<Blob | null>(null);
   const availableSizes =
-    allModels.find((model) => model.data.id === form.watch("modelId"))
-      ?.definition.textToImage.sizes || [];
+    allModels.find((model) => model.id === form.watch("modelId"))?.definition
+      .textToImage.sizes || [];
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);
 
     const size = sizeFromId(form.watch("sizeId"));
     const modelDefinition = allModels.find(
-      (model) => model.data.id === data.modelId
+      (model) => model.id === data.modelId
     )!.definition;
 
     modelDefinition.textToImage
@@ -136,10 +140,10 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
       </DialogHeader>
       <Form {...form}>
         <form
-          className="flex flex-col gap-big sm:flex-row "
+          className="flex flex-col gap-big sm:flex-row"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col items-center justify-center gap-big size-full">
+          <div className="flex basis-0 flex-col items-center justify-center gap-big size-full">
             <div
               style={{
                 width: `${currentSize.width * scale}px`,
@@ -156,14 +160,14 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-big justify-between min-w-64">
+          <div className="flex flex-grow flex-col gap-big justify-between min-w-64">
             <div className="w-full flex flex-col gap-big mb-big">
               <div className="w-full flex flex-row gap-big">
                 <FormField
                   control={form.control}
                   name="modelId"
                   render={({ field }) => (
-                    <FormItem className="w-[50%]">
+                    <FormItem className="min-w-[200px] w-[50%]">
                       <FormLabel>Model</FormLabel>
                       <Select
                         onValueChange={field.onChange}
@@ -176,11 +180,8 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                         </FormControl>
                         <SelectContent>
                           {allModels.map((model) => (
-                            <SelectItem
-                              key={model.data.id}
-                              value={model.data.id}
-                            >
-                              {model.data.display}
+                            <SelectItem key={model.id} value={model.id}>
+                              {model.display}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -193,7 +194,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                   control={form.control}
                   name="sizeId"
                   render={({ field }) => (
-                    <FormItem className="w-[50%]">
+                    <FormItem className="min-w-[120px] w-[50%]">
                       <FormLabel>Size</FormLabel>
                       <Select
                         onValueChange={field.onChange}
@@ -263,4 +264,3 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

@@ -2,10 +2,17 @@ import { invoke } from "@tauri-apps/api/core";
 import type { ApiClient } from "./apiClient";
 
 export const desktopApiClient: ApiClient = {
-  post: async (url: string, body: { type: "json"; data: string }) => {
+  post: async (
+    url: string,
+    options: {
+      body: string;
+      headers: Record<string, string>;
+    }
+  ) => {
     const result = (await invoke("send_request", {
       url,
-      body: body.data,
+      body: options.body,
+      headers: options.headers,
     })) as {
       status: number;
       data: string;
@@ -13,4 +20,3 @@ export const desktopApiClient: ApiClient = {
     return result;
   },
 };
-
