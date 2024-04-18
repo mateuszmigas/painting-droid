@@ -46,17 +46,7 @@ pub async fn safe_storage_set(key: String, value: String) -> Result<(), String> 
 }
 
 #[tauri::command]
-pub async fn safe_storage_has(key: String) -> Result<bool, String> {
-    let storage = get_storage(&key)?;
-
-    match storage.has_password() {
-        Ok(has_password) => Ok(has_password),
-        Err(e) => Err(e.to_string()),
-    }
-}
-
-#[tauri::command]
-pub async fn safe_storage_remove(key: String) -> Result<(), String> {
+pub async fn safe_storage_delete(key: String) -> Result<(), String> {
     let storage = get_storage(&key)?;
 
     match storage.delete_password() {

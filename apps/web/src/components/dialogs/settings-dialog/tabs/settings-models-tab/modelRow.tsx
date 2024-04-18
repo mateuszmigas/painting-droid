@@ -12,6 +12,9 @@ import { safeStorage } from "@/utils/safe-storage";
 import { ModelBadges } from "./modelBadges";
 import { defaultSecureKeyPlaceholder } from "./settingsModelsTab";
 import { useScrollAndFocus } from "@/hooks";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 export const ModelRow = (props: {
   userModel: AppUserModelState;
@@ -48,7 +51,7 @@ export const ModelRow = (props: {
       {!modelDefinition.predefined && (
         <div className="flex flex-row gap-big w-full">
           <div className="flex flex-col gap-medium flex-1">
-            <Label>Name</Label>
+            <Label>{translations.general.name}</Label>
             <Input
               value={userModel.display}
               ref={inputRef}
@@ -61,7 +64,7 @@ export const ModelRow = (props: {
           {modelDefinition?.useApiKey && (
             <div className="flex flex-col gap-medium flex-[2]">
               <Label className={!secureKeyValue ? "text-destructive" : ""}>
-                Api Key
+                {translations.general.secret}
               </Label>
               <div className="flex flex-row gap-medium items-center justify-center">
                 <Input

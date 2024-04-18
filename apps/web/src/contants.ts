@@ -27,3 +27,6 @@ export const markerColors = [
   "#FFF455",
 ];
 
+export const links = {
+  downloadDesktop: "https://github.com/mateuszmigas/painting-droid/releases",
+};

@@ -72,7 +72,7 @@ const translations = {
     },
   },
   dialogs: {
-    settingsDialog: {
+    settings: {
       title: "Settings",
       tabs: {
         general: {
@@ -80,6 +80,9 @@ const translations = {
         },
         models: {
           title: "AI Models",
+          addModel: "Add Model",
+          message:
+            "Models using API keys need a desktop version for secure storage",
         },
       },
     },
@@ -95,13 +98,6 @@ const translations = {
       errors: {
         tooSmall: "Crop area too small",
         outOfBounds: "Crop area out of bounds",
-      },
-    },
-    settings: {
-      title: "Settings",
-      types: {
-        general: "General",
-        models: "AI Models",
       },
     },
     resizeCanvas: {
@@ -163,9 +159,12 @@ const translations = {
     apply: "Apply",
     cancel: "Cancel",
     close: "Close",
+    download: "Download",
     height: "Height",
     heightPercentage: "Height (%)",
     images: "Images",
+    name: "Name",
+    secret: "Secret (API Key)",
     loading: "Loading",
     offsets: "Offsets",
     process: "Process",
@@ -193,3 +192,4 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
+

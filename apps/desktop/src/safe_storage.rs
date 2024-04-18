@@ -22,11 +22,4 @@ impl SafeStorage {
     pub fn delete_password(&self) -> Result<()> {
         self.entry.delete_password()
     }
-
-    pub fn has_password(&self) -> Result<bool> {
-        match self.entry.get_password() {
-            Ok(_) => Ok(true),
-            Err(_) => Ok(false),
-        }
-    }
 }

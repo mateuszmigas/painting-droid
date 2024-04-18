@@ -66,3 +66,4 @@ export const model = {
     },
   },
 } as const satisfies TextToImageModel;
+

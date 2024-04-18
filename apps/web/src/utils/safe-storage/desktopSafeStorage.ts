@@ -5,6 +5,6 @@ export const desktopSafeStorage: PlatformSafeStorage = {
   set: async (key: string, value: string) => {
     await invoke("safe_storage_set", { key, value });
   },
-  delete: async (key: string) => invoke("safe_storage_remove", { key }),
+  delete: async (key: string) => invoke("safe_storage_delete", { key }),
 };
 

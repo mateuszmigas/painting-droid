@@ -30,10 +30,10 @@ export const SettingsDialog = memo(
             <div className="w-full flex justify-start pb-medium">
               <TabsList className="justify-start">
                 <TabsTrigger value="general">
-                  {dialogTranslations.types.general}
+                  {dialogTranslations.tabs.general.title}
                 </TabsTrigger>
                 <TabsTrigger value="models">
-                  {dialogTranslations.types.models}
+                  {dialogTranslations.tabs.models.title}
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -49,3 +49,4 @@ export const SettingsDialog = memo(
     );
   }
 );
+

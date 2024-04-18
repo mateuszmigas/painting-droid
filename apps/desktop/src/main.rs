@@ -20,8 +20,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             commands::send_request,
             commands::safe_storage_set,
-            commands::safe_storage_has,
-            commands::safe_storage_remove
+            commands::safe_storage_delete
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
