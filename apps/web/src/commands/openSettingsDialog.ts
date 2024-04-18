@@ -11,9 +11,7 @@ export const command = createCommand({
   icon: "settings",
   options: { showInPalette: true },
   execute: async (context: CommandContext) => {
-    await context.dialogService.openDialog(SettingsDialog, {
-      initialTab: "models",
-    });
+    await context.dialogService.openDialog(SettingsDialog, {});
   },
 });
 

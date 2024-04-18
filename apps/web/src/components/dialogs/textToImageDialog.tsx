@@ -181,7 +181,9 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                         <SelectContent>
                           {allModels.map((model) => (
                             <SelectItem key={model.id} value={model.id}>
-                              {model.display}
+                              <div className="truncate max-w-[300px]">
+                                {model.display}
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -264,3 +266,4 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
+

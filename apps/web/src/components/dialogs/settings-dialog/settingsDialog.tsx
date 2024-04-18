@@ -17,13 +17,13 @@ export const SettingsDialog = memo(
     );
 
     return (
-      <DialogContent style={{ minWidth: "450px", maxWidth: "600px" }}>
+      <DialogContent style={{ minWidth: "350px", maxWidth: "600px" }}>
         <DialogHeader>
           <DialogTitle>{dialogTranslations.title}</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-big sm:flex-row relative sm:items-start items-center min-w-0">
+        <div className="h-96 flex flex-col gap-big sm:flex-row relative sm:items-start items-center min-w-0">
           <Tabs
-            className="w-full"
+            className="size-full flex flex-col"
             value={selectedTab}
             onValueChange={setSelectedTab as (value: string) => void}
           >
@@ -37,10 +37,18 @@ export const SettingsDialog = memo(
                 </TabsTrigger>
               </TabsList>
             </div>
-            <TabsContent value="general" tabIndex={-1}>
+            <TabsContent
+              className="flex-1 min-h-0"
+              value="general"
+              tabIndex={-1}
+            >
               <SettingsGeneralTab />
             </TabsContent>
-            <TabsContent value="models" tabIndex={-1}>
+            <TabsContent
+              className="flex-1 min-h-0"
+              value="models"
+              tabIndex={-1}
+            >
               <SettingsModelsTab />
             </TabsContent>
           </Tabs>

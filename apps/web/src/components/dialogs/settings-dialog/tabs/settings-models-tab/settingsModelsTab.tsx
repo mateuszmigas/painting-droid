@@ -39,8 +39,8 @@ export const SettingsModelsTab = memo(() => {
   const scrollTo = useRef<number | null>(null);
 
   return (
-    <div className="flex flex-row gap-big">
-      <div className="flex flex-col gap-big w-full">
+    <div className="size-full flex flex-row gap-big">
+      <div className="flex flex-col gap-big w-full flex-1">
         {models.length > 0 && (
           <div className="flex flex-row gap-medium">
             <Select
@@ -77,7 +77,7 @@ export const SettingsModelsTab = memo(() => {
             </Button>
           </div>
         )}
-        <ScrollArea className="whitespace-nowrap h-96 overflow-auto">
+        <ScrollArea className="whitespace-nowrap overflow-auto flex-1">
           <div
             ref={hostRef}
             className="relative flex flex-col gap-medium w-full"
