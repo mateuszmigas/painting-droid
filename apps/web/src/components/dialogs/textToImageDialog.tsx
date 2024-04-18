@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { scaleRectangleToFitParent, type Size } from "@/utils/common";
 import { Input } from "../ui/input";
 import { Icon } from "../icons/icon";
@@ -23,11 +23,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { uuid } from "@/utils/uuid";
-import { textToImageModels } from "@/models/text-to-image";
 import { getTranslations } from "@/translations";
 import { useCanvasActionDispatcher } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
 import { ImageFromBlob } from "../image/imageFromBlob";
+import { useSettingsStore } from "@/store";
+import { modelDefinitions, textToImageModelTypes } from "@/models/definitions";
+import type { TextToImageModel } from "@/models/types/textToImageModel";
 
 const translations = getTranslations();
 
@@ -35,39 +37,71 @@ const FormSchema = z.object({
   prompt: z.string().min(10, {
     message: "Prompt must be at least 10 characters.",
   }),
-  model: z.string(),
-  size: z.string(),
+  modelId: z.string(),
+  sizeId: z.string(),
 });
 
-const demoModel = textToImageModels.demo_stability_ai;
-const availableSizes = demoModel.sizes.map((size) => {
-  return { id: uuid(), width: size.width, height: size.height };
-});
+const sizeToId = (size: Size) => `${size.width}x${size.height}`;
+const sizeFromId = (id: string) => {
+  const [width, height] = id.split("x").map(Number);
+  return { width, height };
+};
 
 export const TextToImageDialog = memo((props: { close: () => void }) => {
   const { close } = props;
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const { executeCommand } = useCommandService();
+  const userModels = useSettingsStore((state) => state.userModels);
+  const allModels = userModels
+    .filter((model) => textToImageModelTypes.includes(model.type))
+    .map((model) => {
+      const definition = modelDefinitions.find(
+        (modelDefinition) => modelDefinition.type === model.type
+      ) as TextToImageModel;
+      return {
+        id: model.id,
+        display: model.display.trim() ? model.display : definition.defaultName,
+        definition,
+      };
+    });
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       prompt: "a cat with a nice hat",
-      model: "demo",
-      size: availableSizes[0].id,
+      modelId: allModels[0].id,
+      sizeId: sizeToId(allModels[0].definition.textToImage.sizes[0]),
     },
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [image, setImage] = useState<Blob | null>(null);
+  const availableSizes =
+    allModels.find((model) => model.id === form.watch("modelId"))?.definition
+      .textToImage.sizes || [];
+
+  const modelId = form.watch("modelId");
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run when modelId changes
+  useEffect(() => {
+    if (modelId) {
+      const firstSize = sizeToId(
+        allModels.find((model) => model.id === modelId)!.definition.textToImage
+          .sizes[0]
+      );
+      form.setValue("sizeId", firstSize);
+    }
+  }, [modelId]);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);
 
-    const size = availableSizes.findIndex(
-      (size) => size.id === form.watch("size")
-    );
+    const size = sizeFromId(form.watch("sizeId"));
+    const modelDefinition = allModels.find(
+      (model) => model.id === data.modelId
+    )!.definition;
 
-    demoModel
-      .execute(data.prompt, availableSizes[size])
+    modelDefinition.textToImage
+      .execute(modelId, data.prompt, size)
       .then((img) => {
         setImage(img.data);
         setIsGenerating(false);
@@ -105,9 +139,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     close();
   };
 
-  const currentSize = availableSizes[
-    availableSizes.findIndex((size) => size.id === form.watch("size"))
-  ] as Size;
+  const currentSize = sizeFromId(form.watch("sizeId"));
   const { scale } = scaleRectangleToFitParent(
     { x: 0, y: 0, ...currentSize },
     { width: 320, height: 320 },
@@ -121,10 +153,10 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
       </DialogHeader>
       <Form {...form}>
         <form
-          className="flex flex-col gap-big sm:flex-row "
+          className="flex flex-col gap-big sm:flex-row"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col items-center justify-center gap-big size-full">
+          <div className="flex basis-0 flex-col items-center justify-center gap-big size-full">
             <div
               style={{
                 width: `${currentSize.width * scale}px`,
@@ -141,18 +173,18 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-big justify-between min-w-64">
+          <div className="flex flex-grow flex-col gap-big justify-between min-w-64">
             <div className="w-full flex flex-col gap-big mb-big">
               <div className="w-full flex flex-row gap-big">
                 <FormField
                   control={form.control}
-                  name="model"
+                  name="modelId"
                   render={({ field }) => (
-                    <FormItem className="w-[50%]">
+                    <FormItem className="min-w-[200px] w-[50%]">
                       <FormLabel>Model</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -160,7 +192,13 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="demo">Demo</SelectItem>
+                          {allModels.map((model) => (
+                            <SelectItem key={model.id} value={model.id}>
+                              <div className="truncate max-w-[300px]">
+                                {model.display}
+                              </div>
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -169,13 +207,13 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                 />
                 <FormField
                   control={form.control}
-                  name="size"
+                  name="sizeId"
                   render={({ field }) => (
-                    <FormItem className="w-[50%]">
+                    <FormItem className="min-w-[120px] w-[50%]">
                       <FormLabel>Size</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value as never}
+                        value={field.value as never}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -183,11 +221,14 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {availableSizes.map((size) => (
-                            <SelectItem key={size.id} value={size.id}>
-                              {size.width}x{size.height}
-                            </SelectItem>
-                          ))}
+                          {availableSizes.map((size) => {
+                            const id = sizeToId(size);
+                            return (
+                              <SelectItem key={id} value={id}>
+                                {size.width}x{size.height}
+                              </SelectItem>
+                            );
+                          })}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -238,3 +279,4 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
+

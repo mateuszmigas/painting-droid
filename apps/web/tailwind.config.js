@@ -1,10 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 
 const space = {
-  ["very-small"]: "0.125rem",
+  "very-small": "0.125rem",
   small: "0.25rem",
   medium: "0.5rem",
-  big: "1rem",
+  big: "0.75rem",
 };
 
 

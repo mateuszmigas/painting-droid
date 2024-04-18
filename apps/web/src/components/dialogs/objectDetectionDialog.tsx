@@ -1,11 +1,13 @@
-import type { ObjectDetectionResult } from "@/models/object-detection/objectDetectionModel";
+import type {
+  ObjectDetectionModel,
+  ObjectDetectionResult,
+} from "@/models/types/objectDetectionModel";
 import { getTranslations } from "@/translations";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { memo, useState } from "react";
 import { Icon } from "../icons/icon";
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { objectDetectionModels } from "@/models/object-detection";
 import { ImageFit } from "../image/imageFit";
 import { Label } from "../ui/label";
 import { Progress } from "../ui/progress";
@@ -16,32 +18,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useWorkspacesStore } from "@/store";
+import { useSettingsStore, useWorkspacesStore } from "@/store";
 import {
   activeWorkspaceActiveLayerSelector,
   activeWorkspaceCanvasDataSelector,
 } from "@/store/workspacesStore";
 import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
 import { ImageProcessor } from "@/utils/imageProcessor";
+import {
+  modelDefinitions,
+  objectDetectionModelTypes,
+} from "@/models/definitions";
+import { markerColors } from "@/contants";
 
-const colors = [
-  "#D04848",
-  "#F3B95F",
-  "#6895D2",
-  "#0802A3",
-  "#007F73",
-  "#4CCD99",
-  "#FFF455",
-];
-
-const getColor = (index: number) => colors[index % colors.length];
+const getColor = (index: number) => markerColors[index % markerColors.length];
 
 const translations = getTranslations();
-
-const models = Object.entries(objectDetectionModels).map(([key, value]) => ({
-  value: key,
-  label: value.name,
-}));
 
 const applyResultToImage = (
   imageData: ImageCompressedData,
@@ -77,8 +69,18 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
   const size = useWorkspacesStore(
     (state) => activeWorkspaceCanvasDataSelector(state).size
   );
+  const userModels = useSettingsStore((state) => state.userModels);
+  const allModels = userModels
+    .filter((model) => objectDetectionModelTypes.includes(model.type))
+    .map((model) => ({
+      data: model,
+      definition: modelDefinitions.find(
+        (md) => md.type === model.type
+      ) as ObjectDetectionModel,
+    }));
+  console.log(userModels);
   const canvasActionDispatcher = useCanvasActionDispatcher();
-  const [selectedModel, setSelectedModel] = useState(models[0].value);
+  const [selectedModelId, setSelectedModelId] = useState(allModels[0].data.id);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [progressMessage, setProgressMessage] = useState<string | null>(null);
@@ -100,11 +102,11 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
     setIsProcessing(true);
 
     try {
-      const model =
-        objectDetectionModels[
-          selectedModel as keyof typeof objectDetectionModels
-        ];
-      const result = await model.execute(
+      const modelDefinition = allModels.find(
+        (model) => model.data.id === selectedModelId
+      )!.definition;
+
+      const result = await modelDefinition.detectObjects.execute(
         { data: activeLayer.data!, ...size },
         (progress, message) => {
           progress && setProgress(progress);
@@ -163,14 +165,14 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
         <div className="flex flex-col gap-big justify-between min-w-64">
           <div className="flex flex-col gap-medium">
             <Label>Model</Label>
-            <Select value={selectedModel} onValueChange={setSelectedModel}>
+            <Select value={selectedModelId} onValueChange={setSelectedModelId}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {models.map((model) => (
-                  <SelectItem key={model.value} value={model.value}>
-                    {model.label}
+                {allModels.map((model) => (
+                  <SelectItem key={model.data.id} value={model.data.id}>
+                    {model.data.display}
                   </SelectItem>
                 ))}
               </SelectContent>

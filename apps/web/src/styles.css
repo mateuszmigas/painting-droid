@@ -90,4 +90,9 @@
     border: 1px solid hsl(var(--input));
     @apply rounded-md;
   }
+
+  .remove-table-child > div {
+    display: block !important;
+  }
 }
+

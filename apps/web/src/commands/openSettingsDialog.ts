@@ -1,7 +1,7 @@
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { getTranslations } from "@/translations";
-import { SettingsDialog } from "@/components/dialogs/settingsDialog";
+import { SettingsDialog } from "@/components/dialogs/settings-dialog/settingsDialog";
 
 const translations = getTranslations();
 
