@@ -10,6 +10,7 @@ export type AppUserModelState = {
   id: string;
   type: ModelType;
   display: string;
+  secureKeySet?: boolean;
 };
 
 type AppSettingsState = {
