@@ -100,7 +100,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 
 - [ ] Stable Diffusion Docker image for local server
 - [ ] Integration with DALL-E
-- [ ] Integration with Stability.ai
+- [x] Integration with Stability.ai
 - [ ] Integration with Midjourney
 
 ### Post MVP
