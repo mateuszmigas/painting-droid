@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { scaleRectangleToFitParent, type Size } from "@/utils/common";
 import { Input } from "../ui/input";
 import { Icon } from "../icons/icon";
@@ -78,6 +78,19 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
   const availableSizes =
     allModels.find((model) => model.id === form.watch("modelId"))?.definition
       .textToImage.sizes || [];
+
+  const modelId = form.watch("modelId");
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run when modelId changes
+  useEffect(() => {
+    if (modelId) {
+      const firstSize = sizeToId(
+        allModels.find((model) => model.id === modelId)!.definition.textToImage
+          .sizes[0]
+      );
+      form.setValue("sizeId", firstSize);
+    }
+  }, [modelId]);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);
@@ -171,7 +184,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                       <FormLabel>Model</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -200,7 +213,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                       <FormLabel>Size</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value as never}
+                        value={field.value as never}
                       >
                         <FormControl>
                           <SelectTrigger>
