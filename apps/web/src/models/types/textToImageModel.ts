@@ -5,7 +5,11 @@ import type { BaseModel } from "./baseModel";
 export type TextToImageModel = BaseModel & {
   textToImage: {
     sizes: Size[];
-    execute: (text: string, size: Size) => Promise<ImageCompressed>;
+    execute: (
+      modelId: string,
+      text: string,
+      size: Size
+    ) => Promise<ImageCompressed>;
   };
 };
 

@@ -21,7 +21,7 @@ export const model = {
       { width: 832, height: 1216 },
       { width: 896, height: 1152 },
     ],
-    execute: async (prompt: string, size: Size) => {
+    execute: async (_: string, prompt: string, size: Size) => {
       const url = environment.DEMO_API_URL;
       const body = { prompt, size };
 
@@ -55,3 +55,4 @@ export const model = {
     },
   },
 } as const satisfies TextToImageModel;
+

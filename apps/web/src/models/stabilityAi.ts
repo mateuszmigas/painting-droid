@@ -21,7 +21,7 @@ export const model = {
       { width: 832, height: 1216 },
       { width: 896, height: 1152 },
     ],
-    execute: async (prompt: string, size: Size) => {
+    execute: async (modelId: string, prompt: string, size: Size) => {
       const url =
         "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image";
 
@@ -38,7 +38,7 @@ export const model = {
       const headers = {
         "content-type": "application/json",
         Accept: "application/json",
-        Authorization: "Bearer __API_KEY__",
+        Authorization: `Bearer APIKEY(${modelId})`,
       };
 
       const result = await apiClient.post(url, {

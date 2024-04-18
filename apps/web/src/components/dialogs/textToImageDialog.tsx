@@ -101,7 +101,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     )!.definition;
 
     modelDefinition.textToImage
-      .execute(data.prompt, size)
+      .execute(modelId, data.prompt, size)
       .then((img) => {
         setImage(img.data);
         setIsGenerating(false);
