@@ -99,7 +99,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 ### AI features (Desktop only)
 
 - [ ] Stable Diffusion Docker image for local server
-- [ ] Integration with DALL-E
+- [x] Integration with DALL-E
 - [x] Integration with Stability.ai
 - [ ] Integration with Midjourney
 

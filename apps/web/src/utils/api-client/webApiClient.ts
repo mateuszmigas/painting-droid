@@ -21,4 +21,14 @@ export const webApiClient: ApiClient = {
     }
     return { status: result.status, data: "" };
   },
+  getBytes: async (url: string) => {
+    const result = await fetch(url);
+    if (result.status === 200) {
+      return {
+        status: result.status,
+        data: await result.arrayBuffer(),
+      };
+    }
+    return { status: result.status, data: new ArrayBuffer(0) };
+  },
 };

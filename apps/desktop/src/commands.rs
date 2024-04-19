@@ -6,9 +6,9 @@ use reqwest;
 use regex::Regex;
 
 #[derive(serde::Serialize)]
-pub struct ApiResponse {
+pub struct ApiResponse<T> {
     status: u16,
-    data: String,
+    data: T,
 }
 
 fn convert_hashmap_to_headermap(headers: HashMap<String, String>) -> Result<HeaderMap, Box<dyn Error>> {
@@ -32,11 +32,11 @@ fn convert_hashmap_to_headermap(headers: HashMap<String, String>) -> Result<Head
 }
 
 #[tauri::command]
-pub async fn send_request(
+pub async fn send_request_post(
     url: String,
     body: String,
     headers: HashMap<String, String>,
-) -> Result<ApiResponse, String> {
+) -> Result<ApiResponse<String>, String> {
     let client = reqwest::Client::new();
     let header_map = match convert_hashmap_to_headermap(headers) {
         Ok(map) => map,
@@ -54,6 +54,33 @@ pub async fn send_request(
                     .unwrap_or_else(|_| String::from("Failed to get response text"))
             } else {
                 String::from("")
+            },
+        }),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+#[tauri::command]
+pub async fn send_request_getBytes(
+    url: String,
+) -> Result<ApiResponse<Vec<u8>>, String> {
+    let client = reqwest::Client::new();
+    let response = client.get(url).send().await;
+
+    match response {
+        Ok(response_ok) => Ok(ApiResponse {
+            status: response_ok.status().as_u16(),
+            data: if response_ok.status().is_success() {
+                let bytes = response_ok
+                    .bytes()
+                    .await;
+
+                match bytes {
+                    Ok(bytes_ok) => bytes_ok.to_vec(),
+                    Err(e) => return Err(e.to_string()),
+                }
+            } else {
+                return Err("Failed to get response bytes".to_string())
             },
         }),
         Err(e) => Err(e.to_string()),

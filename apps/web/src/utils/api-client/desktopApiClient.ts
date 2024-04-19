@@ -9,13 +9,22 @@ export const desktopApiClient: ApiClient = {
       headers: Record<string, string>;
     }
   ) => {
-    const result = (await invoke("send_request", {
+    const result = (await invoke("send_request_post", {
       url,
       body: options.body,
       headers: options.headers,
     })) as {
       status: number;
       data: string;
+    };
+    return result;
+  },
+  getBytes: async (url: string) => {
+    const result = (await invoke("send_request_getBytes", {
+      url,
+    })) as {
+      status: number;
+      data: ArrayBuffer;
     };
     return result;
   },

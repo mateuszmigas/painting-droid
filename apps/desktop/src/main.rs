@@ -17,7 +17,8 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![
-            commands::send_request,
+            commands::send_request_post,
+            commands::send_request_getBytes,
             commands::safe_storage_set,
             commands::safe_storage_delete
         ])
