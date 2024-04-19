@@ -1,7 +1,6 @@
 {
   "name": "@painting-droid/web",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -82,3 +81,4 @@
     "vitest": "^1.3.1"
   }
 }
+

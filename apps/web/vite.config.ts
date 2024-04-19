@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import solidPlugin from "vite-plugin-solid";
 import { splitVendorChunkPlugin } from "vite";
+import packageJson from "../../package.json";
 
 const isDesktop = "TAURI_ENV_PLATFORM" in process.env;
 
@@ -35,6 +36,7 @@ export default defineConfig(async () => ({
         ? process.env.TAURI_ENV_PLATFORM
         : "web"
     ),
+    "import.meta.env.version": JSON.stringify(packageJson.version),
   },
   clearScreen: false,
   server: {

@@ -11,3 +11,5 @@ export const isSafari = () =>
   !window.navigator.userAgent.includes("Firefox");
 export const isFirefox = () => window.navigator.userAgent.includes("Firefox");
 export const isChrome = () => window.navigator.userAgent.includes("Chrome");
+export const appVersion = () => import.meta.env.version;
+
