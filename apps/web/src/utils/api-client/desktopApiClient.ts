@@ -20,7 +20,7 @@ export const desktopApiClient: ApiClient = {
     return result;
   },
   getBytes: async (url: string) => {
-    const result = (await invoke("send_request_getBytes", {
+    const result = (await invoke("send_request_get_bytes", {
       url,
     })) as {
       status: number;

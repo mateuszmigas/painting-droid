@@ -61,7 +61,7 @@ pub async fn send_request_post(
 }
 
 #[tauri::command]
-pub async fn send_request_getBytes(
+pub async fn send_request_get_bytes(
     url: String,
 ) -> Result<ApiResponse<Vec<u8>>, String> {
     let client = reqwest::Client::new();
