@@ -6,7 +6,7 @@ import {
 import { Icon } from "../icons/icon";
 import type { Position } from "@/utils/common";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { useListener } from "@/hooks";
+import { useIdleCallback, useListener } from "@/hooks";
 import { memo, useEffect, useRef, useState } from "react";
 import { screenToViewportPosition } from "@/utils/manipulation";
 import { fastRound } from "@/utils/math";
@@ -48,25 +48,31 @@ export const AppStatusBar = memo(() => {
 
   useEffect(() => {
     if (isWeb()) {
-      const notificationStore = useNotificationsStore.getState();
-      if (!notificationStore.desktopVersionAvailableNotified) {
-        notificationService.showInfo(translations.updater.notifyDesktop, {
-          action: {
-            label: translations.general.download,
-            onClick: () => openLink(links.downloadDesktop),
-          },
-        });
-        notificationStore.setDesktopVersionAvailableNotified(true);
-      }
-    } else {
-      checkForUpdates().then((update) => {
-        if (update) {
-          setUpdate(update);
-          setUpdateState("available");
-        }
-      });
+      return;
     }
+    checkForUpdates().then((update) => {
+      if (update) {
+        setUpdate(update);
+        setUpdateState("available");
+      }
+    });
   }, []);
+
+  useIdleCallback(() => {
+    if (!isWeb()) {
+      return;
+    }
+    const notificationStore = useNotificationsStore.getState();
+    if (!notificationStore.desktopVersionAvailableNotified) {
+      notificationService.showInfo(translations.updater.notifyDesktop, {
+        action: {
+          label: translations.general.download,
+          onClick: () => openLink(links.downloadDesktop),
+        },
+      });
+      notificationStore.setDesktopVersionAvailableNotified(true);
+    }
+  });
 
   useListener(observableMousePosition, (position) => {
     if (positionElementRef.current && viewport) {
