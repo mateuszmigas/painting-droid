@@ -11,12 +11,15 @@ import { memo, useEffect, useRef, useState } from "react";
 import { screenToViewportPosition } from "@/utils/manipulation";
 import { fastRound } from "@/utils/math";
 import { CommandIconButton } from "../commandIconButton";
-import { domNames } from "@/contants";
+import { domNames, links } from "@/contants";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";
 import { Button } from "../ui/button";
 import { type Update, checkForUpdates } from "@/utils/updater";
 import { isWeb } from "@/utils/platform";
 import { getTranslations } from "@/translations";
+import { useNotificationsStore } from "@/store/notificationStore";
+import { notificationService } from "@/contexts/notificationService";
+import { openLink } from "@/utils/link";
 
 const translations = getTranslations();
 
@@ -45,14 +48,24 @@ export const AppStatusBar = memo(() => {
 
   useEffect(() => {
     if (isWeb()) {
-      return;
-    }
-    checkForUpdates().then((update) => {
-      if (update) {
-        setUpdate(update);
-        setUpdateState("available");
+      const notificationStore = useNotificationsStore.getState();
+      if (!notificationStore.desktopVersionAvailableNotified) {
+        notificationService.showInfo(translations.updater.notifyDesktop, {
+          action: {
+            label: translations.general.download,
+            onClick: () => openLink(links.downloadDesktop),
+          },
+        });
+        notificationStore.setDesktopVersionAvailableNotified(true);
       }
-    });
+    } else {
+      checkForUpdates().then((update) => {
+        if (update) {
+          setUpdate(update);
+          setUpdateState("available");
+        }
+      });
+    }
   }, []);
 
   useListener(observableMousePosition, (position) => {
@@ -113,3 +126,4 @@ export const AppStatusBar = memo(() => {
     </div>
   );
 });
+

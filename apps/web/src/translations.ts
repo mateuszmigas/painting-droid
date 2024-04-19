@@ -188,6 +188,7 @@ const translations = {
     installedAndRestart: "Restart to apply changes",
     restart: "Restart",
     install: "Install",
+    notifyDesktop: "Try desktop app for custom AI models",
   },
 };
 
