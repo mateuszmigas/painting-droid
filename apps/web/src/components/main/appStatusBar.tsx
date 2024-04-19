@@ -15,9 +15,9 @@ import { domNames, links } from "@/contants";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";
 import { Button } from "../ui/button";
 import { type Update, checkForUpdates } from "@/utils/updater";
-import { isWeb } from "@/utils/platform";
+import { appVersion, isWeb } from "@/utils/platform";
 import { getTranslations } from "@/translations";
-import { useNotificationsStore } from "@/store/notificationStore";
+import { useStartupStore } from "@/store/startupStore";
 import { notificationService } from "@/contexts/notificationService";
 import { openLink } from "@/utils/link";
 
@@ -59,18 +59,25 @@ export const AppStatusBar = memo(() => {
   }, []);
 
   useIdleCallback(() => {
-    if (!isWeb()) {
-      return;
+    const startupStore = useStartupStore.getState();
+
+    if (appVersion() !== startupStore.lastVersion) {
+      notificationService.showInfo(
+        translations.updater.updatedTo(appVersion())
+      );
+      startupStore.setCurrentVersion(appVersion());
     }
-    const notificationStore = useNotificationsStore.getState();
-    if (!notificationStore.desktopVersionAvailableNotified) {
-      notificationService.showInfo(translations.updater.notifyDesktop, {
-        action: {
-          label: translations.general.download,
-          onClick: () => openLink(links.downloadDesktop),
-        },
-      });
-      notificationStore.setDesktopVersionAvailableNotified(true);
+
+    if (isWeb()) {
+      if (!startupStore.desktopVersionAvailableNotified) {
+        notificationService.showInfo(translations.updater.notifyDesktop, {
+          action: {
+            label: translations.general.download,
+            onClick: () => openLink(links.downloadDesktop),
+          },
+        });
+        startupStore.setDesktopVersionAvailableNotified(true);
+      }
     }
   });
 

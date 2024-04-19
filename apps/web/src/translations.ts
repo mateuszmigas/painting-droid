@@ -181,6 +181,7 @@ const translations = {
     copyClipboardError: "Copy to clipboard error. Operation not supported.",
   },
   updater: {
+    updatedTo: (version: string) => `App updated to version ${version}`,
     available: "Update available",
     downloading: "Downloading update",
     notAvailable: "No updates available",
