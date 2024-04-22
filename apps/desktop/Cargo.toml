@@ -18,7 +18,7 @@ tauri-plugin-shell = "2.0.0-beta.3"
 tauri-plugin-dialog = "2.0.0-beta.3"
 tauri-plugin-fs = "2.0.0-beta.3"
 tauri-plugin-process = "2.0.0-beta"
-reqwest = "0.12.3"
+reqwest = "0.12.4"
 keyring = "2.3.2"
 regex = "1.10.3"
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
