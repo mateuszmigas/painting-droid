@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/apps/web"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "cargo"
+    directory: "/apps/desktop"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "cargo"
+    directory: "/core"
+    schedule:
+      interval: "weekly"
