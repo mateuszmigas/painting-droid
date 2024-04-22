@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { scaleRectangleToFitParent, type Size } from "@/utils/common";
 import { Input } from "../ui/input";
 import { Icon } from "../icons/icon";
@@ -24,21 +24,23 @@ import {
 } from "../ui/select";
 import { uuid } from "@/utils/uuid";
 import { getTranslations } from "@/translations";
-import { useCanvasActionDispatcher } from "@/hooks";
+import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
 import { ImageFromBlob } from "../image/imageFromBlob";
 import { useSettingsStore } from "@/store";
 import { modelDefinitions, textToImageModelTypes } from "@/models/definitions";
-import type { TextToImageModel } from "@/models/types/textToImageModel";
+import type {
+  TextToImageModel,
+  TextToImageOption,
+} from "@/models/types/textToImageModel";
 
 const translations = getTranslations();
-
 const FormSchema = z.object({
   prompt: z.string().min(10, {
     message: "Prompt must be at least 10 characters.",
   }),
   modelId: z.string(),
-  sizeId: z.string(),
+  modelOptions: z.record(z.string(), z.unknown()),
 });
 
 const sizeToId = (size: Size) => `${size.width}x${size.height}`;
@@ -46,70 +48,78 @@ const sizeFromId = (id: string) => {
   const [width, height] = id.split("x").map(Number);
   return { width, height };
 };
+const defaultSize = { width: 320, height: 320 };
 
 export const TextToImageDialog = memo((props: { close: () => void }) => {
   const { close } = props;
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const { executeCommand } = useCommandService();
   const userModels = useSettingsStore((state) => state.userModels);
-  const allModels = userModels
-    .filter((model) => textToImageModelTypes.includes(model.type))
-    .map((model) => {
-      const definition = modelDefinitions.find(
-        (modelDefinition) => modelDefinition.type === model.type
-      ) as TextToImageModel;
-      return {
-        id: model.id,
-        display: model.display.trim() ? model.display : definition.defaultName,
-        definition,
-      };
-    });
+
+  const allModels = useMemo(() => {
+    return userModels
+      .filter((model) => textToImageModelTypes.includes(model.type))
+      .map((model) => {
+        const definition = modelDefinitions.find(
+          (modelDefinition) => modelDefinition.type === model.type
+        ) as TextToImageModel;
+        return {
+          id: model.id,
+          display: model.display.trim()
+            ? model.display
+            : definition.defaultName,
+          definition,
+        };
+      });
+  }, [userModels]);
+  const defaultModelId = allModels[0].id;
+
+  const getDefaultModelOptions = useStableCallback((modelId: string) => {
+    const model = allModels.find((model) => model.id === modelId);
+    return model?.definition.textToImage.options || {};
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       prompt: "a cat with a nice hat",
-      modelId: allModels[0].id,
-      sizeId: sizeToId(allModels[0].definition.textToImage.sizes[0]),
+      modelId: defaultModelId,
+      modelOptions: getDefaultModelOptions(defaultModelId),
     },
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [image, setImage] = useState<Blob | null>(null);
-  const availableSizes =
-    allModels.find((model) => model.id === form.watch("modelId"))?.definition
-      .textToImage.sizes || [];
 
   const modelId = form.watch("modelId");
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run when modelId changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: I know better
   useEffect(() => {
     if (modelId) {
-      const firstSize = sizeToId(
-        allModels.find((model) => model.id === modelId)!.definition.textToImage
-          .sizes[0]
-      );
-      form.setValue("sizeId", firstSize);
+      form.setValue("modelOptions", getDefaultModelOptions(modelId));
     }
   }, [modelId]);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);
 
-    const size = sizeFromId(form.watch("sizeId"));
+    const options = form.watch("modelOptions");
+    // const size = sizeFromId(form.watch("sizeId"));
     const modelDefinition = allModels.find(
       (model) => model.id === data.modelId
     )!.definition;
 
-    modelDefinition.textToImage
-      .execute(modelId, data.prompt, size)
-      .then((img) => {
-        setImage(img.data);
-        setIsGenerating(false);
-      })
-      .catch((err) => {
-        form.setError("prompt", { message: err.toString() });
-        setIsGenerating(false);
-      });
+    console.log("options", options);
+
+    // modelDefinition.textToImage
+    //   .execute(modelId, data.prompt, options)
+    //   .then((img) => {
+    //     setImage(img.data);
+    //     setIsGenerating(false);
+    //   })
+    //   .catch((err) => {
+    //     form.setError("prompt", { message: err.toString() });
+    //     setIsGenerating(false);
+    //   });
   };
 
   const apply = async () => {
@@ -139,10 +149,16 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     close();
   };
 
-  const currentSize = sizeFromId(form.watch("sizeId"));
+  const options = form.watch("modelOptions") as Record<
+    string,
+    TextToImageOption
+  >;
+
+  const currentSize = (options?.size?.default ?? defaultSize) as Size;
+  console.log("currentSize", currentSize);
   const { scale } = scaleRectangleToFitParent(
     { x: 0, y: 0, ...currentSize },
-    { width: 320, height: 320 },
+    defaultSize,
     1
   );
 
@@ -180,7 +196,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                   control={form.control}
                   name="modelId"
                   render={({ field }) => (
-                    <FormItem className="min-w-[200px] w-[50%]">
+                    <FormItem className="min-w-[200px]_ w-[50%]_">
                       <FormLabel>Model</FormLabel>
                       <Select
                         onValueChange={field.onChange}
@@ -205,36 +221,64 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="sizeId"
-                  render={({ field }) => (
-                    <FormItem className="min-w-[120px] w-[50%]">
-                      <FormLabel>Size</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value as never}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {availableSizes.map((size) => {
+                {Object.entries(options).map(([key, option]) => {
+                  if (option.type === "string") {
+                    return (
+                      <FormField
+                        control={form.control}
+                        name={`modelOptions.${key}`}
+                        render={({ field }) => (
+                          //     <FormLabel>Prompt</FormLabel>
+                          // <FormControl>
+                          //   <Input {...field} />
+                          // </FormControl>
+                          // <FormMessage />
+                          <FormItem className="">
+                            <FormLabel>{option.name}</FormLabel>
+                            <FormControl>
+                              {/* <Input {...field} onChange={} /> */}
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    );
+                  }
+                  if (option.type === "select") {
+                    return (
+                      <FormField
+                        control={form.control}
+                        name={`modelOptions.${key}`}
+                        render={({ field }) => (
+                          <FormItem className="">
+                            <FormLabel>{option.name}</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value as never}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {/* {availableSizes.map((size) => {
                             const id = sizeToId(size);
                             return (
                               <SelectItem key={id} value={id}>
                                 {size.width}x{size.height}
                               </SelectItem>
                             );
-                          })}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                          })} */}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    );
+                  }
+                })}
               </div>
               <div className="w-full flex flex-row gap-big items-end">
                 <FormField

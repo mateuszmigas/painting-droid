@@ -42,6 +42,14 @@ const translations = {
       },
     },
     textToImage: { name: "Text to Image" },
+    errors: {
+      429: "Rate limit exceeded",
+      500: "Internal server error",
+      default: "Failed to process request",
+    },
+    options: {
+      size: "Size",
+    },
   },
   tools: {
     shape: {
