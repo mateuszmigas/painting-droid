@@ -46,7 +46,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.isequal": "^4.5.0",
     "lodash.throttle": "^4.1.1",
-    "lucide-react": "^0.344.0",
+    "lucide-react": "^0.372.0",
     "nanoid": "^5.0.6",
     "next-themes": "^0.3.0",
     "react": "^18.2.0",
