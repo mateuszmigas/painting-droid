@@ -26,7 +26,7 @@ import {
   Github,
   Bug,
   Square,
-  MousePointerSquare,
+  SquareMousePointer,
   MousePointerSquareDashed,
   Fullscreen,
   Undo,
@@ -195,7 +195,7 @@ const renderLucideIcon = (
     case "square":
       return <Square className={className} size={fontSize} />;
     case "mouse-pointer-square":
-      return <MousePointerSquare className={className} size={fontSize} />;
+      return <SquareMousePointer className={className} size={fontSize} />;
     case "mouse-pointer-square-dashed":
       return <MousePointerSquareDashed className={className} size={fontSize} />;
     case "fullscreen":
@@ -312,4 +312,3 @@ export const Icon = (props: {
   const { type, size, className } = props;
   return renderLucideIcon(type, size, className);
 };
-
