@@ -62,7 +62,7 @@
     "zustand": "^4.5.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.6.0",
+    "@biomejs/biome": "1.7.1",
     "@playwright/test": "^1.42.1",
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.isequal": "^4.5.8",
