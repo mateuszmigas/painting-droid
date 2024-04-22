@@ -11,7 +11,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  validate:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install packages
+        run: pnpm install --prefer-offline
+
+      - name: Run unit tests, typescript checks and linting
+        run: pnpm validate
+
+  e2e-tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -32,9 +53,6 @@ jobs:
 
       - name: Install browsers
         run: pnpm --filter @painting-droid/web test:e2e:install-browsers
-
-      - name: Run unit tests, typescript checks and linting
-        run: pnpm validate
 
       - name: Run e2e tests
         run: pnpm --filter @painting-droid/web test:e2e
