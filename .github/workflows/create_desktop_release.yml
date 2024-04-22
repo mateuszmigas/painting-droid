@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
 
@@ -70,7 +70,7 @@ jobs:
           echo "new_version=$(npm version --commit-hooks false --git-tag-version false ${{ github.event.inputs.version }})" >> $GITHUB_ENV
 
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
 
