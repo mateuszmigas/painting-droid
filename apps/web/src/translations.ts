@@ -35,6 +35,7 @@ const translations = {
   },
   models: {
     name: "Models",
+    prompt: "Prompt",
     objectDetection: {
       name: "Object Detection",
       result: {
@@ -42,6 +43,17 @@ const translations = {
       },
     },
     textToImage: { name: "Text to Image" },
+    errors: {
+      429: "Rate limit exceeded",
+      401: "API key invalid",
+      403: "API key unauthorized",
+      500: "Internal server error",
+      default: "Failed to process request",
+    },
+    options: {
+      size: "Size",
+      steps: "Steps",
+    },
   },
   tools: {
     shape: {
@@ -160,6 +172,8 @@ const translations = {
     cancel: "Cancel",
     close: "Close",
     download: "Download",
+    generate: "Generate",
+    regenerate: "Regenerate",
     height: "Height",
     heightPercentage: "Height (%)",
     images: "Images",
