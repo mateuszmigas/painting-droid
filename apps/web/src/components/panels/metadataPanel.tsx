@@ -1,15 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { features } from "@/contants";
 import { appVersion, isWeb } from "@/utils/platform";
-import { useCommandService } from "@/contexts/commandService";
 
 export const MetadataPanel = () => {
   const [result] = useState<string>("");
-  const { executeCommand } = useCommandService();
-
-  useEffect(() => {
-    executeCommand("openTextToImageDialog");
-  });
 
   return (
     <div className="flex flex-col gap-medium">
