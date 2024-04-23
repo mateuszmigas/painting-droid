@@ -1,27 +1,25 @@
 import type { ImageCompressed } from "@/utils/imageData";
 import type { BaseModel } from "./baseModel";
+import type {
+  CustomFieldsSchema,
+  CustomFieldsSchemaValues,
+} from "@/utils/customFieldsSchema";
 
-export type TextToImageOption =
-  | {
-      type: "string";
-      name: string;
-      default: string;
-    }
-  | {
-      type: "select";
-      name: string;
-      default: unknown;
-      options?: Array<{ value: unknown; label: string }>;
-    };
+export type TextToImageSection<TSchema extends CustomFieldsSchema> = {
+  optionsSchema: TSchema;
+  execute: (
+    modelId: string,
+    text: string,
+    options: CustomFieldsSchemaValues<TSchema>
+  ) => Promise<ImageCompressed>;
+};
+
+export const createTextToImageSection = <TSchema extends CustomFieldsSchema>(
+  section: TextToImageSection<TSchema>
+) => section;
 
 export type TextToImageModel = BaseModel & {
-  textToImage: {
-    options: Record<string, TextToImageOption>;
-    execute: (
-      modelId: string,
-      text: string,
-      options: Record<string, unknown>
-    ) => Promise<ImageCompressed>;
-  };
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  textToImage: TextToImageSection<any>;
 };
 

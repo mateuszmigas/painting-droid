@@ -1,7 +1,4 @@
-import type {
-  ObjectDetectionModel,
-  ObjectDetectionResult,
-} from "@/models/types/objectDetectionModel";
+import type { ObjectDetectionResult } from "@/models/types/objectDetectionModel";
 import { getTranslations } from "@/translations";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { memo, useState } from "react";
@@ -18,17 +15,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useSettingsStore, useWorkspacesStore } from "@/store";
+import { useWorkspacesStore } from "@/store";
 import {
   activeWorkspaceActiveLayerSelector,
   activeWorkspaceCanvasDataSelector,
 } from "@/store/workspacesStore";
-import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
-import { ImageProcessor } from "@/utils/imageProcessor";
 import {
-  modelDefinitions,
-  objectDetectionModelTypes,
-} from "@/models/definitions";
+  useBlobUrl,
+  useCanvasActionDispatcher,
+  useObjectDetectionModels,
+} from "@/hooks";
+import { ImageProcessor } from "@/utils/imageProcessor";
 import { markerColors } from "@/contants";
 
 const getColor = (index: number) => markerColors[index % markerColors.length];
@@ -69,18 +66,12 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
   const size = useWorkspacesStore(
     (state) => activeWorkspaceCanvasDataSelector(state).size
   );
-  const userModels = useSettingsStore((state) => state.userModels);
-  const allModels = userModels
-    .filter((model) => objectDetectionModelTypes.includes(model.type))
-    .map((model) => ({
-      data: model,
-      definition: modelDefinitions.find(
-        (md) => md.type === model.type
-      ) as ObjectDetectionModel,
-    }));
-  console.log(userModels);
   const canvasActionDispatcher = useCanvasActionDispatcher();
-  const [selectedModelId, setSelectedModelId] = useState(allModels[0].data.id);
+  const models = useObjectDetectionModels();
+
+  //there will be always at least one text to image model
+  const defaultModelId = models[0].id;
+  const [selectedModelId, setSelectedModelId] = useState(defaultModelId);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [progressMessage, setProgressMessage] = useState<string | null>(null);
@@ -102,8 +93,8 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
     setIsProcessing(true);
 
     try {
-      const modelDefinition = allModels.find(
-        (model) => model.data.id === selectedModelId
+      const modelDefinition = models.find(
+        (model) => model.id === selectedModelId
       )!.definition;
 
       const result = await modelDefinition.detectObjects.execute(
@@ -111,7 +102,8 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
         (progress, message) => {
           progress && setProgress(progress);
           progress && message && setProgressMessage(message);
-        }
+        },
+        {}
       );
 
       setResult(result);
@@ -119,7 +111,6 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
         setImageData(await applyResultToImage(originalImage, result));
       }
     } catch (error) {
-      console.error(error);
       setResult(translations.errors.processingError);
     } finally {
       setIsProcessing(false);
@@ -164,15 +155,15 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
 
         <div className="flex flex-col gap-big justify-between min-w-64">
           <div className="flex flex-col gap-medium">
-            <Label>Model</Label>
+            <Label>{translations.models.name}</Label>
             <Select value={selectedModelId} onValueChange={setSelectedModelId}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {allModels.map((model) => (
-                  <SelectItem key={model.data.id} value={model.data.id}>
-                    {model.data.display}
+                {models.map((model) => (
+                  <SelectItem key={model.id} value={model.id}>
+                    {model.display}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -240,7 +231,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
               onClick={apply}
               disabled={!(Array.isArray(result) && result.length > 0)}
             >
-              Apply
+              {translations.general.apply}
             </Button>
           </div>
         </div>

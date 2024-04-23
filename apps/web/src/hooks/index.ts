@@ -16,3 +16,6 @@ export { useIdleCallback } from "./useIdleCallback";
 export { useBlobUrl } from "./useBlobUrl";
 export { useHasStoreHydrated } from "./useHasStoreHydrated";
 export { useScrollAndFocus } from "./useScrollAndFocus";
+export { useTextToImageModels } from "./useTextToImageModels";
+export { useObjectDetectionModels } from "./useObjectDetectionModels";
+

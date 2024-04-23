@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { scaleRectangleToFitParent, type Size } from "@/utils/common";
 import { Input } from "../ui/input";
 import { Icon } from "../icons/icon";
@@ -24,102 +24,86 @@ import {
 } from "../ui/select";
 import { uuid } from "@/utils/uuid";
 import { getTranslations } from "@/translations";
-import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
+import { useCanvasActionDispatcher, useTextToImageModels } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
 import { ImageFromBlob } from "../image/imageFromBlob";
-import { useSettingsStore } from "@/store";
-import { modelDefinitions, textToImageModelTypes } from "@/models/definitions";
-import type {
-  TextToImageModel,
-  TextToImageOption,
-} from "@/models/types/textToImageModel";
+import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
+import { OptionSizeCustomField } from "../custom-fields/optionSizeCustomField";
+import { StringCustomField } from "../custom-fields/stringCustomField";
+import type { TextToImageModelInfo } from "@/hooks/useTextToImageModels";
+import { OptionNumberCustomField } from "../custom-fields/optionNumberCustomField";
 
 const translations = getTranslations();
 const FormSchema = z.object({
-  prompt: z.string().min(10, {
-    message: "Prompt must be at least 10 characters.",
-  }),
+  prompt: z
+    .string()
+    .min(10, { message: "Prompt must be at least 10 characters." }),
   modelId: z.string(),
-  modelOptions: z.record(z.string(), z.unknown()),
+  modelOptionsValues: z.record(z.string(), z.unknown()),
 });
 
-const sizeToId = (size: Size) => `${size.width}x${size.height}`;
-const sizeFromId = (id: string) => {
-  const [width, height] = id.split("x").map(Number);
-  return { width, height };
+const getDefaultModelOptions = (
+  models: TextToImageModelInfo[],
+  modelId: string
+) => {
+  const model = models.find((model) => model.id === modelId);
+  return (model?.definition.textToImage.optionsSchema || {}) as Record<
+    string,
+    CustomField
+  >;
 };
+
+const getDefaultModelOptionsValues = (
+  models: TextToImageModelInfo[],
+  modelId: string
+) =>
+  getDefaultValues(getDefaultModelOptions(models, modelId)) as Record<
+    string,
+    unknown
+  >;
+
 const defaultSize = { width: 320, height: 320 };
 
 export const TextToImageDialog = memo((props: { close: () => void }) => {
   const { close } = props;
-  const canvasActionDispatcher = useCanvasActionDispatcher();
   const { executeCommand } = useCommandService();
-  const userModels = useSettingsStore((state) => state.userModels);
+  const canvasActionDispatcher = useCanvasActionDispatcher();
+  const models = useTextToImageModels();
 
-  const allModels = useMemo(() => {
-    return userModels
-      .filter((model) => textToImageModelTypes.includes(model.type))
-      .map((model) => {
-        const definition = modelDefinitions.find(
-          (modelDefinition) => modelDefinition.type === model.type
-        ) as TextToImageModel;
-        return {
-          id: model.id,
-          display: model.display.trim()
-            ? model.display
-            : definition.defaultName,
-          definition,
-        };
-      });
-  }, [userModels]);
-  const defaultModelId = allModels[0].id;
-
-  const getDefaultModelOptions = useStableCallback((modelId: string) => {
-    const model = allModels.find((model) => model.id === modelId);
-    return model?.definition.textToImage.options || {};
-  });
+  //there will be always at least one text to image model
+  const defaultModelId = models[0].id;
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       prompt: "a cat with a nice hat",
       modelId: defaultModelId,
-      modelOptions: getDefaultModelOptions(defaultModelId),
+      modelOptionsValues: getDefaultModelOptionsValues(models, defaultModelId),
     },
   });
+  const imageSize = (form.watch("modelOptionsValues.size") ??
+    defaultSize) as Size;
   const [isGenerating, setIsGenerating] = useState(false);
   const [image, setImage] = useState<Blob | null>(null);
-
-  const modelId = form.watch("modelId");
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: I know better
-  useEffect(() => {
-    if (modelId) {
-      form.setValue("modelOptions", getDefaultModelOptions(modelId));
-    }
-  }, [modelId]);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);
 
-    const options = form.watch("modelOptions");
-    // const size = sizeFromId(form.watch("sizeId"));
-    const modelDefinition = allModels.find(
+    const optionsValues = form.watch("modelOptionsValues");
+    const modelDefinition = models.find(
       (model) => model.id === data.modelId
     )!.definition;
 
-    console.log("options", options);
-
-    // modelDefinition.textToImage
-    //   .execute(modelId, data.prompt, options)
-    //   .then((img) => {
-    //     setImage(img.data);
-    //     setIsGenerating(false);
-    //   })
-    //   .catch((err) => {
-    //     form.setError("prompt", { message: err.toString() });
-    //     setIsGenerating(false);
-    //   });
+    modelDefinition.textToImage
+      .execute(modelId, data.prompt, optionsValues)
+      .then((img) => {
+        setImage(img.data);
+        setIsGenerating(false);
+      })
+      .catch((err) => {
+        form.setError("root", { message: err.toString() });
+        setIsGenerating(false);
+      });
   };
 
   const apply = async () => {
@@ -129,6 +113,8 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     }
 
     await executeCommand("selectTool", { toolId: "rectangleSelect" });
+    const currentSize = (form.watch("modelOptionsValues.size") ??
+      defaultSize) as Size;
     await canvasActionDispatcher.execute("drawOverlayShape", {
       display: translations.models.textToImage.name,
       overlayShape: {
@@ -149,18 +135,23 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     close();
   };
 
-  const options = form.watch("modelOptions") as Record<
-    string,
-    TextToImageOption
-  >;
-
-  const currentSize = (options?.size?.default ?? defaultSize) as Size;
-  console.log("currentSize", currentSize);
+  const modelId = form.watch("modelId");
+  const modelOptions = getDefaultModelOptions(models, modelId);
   const { scale } = scaleRectangleToFitParent(
-    { x: 0, y: 0, ...currentSize },
+    { x: 0, y: 0, ...imageSize },
     defaultSize,
     1
   );
+
+  // update default model options when model changes
+  useEffect(() => {
+    form.setValue(
+      "modelOptionsValues",
+      getDefaultModelOptionsValues(models, modelId)
+    );
+  }, [modelId, form, models]);
+
+  const error = form.formState.errors.root?.message;
 
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
@@ -175,8 +166,8 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
           <div className="flex basis-0 flex-col items-center justify-center gap-big size-full">
             <div
               style={{
-                width: `${currentSize.width * scale}px`,
-                height: `${currentSize.height * scale}px`,
+                width: `${imageSize.width * scale}px`,
+                height: `${imageSize.height * scale}px`,
               }}
               className=" border-primary border-2 border-dashed object-contain box-content"
             >
@@ -189,116 +180,116 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
               )}
             </div>
           </div>
-          <div className="flex flex-grow flex-col gap-big justify-between min-w-64">
-            <div className="w-full flex flex-col gap-big mb-big">
-              <div className="w-full flex flex-row gap-big">
-                <FormField
-                  control={form.control}
-                  name="modelId"
-                  render={({ field }) => (
-                    <FormItem className="min-w-[200px]_ w-[50%]_">
-                      <FormLabel>Model</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {allModels.map((model) => (
-                            <SelectItem key={model.id} value={model.id}>
-                              <div className="truncate max-w-[300px]">
-                                {model.display}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {Object.entries(options).map(([key, option]) => {
-                  if (option.type === "string") {
-                    return (
-                      <FormField
-                        control={form.control}
-                        name={`modelOptions.${key}`}
-                        render={({ field }) => (
-                          //     <FormLabel>Prompt</FormLabel>
-                          // <FormControl>
-                          //   <Input {...field} />
-                          // </FormControl>
-                          // <FormMessage />
-                          <FormItem className="">
-                            <FormLabel>{option.name}</FormLabel>
-                            <FormControl>
-                              {/* <Input {...field} onChange={} /> */}
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    );
-                  }
-                  if (option.type === "select") {
-                    return (
-                      <FormField
-                        control={form.control}
-                        name={`modelOptions.${key}`}
-                        render={({ field }) => (
-                          <FormItem className="">
-                            <FormLabel>{option.name}</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value as never}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {/* {availableSizes.map((size) => {
-                            const id = sizeToId(size);
-                            return (
-                              <SelectItem key={id} value={id}>
-                                {size.width}x{size.height}
-                              </SelectItem>
-                            );
-                          })} */}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    );
-                  }
-                })}
-              </div>
-              <div className="w-full flex flex-row gap-big items-end">
-                <FormField
-                  control={form.control}
-                  name="prompt"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Prompt</FormLabel>
+          <div className="flex flex-grow justify-between flex-col gap-big min-w-64">
+            <div className="flex flex-col gap-big">
+              <FormField
+                control={form.control}
+                name="modelId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{translations.models.name}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <Input {...field} />
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                      <SelectContent>
+                        {models.map((model) => (
+                          <SelectItem key={model.id} value={model.id}>
+                            <div className="truncate max-w-[300px]">
+                              {model.display}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="prompt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{translations.models.prompt}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex flex-col gap-big">
+                {Object.entries(form.watch("modelOptionsValues"))
+                  .filter(([key]) => modelOptions[key])
+                  .map(([key, value]) => {
+                    const option = modelOptions[key];
+                    if (option.type === "string") {
+                      return (
+                        <FormField
+                          key={key}
+                          control={form.control}
+                          name={`modelOptionsValues.${key}`}
+                          render={({ field }) => (
+                            <StringCustomField
+                              customField={modelOptions[key]}
+                              value={value as string}
+                              onChange={field.onChange}
+                            />
+                          )}
+                        />
+                      );
+                    }
+                    if (option.type === "option-size") {
+                      return (
+                        <FormField
+                          key={key}
+                          control={form.control}
+                          name={`modelOptionsValues.${key}`}
+                          render={({ field }) => {
+                            return (
+                              <FormItem className="">
+                                <OptionSizeCustomField
+                                  customField={modelOptions[key]}
+                                  value={value as Size}
+                                  onChange={field.onChange}
+                                />
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      );
+                    }
+                    if (option.type === "option-number") {
+                      return (
+                        <FormField
+                          key={key}
+                          control={form.control}
+                          name={`modelOptionsValues.${key}`}
+                          render={({ field }) => {
+                            return (
+                              <FormItem className="">
+                                <OptionNumberCustomField
+                                  customField={modelOptions[key]}
+                                  value={value as number}
+                                  onChange={field.onChange}
+                                />
+                              </FormItem>
+                            );
+                          }}
+                        />
+                      );
+                    }
+                  })}
               </div>
+              <FormMessage className={"text-destructive"}>{error}</FormMessage>
             </div>
             <div className="gap-medium flex flex-row justify-end">
               <Button type="submit" variant="secondary" disabled={isGenerating}>
-                {image ? "Regenerate" : "Generate"}
+                {image
+                  ? translations.general.regenerate
+                  : translations.general.generate}
                 {isGenerating ? (
                   <Icon
                     className="ml-2 animate-spin"
@@ -314,7 +305,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                 )}
               </Button>
               <Button type="button" onClick={apply} disabled={!image}>
-                Apply
+                {translations.general.apply}
               </Button>
             </div>
           </div>
