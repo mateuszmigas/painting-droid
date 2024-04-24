@@ -38,7 +38,14 @@ export const App = () => {
   useSyncTheme();
   useIdleCallback(() => {
     coreClient.init();
-    windowHandle.showWindow();
+    setTimeout(() => {
+      windowHandle.showWindow();
+    }, 100);
+    /* 
+      Just some random magic number. It's hard to figure out when to show window 
+      since it's hidden at start and RAF is not working/throttled
+      todo: Find a better way to do this
+    */
   });
 
   if (!hasStoreHydrated) {
