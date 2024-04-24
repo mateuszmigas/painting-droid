@@ -10,7 +10,7 @@ export const command = createCommand({
   id: "openCommandPalette",
   display: translations.commands.openCommandPalette,
   icon: "command",
-  options: { showInPalette: false },
+  settings: { showInPalette: false },
   defaultKeyGesture: isWindows()
     ? createKeyGesture({ key: "K", ctrl: true })
     : createKeyGesture({ key: "K", meta: true }),

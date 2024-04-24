@@ -9,7 +9,7 @@ export const command = createCommand({
   id: "moveLayerUp",
   display: translations.commands.moveLayerUp,
   icon: "arrow-up",
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const activeLayerId = activeWorkspaceActiveLayerSelector(
       context.stores.workspaces()

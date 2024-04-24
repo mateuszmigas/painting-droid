@@ -8,7 +8,7 @@ import { createCommand } from "./createCommand";
 export const command = createCommand({
   icon: "x",
   id: "openAdjustmentsPopup",
-  options: { showInPalette: false },
+  settings: { showInPalette: false },
   execute: async (
     context: CommandContext,
     payload: { adjustmentId: AdjustmentId }

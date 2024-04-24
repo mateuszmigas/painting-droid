@@ -19,7 +19,7 @@ export const command = createCommand({
   defaultKeyGesture: isWindows()
     ? createKeyGesture({ key: "V", ctrl: true })
     : createKeyGesture({ key: "V", meta: true }),
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const data = await clipboard.pasteImage();
 

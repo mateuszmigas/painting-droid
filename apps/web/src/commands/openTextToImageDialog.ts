@@ -9,7 +9,7 @@ export const command = createCommand({
   icon: "image",
   id: "openTextToImageDialog",
   display: translations.models.textToImage.name,
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     context.dialogService.openDialog(TextToImageDialog, {});
   },

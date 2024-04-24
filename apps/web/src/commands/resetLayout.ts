@@ -8,7 +8,7 @@ export const command = createCommand({
   id: "resetLayout",
   display: translations.commands.resetLayout,
   icon: "reset",
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     context.stores.layout().resetLayout();
   },

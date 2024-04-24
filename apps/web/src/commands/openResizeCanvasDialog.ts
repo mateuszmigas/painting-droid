@@ -9,7 +9,7 @@ export const command = createCommand({
   id: "openResizeCanvasDialog",
   display: translations.commands.openResizeCanvasDialog,
   icon: "resize",
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     await context.dialogService.openDialog(ResizeCanvasDialog, {});
   },

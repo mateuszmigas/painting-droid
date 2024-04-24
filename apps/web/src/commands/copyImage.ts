@@ -15,7 +15,7 @@ export const command = createCommand({
   defaultKeyGesture: isWindows()
     ? createKeyGesture({ key: "C", ctrl: true })
     : createKeyGesture({ key: "C", meta: true }),
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const canvasData = activeWorkspaceCanvasDataSelector(
       context.stores.workspaces()

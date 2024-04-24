@@ -13,7 +13,7 @@ export const command = createCommand({
   defaultKeyGesture: isWindows()
     ? createKeyGesture({ key: "Z", ctrl: true })
     : createKeyGesture({ key: "Z", meta: true }),
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) =>
     context.canvasActionDispatcher.undo(),
 });

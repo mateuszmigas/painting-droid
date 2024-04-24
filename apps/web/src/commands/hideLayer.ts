@@ -9,7 +9,7 @@ export const command = createCommand({
   id: "hideLayer",
   display: translations.commands.hideLayer,
   icon: "hidden",
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const activeLayerId = activeWorkspaceActiveLayerSelector(
       context.stores.workspaces()

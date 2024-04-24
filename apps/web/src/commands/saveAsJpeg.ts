@@ -11,7 +11,7 @@ export const command = createCommand({
   id: "saveAsJpeg",
   display: translations.commands.saveAsJpeg,
   icon: "save",
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const format = "jpeg";
     const { canvasData, name } = activeWorkspaceSelector(

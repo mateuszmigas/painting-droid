@@ -9,7 +9,7 @@ export const command = createCommand({
   icon: "shapes",
   id: "openObjectDetectionDialog",
   display: translations.models.objectDetection.name,
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     context.dialogService.openDialog(ObjectDetectionDialog, {});
   },

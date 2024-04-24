@@ -8,7 +8,7 @@ export const command = createCommand({
   id: "clearActiveWorkspace",
   display: translations.commands.clearActiveWorkspace,
   icon: "x",
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     context.stores
       .workspaces()

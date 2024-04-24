@@ -85,7 +85,7 @@ export const CommandPaletteHost = memo(
 
     const sortedCommands = sortBySelector(
       Object.values(commands).filter(
-        (command) => command.options.showInPalette
+        (command) => command.settings.showInPalette
       ),
       (command) => command.display,
       true

@@ -5,7 +5,7 @@ import { clearOrApplyOverlayShape } from "./utils";
 
 export const command = createCommand({
   id: "selectTool",
-  options: { showInPalette: false },
+  settings: { showInPalette: false },
   execute: async (
     context: CommandContext,
     payload: {

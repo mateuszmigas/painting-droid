@@ -9,7 +9,7 @@ export const command = createCommand({
   id: "newActiveWorkspace",
   display: translations.commands.newActiveWorkspace,
   icon: "add-file",
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const result = await context.dialogService.openDialog(
       CreateWorkspaceDialog,

@@ -9,7 +9,7 @@ export const command = createCommand({
   id: "duplicateLayer",
   display: translations.commands.duplicateLayer,
   icon: "copy",
-  options: { showInPalette: true },
+  settings: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const activeLayerId = activeWorkspaceActiveLayerSelector(
       context.stores.workspaces()

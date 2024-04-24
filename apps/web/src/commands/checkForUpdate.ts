@@ -11,7 +11,7 @@ export const command = createCommand({
   id: "checkForUpdate",
   display: translations.commands.checkForUpdate,
   icon: "download",
-  options: { showInPalette: !isWeb() },
+  settings: { showInPalette: !isWeb() },
   execute: async (_: CommandContext) => {
     const update = await checkForUpdates();
 
