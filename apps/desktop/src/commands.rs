@@ -4,6 +4,7 @@ use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use crate::safe_storage::SafeStorage;
 use reqwest;
 use regex::Regex;
+use tauri::Manager;
 
 #[derive(serde::Serialize)]
 pub struct ApiResponse<T> {
@@ -111,5 +112,13 @@ pub async fn safe_storage_delete(key: String) -> Result<(), String> {
     match storage.delete_password() {
         Ok(_) => Ok(()),
         Err(e) => Err(e.to_string()),
+    }
+}
+
+#[tauri::command]
+pub fn show_window(app_handle: tauri::AppHandle) -> Result<(), String> {
+    match app_handle.get_webview_window("main") {
+        Some(window) =>  window.show().map_err(|e| format!("Failed to show window: {}", e)),
+        None => return Err("Failed to get main webview window".into()),
     }
 }

@@ -20,6 +20,7 @@ import {
   NotificationServiceContext,
   notificationService,
 } from "./contexts/notificationService";
+import { windowHandle } from "./utils/window-handle";
 
 export const App = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
@@ -37,6 +38,7 @@ export const App = () => {
   useSyncTheme();
   useIdleCallback(() => {
     coreClient.init();
+    windowHandle.showWindow();
   });
 
   if (!hasStoreHydrated) {
@@ -68,3 +70,4 @@ export const App = () => {
     </div>
   );
 };
+

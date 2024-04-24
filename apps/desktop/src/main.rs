@@ -20,7 +20,8 @@ fn main() {
             commands::send_request_post,
             commands::send_request_get_bytes,
             commands::safe_storage_set,
-            commands::safe_storage_delete
+            commands::safe_storage_delete,
+            commands::show_window
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
