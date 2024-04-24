@@ -1,5 +1,6 @@
 import { ModeToggle } from "../themeToggle";
-import { MenuBar } from "../menu-bar/menuBar";
+import { CustomMenuBar } from "../menu-bar/customMenuBar";
+import { NativeMenuBarProxy } from "../menu-bar/nativeMenuBarProxy";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useWorkspacesStore } from "@/store";
 import { memo, useLayoutEffect, useRef, useState } from "react";
@@ -16,8 +17,10 @@ import { IconAnchor } from "../icons/iconAnchor";
 import { useCommandService } from "@/contexts/commandService";
 import { Separator } from "../ui/separator";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
+import { isWeb } from "@/utils/platform";
 
 const compactThreshold = 640;
+const customMenu = isWeb();
 
 export const AppHeaderBar = memo(() => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -41,8 +44,18 @@ export const AppHeaderBar = memo(() => {
       ref={containerRef}
       className="border-b flex flex-row justify-between items-center px-small"
     >
-      <MenuBar compact={compactMenuBar} />
-      <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
+      {customMenu ? (
+        <>
+          <CustomMenuBar compact={compactMenuBar} />
+          <Separator
+            orientation="vertical"
+            className="h-6 w-px bg-border mx-1"
+          />
+        </>
+      ) : (
+        <NativeMenuBarProxy />
+      )}
+
       <div className="ml-medium flex-1 flex flex-row justify-start overflow-auto items-center gap-small">
         <ScrollArea className="whitespace-nowrap">
           <Tabs value={activeWorkspaceId} onValueChange={selectWorkspace}>

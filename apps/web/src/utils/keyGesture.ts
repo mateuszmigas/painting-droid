@@ -32,6 +32,16 @@ export const keyGestureToString = (keyGesture: KeyGesture) =>
     keyGesture.key,
   ].join("");
 
+export const keyGestureToAccelerator = (keyGesture: KeyGesture) =>
+  [
+    ...Array.from(
+      `${keyGesture.ctrl ? "Ctrl+" : ""}${keyGesture.alt ? "Alt+" : ""}${
+        keyGesture.shift ? "Shift+" : ""
+      }${keyGesture.meta ? "Cmd+" : ""}`
+    ),
+    keyGesture.key,
+  ].join("");
+
 const mapCodeToKey = (code: string): Key => {
   return code.toUpperCase() as Key;
 };
