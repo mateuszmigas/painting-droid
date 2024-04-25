@@ -1,4 +1,4 @@
-import { isSafari } from "./utils/platform";
+import { platform } from "./utils/platform";
 
 export const workspace = {
   format: "pdw",
@@ -8,7 +8,8 @@ export const workspace = {
 export const supportedImageFormats = ["png", "jpeg"];
 
 export const features = {
-  offscreenCanvas: !isSafari(),
+  offscreenCanvas: "oncontextlost" in new OffscreenCanvas(0, 0),
+  customMenuBar: platform !== "darwin",
 };
 
 export const domNames = {
@@ -30,3 +31,4 @@ export const markerColors = [
 export const links = {
   downloadDesktop: "https://github.com/mateuszmigas/painting-droid/releases",
 };
+

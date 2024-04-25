@@ -13,20 +13,12 @@ import {
 import { createMenuBarDefinition } from "./menuBarDefiniotion";
 import type { MenuItem } from "@/utils/menuItem";
 import { Fragment } from "react/jsx-runtime";
-import type { MenuItemAction } from "@/utils/menuItemAction";
 import { useCommandService } from "@/contexts/commandService";
 import { memo } from "react";
 import { useWorkspacesStore } from "@/store";
 import { Icon } from "../icons/icon";
 import { keyGestureToString } from "@/utils/keyGesture";
-
-const processAction = (action: MenuItemAction) => {
-  if ("onClick" in action) {
-    action.onClick();
-  } else {
-    throw new Error("Not implemented");
-  }
-};
+import { handleMenuItemAction } from "@/utils/menuItemAction";
 
 const mapMenuItemToMenubar = (item: MenuItem) => {
   switch (item.type) {
@@ -50,7 +42,7 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
         <MenubarItem
           className="gap-small items-center"
           disabled={item.disabled}
-          onClick={() => processAction(item.action)}
+          onClick={() => handleMenuItemAction(item.action)}
         >
           {item.icon && <Icon type={item.icon} size="small" />}
           {item.label}
@@ -68,7 +60,7 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
   }
 };
 
-export const MenuBar = memo((props: { compact: boolean }) => {
+export const CustomMenuBar = memo((props: { compact: boolean }) => {
   const { compact } = props;
   const { executeCommand } = useCommandService();
   const workspaces = useWorkspacesStore();
@@ -103,3 +95,4 @@ export const MenuBar = memo((props: { compact: boolean }) => {
     </Menubar>
   );
 });
+
