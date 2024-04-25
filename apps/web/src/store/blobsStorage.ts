@@ -1,5 +1,5 @@
 import { IndexedDBStore } from "@/utils/indexedDBStore";
-import { isWeb, isWindowsDesktopOrWeb } from "@/utils/platform";
+import { isApple } from "@/utils/platform";
 import { blobToArrayBuffer, arrayBufferToBlob } from "@/utils/image";
 
 const blobsDb = new IndexedDBStore({
@@ -12,7 +12,7 @@ const blobsDb = new IndexedDBStore({
   Due to bug with storing Blobs in IndexedDB in older versions of Safari (happens only in Tauri on macOS),
   we store Blobs as ArrayBuffers and convert them back to Blobs when reading them.
 */
-const useArrayBuffer = !isWindowsDesktopOrWeb() && !isWeb();
+const useArrayBuffer = isApple();
 
 export const blobsStorage = {
   getBlobs: async () => {

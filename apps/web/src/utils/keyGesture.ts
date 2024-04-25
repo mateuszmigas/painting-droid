@@ -1,4 +1,5 @@
 import type { Key } from "./key";
+import { isApple } from "./platform";
 
 export type KeyGesture = {
   key: Key;
@@ -6,6 +7,17 @@ export type KeyGesture = {
   shift: boolean;
   meta: boolean;
   alt: boolean;
+};
+
+export const createSystemKeyGesture = (input: {
+  key: Key;
+  ctrlOrCmd?: boolean;
+  shift?: boolean;
+  alt?: boolean;
+}): KeyGesture => {
+  return isApple()
+    ? createKeyGesture({ ...input, meta: true })
+    : createKeyGesture({ ...input, ctrl: true });
 };
 
 export const createKeyGesture = (input: {
