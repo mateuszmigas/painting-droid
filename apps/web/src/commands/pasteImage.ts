@@ -1,7 +1,7 @@
 import { createKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { isWindows } from "@/utils/platform";
+import { isWindowsDesktopOrWeb } from "@/utils/platform";
 import { getTranslations } from "@/translations";
 import { clipboard } from "@/utils/clipboard";
 import { uuid } from "@/utils/uuid";
@@ -16,7 +16,7 @@ export const command = createCommand({
   id: "pasteImage",
   display: translations.commands.pasteImage,
   icon: "clipboard-paste",
-  defaultKeyGesture: isWindows()
+  defaultKeyGesture: isWindowsDesktopOrWeb()
     ? createKeyGesture({ key: "V", ctrl: true })
     : createKeyGesture({ key: "V", meta: true }),
   settings: { showInPalette: true },

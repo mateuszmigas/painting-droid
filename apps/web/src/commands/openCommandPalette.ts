@@ -2,7 +2,7 @@ import { createKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { getTranslations } from "@/translations";
-import { isWindows } from "@/utils/platform";
+import { isWindowsDesktopOrWeb } from "@/utils/platform";
 
 const translations = getTranslations();
 
@@ -11,10 +11,11 @@ export const command = createCommand({
   display: translations.commands.openCommandPalette,
   icon: "command",
   settings: { showInPalette: false },
-  defaultKeyGesture: isWindows()
+  defaultKeyGesture: isWindowsDesktopOrWeb()
     ? createKeyGesture({ key: "K", ctrl: true })
     : createKeyGesture({ key: "K", meta: true }),
   execute: async (context: CommandContext) => {
     context.stores.commandPalette().setIsOpen(true);
   },
 });
+

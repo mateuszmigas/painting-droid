@@ -17,10 +17,9 @@ import { IconAnchor } from "../icons/iconAnchor";
 import { useCommandService } from "@/contexts/commandService";
 import { Separator } from "../ui/separator";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { isWeb } from "@/utils/platform";
+import { features } from "@/contants";
 
 const compactThreshold = 640;
-const customMenu = isWeb();
 
 export const AppHeaderBar = memo(() => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,7 +43,7 @@ export const AppHeaderBar = memo(() => {
       ref={containerRef}
       className="border-b flex flex-row justify-between items-center px-small"
     >
-      {customMenu ? (
+      {features.customMenuBar ? (
         <>
           <CustomMenuBar compact={compactMenuBar} />
           <Separator

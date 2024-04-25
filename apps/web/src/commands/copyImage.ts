@@ -1,7 +1,7 @@
 import { createKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { isWindows } from "@/utils/platform";
+import { isWindowsDesktopOrWeb } from "@/utils/platform";
 import { getTranslations } from "@/translations";
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { clipboard } from "@/utils/clipboard";
@@ -12,7 +12,7 @@ export const command = createCommand({
   id: "copyImage",
   display: translations.commands.copyImage,
   icon: "clipboard-copy",
-  defaultKeyGesture: isWindows()
+  defaultKeyGesture: isWindowsDesktopOrWeb()
     ? createKeyGesture({ key: "C", ctrl: true })
     : createKeyGesture({ key: "C", meta: true }),
   settings: { showInPalette: true },
@@ -32,3 +32,4 @@ export const command = createCommand({
     }
   },
 });
+

@@ -1,7 +1,7 @@
 import { createKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { isWindows } from "@/utils/platform";
+import { isWindowsDesktopOrWeb } from "@/utils/platform";
 import { getTranslations } from "@/translations";
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { clipboard } from "@/utils/clipboard";
@@ -12,7 +12,7 @@ export const command = createCommand({
   id: "cutImage",
   display: translations.commands.cutImage,
   icon: "clipboard-cut",
-  defaultKeyGesture: isWindows()
+  defaultKeyGesture: isWindowsDesktopOrWeb()
     ? createKeyGesture({ key: "X", ctrl: true })
     : createKeyGesture({ key: "X", meta: true }),
   settings: { showInPalette: true },
@@ -33,3 +33,4 @@ export const command = createCommand({
     }
   },
 });
+
