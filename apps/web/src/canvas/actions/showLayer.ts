@@ -6,12 +6,10 @@ import { getTranslations } from "@/translations";
 const translations = getTranslations();
 
 export const createCanvasAction = async (
-  context: CanvasActionContext,
+  _: CanvasActionContext,
   payload: { layerId: CanvasLayerId }
 ): Promise<CanvasAction> => {
   const { layerId } = payload;
-  const state = context.getState();
-
   const capturedData = { layerId };
 
   return {
@@ -27,7 +25,7 @@ export const createCanvasAction = async (
         ),
       };
     },
-    undo: async () => {
+    undo: async (state) => {
       return {
         ...state,
         layers: state.layers.map((layer) =>
@@ -39,3 +37,4 @@ export const createCanvasAction = async (
     },
   };
 };
+

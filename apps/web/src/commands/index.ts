@@ -17,6 +17,7 @@ import { command as removeLayer } from "./removeLayer";
 import { command as moveLayerUp } from "./moveLayerUp";
 import { command as moveLayerDown } from "./moveLayerDown";
 import { command as duplicateLayer } from "./duplicateLayer";
+import { command as mergeLayerDown } from "./mergeLayerDown";
 import { command as hideLayer } from "./hideLayer";
 import { command as showLayer } from "./showLayer";
 import { command as openObjectDetectionDialog } from "./openObjectDetectionDialog";
@@ -60,6 +61,7 @@ export const commands = {
   openCropCanvasDialog,
   openResizeCanvasDialog,
   openSettingsDialog,
+  mergeLayerDown,
 } as const;
 
 export type CommandId = keyof typeof commands;

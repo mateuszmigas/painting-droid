@@ -38,7 +38,7 @@ export const createCanvasAction = async (
         activeLayerIndex: state.layers.length,
       };
     },
-    undo: async () => {
+    undo: async (state) => {
       return {
         ...state,
         layers: state.layers.filter((layer) => layer.id !== capturedData.id),
@@ -47,3 +47,4 @@ export const createCanvasAction = async (
     },
   };
 };
+

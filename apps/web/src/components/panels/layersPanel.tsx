@@ -92,6 +92,16 @@ export const LayersPanel = memo(() => {
               })
             }
           />
+          <IconButton
+            disabled={activeLayerIndex === 0}
+            type="merge"
+            size="small"
+            onClick={() =>
+              canvasActionDispatcher.execute("mergeLayerDown", {
+                layerId: activeLayerId,
+              })
+            }
+          />
         </div>
         <IconButton
           disabled={layers.length === 1}
@@ -136,3 +146,4 @@ export const LayersPanel = memo(() => {
     </div>
   );
 });
+

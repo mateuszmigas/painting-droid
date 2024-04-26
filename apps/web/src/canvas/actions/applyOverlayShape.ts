@@ -55,7 +55,7 @@ export const createCanvasAction = async (
         overlayShape: capturedData.newOverlayShape,
       };
     },
-    undo: async () => {
+    undo: async (state) => {
       return {
         ...state,
         layers: state.layers.map((layer, index) => {
@@ -69,3 +69,4 @@ export const createCanvasAction = async (
     },
   };
 };
+

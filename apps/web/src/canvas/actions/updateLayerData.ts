@@ -35,7 +35,7 @@ export const createCanvasAction = async (
         }),
       };
     },
-    undo: async () => {
+    undo: async (state) => {
       return {
         ...state,
         layers: state.layers.map((layer) => {
@@ -48,3 +48,4 @@ export const createCanvasAction = async (
     },
   };
 };
+

@@ -26,7 +26,7 @@ export const createCanvasAction = async (
         activeLayerIndex: capturedData.newLayerIndex,
       };
     },
-    undo: async () => {
+    undo: async (state) => {
       return {
         ...state,
         activeLayerIndex: capturedData.oldLayerIndex,
@@ -34,3 +34,4 @@ export const createCanvasAction = async (
     },
   };
 };
+

@@ -47,7 +47,7 @@ export const createCanvasAction = async (
         }),
       };
     },
-    undo: async () => {
+    undo: async (state) => {
       return {
         ...state,
         size: capturedData.previousCanvasSize,
@@ -61,3 +61,4 @@ export const createCanvasAction = async (
     },
   };
 };
+
