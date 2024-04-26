@@ -112,7 +112,7 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [ ] Release notes popup
 - [ ] Change renderer to webgl/webgpu
 - [ ] Optimize image conversions with Rust
-- [ ] Custom app menu for MacOS
+- [x] Custom app menu for MacOS
 - [ ] Annotation tools: line, rectangle, circle
 - [ ] Plugin support
 
