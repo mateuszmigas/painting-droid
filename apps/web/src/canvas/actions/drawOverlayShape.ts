@@ -39,7 +39,7 @@ export const createCanvasAction = async (
         overlayShape: capturedData.newOverlayShape,
       };
     },
-    undo: async () => {
+    undo: async (state) => {
       return {
         ...state,
         overlayShape: capturedData.previousOverlayShape,
@@ -47,3 +47,4 @@ export const createCanvasAction = async (
     },
   };
 };
+

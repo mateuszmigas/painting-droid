@@ -60,6 +60,7 @@ import {
   Trash2,
   PlusCircle,
   ExternalLink,
+  Merge,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -129,7 +130,8 @@ export type IconType =
   | "settings"
   | "trash"
   | "plus-circle"
-  | "external-link";
+  | "external-link"
+  | "merge";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -299,6 +301,8 @@ const renderLucideIcon = (
       return <PlusCircle className={className} size={fontSize} />;
     case "external-link":
       return <ExternalLink className={className} size={fontSize} />;
+    case "merge":
+      return <Merge className={`rotate-180 ${className}`} size={fontSize} />;
     default:
       return assertNever(icon);
   }
@@ -312,3 +316,4 @@ export const Icon = (props: {
   const { type, size, className } = props;
   return renderLucideIcon(type, size, className);
 };
+

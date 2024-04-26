@@ -14,6 +14,7 @@ import { createCanvasAction as applyOverlayShape } from "./applyOverlayShape";
 import { createCanvasAction as cutOverlayShape } from "./cutOverlayShape";
 import { createCanvasAction as cropCanvas } from "./cropCanvas";
 import { createCanvasAction as resizeCanvas } from "./resizeCanvas";
+import { createCanvasAction as mergeLayerDown } from "./mergeLayerDown";
 
 export const canvasActions = {
   removeLayer,
@@ -32,4 +33,6 @@ export const canvasActions = {
   cutOverlayShape,
   cropCanvas,
   resizeCanvas,
+  mergeLayerDown,
 };
+

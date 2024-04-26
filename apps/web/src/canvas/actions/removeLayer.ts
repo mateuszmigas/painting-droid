@@ -29,19 +29,19 @@ export const createCanvasAction = async (
   return {
     display: translations.canvasActions.removeLayer,
     icon: "x",
-    execute: async (canvas) => {
+    execute: async (state) => {
       return {
-        ...canvas,
-        layers: canvas.layers.filter(
+        ...state,
+        layers: state.layers.filter(
           (layer) => layer.id !== capturedData.layer.id
         ),
         activeLayerIndex:
-          capturedData.index === canvas.activeLayerIndex
+          capturedData.index === state.activeLayerIndex
             ? Math.max(capturedData.index - 1, 0)
-            : canvas.activeLayerIndex,
+            : state.activeLayerIndex,
       };
     },
-    undo: async () => {
+    undo: async (state) => {
       return {
         ...state,
         layers: [
@@ -54,3 +54,4 @@ export const createCanvasAction = async (
     },
   };
 };
+
