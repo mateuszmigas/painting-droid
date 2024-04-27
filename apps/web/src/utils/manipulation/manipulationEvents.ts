@@ -47,7 +47,6 @@ export const subscribeToManipulationEvents = (
   }
   const onPointerDown = (event: PointerEvent) => {
     event.preventDefault();
-    event.stopPropagation();
     if (event.button !== 0) return;
     onManipulationStart({
       x: event.offsetX,
@@ -56,7 +55,6 @@ export const subscribeToManipulationEvents = (
   };
   const onPointerMove = (event: PointerEvent) => {
     event.preventDefault();
-    event.stopPropagation();
     onManipulationUpdate({
       x: event.offsetX,
       y: event.offsetY,
@@ -64,7 +62,6 @@ export const subscribeToManipulationEvents = (
   };
   const onPointerUp = (event: PointerEvent) => {
     event.preventDefault();
-    event.stopPropagation();
     onManipulationEnd({
       x: event.offsetX,
       y: event.offsetY,

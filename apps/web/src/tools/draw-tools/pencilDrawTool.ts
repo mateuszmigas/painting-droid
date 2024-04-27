@@ -1,6 +1,7 @@
 import type { DrawPayload, DrawTool, DrawToolMetadata } from "./drawTool";
-import type { CanvasContext, Position } from "@/utils/common";
+import type { CanvasContext, Color, Position } from "@/utils/common";
 import { getTranslations } from "@/translations";
+import { ColorProcessor } from "@/utils/colorProcessor";
 
 const translations = getTranslations().tools.draw.pencil;
 
@@ -12,13 +13,13 @@ export const pencilDrawToolMetadata: DrawToolMetadata = {
     color: {
       name: translations.settings.color,
       type: "color",
-      default: "#4BF3C8",
+      default: { b: 200, g: 243, r: 75, a: 1 },
     },
   },
 } as const;
 
 type PencilDrawToolSettings = {
-  color: string;
+  color: Color;
 };
 
 export class PencilDrawTool implements DrawTool {
@@ -29,7 +30,7 @@ export class PencilDrawTool implements DrawTool {
   configure(settings: PencilDrawToolSettings): void {
     const { color } = settings;
     this.context.lineWidth = 1;
-    this.context.strokeStyle = color;
+    this.context.strokeStyle = ColorProcessor.fromRgba(color).toRgbaString();
   }
 
   draw(payload: DrawPayload) {

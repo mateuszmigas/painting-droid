@@ -1,3 +1,5 @@
+import type { RgbaColor } from "./color";
+
 export type Position = {
   x: number;
   y: number;
@@ -75,7 +77,7 @@ export const scaleRectangleToFitParent = (
   };
 };
 
-export type Color = string;
+export type Color = RgbaColor;
 
 export type CanvasContext =
   | CanvasRenderingContext2D
