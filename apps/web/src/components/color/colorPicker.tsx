@@ -62,29 +62,6 @@ export const ColorPicker = (props: {
             />
           </div>
         </div>
-        {/* <div className="flex flex-row gap-medium">
-          {predefined.map((predef, index) => (
-            <div
-              key={index}
-              className={`w-8 h-8 rounded-md border ${
-                index === 0 ? "border-primary" : ""
-              }`}
-              style={{
-                backgroundColor: predef,
-              }}
-            />
-          ))}
-          <OptionSetting
-            className="w-20"
-            value="1"
-            onChange={() => {}}
-            options={[
-              { label: "Theme 1", value: "1" },
-              { label: "2", value: "2" },
-              { label: "3", value: "3" },
-            ]}
-          />
-        </div> */}
       </PopoverContent>
     </Popover>
   );
