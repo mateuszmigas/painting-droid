@@ -2,6 +2,7 @@ import type { DrawToolSettingType } from "@/tools/draw-tools/drawTool";
 import { ColorSetting } from "./colorSetting";
 import { type ToolId, toolsMetadata } from "@/tools";
 import { OptionSetting } from "./optionSetting";
+import type { RgbaColor } from "@/utils/color";
 
 export const ToolSetting = (props: {
   toolId: ToolId;
@@ -13,7 +14,7 @@ export const ToolSetting = (props: {
   const { type, value, onChange, toolId, settingKey } = props;
 
   if (type === "color") {
-    return <ColorSetting value={value as string} onChange={onChange} />;
+    return <ColorSetting value={value as RgbaColor} onChange={onChange} />;
   }
   if (type === "size") {
     const options = toolsMetadata[toolId].settings[settingKey].options;
@@ -28,3 +29,4 @@ export const ToolSetting = (props: {
 
   return null;
 };
+

@@ -1,51 +1,38 @@
-import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { HsvWheel } from "./hsvWheel";
 import { HsValueSlider } from "./hsValueSlider";
 import { AlphaSlider } from "./alphaSlider";
-import { OptionSetting } from "../tool-settings/optionSetting";
-import type { RgbaColor, HsvaColor, HsColor } from "@/utils/color";
+import type { RgbaColor, HsvaColor } from "@/utils/color";
 import { useStableCallback } from "@/hooks";
 import { ColorRectangle } from "./colorRectangle";
 import { ColorProcessor } from "@/utils/colorProcessor";
 import { ColorInputs } from "./colorInputs";
 import { cn } from "@/utils/css";
 
-const predefined = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff"];
-
 export const ColorPicker = (props: {
   className?: string;
-  // color: RgbaColor;
-  // onChange: (color: RgbaColor) => void;
+  value: RgbaColor;
+  onChange: (color: RgbaColor) => void;
 }) => {
-  const { className } = props;
-  const [color, setColor] = useState<HsvaColor>({
-    h: 45,
-    s: 100,
-    v: 100,
-    a: 1,
+  const { value, onChange, className } = props;
+  const rgbaColor = value;
+  const hsvaColor = ColorProcessor.fromRgba(value).toHsva();
+
+  const setHsvaColor = useStableCallback((newColor: Partial<HsvaColor>) => {
+    const newHsva = { ...hsvaColor, ...newColor };
+    onChange(ColorProcessor.fromHsva(newHsva).toRgba());
   });
 
-  const setHsColor = useStableCallback((newColor: HsColor) => {
-    setColor((oldColor) => ({
-      ...oldColor,
-      ...newColor,
-    }));
-  });
-
-  const setRgbaColor = useStableCallback((newColor: RgbaColor) => {
-    setColor((oldColor) => ({
-      ...oldColor,
-      ...ColorProcessor.fromRgba(newColor).toHsva(),
-    }));
+  const setRgbaColor = useStableCallback((newColor: Partial<RgbaColor>) => {
+    onChange({ ...rgbaColor, ...newColor });
   });
 
   return (
-    <Popover open>
+    <Popover>
       <PopoverTrigger>
         <ColorRectangle
           className={cn("w-10 h-6", className)}
-          color={ColorProcessor.fromHsva(color).toRgba()}
+          color={ColorProcessor.fromHsva(hsvaColor).toRgba()}
         />
       </PopoverTrigger>
       <PopoverContent align="start" className="flex flex-col gap-big w-fit">
@@ -53,31 +40,29 @@ export const ColorPicker = (props: {
           <div className="flex flex-row h-[136px] relative gap-big">
             <HsvWheel
               className="size-[136px]"
-              color={color}
-              setColor={setHsColor}
+              color={hsvaColor}
+              setColor={setHsvaColor}
             />
             <HsValueSlider
               className="h-full"
-              color={color}
-              value={color.v}
-              onChange={(v) => setColor((oldColor) => ({ ...oldColor, v }))}
+              color={hsvaColor}
+              value={hsvaColor.v}
+              onChange={(v) => setHsvaColor({ v })}
             />
             <AlphaSlider
               className="h-full"
-              color={color}
-              value={color.a * 100}
-              onChange={(a) =>
-                setColor((oldColor) => ({ ...oldColor, a: a / 100 }))
-              }
+              color={hsvaColor}
+              value={hsvaColor.a * 100}
+              onChange={(a) => setHsvaColor({ a: a / 100 })}
             />
             <ColorInputs
               className="w-[120px]"
-              color={ColorProcessor.fromHsva(color).toRgba()}
+              color={ColorProcessor.fromHsva(hsvaColor).toRgba()}
               onChange={setRgbaColor}
             />
           </div>
         </div>
-        <div className="flex flex-row gap-medium">
+        {/* <div className="flex flex-row gap-medium">
           {predefined.map((predef, index) => (
             <div
               key={index}
@@ -99,9 +84,8 @@ export const ColorPicker = (props: {
               { label: "3", value: "3" },
             ]}
           />
-        </div>
+        </div> */}
       </PopoverContent>
     </Popover>
   );
 };
-

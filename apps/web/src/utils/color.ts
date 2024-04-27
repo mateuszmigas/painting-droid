@@ -4,19 +4,4 @@ export type HsvColor = HsColor & { v: number };
 export type RgbaColor = RbgColor & { a: number };
 export type HsvaColor = HsvColor & { a: number };
 
-export type Color =
-  | ({
-      type: "rgb";
-    } & RbgColor)
-  | ({
-      type: "hsv";
-    } & HsvColor)
-  | ({
-      type: "rgba";
-    } & RgbaColor)
-  | ({
-      type: "hsla";
-    } & HsvaColor);
-
 export const isValidHex = (hex: string): boolean => /^#[0-9A-F]{6}$/i.test(hex);
-

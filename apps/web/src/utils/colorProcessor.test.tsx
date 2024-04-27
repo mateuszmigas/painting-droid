@@ -106,4 +106,3 @@ describe("colorProcessor", () => {
     expect(colorProcessor.toRgbString()).toBe("rgb(0, 255, 255)");
   });
 });
-
