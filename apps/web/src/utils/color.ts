@@ -32,6 +32,17 @@ export const hslToRgb = (color: HslColor): RbgColor => {
   };
 };
 
+export const hslaToRgba = (color: HslaColor): RgbaColor => {
+  const { h, s, l, a } = color;
+  const { r, g, b } = hslToRgb({ h, s, l });
+  return { r, g, b, a };
+};
+
+export const rgbaToRgbaString = (color: RgbaColor): string => {
+  const { r, g, b, a } = color;
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+
 export const rgbToHsl = (color: RbgColor): HslColor => {
   let { r, g, b } = color;
   r /= 255;

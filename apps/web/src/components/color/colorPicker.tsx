@@ -7,19 +7,30 @@ import { Input } from "../ui/input";
 import { Select } from "../ui/select";
 import { OptionSetting } from "../tool-settings/optionSetting";
 import { Label } from "../ui/label";
+import {
+  hslToRgb,
+  hslaToRgba,
+  rgbaToRgbaString,
+  type HslColor,
+  type HslaColor,
+} from "@/utils/color";
+import { useStableCallback } from "@/hooks";
 
 const predefined = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff"];
-
-type Color = {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-};
 
 export const ColorPicker = (props: {}) => {
   const [lightness, setLightness] = useState(33);
   const [opacity, setOpacity] = useState(100);
+  const [color, setColor] = useState<HslaColor>({ h: 0, s: 100, l: 50, a: 1 });
+  const setHslColor = useStableCallback((color: HslColor) => {
+    setColor((hslaColor) => ({
+      ...hslaColor,
+      ...color,
+    }));
+  });
+
+  console.log(rgbaToRgbaString(hslaToRgba(color)));
+
   return (
     <Popover open>
       <PopoverTrigger>
@@ -28,7 +39,7 @@ export const ColorPicker = (props: {}) => {
       <PopoverContent align="start" className="flex flex-col gap-big w-fit">
         <div className="flex flex-row gap-big">
           <div className="flex flex-row h-32 relative gap-big">
-            <ColorWheel />
+            <ColorWheel color={color} setColor={setHslColor} />
             <LightnessSlider
               className="h-full"
               value={lightness}
@@ -79,13 +90,16 @@ export const ColorPicker = (props: {}) => {
           </div>
         </div>
         <div className="flex flex-row gap-medium">
-          {predefined.map((color, index) => (
+          {predefined.map((predef, index) => (
             <div
-              key={color}
+              key={index}
               className={`w-8 h-8 rounded-md border ${
                 index === 0 ? "border-primary" : ""
               }`}
-              style={{ backgroundColor: color }}
+              style={{
+                backgroundColor:
+                  index === 0 ? rgbaToRgbaString(hslaToRgba(color)) : predef,
+              }}
             />
           ))}
           <OptionSetting

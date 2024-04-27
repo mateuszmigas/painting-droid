@@ -95,23 +95,20 @@
     display: block !important;
   }
 
-  .wheel-hue {
+  .wheel-hsl {
     border-radius: 50%;
     background: conic-gradient(
-      from 0deg,
-      rgb(255, 0, 0),
-      rgb(255, 255, 0),
-      rgb(0, 255, 0),
-      rgb(0, 255, 255),
-      rgb(0, 0, 255),
-      rgb(255, 0, 255),
-      rgb(255, 0, 0)
-    );
-  }
-
-  .wheel-saturation {
-    border-radius: 50%;
-    background: radial-gradient(circle closest-side, #fff, transparent);
+        from 0deg,
+        rgb(255, 0, 0),
+        rgb(255, 255, 0),
+        rgb(0, 255, 0),
+        rgb(0, 255, 255),
+        rgb(0, 0, 255),
+        rgb(255, 0, 255),
+        rgb(255, 0, 0)
+      ),
+      radial-gradient(circle closest-side, white, transparent);
+    background-blend-mode: overlay;
   }
 
   .opacity-track {
