@@ -1,45 +1,48 @@
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ColorWheel } from "./colorWheel";
+import { HslWheel } from "./hslWheel";
 import { LightnessSlider } from "./lightnessSlider";
 import { OpacitySlider } from "./opacitySlider";
 import { Input } from "../ui/input";
-import { Select } from "../ui/select";
 import { OptionSetting } from "../tool-settings/optionSetting";
 import { Label } from "../ui/label";
-import {
-  hslToRgb,
-  hslaToRgba,
-  rgbaToRgbaString,
-  type HslColor,
-  type HslaColor,
-} from "@/utils/color";
+import type { RgbaColor, HslColor, HslaColor } from "@/utils/color";
 import { useStableCallback } from "@/hooks";
+import { ColorRectangle } from "./colorRectangle";
+import { ColorProcessor } from "@/utils/colorProcessor";
 
 const predefined = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff"];
 
 export const ColorPicker = (props: {}) => {
   const [lightness, setLightness] = useState(33);
   const [opacity, setOpacity] = useState(100);
-  const [color, setColor] = useState<HslaColor>({ h: 0, s: 100, l: 50, a: 1 });
-  const setHslColor = useStableCallback((color: HslColor) => {
-    setColor((hslaColor) => ({
-      ...hslaColor,
-      ...color,
+  const [color, setColor] = useState<RgbaColor>({
+    r: 255,
+    g: 0,
+    b: 255,
+    a: 1,
+  });
+  const setHslColor = useStableCallback((hslColor: HslColor) => {
+    setColor((rgbaColor) => ({
+      ...rgbaColor,
+      ...ColorProcessor.fromHsl(hslColor).toRgba(),
     }));
   });
-
-  console.log(rgbaToRgbaString(hslaToRgba(color)));
 
   return (
     <Popover open>
       <PopoverTrigger>
-        <div>Dupa</div>
+        {/* <div>Dupa</div> */}
+        <ColorRectangle color={color} />
       </PopoverTrigger>
       <PopoverContent align="start" className="flex flex-col gap-big w-fit">
         <div className="flex flex-row gap-big">
           <div className="flex flex-row h-32 relative gap-big">
-            <ColorWheel color={color} setColor={setHslColor} />
+            <HslWheel
+              className="size-32"
+              color={ColorProcessor.fromRgba(color).toHsl()}
+              setColor={setHslColor}
+            />
             <LightnessSlider
               className="h-full"
               value={lightness}
@@ -97,8 +100,7 @@ export const ColorPicker = (props: {}) => {
                 index === 0 ? "border-primary" : ""
               }`}
               style={{
-                backgroundColor:
-                  index === 0 ? rgbaToRgbaString(hslaToRgba(color)) : predef,
+                backgroundColor: predef,
               }}
             />
           ))}
@@ -117,3 +119,4 @@ export const ColorPicker = (props: {}) => {
     </Popover>
   );
 };
+

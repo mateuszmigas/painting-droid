@@ -1,5 +1,6 @@
 import type { HslColor } from "@/utils/color";
 import type { Position } from "@/utils/common";
+import { cn } from "@/utils/css";
 import { memo, useEffect, useRef } from "react";
 
 const hslToPosition = (hsl: HslColor): Position => {
@@ -17,11 +18,15 @@ const positionToHsl = (position: Position): HslColor => {
   return { h: hue, s: saturation * 100, l: 50 };
 };
 
-export const ColorWheel = memo(
-  (props: { color: HslColor; setColor: (color: HslColor) => void }) => {
-    const { color, setColor } = props;
+export const HslWheel = memo(
+  (props: {
+    color: HslColor;
+    setColor: (color: HslColor) => void;
+    className?: string;
+  }) => {
+    const { color, setColor, className } = props;
     const wheelRef = useRef<HTMLDivElement>(null);
-    const isMoving = useRef(false);
+    const isMovingThumb = useRef(false);
 
     useEffect(() => {
       if (!wheelRef.current) return;
@@ -37,16 +42,17 @@ export const ColorWheel = memo(
 
       const onPointerDown = (e: PointerEvent) => {
         setColorFromEvent(e);
-        isMoving.current = true;
+        isMovingThumb.current = true;
+        e.preventDefault();
       };
 
       const onPointerMove = (e: PointerEvent) => {
-        if (!isMoving.current) return;
+        if (!isMovingThumb.current) return;
         setColorFromEvent(e);
       };
 
       const onPointerUp = () => {
-        isMoving.current = false;
+        isMovingThumb.current = false;
       };
 
       wheel.addEventListener("pointerdown", onPointerDown);
@@ -63,7 +69,7 @@ export const ColorWheel = memo(
     const position = hslToPosition(color);
 
     return (
-      <div className="w-32 h-32 relative">
+      <div className={cn("relative", className)}>
         <div className="absolute wheel-hsl size-full" />
         <div className="absolute rounded-full border size-full" />
         <div ref={wheelRef} className="absolute size-full">
@@ -72,10 +78,11 @@ export const ColorWheel = memo(
               left: `calc(50% + ${position.x * 50}%)`,
               top: `calc(50% + ${position.y * 50}%)`,
             }}
-            className="pointer-events-none -translate-x-1/2 -translate-y-1/2 absolute h-4 w-4 rounded-full border shadow-black/50 border-white shadow transition-colors"
+            className="pointer-events-none cursor-pointer -translate-x-1/2 -translate-y-1/2 absolute h-4 w-4 rounded-full border shadow-black/50 border-white shadow transition-colors"
           />
         </div>
       </div>
     );
   }
 );
+
