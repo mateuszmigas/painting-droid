@@ -3,6 +3,7 @@ import { toolsMetadata } from "@/tools";
 import { ToolSetting } from "./tool-settings/toolSetting";
 import { Separator } from "@radix-ui/react-separator";
 import type { DrawToolSettingType } from "@/tools/draw-tools/drawTool";
+import { ColorPicker } from "./color/colorPicker";
 
 export const ToolSettingsBar = () => {
   const selectedToolId = useToolStore((state) => state.selectedToolId);
@@ -41,6 +42,7 @@ export const ToolSettingsBar = () => {
           </div>
         );
       })}
+      <ColorPicker />
     </div>
   );
 };

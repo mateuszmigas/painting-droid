@@ -94,5 +94,39 @@
   .remove-table-child > div {
     display: block !important;
   }
+
+  .wheel-hue {
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      red,
+      orange,
+      yellow,
+      lime,
+      aqua,
+      blue,
+      magenta,
+      red
+    );
+  }
+
+  .wheel-saturation {
+    border-radius: 50%;
+    background: radial-gradient(circle closest-side, #fff, transparent);
+  }
+
+  .opacity-track {
+    --opacity-track-color: 10px;
+    background: repeating-conic-gradient(#bfbfbf 0% 25%, #fff 0% 50%) 50% / 10px
+        10px,
+      linear-gradient(to bottom, var(--opacity-track-color), transparent);
+    background-blend-mode: overlay;
+  }
+
+  .lightness-track {
+    --lightness-track-color: 10px;
+    background: linear-gradient(to bottom, var(--lightness-track-color), black);
+    background-blend-mode: overlay;
+  }
 }
 
