@@ -115,6 +115,31 @@ const rgbaToHsva = (color: RgbaColor): HsvaColor => {
   return { ...rgb, a: color.a };
 };
 
+const hexToRgb = (hex: string): RbgColor => {
+  const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  const formattedHex = hex.replace(
+    shorthandRegex,
+    (_, r, g, b) => r + r + g + g + b + b
+  );
+
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
+    formattedHex
+  )!;
+
+  return {
+    r: Number.parseInt(result[1], 16),
+    g: Number.parseInt(result[2], 16),
+    b: Number.parseInt(result[3], 16),
+  };
+};
+
+const rgbToHex = (color: RbgColor): string => {
+  const { r, g, b } = color;
+  return `#${((1 << 24) | (r << 16) | (g << 8) | b)
+    .toString(16)
+    .slice(1)}`.toUpperCase();
+};
+
 export class ColorProcessor {
   private constructor(private rgbaColor: RgbaColor) {}
 
@@ -128,6 +153,10 @@ export class ColorProcessor {
 
   public static fromHsv(color: HsvColor): ColorProcessor {
     return new ColorProcessor(hsvaToRgba({ ...color, a: 1 }));
+  }
+
+  public static fromHex(hex: string): ColorProcessor {
+    return new ColorProcessor({ ...hexToRgb(hex), a: 1 });
   }
 
   public toRgba(): RgbaColor {
@@ -144,6 +173,10 @@ export class ColorProcessor {
 
   public toRgbaString(): string {
     return rgbaToRgbaString(this.rgbaColor);
+  }
+
+  public toHex(): string {
+    return rgbToHex(this.rgbaColor);
   }
 }
 

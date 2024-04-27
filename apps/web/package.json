@@ -9,6 +9,7 @@
     "check-types": "tsc --noEmit",
     "check-types:watch": "tsc --noEmit --watch",
     "test:unit": "vitest run",
+    "test:unit:watch": "vitest watch",
     "test:e2e": "pnpm exec playwright test",
     "test:e2e:debug": "pnpm exec playwright test --debug",
     "test:e2e:install-browsers": "pnpm exec playwright install --with-deps",
@@ -82,3 +83,4 @@
     "vitest": "^1.5.0"
   }
 }
+

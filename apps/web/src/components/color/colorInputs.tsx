@@ -18,6 +18,8 @@ export const ColorInputs = memo(
       <div className={cn("flex flex-col gap-small", className)}>
         {Object.keys(color).map((key) => {
           const rgbaKey = key as keyof RgbaColor;
+          const max = rgbaKey === "a" ? 1 : 255;
+          const step = rgbaKey === "a" ? 0.01 : 1;
           return (
             <div
               key={rgbaKey}
@@ -27,14 +29,15 @@ export const ColorInputs = memo(
                 {translations.rgba[rgbaKey as keyof typeof translations.rgba]}
               </Label>
               <NumberInput
-                max={255}
+                max={max}
                 min={0}
+                step={step}
                 className="text-xs h-input-thin w-16 pr-small"
                 value={color[rgbaKey]}
                 onChange={(value) =>
                   onChange({
                     ...color,
-                    [rgbaKey]: Math.max(0, Math.min(255, value)),
+                    [rgbaKey]: Math.max(0, Math.min(max, value)),
                   })
                 }
               />
@@ -46,6 +49,7 @@ export const ColorInputs = memo(
           <Input
             className="text-xs h-input-thin w-16 text-right"
             defaultValue={132}
+            //tood: implement hex conversion
           />
         </div>
       </div>
