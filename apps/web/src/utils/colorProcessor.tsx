@@ -1,23 +1,107 @@
-import type { HslColor, RbgColor, HslaColor, RgbaColor } from "./color";
+import type { HsvColor, RbgColor, HsvaColor, RgbaColor } from "./color";
 
-const hslToRgb = (color: HslColor): RbgColor => {
-  let { h, s, l } = color;
-  s /= 100;
-  l /= 100;
-  const k = (n: number) => (n + h / 30) % 12;
-  const a = s * Math.min(l, 1 - l);
-  const f = (n: number) =>
-    l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+// magic functions from https://stackoverflow.com/a/17243070
+const hsvToRgb = (color: HsvColor): RbgColor => {
+  const h = color.h / 360;
+  const s = color.s / 100;
+  const v = color.v / 100;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+  let i = 0;
+  let f = 0;
+  let p = 0;
+  let q = 0;
+  let t = 0;
+  i = Math.floor(h * 6);
+  f = h * 6 - i;
+  p = v * (1 - s);
+  q = v * (1 - f * s);
+  t = v * (1 - (1 - f) * s);
+  switch (i % 6) {
+    case 0:
+      {
+        r = v;
+        g = t;
+        b = p;
+      }
+      break;
+    case 1:
+      {
+        r = q;
+        g = v;
+        b = p;
+      }
+      break;
+    case 2:
+      {
+        r = p;
+        g = v;
+        b = t;
+      }
+      break;
+    case 3:
+      {
+        r = p;
+        g = q;
+        b = v;
+      }
+      break;
+    case 4:
+      {
+        r = t;
+        g = p;
+        b = v;
+      }
+      break;
+    case 5:
+      {
+        r = v;
+        g = p;
+        b = q;
+      }
+      break;
+  }
   return {
-    r: Math.round(255 * f(0)),
-    g: Math.round(255 * f(8)),
-    b: Math.round(255 * f(4)),
+    r: Math.round(r * 255),
+    g: Math.round(g * 255),
+    b: Math.round(b * 255),
   };
 };
 
-const hslaToRgba = (color: HslaColor): RgbaColor => {
-  const { h, s, l, a } = color;
-  const { r, g, b } = hslToRgb({ h, s, l });
+const rgbToHsv = (color: RbgColor): HsvColor => {
+  const { r, g, b } = color;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0;
+  const s = max === 0 ? 0 : d / max;
+  const v = max / 255;
+
+  switch (max) {
+    case min:
+      h = 0;
+      break;
+    case r:
+      h = g - b + d * (g < b ? 6 : 0);
+      h /= 6 * d;
+      break;
+    case g:
+      h = b - r + d * 2;
+      h /= 6 * d;
+      break;
+    case b:
+      h = r - g + d * 4;
+      h /= 6 * d;
+      break;
+  }
+
+  return { h: h * 360, s: s * 100, v: v * 100 };
+};
+
+const hsvaToRgba = (color: HsvaColor): RgbaColor => {
+  const { h, s, v, a } = color;
+  const { r, g, b } = hsvToRgb({ h, s, v });
   return { r, g, b, a };
 };
 
@@ -26,41 +110,8 @@ const rgbaToRgbaString = (color: RgbaColor): string => {
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
-const rgbToHsl = (color: RbgColor): HslColor => {
-  let { r, g, b } = color;
-  r /= 255;
-  g /= 255;
-  b /= 255;
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h = 0;
-  let s: number;
-  const l = (max + min) / 2;
-
-  if (max === min) {
-    h = s = 0; // achromatic
-  } else {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      case b:
-        h = (r - g) / d + 4;
-        break;
-    }
-    h /= 6;
-  }
-
-  return { h: h * 360, s: s * 100, l: l * 100 };
-};
-
-const rgbaToHsla = (color: RgbaColor): HslaColor => {
-  const rgb = rgbToHsl(color);
+const rgbaToHsva = (color: RgbaColor): HsvaColor => {
+  const rgb = rgbToHsv(color);
   return { ...rgb, a: color.a };
 };
 
@@ -71,24 +122,28 @@ export class ColorProcessor {
     return new ColorProcessor(color);
   }
 
-  public static fromHsla(color: HslaColor): ColorProcessor {
-    return new ColorProcessor(hslaToRgba(color));
+  public static fromHsva(color: HsvaColor): ColorProcessor {
+    return new ColorProcessor(hsvaToRgba(color));
   }
 
-  public static fromHsl(color: HslColor): ColorProcessor {
-    return new ColorProcessor(hslaToRgba({ ...color, a: 1 }));
+  public static fromHsv(color: HsvColor): ColorProcessor {
+    return new ColorProcessor(hsvaToRgba({ ...color, a: 1 }));
   }
 
   public toRgba(): RgbaColor {
     return this.rgbaColor;
   }
 
-  public toHsla(): HslaColor {
-    return rgbaToHsla(this.rgbaColor);
+  public toHsva(): HsvaColor {
+    return rgbaToHsva(this.rgbaColor);
   }
 
-  public toHsl(): HslColor {
-    return rgbToHsl(this.rgbaColor);
+  public toHsv(): HsvColor {
+    return rgbToHsv(this.rgbaColor);
+  }
+
+  public toRgbaString(): string {
+    return rgbaToRgbaString(this.rgbaColor);
   }
 }
 

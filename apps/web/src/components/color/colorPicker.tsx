@@ -1,95 +1,72 @@
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { HslWheel } from "./hslWheel";
+import { HsvWheel } from "./hsvWheel";
 import { LightnessSlider } from "./lightnessSlider";
 import { OpacitySlider } from "./opacitySlider";
-import { Input } from "../ui/input";
 import { OptionSetting } from "../tool-settings/optionSetting";
-import { Label } from "../ui/label";
-import type { RgbaColor, HslColor, HslaColor } from "@/utils/color";
+import type { RgbaColor, HsvaColor, HsColor } from "@/utils/color";
 import { useStableCallback } from "@/hooks";
 import { ColorRectangle } from "./colorRectangle";
 import { ColorProcessor } from "@/utils/colorProcessor";
+import { ColorInputs } from "./colorInputs";
 
 const predefined = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff"];
 
 export const ColorPicker = (props: {}) => {
-  const [lightness, setLightness] = useState(33);
-  const [opacity, setOpacity] = useState(100);
-  const [color, setColor] = useState<RgbaColor>({
-    r: 255,
-    g: 0,
-    b: 255,
+  const [color, setColor] = useState<HsvaColor>({
+    h: 45,
+    s: 100,
+    v: 100,
     a: 1,
   });
-  const setHslColor = useStableCallback((hslColor: HslColor) => {
-    setColor((rgbaColor) => ({
-      ...rgbaColor,
-      ...ColorProcessor.fromHsl(hslColor).toRgba(),
+
+  const setHsColor = useStableCallback((newColor: HsColor) => {
+    setColor((oldColor) => ({
+      ...oldColor,
+      ...newColor,
+    }));
+  });
+
+  const setRgbaColor = useStableCallback((newColor: RgbaColor) => {
+    setColor((oldColor) => ({
+      ...oldColor,
+      ...ColorProcessor.fromRgba(newColor).toHsva(),
     }));
   });
 
   return (
     <Popover open>
       <PopoverTrigger>
-        {/* <div>Dupa</div> */}
-        <ColorRectangle color={color} />
+        <ColorRectangle
+          className="w-10 h-6"
+          color={ColorProcessor.fromHsva(color).toRgba()}
+        />
       </PopoverTrigger>
       <PopoverContent align="start" className="flex flex-col gap-big w-fit">
         <div className="flex flex-row gap-big">
-          <div className="flex flex-row h-32 relative gap-big">
-            <HslWheel
-              className="size-32"
-              color={ColorProcessor.fromRgba(color).toHsl()}
-              setColor={setHslColor}
+          <div className="flex flex-row h-[136px] relative gap-big">
+            <HsvWheel
+              className="size-[136px]"
+              color={color}
+              setColor={setHsColor}
             />
             <LightnessSlider
               className="h-full"
-              value={lightness}
-              onChange={setLightness}
+              value={color.v}
+              onChange={(v) => setColor((oldColor) => ({ ...oldColor, v }))}
             />
             <OpacitySlider
-              className="h-full _bg-blue-200"
-              value={opacity}
-              onChange={setOpacity}
+              className="h-full"
+              value={color.a * 100}
+              onChange={(a) =>
+                setColor((oldColor) => ({ ...oldColor, a: a / 100 }))
+              }
             />
-          </div>
-          <div className="_w-[100px] flex flex-col gap-small">
-            <div className="flex flex-row items-center gap-big">
-              <Label className="text-xs w-10">HEX</Label>
-              <Input
-                className="text-xs h-input-thin w-16 text-right px-small"
-                defaultValue={"#ff00ff"}
-              />
-            </div>
-            <div className="flex flex-row items-center gap-big">
-              <Label className="text-xs w-10">Red</Label>
-              <Input
-                className="text-xs h-input-thin w-16 text-right"
-                defaultValue={132}
-              />
-            </div>
-            <div className="flex flex-row items-center gap-big">
-              <Label className="text-xs w-10">Green</Label>
-              <Input
-                className="text-xs h-input-thin w-16 text-right"
-                defaultValue={132}
-              />
-            </div>
-            <div className="flex flex-row items-center gap-big">
-              <Label className="text-xs w-10">Blue</Label>
-              <Input
-                className="text-xs h-input-thin w-16 text-right"
-                defaultValue={132}
-              />
-            </div>
-            <div className="flex flex-row items-center gap-big">
-              <Label className="text-xs w-10">Opacity</Label>
-              <Input
-                className="text-xs h-input-thin w-16 text-right"
-                defaultValue={132}
-              />
-            </div>
+            <ColorInputs
+              className="w-28"
+              color={ColorProcessor.fromHsva(color).toRgba()}
+              onChange={setRgbaColor}
+            />
           </div>
         </div>
         <div className="flex flex-row gap-medium">

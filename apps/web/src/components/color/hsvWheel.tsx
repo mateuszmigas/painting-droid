@@ -1,27 +1,27 @@
-import type { HslColor } from "@/utils/color";
+import type { HsColor } from "@/utils/color";
 import type { Position } from "@/utils/common";
 import { cn } from "@/utils/css";
 import { memo, useEffect, useRef } from "react";
 
-const hslToPosition = (hsl: HslColor): Position => {
-  const rotatedHue = hsl.h - 90;
-  const x = (Math.cos(rotatedHue * (Math.PI / 180)) * hsl.s) / 100;
-  const y = (Math.sin(rotatedHue * (Math.PI / 180)) * hsl.s) / 100;
+const hsToPosition = (hs: HsColor): Position => {
+  const rotatedHue = hs.h - 90;
+  const x = (Math.cos(rotatedHue * (Math.PI / 180)) * hs.s) / 100;
+  const y = (Math.sin(rotatedHue * (Math.PI / 180)) * hs.s) / 100;
   return { x, y };
 };
 
-const positionToHsl = (position: Position): HslColor => {
+const positionToHs = (position: Position): HsColor => {
   const { x, y } = position;
   const angle = Math.atan2(y, x) * (180 / Math.PI);
   const hue = (angle + 90 + 360) % 360;
   const saturation = Math.min(Math.sqrt(x * x + y * y), 1);
-  return { h: hue, s: saturation * 100, l: 50 };
+  return { h: hue, s: saturation * 100 };
 };
 
-export const HslWheel = memo(
+export const HsvWheel = memo(
   (props: {
-    color: HslColor;
-    setColor: (color: HslColor) => void;
+    color: HsColor;
+    setColor: (color: HsColor) => void;
     className?: string;
   }) => {
     const { color, setColor, className } = props;
@@ -36,8 +36,7 @@ export const HslWheel = memo(
         const rect = wheel.getBoundingClientRect();
         const x = (e.clientX - rect.left) / (rect.width / 2) - 1;
         const y = (e.clientY - rect.top) / (rect.height / 2) - 1;
-        const hsl = positionToHsl({ x, y });
-        setColor(hsl);
+        setColor(positionToHs({ x, y }));
       };
 
       const onPointerDown = (e: PointerEvent) => {
@@ -66,7 +65,7 @@ export const HslWheel = memo(
       };
     }, [setColor]);
 
-    const position = hslToPosition(color);
+    const position = hsToPosition(color);
 
     return (
       <div className={cn("relative", className)}>

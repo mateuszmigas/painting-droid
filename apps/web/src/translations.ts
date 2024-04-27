@@ -191,6 +191,14 @@ const translations = {
     width: "Width",
     widthPercentage: "Width (%)",
   },
+  color: {
+    rgba: {
+      r: "Red",
+      g: "Green",
+      b: "Blue",
+      a: "Alpha",
+    },
+  },
   errors: {
     noImageData: "No image data",
     processingError: "Processing error",
