@@ -41,7 +41,7 @@ export class BrushDrawTool implements DrawTool {
   configure(settings: BrushDrawToolSettings): void {
     const { size, color } = settings;
     this.context.lineWidth = size;
-    this.context.strokeStyle = color;
+    this.context.strokeStyle = "rgba(0,0,0,0.1)";
     this.context.lineCap = "round";
   }
 

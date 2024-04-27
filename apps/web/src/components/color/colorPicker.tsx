@@ -4,19 +4,18 @@ import { ColorWheel } from "./colorWheel";
 import { LightnessSlider } from "./lightnessSlider";
 import { OpacitySlider } from "./opacitySlider";
 import { Input } from "../ui/input";
-import { Label } from "@radix-ui/react-dropdown-menu";
 import { Select } from "../ui/select";
 import { OptionSetting } from "../tool-settings/optionSetting";
+import { Label } from "../ui/label";
 
-const predefined = [
-  "#000000",
-  "#ffffff",
-  "#ff0000",
-  "#00ff00",
-  "#0000ff",
-  "#ffff00",
-  "#ffff00",
-];
+const predefined = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff"];
+
+type Color = {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+};
 
 export const ColorPicker = (props: {}) => {
   const [lightness, setLightness] = useState(33);
@@ -42,41 +41,50 @@ export const ColorPicker = (props: {}) => {
             />
           </div>
           <div className="_w-[100px] flex flex-col gap-small">
-            <div className="flex flex-row items-center gap-small">
-              <Label className="text-xs w-8">HEX</Label>
+            <div className="flex flex-row items-center gap-big">
+              <Label className="text-xs w-10">HEX</Label>
               <Input
-                className="text-xs h-input-thin w-20 text-right"
+                className="text-xs h-input-thin w-16 text-right px-small"
                 defaultValue={"#ff00ff"}
               />
             </div>
-            <div className="flex flex-row items-center gap-small">
-              <Label className="text-xs w-8">Red</Label>
+            <div className="flex flex-row items-center gap-big">
+              <Label className="text-xs w-10">Red</Label>
               <Input
-                className="text-xs h-input-thin w-20 text-right"
+                className="text-xs h-input-thin w-16 text-right"
                 defaultValue={132}
               />
-            </div>{" "}
-            <div className="flex flex-row items-center gap-small">
-              <Label className="text-xs w-8">Green</Label>
+            </div>
+            <div className="flex flex-row items-center gap-big">
+              <Label className="text-xs w-10">Green</Label>
               <Input
-                className="text-xs h-input-thin w-20 text-right"
+                className="text-xs h-input-thin w-16 text-right"
                 defaultValue={132}
               />
-            </div>{" "}
-            <div className="flex flex-row items-center gap-small">
-              <Label className="text-xs w-8">Blue</Label>
+            </div>
+            <div className="flex flex-row items-center gap-big">
+              <Label className="text-xs w-10">Blue</Label>
               <Input
-                className="text-xs h-input-thin w-20 text-right"
+                className="text-xs h-input-thin w-16 text-right"
+                defaultValue={132}
+              />
+            </div>
+            <div className="flex flex-row items-center gap-big">
+              <Label className="text-xs w-10">Opacity</Label>
+              <Input
+                className="text-xs h-input-thin w-16 text-right"
                 defaultValue={132}
               />
             </div>
           </div>
         </div>
-        <div className="flex flex-row gap-small ">
-          {predefined.map((color) => (
+        <div className="flex flex-row gap-medium">
+          {predefined.map((color, index) => (
             <div
               key={color}
-              className="w-6 h-6 rounded-md border"
+              className={`w-8 h-8 rounded-md border ${
+                index === 0 ? "border-primary" : ""
+              }`}
               style={{ backgroundColor: color }}
             />
           ))}
@@ -95,4 +103,3 @@ export const ColorPicker = (props: {}) => {
     </Popover>
   );
 };
-

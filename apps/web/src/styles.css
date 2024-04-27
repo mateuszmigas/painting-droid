@@ -99,14 +99,13 @@
     border-radius: 50%;
     background: conic-gradient(
       from 0deg,
-      red,
-      orange,
-      yellow,
-      lime,
-      aqua,
-      blue,
-      magenta,
-      red
+      rgb(255, 0, 0),
+      rgb(255, 255, 0),
+      rgb(0, 255, 0),
+      rgb(0, 255, 255),
+      rgb(0, 0, 255),
+      rgb(255, 0, 255),
+      rgb(255, 0, 0)
     );
   }
 
@@ -129,4 +128,3 @@
     background-blend-mode: overlay;
   }
 }
-
