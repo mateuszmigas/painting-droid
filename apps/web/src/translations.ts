@@ -192,6 +192,7 @@ const translations = {
     widthPercentage: "Width (%)",
   },
   color: {
+    hex: "Hex",
     rgba: {
       r: "Red",
       g: "Green",

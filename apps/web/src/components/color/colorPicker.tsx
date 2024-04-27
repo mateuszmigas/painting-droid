@@ -1,18 +1,24 @@
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { HsvWheel } from "./hsvWheel";
-import { LightnessSlider } from "./lightnessSlider";
-import { OpacitySlider } from "./opacitySlider";
+import { HsValueSlider } from "./hsValueSlider";
+import { AlphaSlider } from "./alphaSlider";
 import { OptionSetting } from "../tool-settings/optionSetting";
 import type { RgbaColor, HsvaColor, HsColor } from "@/utils/color";
 import { useStableCallback } from "@/hooks";
 import { ColorRectangle } from "./colorRectangle";
 import { ColorProcessor } from "@/utils/colorProcessor";
 import { ColorInputs } from "./colorInputs";
+import { cn } from "@/utils/css";
 
 const predefined = ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff"];
 
-export const ColorPicker = (props: {}) => {
+export const ColorPicker = (props: {
+  className?: string;
+  // color: RgbaColor;
+  // onChange: (color: RgbaColor) => void;
+}) => {
+  const { className } = props;
   const [color, setColor] = useState<HsvaColor>({
     h: 45,
     s: 100,
@@ -38,7 +44,7 @@ export const ColorPicker = (props: {}) => {
     <Popover open>
       <PopoverTrigger>
         <ColorRectangle
-          className="w-10 h-6"
+          className={cn("w-10 h-6", className)}
           color={ColorProcessor.fromHsva(color).toRgba()}
         />
       </PopoverTrigger>
@@ -50,20 +56,22 @@ export const ColorPicker = (props: {}) => {
               color={color}
               setColor={setHsColor}
             />
-            <LightnessSlider
+            <HsValueSlider
               className="h-full"
+              color={color}
               value={color.v}
               onChange={(v) => setColor((oldColor) => ({ ...oldColor, v }))}
             />
-            <OpacitySlider
+            <AlphaSlider
               className="h-full"
+              color={color}
               value={color.a * 100}
               onChange={(a) =>
                 setColor((oldColor) => ({ ...oldColor, a: a / 100 }))
               }
             />
             <ColorInputs
-              className="w-28"
+              className="w-[120px]"
               color={ColorProcessor.fromHsva(color).toRgba()}
               onChange={setRgbaColor}
             />

@@ -15,10 +15,13 @@ export const ColorRectangle = memo(
       >
         <div
           style={{
-            background: ColorProcessor.fromRgba(color).toRgbaString(),
-            opacity: color.a,
+            background: `linear-gradient(to right, ${ColorProcessor.fromRgba(
+              color
+            ).toRgbString()} 25%,${ColorProcessor.fromRgba(
+              color
+            ).toRgbaString()})`,
           }}
-          className="absolute size-full"
+          className="absolute size-full xxx"
         />
       </div>
     );

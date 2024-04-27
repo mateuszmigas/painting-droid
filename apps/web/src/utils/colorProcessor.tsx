@@ -1,4 +1,10 @@
-import type { HsvColor, RbgColor, HsvaColor, RgbaColor } from "./color";
+import {
+  type HsvColor,
+  type RbgColor,
+  type HsvaColor,
+  type RgbaColor,
+  isValidHex,
+} from "./color";
 
 // magic functions from https://stackoverflow.com/a/17243070
 const hsvToRgb = (color: HsvColor): RbgColor => {
@@ -116,6 +122,9 @@ const rgbaToHsva = (color: RgbaColor): HsvaColor => {
 };
 
 const hexToRgb = (hex: string): RbgColor => {
+  if (!isValidHex(hex)) {
+    throw new Error("Invalid hex color");
+  }
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
   const formattedHex = hex.replace(
     shorthandRegex,
@@ -173,6 +182,11 @@ export class ColorProcessor {
 
   public toRgbaString(): string {
     return rgbaToRgbaString(this.rgbaColor);
+  }
+
+  public toRgbString(): string {
+    const { r, g, b } = this.rgbaColor;
+    return `rgb(${r}, ${g}, ${b})`;
   }
 
   public toHex(): string {

@@ -111,18 +111,20 @@
     background-blend-mode: overlay;
   }
 
-  .opacity-track {
-    --opacity-track-color: 10px;
-    background: repeating-conic-gradient(#bfbfbf 0% 25%, #fff 0% 50%) 50% / 10px
-        10px,
-      linear-gradient(to bottom, var(--opacity-track-color), transparent);
-    background-blend-mode: overlay;
+  .alpha-track {
+    --alpha-track-color: 10px;
+    background: linear-gradient(
+        to bottom,
+        var(--alpha-track-color),
+        transparent
+      ),
+      repeating-conic-gradient(#bfbfbf 0% 25%, #fff 0% 50%) 50% / 10px 10px;
+    background-blend-mode: normal;
   }
 
-  .lightness-track {
-    --lightness-track-color: 10px;
-    background: linear-gradient(to bottom, var(--lightness-track-color), black);
-    background-blend-mode: overlay;
+  .hsvalue-track {
+    --hsvalue-track-color: 10px;
+    background: linear-gradient(to bottom, var(--hsvalue-track-color), black);
   }
 }
 

@@ -1,10 +1,11 @@
-import type { RgbaColor } from "@/utils/color";
+import { isValidHex, type RgbaColor } from "@/utils/color";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { getTranslations } from "@/translations";
 import { cn } from "@/utils/css";
 import { NumberInput } from "../input/numberInput";
+import { ColorProcessor } from "@/utils/colorProcessor";
 const translations = getTranslations().color;
 
 export const ColorInputs = memo(
@@ -14,6 +15,9 @@ export const ColorInputs = memo(
     className?: string;
   }) => {
     const { color, onChange, className } = props;
+    const [hex, setHex] = useState<string>(
+      ColorProcessor.fromRgba(color).toHex()
+    );
     return (
       <div className={cn("flex flex-col gap-small", className)}>
         {Object.keys(color).map((key) => {
@@ -32,7 +36,7 @@ export const ColorInputs = memo(
                 max={max}
                 min={0}
                 step={step}
-                className="text-xs h-input-thin w-16 pr-small"
+                className="text-xs h-input-thin w-[70px] pr-small pl-medium"
                 value={color[rgbaKey]}
                 onChange={(value) =>
                   onChange({
@@ -44,12 +48,22 @@ export const ColorInputs = memo(
             </div>
           );
         })}
-        <div className="flex flex-row items-center gap-big">
-          <Label className="text-xs w-10">Hex</Label>
+        <div className="flex flex-row items-center gap-big justify-between">
+          <Label className="text-xs">{translations.hex}</Label>
           <Input
-            className="text-xs h-input-thin w-16 text-right"
-            defaultValue={132}
-            //tood: implement hex conversion
+            className="text-xs h-input-thin w-[70px] pr-small pl-medium"
+            value={hex}
+            onChange={(e) => {
+              const value = e.target.value;
+              setHex(value);
+              isValidHex(value) &&
+                onChange(ColorProcessor.fromHex(value).toRgba());
+            }}
+            onBlur={(e) => {
+              const value = e.target.value;
+              !isValidHex(value) &&
+                setHex(ColorProcessor.fromRgba(color).toHex());
+            }}
           />
         </div>
       </div>

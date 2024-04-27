@@ -94,5 +94,16 @@ describe("colorProcessor", () => {
 
     expect(colorProcessor.toRgbaString()).toBe("rgba(0, 255, 255, 0.5)");
   });
+
+  test("toRgbString", () => {
+    const colorProcessor = ColorProcessor.fromRgba({
+      r: 0,
+      g: 255,
+      b: 255,
+      a: 1,
+    });
+
+    expect(colorProcessor.toRgbString()).toBe("rgb(0, 255, 255)");
+  });
 });
 
