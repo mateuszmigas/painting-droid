@@ -13,3 +13,9 @@ export const sortBySelector = <T, X>(
     (a, b) => compareBySelector(a, b, selector) * (asc ? 1 : -1)
   );
 };
+
+export const takeLast = <T>(array: T[], count?: number) =>
+  array.slice(-(count ?? 1));
+
+export const takeFirst = <T>(array: T[], count?: number) =>
+  array.slice(0, count ?? 1);

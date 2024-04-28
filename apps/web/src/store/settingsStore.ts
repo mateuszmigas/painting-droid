@@ -3,8 +3,12 @@ import { persist } from "zustand/middleware";
 import { createSyncStorage } from "./syncStorage";
 import { modelDefinitions, type ModelType } from "@/models/definitions";
 import { uuid } from "@/utils/uuid";
+import { areColorsEqual, type RgbaColor } from "@/utils/color";
+import { takeFirst } from "@/utils/array";
 
 type ThemeType = "light" | "dark" | "system";
+const maxRecentColors = 6;
+const maxFavoriteColors = 6;
 
 export type AppUserModelState = {
   id: string;
@@ -16,6 +20,8 @@ export type AppUserModelState = {
 type AppSettingsState = {
   theme: ThemeType;
   userModels: AppUserModelState[];
+  recentColors: RgbaColor[];
+  favoriteColors: RgbaColor[];
 };
 
 const defaultState: AppSettingsState = {
@@ -27,6 +33,8 @@ const defaultState: AppSettingsState = {
       type: model.type,
       display: model.defaultName,
     })),
+  recentColors: [],
+  favoriteColors: [],
 };
 
 type AppSettingsSlice = AppSettingsState & {
@@ -34,6 +42,8 @@ type AppSettingsSlice = AppSettingsState & {
   addModel: (model: AppUserModelState) => void;
   updateModel: (id: string, model: Partial<AppUserModelState>) => void;
   removeModel: (id: string) => void;
+  addFavoriteColor: (color: RgbaColor) => void;
+  addRecentColor: (color: RgbaColor) => void;
 };
 
 export const settingsStoreCreator: StateCreator<AppSettingsSlice> = (set) => ({
@@ -51,11 +61,29 @@ export const settingsStoreCreator: StateCreator<AppSettingsSlice> = (set) => ({
     set((state) => ({
       userModels: state.userModels.filter((m) => m.id !== id),
     })),
+  addFavoriteColor: (color) =>
+    set((state) => ({
+      favoriteColors: takeFirst(
+        [
+          color,
+          ...state.favoriteColors.filter((c) => !areColorsEqual(c, color)),
+        ],
+        maxFavoriteColors
+      ),
+    })),
+  addRecentColor: (color) =>
+    set((state) => ({
+      recentColors: takeFirst(
+        [color, ...state.recentColors.filter((c) => !areColorsEqual(c, color))],
+        maxRecentColors
+      ),
+    })),
 });
 
 export const useSettingsStore = create<AppSettingsSlice>()(
   persist(
     settingsStoreCreator,
-    createSyncStorage({ version: 4, name: "settings" })
+    createSyncStorage({ version: 5, name: "settings" })
   )
 );
+

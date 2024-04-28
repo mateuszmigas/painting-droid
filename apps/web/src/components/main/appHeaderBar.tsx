@@ -43,7 +43,9 @@ export const AppHeaderBar = memo(() => {
       ref={containerRef}
       className="border-b flex flex-row justify-between items-center px-small"
     >
-      {features.customMenuBar ? (
+      {features.nativeMenuBar ? (
+        <NativeMenuBarProxy />
+      ) : (
         <>
           <CustomMenuBar compact={compactMenuBar} />
           <Separator
@@ -51,8 +53,6 @@ export const AppHeaderBar = memo(() => {
             className="h-6 w-px bg-border mx-1"
           />
         </>
-      ) : (
-        <NativeMenuBarProxy />
       )}
 
       <div className="ml-medium flex-1 flex flex-row justify-start overflow-auto items-center gap-small">
