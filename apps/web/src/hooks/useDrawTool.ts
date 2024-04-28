@@ -36,6 +36,7 @@ export const useDrawTool = (
   enable: boolean
 ) => {
   const toolRef = useRef<DrawTool | null>(null);
+  const previousToolId = useRef<DrawToolId | null>(null);
   const cancelStable = useStableCallback(handlers.cancel);
   const commitStable = useStableCallback(handlers.commit);
   const transformToCanvasPositionStable = useStableCallback(
@@ -126,6 +127,10 @@ export const useDrawTool = (
   ]);
 
   useEffect(() => {
-    toolRef.current?.configure(drawToolSettings);
-  }, [drawToolSettings]);
+    if (drawToolId === previousToolId.current) {
+      toolRef.current?.configure(drawToolSettings);
+    }
+    previousToolId.current = drawToolId;
+  }, [drawToolSettings, drawToolId]);
 };
+
