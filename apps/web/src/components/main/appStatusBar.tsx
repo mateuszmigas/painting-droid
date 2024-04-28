@@ -11,7 +11,7 @@ import { memo, useEffect, useRef, useState } from "react";
 import { screenToViewportPosition } from "@/utils/manipulation";
 import { fastRound } from "@/utils/math";
 import { CommandIconButton } from "../commandIconButton";
-import { domNames, links } from "@/contants";
+import { domNames, links } from "@/constants";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";
 import { Button } from "../ui/button";
 import { type Update, checkForUpdates } from "@/utils/updater";

@@ -16,7 +16,7 @@ export default defineConfig({
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
   ],
   webServer: {
-    command: "pnpm serve",
+    command: "pnpm test:e2e:serve",
     url: "http://localhost:4173",
     reuseExistingServer: !process.env.CI,
   },

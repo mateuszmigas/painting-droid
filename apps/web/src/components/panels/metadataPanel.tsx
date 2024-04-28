@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { features } from "@/contants";
-import { appVersion, isWeb } from "@/utils/platform";
+import { features } from "@/constants";
+import { appVersion, platform } from "@/utils/platform";
 
 export const MetadataPanel = () => {
   const [result] = useState<string>("");
@@ -9,7 +9,7 @@ export const MetadataPanel = () => {
     <div className="flex flex-col gap-medium">
       <div className="p-small text-xs">
         <div>App Version: {appVersion()}</div>
-        <div>Platform: {isWeb() ? "Web" : "Desktop"}</div>
+        <div>Platform: {platform}</div>
         <div>Offscreen canvas: {features.offscreenCanvas.toString()}</div>
         <div>Menu bar: {features.nativeMenuBar ? "Native" : "Custom"}</div>
         <div>

@@ -34,6 +34,8 @@ export default defineConfig(async () => ({
     "import.meta.env.platform": JSON.stringify(
       "TAURI_ENV_PLATFORM" in process.env
         ? process.env.TAURI_ENV_PLATFORM
+        : process.env.E2E_TESTS === "true"
+        ? "e2e"
         : "web"
     ),
     "import.meta.env.version": JSON.stringify(packageJson.version),

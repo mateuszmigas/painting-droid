@@ -3,7 +3,7 @@ import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
-import { domNames } from "@/contants";
+import { domNames } from "@/constants";
 
 const translations = getTranslations();
 
@@ -31,3 +31,4 @@ export const command = createCommand({
     context.stores.workspaces().setWorkspaceViewport(viewport);
   },
 });
+

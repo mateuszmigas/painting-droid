@@ -12,7 +12,7 @@ import type { Observable } from "@/utils/observable";
 import { useDebounceListener } from "@/hooks/useDebounceListener";
 import { CanvasViewport } from "./canvasViewport";
 import { WorkspacePopup } from "./workspace-popup/workspacePopup";
-import { domNames } from "@/contants";
+import { domNames } from "@/constants";
 
 export const WorkspaceViewport = memo(() => {
   const rootElementRef = useRef<HTMLDivElement>(null);
@@ -85,3 +85,4 @@ export const WorkspaceViewport = memo(() => {
     </div>
   );
 });
+

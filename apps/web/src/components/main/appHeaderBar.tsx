@@ -17,7 +17,7 @@ import { IconAnchor } from "../icons/iconAnchor";
 import { useCommandService } from "@/contexts/commandService";
 import { Separator } from "../ui/separator";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { features } from "@/contants";
+import { features } from "@/constants";
 
 const compactThreshold = 640;
 

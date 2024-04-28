@@ -1,6 +1,6 @@
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { supportedImageFormats, workspace } from "@/contants";
+import { supportedImageFormats, workspace } from "@/constants";
 import { getTranslations } from "@/translations";
 import { splitNameAndExtension } from "@/utils/path";
 import { fileSystem } from "@/utils/file-system";
@@ -47,3 +47,4 @@ export const command = createCommand({
       });
   },
 });
+

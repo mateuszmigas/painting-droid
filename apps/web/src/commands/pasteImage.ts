@@ -4,7 +4,7 @@ import { createCommand } from "./createCommand";
 import { getTranslations } from "@/translations";
 import { clipboard } from "@/utils/clipboard";
 import { uuid } from "@/utils/uuid";
-import { domNames } from "@/contants";
+import { domNames } from "@/constants";
 import { calculateMousePosition } from "@/utils/manipulation";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";

@@ -3,7 +3,7 @@ import {
   isTextToImageModel,
   isObjectDetectionModel,
 } from "@/models/definitions";
-import { markerColors } from "@/contants";
+import { markerColors } from "@/constants";
 import type { BaseModel } from "@/models/types/baseModel";
 import { getTranslations } from "@/translations";
 import { memo } from "react";

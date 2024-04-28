@@ -3,18 +3,23 @@ import { isMobile, platform } from "./utils/platform";
 export const workspace = {
   format: "pdw",
   version: 1,
+  defaultSize:
+    platform === "e2e"
+      ? { width: 100, height: 100 }
+      : { width: 1024, height: 1024 },
 };
 
 export const supportedImageFormats = ["png", "jpeg"];
 
 export const features = {
-  offscreenCanvas: "oncontextlost" in new OffscreenCanvas(0, 0),
+  offscreenCanvas: false, //"oncontextlost" in new OffscreenCanvas(0, 0),
   nativeMenuBar: platform === "darwin",
   nativeColorPicker: isMobile(),
 };
 
 export const domNames = {
   workspaceViewport: "workspace-viewport",
+  canvasBackground: "canvas-background",
 };
 
 export const themes = ["light", "dark", "system"] as const;

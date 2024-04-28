@@ -16,7 +16,7 @@ import { uuid } from "@/utils/uuid";
 import { ModelRow } from "./modelRow";
 import { isWeb } from "@/utils/platform";
 import { Link } from "@/components/link";
-import { links } from "@/contants";
+import { links } from "@/constants";
 import type { BaseModel } from "@/models/types/baseModel";
 import { safeStorage } from "@/utils/safe-storage";
 

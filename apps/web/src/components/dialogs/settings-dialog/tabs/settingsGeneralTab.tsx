@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { themes } from "@/contants";
+import { themes } from "@/constants";
 import { useSettingsStore } from "@/store";
 import { getTranslations } from "@/translations";
 import { Label } from "@radix-ui/react-dropdown-menu";

@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSettingsStore } from "@/store";
 import { Icon } from "./icons/icon";
-import { themes } from "@/contants";
+import { themes } from "@/constants";
 import { getTranslations } from "@/translations";
 const translations = getTranslations();
 

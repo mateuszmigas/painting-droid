@@ -11,6 +11,7 @@ import { getTranslations } from "@/translations";
 import type { AdjustmentId } from "@/adjustments";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { blobsStorage } from "./blobsStorage";
+import { workspace } from "@/constants";
 
 const translations = getTranslations();
 
@@ -44,10 +45,7 @@ const createDefaultWorkspace = (size: Size): Workspace => ({
   canvasData: createDefaultCanvasState(size),
 });
 
-const defaultWorkspace = createDefaultWorkspace({
-  width: 1024,
-  height: 1024,
-});
+const defaultWorkspace = createDefaultWorkspace(workspace.defaultSize);
 const defaultState: AppWorkspacesState = {
   workspaces: [defaultWorkspace],
   activeWorkspaceId: defaultWorkspace.id,
@@ -315,3 +313,4 @@ export const activeWorkspaceActiveLayerSelector = (
   const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(state);
   return layers[activeLayerIndex];
 };
+

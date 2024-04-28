@@ -1,7 +1,7 @@
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
-import { workspace } from "@/contants";
+import { workspace } from "@/constants";
 import { getTranslations } from "@/translations";
 import { fileSystem } from "@/utils/file-system";
 import { encodePwd } from "@/utils/pdwFormat";
@@ -22,3 +22,4 @@ export const command = createCommand({
     fileSystem.saveTextToFile(text, name, workspace.format);
   },
 });
+

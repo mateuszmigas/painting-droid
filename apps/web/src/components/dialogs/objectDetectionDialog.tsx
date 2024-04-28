@@ -26,7 +26,7 @@ import {
   useObjectDetectionModels,
 } from "@/hooks";
 import { ImageProcessor } from "@/utils/imageProcessor";
-import { markerColors } from "@/contants";
+import { markerColors } from "@/constants";
 
 const getColor = (index: number) => markerColors[index % markerColors.length];
 

@@ -2,7 +2,7 @@ import type { CanvasLayer, CanvasOverlayShape } from "@/canvas/canvasState";
 import type { CanvasContext } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { clearContext } from "@/utils/canvas";
-import { features } from "@/contants";
+import { features } from "@/constants";
 import { useStableCallback } from ".";
 
 const restoreLayers = async (
@@ -97,3 +97,4 @@ export const useSyncCanvasWithLayers = (
     onFinishedStable,
   ]);
 };
+

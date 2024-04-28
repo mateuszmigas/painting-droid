@@ -25,6 +25,8 @@ import {
   createDrawToolHandlers,
   createShapeToolHandlers,
 } from "./toolHandlers";
+import { domNames } from "@/constants";
+import { testIds } from "@/utils/testIds";
 
 const alphaGridCellSize = 20;
 
@@ -190,6 +192,7 @@ export const CanvasViewport = memo(
       >
         {/* show background */}
         <div
+          id={domNames.canvasBackground}
           ref={canvasBackgroundRef}
           style={
             {
@@ -201,6 +204,7 @@ export const CanvasViewport = memo(
         {/* show canvas layers */}
         {layers.map((layer, index) => (
           <canvas
+            data-testid={testIds.canvasLayer(index)}
             key={createCanvasKey(layer.id, size)}
             ref={(element) => {
               if (element) {
@@ -238,3 +242,4 @@ export const CanvasViewport = memo(
     );
   }
 );
+
