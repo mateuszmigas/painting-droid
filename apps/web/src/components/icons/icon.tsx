@@ -61,6 +61,7 @@ import {
   PlusCircle,
   ExternalLink,
   Merge,
+  Star,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -131,7 +132,8 @@ export type IconType =
   | "trash"
   | "plus-circle"
   | "external-link"
-  | "merge";
+  | "merge"
+  | "star";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -303,6 +305,8 @@ const renderLucideIcon = (
       return <ExternalLink className={className} size={fontSize} />;
     case "merge":
       return <Merge className={`rotate-180 ${className}`} size={fontSize} />;
+    case "star":
+      return <Star className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

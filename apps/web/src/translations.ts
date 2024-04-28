@@ -179,6 +179,8 @@ const translations = {
     height: "Height",
     heightPercentage: "Height (%)",
     images: "Images",
+    recent: "Recent",
+    favorite: "Favorite",
     name: "Name",
     secret: "Secret (API Key)",
     loading: "Loading",
