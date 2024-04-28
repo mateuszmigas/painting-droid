@@ -1,4 +1,4 @@
-import { platform } from "./utils/platform";
+import { isMobile, platform } from "./utils/platform";
 
 export const workspace = {
   format: "pdw",
@@ -9,7 +9,8 @@ export const supportedImageFormats = ["png", "jpeg"];
 
 export const features = {
   offscreenCanvas: "oncontextlost" in new OffscreenCanvas(0, 0),
-  customMenuBar: platform !== "darwin",
+  nativeMenuBar: platform === "darwin",
+  nativeColorPicker: isMobile(),
 };
 
 export const domNames = {
