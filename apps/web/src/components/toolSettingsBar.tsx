@@ -3,6 +3,7 @@ import { toolsMetadata } from "@/tools";
 import { ToolSetting } from "./tool-settings/toolSetting";
 import { Separator } from "@radix-ui/react-separator";
 import type { DrawToolSettingType } from "@/tools/draw-tools/drawTool";
+import { testIds } from "@/utils/testIds";
 
 export const ToolSettingsBar = () => {
   const selectedToolId = useToolStore((state) => state.selectedToolId);
@@ -15,6 +16,7 @@ export const ToolSettingsBar = () => {
         const label = toolsMetadata[selectedToolId].settings[id].name;
         return (
           <div
+            data-testid={testIds.toolSetting(id)}
             key={id}
             className="flex flex-row items-center gap-small text-xs"
           >
@@ -44,3 +46,4 @@ export const ToolSettingsBar = () => {
     </div>
   );
 };
+

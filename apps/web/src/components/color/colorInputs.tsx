@@ -6,6 +6,7 @@ import { getTranslations } from "@/translations";
 import { cn } from "@/utils/css";
 import { NumberInput } from "../input/numberInput";
 import { ColorProcessor } from "@/utils/colorProcessor";
+import { testIds } from "@/utils/testIds";
 const translations = getTranslations().color;
 
 export const ColorInputs = memo(
@@ -51,6 +52,7 @@ export const ColorInputs = memo(
         <div className="flex flex-row items-center gap-big justify-between">
           <Label className="text-xs">{translations.hex}</Label>
           <Input
+            data-testid={testIds.colorPickerHexInput}
             className="text-xs h-input-thin w-[70px] pr-small pl-medium"
             value={hex}
             onChange={(e) => {

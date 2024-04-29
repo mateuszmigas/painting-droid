@@ -6,6 +6,7 @@ import type { IconType } from "../icons/icon";
 import { useCommandService } from "@/contexts/commandService";
 import { CommandIconButton } from "../commandIconButton";
 import { Separator } from "../ui/separator";
+import { testIds } from "@/utils/testIds";
 
 const tools: { id: ToolId; icon: IconType; name: string }[] = (
   Object.keys(defaultToolsSettings) as ToolId[]
@@ -27,6 +28,7 @@ export const ToolsPanel = memo(() => {
       <div className="flex flex-wrap flex-row gap-small p-small">
         {tools.map(({ id, icon, name }) => (
           <IconButton
+            data-testid={testIds.toolButton(id)}
             aria-label={name}
             title={name}
             className={
@@ -50,3 +52,4 @@ export const ToolsPanel = memo(() => {
     </div>
   );
 });
+

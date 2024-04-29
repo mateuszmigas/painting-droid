@@ -1,12 +1,12 @@
-import type { Page } from "@playwright/test";
-import { testIds } from "./testIds";
+import type { Dialog, Page } from "@playwright/test";
+import { testIds } from "../src/utils/testIds";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const mouseSleep = 10;
 
-export class PaintingDroidApp {
+export class TestApp {
   public static async from(page: Page) {
-    const app = new PaintingDroidApp(page);
+    const app = new TestApp(page);
     await page.goto("/");
     return app;
   }
@@ -30,8 +30,28 @@ export class PaintingDroidApp {
     return (await canvas!.boundingBox())!;
   }
 
-  selectTool(tool: string) {
-    //todo}
+  async selectTool(tool: string) {
+    await this.page.getByTestId(testIds.toolButton(tool)).click();
+  }
+
+  async setToolSetting(settingKey: string, value: string) {
+    const setting = await this.page.getByTestId(
+      testIds.toolSetting(settingKey)
+    );
+
+    if (settingKey === "color") {
+      await setting.click();
+      const input = await this.page.getByTestId(testIds.colorPickerHexInput);
+      await input.fill(value);
+      await setting.click();
+      await this.page.getByRole("dialog").waitFor({ state: "detached" });
+    }
+
+    if (settingKey === "size") {
+      await setting.click();
+      const select = await this.page.getByTestId(testIds.selectContent);
+      await select.getByLabel(value).click();
+    }
   }
 
   async moveMouse(x: number, y: number) {
