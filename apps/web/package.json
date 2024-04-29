@@ -43,24 +43,24 @@
     "@tauri-apps/plugin-updater": "2.0.0-beta.2",
     "@xenova/transformers": "^2.17.1",
     "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.0",
+    "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "lodash.debounce": "^4.0.8",
     "lodash.isequal": "^4.5.0",
     "lodash.throttle": "^4.1.1",
-    "lucide-react": "^0.372.0",
+    "lucide-react": "^0.376.0",
     "nanoid": "^5.0.7",
     "next-themes": "^0.3.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-hook-form": "^7.51.3",
     "react-resizable-panels": "^2.0.18",
-    "solid-js": "^1.8.16",
+    "solid-js": "^1.8.17",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "vite-plugin-solid": "^2.10.2",
-    "zod": "^3.23.0",
+    "zod": "^3.23.4",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
@@ -70,8 +70,8 @@
     "@types/lodash.isequal": "^4.5.8",
     "@types/lodash.throttle": "^4.1.9",
     "@types/node": "^20.12.7",
-    "@types/react": "^18.2.79",
-    "@types/react-dom": "^18.2.25",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
     "@uiw/react-color-sketch": "^2.1.1",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
@@ -80,7 +80,7 @@
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5",
     "vite": "^5.2.10",
-    "vitest": "^1.5.0"
+    "vitest": "^1.5.2"
   }
 }
 
