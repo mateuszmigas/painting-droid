@@ -1,4 +1,4 @@
-import type { Dialog, Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
 import { testIds } from "../src/utils/testIds";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
