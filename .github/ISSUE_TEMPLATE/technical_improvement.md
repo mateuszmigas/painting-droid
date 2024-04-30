@@ -4,6 +4,7 @@ about: Suggest a technical improvement for this project
 title: ""
 labels: "technical improvement"
 assignees: ""
+projects: ["mateuszmigas/2"]
 ---
 
 **Please describe the problem.**
