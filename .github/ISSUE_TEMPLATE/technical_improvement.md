@@ -2,7 +2,7 @@
 name: Technical improvement
 about: Suggest a technical improvement for this project
 title: ""
-labels: "technical_improvement"
+labels: "technical improvement"
 assignees: ""
 ---
 
