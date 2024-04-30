@@ -6,6 +6,6 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["vite.config.ts", "e2e", "src/utils/testIds.ts"]
+  "include": ["vite.config.ts"]
 }
 

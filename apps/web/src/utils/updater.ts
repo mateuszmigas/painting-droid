@@ -1,6 +1,6 @@
 import { check } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
-import { isWeb } from "./platform";
+import { isDesktop } from "./platform";
 
 export type Update = {
   version: string;
@@ -9,7 +9,7 @@ export type Update = {
 };
 
 export const checkForUpdates = async () => {
-  if (isWeb()) {
+  if (!isDesktop()) {
     return null;
   }
 
@@ -30,3 +30,4 @@ export const checkForUpdates = async () => {
     return null;
   }
 };
+

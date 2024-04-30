@@ -1,6 +1,6 @@
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { isWeb } from "@/utils/platform";
+import { isDesktop } from "@/utils/platform";
 import { getTranslations } from "@/translations";
 import { notificationService } from "@/contexts/notificationService";
 import { checkForUpdates } from "@/utils/updater";
@@ -11,7 +11,7 @@ export const command = createCommand({
   id: "checkForUpdate",
   display: translations.commands.checkForUpdate,
   icon: "download",
-  settings: { showInPalette: !isWeb() },
+  settings: { showInPalette: isDesktop() },
   execute: async (_: CommandContext) => {
     const update = await checkForUpdates();
 
@@ -41,3 +41,4 @@ export const command = createCommand({
     );
   },
 });
+

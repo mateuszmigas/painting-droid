@@ -15,7 +15,7 @@ import { domNames, links } from "@/constants";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";
 import { Button } from "../ui/button";
 import { type Update, checkForUpdates } from "@/utils/updater";
-import { appVersion, isWeb } from "@/utils/platform";
+import { appVersion, isDesktop } from "@/utils/platform";
 import { getTranslations } from "@/translations";
 import { useStartupStore } from "@/store/startupStore";
 import { notificationService } from "@/contexts/notificationService";
@@ -47,15 +47,14 @@ export const AppStatusBar = memo(() => {
   });
 
   useEffect(() => {
-    if (isWeb()) {
-      return;
+    if (isDesktop()) {
+      checkForUpdates().then((update) => {
+        if (update) {
+          setUpdate(update);
+          setUpdateState("available");
+        }
+      });
     }
-    checkForUpdates().then((update) => {
-      if (update) {
-        setUpdate(update);
-        setUpdateState("available");
-      }
-    });
   }, []);
 
   useIdleCallback(() => {
@@ -68,7 +67,7 @@ export const AppStatusBar = memo(() => {
       startupStore.setCurrentVersion(appVersion());
     }
 
-    if (isWeb()) {
+    if (!isDesktop()) {
       if (!startupStore.desktopVersionAvailableNotified) {
         notificationService.showInfo(translations.updater.notifyDesktop, {
           action: {

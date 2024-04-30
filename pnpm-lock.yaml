@@ -9,6 +9,10 @@ importers:
   .: {}
 
   apps/desktop:
+    dependencies:
+      '@tauri-apps/plugin-clipboard-manager':
+        specifier: 2.1.0-beta.0
+        version: 2.1.0-beta.0
     devDependencies:
       '@tauri-apps/cli':
         specifier: 2.0.0-beta.13
@@ -73,6 +77,9 @@ importers:
       '@tauri-apps/cli':
         specifier: 2.0.0-beta.13
         version: 2.0.0-beta.13
+      '@tauri-apps/plugin-clipboard-manager':
+        specifier: 2.1.0-beta.0
+        version: 2.1.0-beta.0
       '@tauri-apps/plugin-dialog':
         specifier: 2.0.0-beta.2
         version: 2.0.0-beta.2
@@ -1888,6 +1895,11 @@ packages:
     engines: {node: '>= 18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
     dev: false
 
+  /@tauri-apps/api@2.0.0-beta.6:
+    resolution: {integrity: sha512-ay3kAXYQoqC3rX4Vr3y6uGwrBhRPM7UQqZ9wr1VYzN6lkcMIcu7+UBvytmcfXDlVctqFoMQJafn6+dK/Oqh8+Q==}
+    engines: {node: '>= 18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
+    dev: false
+
   /@tauri-apps/api@2.0.0-beta.9:
     resolution: {integrity: sha512-WFwFsqvvQBwGFL26eHoM+zaSF3wzAin3Itcl/KBGdCtPrconjUtOGcIJdg8jCyBqoU9bznhwF51TsRssw6SZwA==}
     engines: {node: '>= 18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
@@ -1988,6 +2000,12 @@ packages:
       '@tauri-apps/cli-win32-arm64-msvc': 2.0.0-beta.13
       '@tauri-apps/cli-win32-ia32-msvc': 2.0.0-beta.13
       '@tauri-apps/cli-win32-x64-msvc': 2.0.0-beta.13
+
+  /@tauri-apps/plugin-clipboard-manager@2.1.0-beta.0:
+    resolution: {integrity: sha512-ySIo5NG58a7r9FheG3BO2tfNGoBHQD8J1bY8z8UpafkzgsVnEdlELBMrnx9FKlcM+y5Bbshnf+AJEOjp73/9nA==}
+    dependencies:
+      '@tauri-apps/api': 2.0.0-beta.6
+    dev: false
 
   /@tauri-apps/plugin-dialog@2.0.0-beta.2:
     resolution: {integrity: sha512-WugTn/8d5jYA0GL1JRIJgA1OSxG0h2V4PSZZzehgA3v7rPlIU6w9s2+dSRqj55aMj6hm3Az9YbQqC18nuaHkpw==}

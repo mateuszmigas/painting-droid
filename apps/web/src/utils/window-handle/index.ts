@@ -1,11 +1,11 @@
-import { isWeb } from "../platform";
+import { isDesktop } from "../platform";
 import type { PlatformWindowHandle } from "./platformWindowHandle";
 import { desktopWindowHandle } from "./desktopWindowHandle";
 import { webWindowHandle } from "./webWindowHandle";
 
-const platformWindowHandle: PlatformWindowHandle = isWeb()
-  ? webWindowHandle
-  : desktopWindowHandle;
+const platformWindowHandle: PlatformWindowHandle = isDesktop()
+  ? desktopWindowHandle
+  : webWindowHandle;
 
 export const windowHandle = {
   ...platformWindowHandle,

@@ -14,7 +14,7 @@ import { type ModelType, modelDefinitions } from "@/models/definitions";
 import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
 import { ModelRow } from "./modelRow";
-import { isWeb } from "@/utils/platform";
+import { isDesktop } from "@/utils/platform";
 import { Link } from "@/components/link";
 import { links } from "@/constants";
 import type { BaseModel } from "@/models/types/baseModel";
@@ -27,7 +27,7 @@ export const defaultSecureKeyPlaceholder = "***************";
 
 export const SettingsModelsTab = memo(() => {
   const models = modelDefinitions.filter(
-    (md: BaseModel) => !md.predefined && (!md.useApiKey || !isWeb())
+    (md: BaseModel) => !md.predefined && (!md.useApiKey || isDesktop())
   );
   const [selectedModel, setSelectedModel] = useState<ModelType | "">(
     models.length > 0 ? models[0].type : ""
@@ -95,7 +95,7 @@ export const SettingsModelsTab = memo(() => {
             ))}
           </div>
         </ScrollArea>
-        {isWeb() && (
+        {!isDesktop() && (
           <div className="rounded-md border pb-small px-medium">
             <span className="text-xs">{tabTranslations.message} </span>
             <Link href={links.downloadDesktop} className="text-xs">

@@ -16,7 +16,10 @@
     "menu:allow-new",
     "menu:allow-create-default",
     "menu:allow-append",
-    "menu:allow-items"
+    "menu:allow-items",
+    "clipboard-manager:allow-read-image",
+    "clipboard-manager:allow-write-image",
+    "image:allow-rgba"
   ]
 }
 
