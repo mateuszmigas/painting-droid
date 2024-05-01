@@ -1,4 +1,18 @@
+import { workspace } from "@/constants";
 import type { PlatformFileSystem } from "./platformFileSystem";
+
+declare global {
+  interface Window {
+    showOpenFilePicker: (options: {
+      types: { accept: Record<string, string[]> }[];
+      startIn: string;
+    }) => Promise<FileSystemFileHandle[]>;
+    showSaveFilePicker: (options: {
+      suggestedName: string;
+      types?: { accept: Record<string, string[]> }[];
+    }) => Promise<FileSystemFileHandle>;
+  }
+}
 
 const urlToBlob = async (url: string) => {
   const response = await fetch(url);
@@ -31,7 +45,36 @@ const readFileAsDataURL = (url: string) => {
   });
 };
 
-const openFile = (options: { extensions: string[] }) => {
+const openFile = async (options: { extensions: string[] }) => {
+  if ("showOpenFilePicker" in window) {
+    return openFileWithFileSystemApi(options);
+  }
+  return openFileWithInput(options);
+};
+
+const openFileWithFileSystemApi = async (options: { extensions: string[] }) => {
+  try {
+    const accept = options.extensions.reduce((acc, extension) => {
+      const key =
+        extension === workspace.format ? "text/plain" : `image/${extension}`;
+      acc[key] = [`.${extension}`];
+      return acc;
+    }, {} as Record<string, string[]>);
+
+    const [fileHandle] = await window.showOpenFilePicker({
+      types: [{ accept }],
+      startIn: "desktop",
+    });
+    return {
+      name: fileHandle.name,
+      path: URL.createObjectURL(await fileHandle.getFile()),
+    };
+  } catch {
+    return null;
+  }
+};
+
+const openFileWithInput = async (options: { extensions: string[] }) => {
   return new Promise<{ name: string; path: string } | null>((resolve) => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -57,11 +100,32 @@ const openFile = (options: { extensions: string[] }) => {
   });
 };
 
-const downloadAsFile = (data: string, filename: string) => {
+const saveBlobWithAnchor = (
+  blob: Blob,
+  filename: string,
+  extension: string
+) => {
   const anchor = document.createElement("a");
-  anchor.href = data;
-  anchor.download = filename;
+  anchor.href = URL.createObjectURL(blob);
+  anchor.download = `${filename}.${extension}`;
   anchor.click();
+};
+
+const saveBlobWithFileSystemApi = async (
+  blob: Blob,
+  filename: string,
+  extension: string
+) => {
+  try {
+    const fileHandle = await window.showSaveFilePicker({
+      suggestedName: `${filename}.${extension}`,
+    });
+    const writable = await fileHandle.createWritable();
+    await writable.write(blob);
+    await writable.close();
+  } catch (error) {
+    //todo: maybe inform user that he didn't save the file
+  }
 };
 
 const saveTextToFile = async (
@@ -70,7 +134,7 @@ const saveTextToFile = async (
   extension: string
 ) => {
   const blob = new Blob([text], { type: "text/plain" });
-  downloadAsFile(URL.createObjectURL(blob), `${filename}.${extension}`);
+  saveBlobToFile(blob, filename, extension);
 };
 
 const saveBlobToFile = async (
@@ -78,8 +142,11 @@ const saveBlobToFile = async (
   filename: string,
   extension: string
 ) => {
-  const url = URL.createObjectURL(blob);
-  downloadAsFile(url, `${filename}.${extension}`);
+  if ("showSaveFilePicker" in window) {
+    return saveBlobWithFileSystemApi(blob, filename, extension);
+  }
+
+  return saveBlobWithAnchor(blob, filename, extension);
 };
 
 export const webFileSystem: PlatformFileSystem = {
@@ -89,4 +156,3 @@ export const webFileSystem: PlatformFileSystem = {
   saveTextToFile,
   saveBlobToFile,
 };
-

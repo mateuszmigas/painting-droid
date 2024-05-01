@@ -12,7 +12,8 @@ export const workspace = {
 export const supportedImageFormats = ["png", "jpeg"];
 
 export const features = {
-  offscreenCanvas: false, //"oncontextlost" in new OffscreenCanvas(0, 0),
+  offscreenCanvas:
+    platform !== "e2e" && "oncontextlost" in new OffscreenCanvas(0, 0),
   nativeMenuBar: platform === "darwin",
   nativeColorPicker: isMobile(),
 };
@@ -37,4 +38,3 @@ export const markerColors = [
 export const links = {
   downloadDesktop: "https://github.com/mateuszmigas/painting-droid/releases",
 };
-
