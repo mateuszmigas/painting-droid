@@ -239,4 +239,3 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

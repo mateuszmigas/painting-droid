@@ -37,7 +37,7 @@ const translations = getTranslations();
 const FormSchema = z.object({
   prompt: z
     .string()
-    .min(10, { message: "Prompt must be at least 10 characters." }),
+    .min(10, { message: translations.errors.processingError }), // Updated error message to use translations
   modelId: z.string(),
   modelOptionsValues: z.record(z.string(), z.unknown()),
 });
@@ -314,4 +314,3 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

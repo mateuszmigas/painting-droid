@@ -219,4 +219,3 @@ export const ResizeCanvasDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-
