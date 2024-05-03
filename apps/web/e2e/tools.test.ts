@@ -57,7 +57,7 @@ test.describe("tools", () => {
     const app = await TestApp.from(page);
     await app.selectTool("pencil");
     await app.setToolSetting("color", "#ffff00");
-    await drawTriangle(app);
+    await drawRectangle(app);
     await app.selectTool("fill");
     await app.setToolSetting("color", "#ff0000");
     const box = await app.getLayerCanvasBoundingBox(0);
