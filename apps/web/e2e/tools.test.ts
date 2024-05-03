@@ -55,7 +55,7 @@ test.describe("tools", () => {
 
   test("fills triangle", async ({ page }) => {
     const app = await TestApp.from(page);
-    await app.selectTool("brush");
+    await app.selectTool("pencil");
     await app.setToolSetting("color", "#ffff00");
     await drawTriangle(app);
     await app.selectTool("fill");
