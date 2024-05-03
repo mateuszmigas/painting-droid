@@ -1,6 +1,6 @@
-use image::imageops::FilterType;
 use wasm_bindgen::prelude::*;
 extern crate web_sys;
+type WasmResult<T> = std::result::Result<T, String>;
 
 macro_rules! _log {
     ( $( $t:tt )* ) => {
@@ -9,28 +9,28 @@ macro_rules! _log {
 }
 
 #[wasm_bindgen]
-pub fn grayscale(pixels: Vec<u8>) -> Vec<u8> {
+pub fn grayscale(data: Vec<u8>) -> WasmResult<Vec<u8>> {
     let mut result = Vec::new();
-    for i in 0..pixels.len() / 4 {
-        let r = pixels[i * 4] as f32;
-        let g = pixels[i * 4 + 1] as f32;
-        let b = pixels[i * 4 + 2] as f32;
+    for i in 0..data.len() / 4 {
+        let r = data[i * 4] as f32;
+        let g = data[i * 4 + 1] as f32;
+        let b = data[i * 4 + 2] as f32;
         let gray = (0.3 * r + 0.59 * g + 0.11 * b) as u8;
         result.push(gray);
         result.push(gray);
         result.push(gray);
         result.push(255);
     }
-    result
+    Ok(result)
 }
 
 #[wasm_bindgen]
-pub fn sepia(pixels: Vec<u8>) -> Vec<u8> {
+pub fn sepia(data: Vec<u8>) -> WasmResult<Vec<u8>> {
     let mut result = Vec::new();
-    for i in 0..pixels.len() / 4 {
-        let r = pixels[i * 4] as f32;
-        let g = pixels[i * 4 + 1] as f32;
-        let b = pixels[i * 4 + 2] as f32;
+    for i in 0..data.len() / 4 {
+        let r = data[i * 4] as f32;
+        let g = data[i * 4 + 1] as f32;
+        let b = data[i * 4 + 2] as f32;
 
         // Apply the sepia transformation
         let new_r = (0.393 * r + 0.769 * g + 0.189 * b).min(255.0) as u8;
@@ -43,36 +43,5 @@ pub fn sepia(pixels: Vec<u8>) -> Vec<u8> {
         result.push(new_b);
         result.push(255); // Alpha value, kept at 255 for full opacity
     }
-    result
-}
-
-#[wasm_bindgen]
-pub fn resize(
-    pixels: Vec<u8>,
-    width: u32,
-    height: u32,
-    new_width: u32,
-    new_height: u32,
-) -> Vec<u8> {
-    let img =
-        image::ImageBuffer::<image::Rgba<u8>, Vec<u8>>::from_raw(width, height, pixels).unwrap();
-    let resized = image::imageops::resize(&img, new_width, new_height, FilterType::Nearest);
-    resized.into_vec()
-}
-
-#[wasm_bindgen]
-pub fn greet(s: &str) -> String {
-    format!("Test: Hello from Rust, {}!", s)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_greet() {
-        let expected = "Test: Hello from Rust, World!";
-        let result = greet("World");
-        assert_eq!(result, expected);
-    }
+    Ok(result)
 }
