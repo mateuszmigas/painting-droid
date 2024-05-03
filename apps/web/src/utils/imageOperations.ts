@@ -9,7 +9,7 @@ const getPixelColor = (position: Position, imageData: ImageUncompressed) => {
     r: imageData.data[index],
     g: imageData.data[index + 1],
     b: imageData.data[index + 2],
-    a: imageData.data[index + 3],
+    a: imageData.data[index + 3] / 255,
   };
 };
 
@@ -23,7 +23,7 @@ const setPixelColor = (
   data[index] = targetColor.r;
   data[index + 1] = targetColor.g;
   data[index + 2] = targetColor.b;
-  data[index + 3] = targetColor.a;
+  data[index + 3] = targetColor.a * 255;
 };
 
 export const floodFill = (
@@ -44,6 +44,10 @@ const spanFill = (
 
   const originColor = getPixelColor(position, imageData);
 
+  if (shouldFill(originColor, fillColor)) {
+    return imageData;
+  }
+
   const shouldBeFilled = (position: { x: number; y: number }) => {
     if (
       position.x >= 0 &&
@@ -56,10 +60,6 @@ const spanFill = (
     }
     return false;
   };
-
-  if (!shouldBeFilled(position)) {
-    return imageData;
-  }
 
   const stack: Position[] = [];
   stack.push(position);

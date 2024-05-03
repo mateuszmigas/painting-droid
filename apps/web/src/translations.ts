@@ -82,6 +82,12 @@ const translations = {
           size: "Size",
         },
       },
+      fill: {
+        name: "Fill",
+        settings: {
+          color: "Color",
+        },
+      },
     },
   },
   dialogs: {

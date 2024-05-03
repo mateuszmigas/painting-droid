@@ -12,6 +12,7 @@ import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
 import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
 import { useStableCallback } from ".";
 import { EraserDrawTool } from "@/tools/draw-tools/eraserDrawTool";
+import { FillDrawTool } from "@/tools/draw-tools/fillDrawTool";
 
 const createTool = (id: DrawToolId, rasterContext: CanvasRasterContext) => {
   switch (id) {
@@ -21,6 +22,8 @@ const createTool = (id: DrawToolId, rasterContext: CanvasRasterContext) => {
       return new BrushDrawTool(rasterContext);
     case "eraser":
       return new EraserDrawTool(rasterContext);
+    case "fill":
+      return new FillDrawTool(rasterContext);
     default:
       return assertNever(id);
   }
