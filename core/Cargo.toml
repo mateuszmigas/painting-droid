@@ -8,7 +8,6 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-image = "0.25.1"
 wasm-bindgen = "0.2.92"
 
 [dependencies.web-sys]
