@@ -173,3 +173,16 @@ export const areColorsEqual = (color1: RgbaColor, color2: RgbaColor) => {
   );
 };
 
+export const areColorsClose = (
+  color1: RgbaColor,
+  color2: RgbaColor,
+  tolerance = 1
+) => {
+  return (
+    Math.abs(color1.a - color2.a) < tolerance &&
+    Math.abs(color1.r - color2.r) < tolerance &&
+    Math.abs(color1.g - color2.g) < tolerance &&
+    Math.abs(color1.b - color2.b) < tolerance
+  );
+};
+
