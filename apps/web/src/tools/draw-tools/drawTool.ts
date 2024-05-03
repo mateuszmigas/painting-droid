@@ -1,12 +1,6 @@
 import type { IconType } from "@/components/icons/icon";
 import type { Position } from "@/utils/common";
 
-export type DrawPayload = {
-  position: Position;
-  sinceLastTickMs: number;
-  ticksCount: number;
-};
-
 export type DrawToolSettingType = "color" | "size";
 
 export type DrawToolMetadata = {
@@ -24,8 +18,14 @@ export type DrawToolMetadata = {
   >;
 };
 
+export type DrawToolEvent =
+  | { type: "manipulationStart"; position: Position }
+  | { type: "manipulationStep"; position: Position }
+  | { type: "manipulationEnd"; position: Position };
+
 export interface DrawTool {
-  configure(config: unknown): void;
-  draw(payload: DrawPayload): void;
+  configure(settings: unknown): void;
+  processEvent(event: DrawToolEvent): void;
   reset(): void;
 }
+

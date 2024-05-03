@@ -36,7 +36,7 @@ export const CommandPaletteHost = memo(
     const { setCommandService } = props;
     const { isOpen, setIsOpen } = useCommandPaletteStore((store) => store);
     const canvasActionDispatcher = useCanvasActionDispatcher();
-    const { previewContext } = useCanvasPreviewContextStore();
+    const { rasterContext: previewContext } = useCanvasPreviewContextStore();
     const getActiveCanvasContext = useStableCallback(() => previewContext);
     const dialogService = useDialogService();
     const notificationService = useNotificationService();
@@ -54,7 +54,6 @@ export const CommandPaletteHost = memo(
         dialogService,
         notificationService,
         canvasActionDispatcher,
-        getActiveCanvasContext,
       });
       const executeCommand: ExecuteCommand = async (...[id, params]) => {
         const context = createContext();
@@ -118,3 +117,4 @@ export const CommandPaletteHost = memo(
     );
   }
 );
+

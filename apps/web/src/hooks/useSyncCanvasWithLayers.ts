@@ -1,13 +1,13 @@
 import type { CanvasLayer, CanvasOverlayShape } from "@/canvas/canvasState";
-import type { CanvasContext } from "@/utils/common";
+import type { CanvasRasterContext } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { clearContext } from "@/utils/canvas";
 import { features } from "@/constants";
 import { useStableCallback } from ".";
 
 const restoreLayers = async (
-  contextStack: CanvasContext[],
-  overlayContext: CanvasContext | null,
+  contextStack: CanvasRasterContext[],
+  overlayContext: CanvasRasterContext | null,
   layers: CanvasLayer[],
   overlayShape: CanvasOverlayShape | null
 ) => {
@@ -52,9 +52,11 @@ export const useSyncCanvasWithLayers = (
   layers: CanvasLayer[],
   activeLayerIndex: number,
   overlayShape: CanvasOverlayShape | null,
-  onFinished: (activeLayerContext: CanvasContext) => void
+  onFinished: (activeLayerContext: CanvasRasterContext) => void
 ) => {
-  const contextsMap = useRef(new WeakMap<HTMLCanvasElement, CanvasContext>());
+  const contextsMap = useRef(
+    new WeakMap<HTMLCanvasElement, CanvasRasterContext>()
+  );
   const onFinishedStable = useStableCallback(onFinished);
 
   useEffect(() => {

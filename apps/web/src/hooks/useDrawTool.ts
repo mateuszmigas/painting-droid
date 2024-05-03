@@ -1,23 +1,26 @@
-import type { CanvasContext, Position } from "@/utils/common";
+import type {
+  CanvasRasterContext,
+  CanvasVectorContext,
+  Position,
+} from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { assertNever } from "@/utils/typeGuards";
 import type { DrawToolId } from "@/tools/draw-tools";
 import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
 import type { DrawTool } from "@/tools/draw-tools/drawTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
-import { createRaf } from "@/utils/frame";
 import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
 import { useStableCallback } from ".";
 import { EraserDrawTool } from "@/tools/draw-tools/eraserDrawTool";
 
-const createTool = (id: DrawToolId, context: CanvasContext) => {
+const createTool = (id: DrawToolId, rasterContext: CanvasRasterContext) => {
   switch (id) {
     case "pencil":
-      return new PencilDrawTool(context);
+      return new PencilDrawTool(rasterContext);
     case "brush":
-      return new BrushDrawTool(context);
+      return new BrushDrawTool(rasterContext);
     case "eraser":
-      return new EraserDrawTool(context);
+      return new EraserDrawTool(rasterContext);
     default:
       return assertNever(id);
   }
@@ -25,9 +28,10 @@ const createTool = (id: DrawToolId, context: CanvasContext) => {
 
 export const useDrawTool = (
   elementRef: RefObject<HTMLElement>,
-  drawToolId: DrawToolId | null,
-  drawToolSettings: Record<string, unknown>,
-  previewContext: CanvasContext | null,
+  toolId: DrawToolId | null,
+  toolSettings: Record<string, unknown>,
+  canvasRasterContext: CanvasRasterContext | null,
+  _canvasVectorContext: CanvasVectorContext | null,
   transformToCanvasPosition: (position: Position) => Position,
   handlers: {
     cancel: () => Promise<void>;
@@ -47,54 +51,48 @@ export const useDrawTool = (
   useEffect(() => {
     if (
       !elementRef.current ||
-      drawToolId === null ||
-      previewContext === null ||
+      toolId === null ||
+      canvasRasterContext === null ||
       !enable
     ) {
       return;
     }
 
     const element = elementRef.current;
-    toolRef.current = createTool(drawToolId, previewContext);
-    toolRef.current.configure(drawToolSettings);
+    toolRef.current = createTool(toolId, canvasRasterContext);
+    toolRef.current.configure(toolSettings);
     const tool = toolRef.current;
-    let ticksCount = 0;
     let isDrawing = false;
-    let hasDrawn = false;
-    let currentPointerPosition: Position | null = null;
-
-    const { start, stop, cancel } = createRaf((time) => {
-      tool.draw({
-        position: currentPointerPosition!,
-        sinceLastTickMs: time,
-        ticksCount: ticksCount++,
-      });
-    });
 
     const onManipulationStart = (position: Position) => {
-      currentPointerPosition = transformToCanvasPositionStable(position);
+      tool.processEvent({
+        type: "manipulationStart",
+        position: transformToCanvasPositionStable(position),
+      });
       isDrawing = true;
-      start();
     };
 
     const onManipulationUpdate = (position: Position) => {
       if (!isDrawing) return;
-      hasDrawn = true;
-      currentPointerPosition = transformToCanvasPositionStable(position);
+      tool.processEvent({
+        type: "manipulationStep",
+        position: transformToCanvasPositionStable(position),
+      });
     };
 
-    const onManipulationEnd = () => {
+    const onManipulationEnd = (position: Position) => {
       if (!isDrawing) return;
-      stop();
+      tool.processEvent({
+        type: "manipulationEnd",
+        position: transformToCanvasPositionStable(position),
+      });
       tool.reset();
-      hasDrawn && commitStable(drawToolId!);
+      commitStable(toolId!);
       isDrawing = false;
-      hasDrawn = false;
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isDrawing) {
-        stop();
         tool.reset();
         isDrawing = false;
         cancelStable();
@@ -111,26 +109,25 @@ export const useDrawTool = (
     document.addEventListener("keydown", keyDownHandler);
 
     return () => {
-      cancel();
       tool.reset();
       document.removeEventListener("keydown", keyDownHandler);
       unsubscribeManipulationEvents();
     };
   }, [
-    drawToolId,
+    toolId,
     cancelStable,
     commitStable,
-    previewContext,
+    canvasRasterContext,
     elementRef,
     transformToCanvasPositionStable,
     enable,
   ]);
 
   useEffect(() => {
-    if (drawToolId === previousToolId.current) {
-      toolRef.current?.configure(drawToolSettings);
+    if (toolId === previousToolId.current) {
+      toolRef.current?.configure(toolSettings);
     }
-    previousToolId.current = drawToolId;
-  }, [drawToolSettings, drawToolId]);
+    previousToolId.current = toolId;
+  }, [toolSettings, toolId]);
 };
 

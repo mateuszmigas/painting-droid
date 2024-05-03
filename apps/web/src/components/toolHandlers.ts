@@ -3,11 +3,11 @@ import type { CanvasOverlayShape, CanvasLayer } from "@/canvas/canvasState";
 import { toolsMetadata } from "@/tools";
 import type { DrawToolId } from "@/tools/draw-tools";
 import { clearContext, restoreContextFromCompressed } from "@/utils/canvas";
-import { type CanvasContext, areRectanglesEqual } from "@/utils/common";
+import { type CanvasRasterContext, areRectanglesEqual } from "@/utils/common";
 import { ImageProcessor } from "@/utils/imageProcessor";
 
 export const createShapeToolHandlers = (
-  activeContext: CanvasContext | null,
+  activeContext: CanvasRasterContext | null,
   renderShape: (shape: CanvasOverlayShape | null) => void,
   canvasActionDispatcher: CanvasActionDispatcher
 ) => {
@@ -63,7 +63,7 @@ export const createShapeToolHandlers = (
 };
 
 export const createDrawToolHandlers = (
-  activeContext: CanvasContext | null,
+  activeContext: CanvasRasterContext | null,
   activeLayer: CanvasLayer,
   canvasActionDispatcher: CanvasActionDispatcher
 ) => {
@@ -104,3 +104,4 @@ export const createDrawToolHandlers = (
     },
   };
 };
+
