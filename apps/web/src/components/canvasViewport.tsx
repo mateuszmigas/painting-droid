@@ -52,6 +52,22 @@ const applyCanvasStackTransform = (
   });
 };
 
+const applyCanvasOverlayTransform = (
+  canvasOverlay: HTMLCanvasElement | null,
+  viewport: Viewport,
+  overlayShape: CanvasOverlayShape | null
+) => {
+  if (!canvasOverlay || !overlayShape?.captured) {
+    return;
+  }
+
+  canvasOverlay.style.transform = `translate(${
+    viewport.position.x + overlayShape.boundingBox.x * viewport.zoom
+  }px, ${
+    viewport.position.y + overlayShape.boundingBox.y * viewport.zoom
+  }px) scale(${viewport.zoom})`;
+};
+
 const createCanvasKey = (layerId: string, size: Size) =>
   `canvas-${layerId}-${size.width}-${size.height}`;
 
@@ -65,6 +81,7 @@ export const CanvasViewport = memo(
     const hostElementRef = useRef<HTMLDivElement>(null);
     const canvasBackgroundRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
+    const canvasOverlayRef = useRef<HTMLCanvasElement>(null);
     const shapeOverlayRef = useRef<HTMLDivElement>(null);
     const { rasterContext, vectorContext, setRasterContext } =
       useCanvasPreviewContextStore();
@@ -75,9 +92,18 @@ export const CanvasViewport = memo(
     useSyncCanvasVectorContext(shapeOverlayRef, viewport);
     useSyncCanvasWithLayers(
       canvasStackRef,
+      canvasOverlayRef,
       layers,
       activeLayerIndex,
-      (newActiveContext) => setRasterContext(newActiveContext)
+      overlayShape,
+      (newActiveContext) => {
+        setRasterContext(newActiveContext);
+        applyCanvasOverlayTransform(
+          canvasOverlayRef.current,
+          viewport.getValue(),
+          overlayShape
+        );
+      }
     );
 
     const toolId = useToolStore((state) => state.selectedToolId);
@@ -87,6 +113,11 @@ export const CanvasViewport = memo(
     const renderShape = useStableCallback(
       (shape: CanvasOverlayShape | null) => {
         vectorContext?.render(shape);
+        applyCanvasOverlayTransform(
+          canvasOverlayRef.current,
+          viewport.getValue(),
+          shape
+        );
       }
     );
 
@@ -98,6 +129,11 @@ export const CanvasViewport = memo(
           size
         );
         applyCanvasStackTransform(canvasStackRef.current, viewport);
+        applyCanvasOverlayTransform(
+          canvasOverlayRef.current,
+          viewport,
+          overlayShape
+        );
       }
     );
 
@@ -187,6 +223,14 @@ export const CanvasViewport = memo(
             height={size.height}
           />
         ))}
+        {/* show overlay content of captured data in selected area */}
+        <canvas
+          className="bg-transparent pixelated-canvas origin-top-left absolute pointer-events-none left-0 top-0"
+          ref={canvasOverlayRef}
+          style={{
+            zIndex: activeLayerIndex + 1,
+          }}
+        />
         {/* show overlay shape, border and handles */}
         <div
           className="size-full origin-top-left absolute pointer-events-none left-0 top-0"
