@@ -41,7 +41,6 @@ const textToImage = createTextToImageSection({
   },
   execute: async (modelId, prompt, options) => {
     const { size, steps } = options;
-    console.log("options", options);
 
     const url =
       "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image";
@@ -67,7 +66,6 @@ const textToImage = createTextToImageSection({
       headers,
     });
 
-    console.log("result", result);
     handleHttpError(result.status);
 
     const data = JSON.parse(result.data) as {

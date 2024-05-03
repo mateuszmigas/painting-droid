@@ -1,5 +1,5 @@
-import type { DrawPayload, DrawTool, DrawToolMetadata } from "./drawTool";
-import type { CanvasContext, Color, Position } from "@/utils/common";
+import type { DrawTool, DrawToolEvent, DrawToolMetadata } from "./drawTool";
+import type { CanvasRasterContext, Color, Position } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
@@ -25,7 +25,7 @@ type PencilDrawToolSettings = {
 export class PencilDrawTool implements DrawTool {
   private previousPosition: Position | null = null;
 
-  constructor(private context: CanvasContext) {}
+  constructor(private context: CanvasRasterContext) {}
 
   configure(settings: PencilDrawToolSettings): void {
     const { color } = settings;
@@ -33,18 +33,19 @@ export class PencilDrawTool implements DrawTool {
     this.context.strokeStyle = ColorProcessor.fromRgba(color).toRgbaString();
   }
 
-  draw(payload: DrawPayload) {
+  processEvent(event: DrawToolEvent) {
     if (this.previousPosition) {
       this.context.beginPath();
       this.context.moveTo(this.previousPosition.x, this.previousPosition.y);
-      this.context.lineTo(payload.position.x, payload.position.y);
+      this.context.lineTo(event.position.x, event.position.y);
       this.context.stroke();
     }
 
-    this.previousPosition = payload.position;
+    this.previousPosition = event.position;
   }
 
   reset() {
     this.previousPosition = null;
   }
 }
+

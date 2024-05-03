@@ -1,5 +1,5 @@
-import type { DrawPayload, DrawTool, DrawToolMetadata } from "./drawTool";
-import type { CanvasContext, Color, Position } from "@/utils/common";
+import type { DrawTool, DrawToolEvent, DrawToolMetadata } from "./drawTool";
+import type { CanvasRasterContext, Color, Position } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
@@ -39,27 +39,32 @@ type BrushDrawToolSettings = {
 export class BrushDrawTool implements DrawTool {
   private previousPosition: Position | null = null;
 
-  constructor(private context: CanvasContext) {}
+  constructor(private rasterContext: CanvasRasterContext) {}
 
   configure(settings: BrushDrawToolSettings): void {
     const { size, color } = settings;
-    this.context.lineWidth = size;
-    this.context.strokeStyle = ColorProcessor.fromRgba(color).toRgbaString();
-    this.context.lineCap = "round";
+    this.rasterContext.lineWidth = size;
+    this.rasterContext.strokeStyle =
+      ColorProcessor.fromRgba(color).toRgbaString();
+    this.rasterContext.lineCap = "round";
   }
 
-  draw(payload: DrawPayload) {
+  processEvent(event: DrawToolEvent): void {
     if (this.previousPosition) {
-      this.context.beginPath();
-      this.context.moveTo(this.previousPosition.x, this.previousPosition.y);
-      this.context.lineTo(payload.position.x, payload.position.y);
-      this.context.stroke();
+      this.rasterContext.beginPath();
+      this.rasterContext.moveTo(
+        this.previousPosition.x,
+        this.previousPosition.y
+      );
+      this.rasterContext.lineTo(event.position.x, event.position.y);
+      this.rasterContext.stroke();
     }
 
-    this.previousPosition = payload.position;
+    this.previousPosition = event.position;
   }
 
   reset() {
     this.previousPosition = null;
   }
 }
+

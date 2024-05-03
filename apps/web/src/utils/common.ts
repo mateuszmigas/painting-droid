@@ -1,3 +1,4 @@
+import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import type { RgbaColor } from "./color";
 
 export type Position = {
@@ -79,9 +80,13 @@ export const scaleRectangleToFitParent = (
 
 export type Color = RgbaColor;
 
-export type CanvasContext =
+export type CanvasRasterContext =
   | CanvasRenderingContext2D
   | OffscreenCanvasRenderingContext2D;
+
+export type CanvasVectorContext = {
+  render: (shape: CanvasOverlayShape | null) => void;
+};
 
 export const calculateScaleToFit = (child: Size, parent: Size) => {
   const childRatio = child.width / child.height;
@@ -90,3 +95,4 @@ export const calculateScaleToFit = (child: Size, parent: Size) => {
     ? child.height / parent.height
     : child.width / parent.width;
 };
+

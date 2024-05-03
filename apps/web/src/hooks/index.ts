@@ -10,7 +10,7 @@ export { useObservableWatcher } from "./useObservableWatcher";
 export { useSyncCanvasWithLayers } from "./useSyncCanvasWithLayers";
 export { useCanvasActionDispatcher } from "./useCanvasActionDispatcher";
 export { useGlobalKeyboardHandler } from "./useGlobalKeyboardHandler";
-export { useShapeRenderer } from "./useShapeRenderer";
+export { useSyncCanvasVectorContext } from "./useSyncCanvasVectorContext";
 export { useShapeTool } from "./useShapeTool";
 export { useIdleCallback } from "./useIdleCallback";
 export { useBlobUrl } from "./useBlobUrl";

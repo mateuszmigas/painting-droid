@@ -12,7 +12,7 @@ import {
   useToolStore,
   useWorkspacesStore,
 } from "@/store";
-import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
+import { useCanvasActionDispatcher } from "@/hooks";
 import {
   type CommandId,
   commands,
@@ -23,7 +23,6 @@ import { Icon } from "./icons/icon";
 import type { CommandContext } from "@/commands/context";
 import { useDialogService } from "@/contexts/dialogService";
 import { sortBySelector } from "@/utils/array";
-import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
 import { useNotificationService } from "@/contexts/notificationService";
 
 export type CommandService = {
@@ -36,8 +35,6 @@ export const CommandPaletteHost = memo(
     const { setCommandService } = props;
     const { isOpen, setIsOpen } = useCommandPaletteStore((store) => store);
     const canvasActionDispatcher = useCanvasActionDispatcher();
-    const { previewContext } = useCanvasPreviewContextStore();
-    const getActiveCanvasContext = useStableCallback(() => previewContext);
     const dialogService = useDialogService();
     const notificationService = useNotificationService();
     const commandService = useMemo<CommandService | null>(() => {
@@ -54,7 +51,6 @@ export const CommandPaletteHost = memo(
         dialogService,
         notificationService,
         canvasActionDispatcher,
-        getActiveCanvasContext,
       });
       const executeCommand: ExecuteCommand = async (...[id, params]) => {
         const context = createContext();
@@ -72,12 +68,7 @@ export const CommandPaletteHost = memo(
         executeCommand,
         executeCommandWithDefaults,
       };
-    }, [
-      dialogService,
-      notificationService,
-      canvasActionDispatcher,
-      getActiveCanvasContext,
-    ]);
+    }, [dialogService, notificationService, canvasActionDispatcher]);
 
     useEffect(() => {
       commandService && setCommandService(commandService);
@@ -118,3 +109,4 @@ export const CommandPaletteHost = memo(
     );
   }
 );
+

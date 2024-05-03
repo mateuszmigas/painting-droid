@@ -4,7 +4,7 @@ import {
   useCanvasActionDispatcher,
   useDrawTool,
   useListener,
-  useShapeRenderer,
+  useSyncCanvasVectorContext,
   useShapeTool,
   useStableCallback,
   useSyncCanvasWithLayers,
@@ -83,12 +83,13 @@ export const CanvasViewport = memo(
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
     const canvasOverlayRef = useRef<HTMLCanvasElement>(null);
     const shapeOverlayRef = useRef<HTMLDivElement>(null);
-    const { previewContext, setPreviewContext } =
+    const { rasterContext, vectorContext, setRasterContext } =
       useCanvasPreviewContextStore();
     const { layers, activeLayerIndex, overlayShape } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
 
+    useSyncCanvasVectorContext(shapeOverlayRef, viewport);
     useSyncCanvasWithLayers(
       canvasStackRef,
       canvasOverlayRef,
@@ -96,7 +97,7 @@ export const CanvasViewport = memo(
       activeLayerIndex,
       overlayShape,
       (newActiveContext) => {
-        setPreviewContext(newActiveContext);
+        setRasterContext(newActiveContext);
         applyCanvasOverlayTransform(
           canvasOverlayRef.current,
           viewport.getValue(),
@@ -108,11 +109,10 @@ export const CanvasViewport = memo(
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
     const canvasActionDispatcher = useCanvasActionDispatcher();
-    const { render } = useShapeRenderer(shapeOverlayRef, viewport);
 
     const renderShape = useStableCallback(
       (shape: CanvasOverlayShape | null) => {
-        render(shape);
+        vectorContext?.render(shape);
         applyCanvasOverlayTransform(
           canvasOverlayRef.current,
           viewport.getValue(),
@@ -138,8 +138,8 @@ export const CanvasViewport = memo(
     );
 
     useEffect(() => {
-      render(overlayShape);
-    }, [render, overlayShape]);
+      vectorContext?.render(overlayShape);
+    }, [vectorContext, overlayShape]);
 
     useShapeTool(
       hostElementRef,
@@ -147,7 +147,7 @@ export const CanvasViewport = memo(
       (position) => screenToViewportPosition(position, viewport.getValue()),
       () => overlayShape,
       createShapeToolHandlers(
-        previewContext,
+        rasterContext,
         renderShape,
         canvasActionDispatcher
       ),
@@ -158,14 +158,15 @@ export const CanvasViewport = memo(
       hostElementRef,
       toolId as DrawToolId,
       toolSettings,
-      previewContext,
+      rasterContext,
+      vectorContext,
       (position) => screenToViewportPosition(position, viewport.getValue()),
       createDrawToolHandlers(
-        previewContext,
+        rasterContext,
         layers[activeLayerIndex],
         canvasActionDispatcher
       ),
-      !isLocked && isDrawTool(toolId) && !!previewContext
+      !isLocked && isDrawTool(toolId) && !!rasterContext
     );
 
     useViewportManipulator(
@@ -187,7 +188,7 @@ export const CanvasViewport = memo(
     return (
       <div
         ref={hostElementRef}
-        style={{ opacity: previewContext !== null ? "1" : "0" }}
+        style={{ opacity: rasterContext !== null ? "1" : "0" }}
         className="absolute size-full overflow-hidden cursor-crosshair duration-1000 z-[0]"
       >
         {/* show background */}

@@ -1,5 +1,5 @@
-import type { DrawPayload, DrawTool, DrawToolMetadata } from "./drawTool";
-import type { CanvasContext, Position } from "@/utils/common";
+import type { DrawTool, DrawToolEvent, DrawToolMetadata } from "./drawTool";
+import type { CanvasRasterContext, Position } from "@/utils/common";
 import { getTranslations } from "@/translations";
 
 const translations = getTranslations().tools.draw.eraser;
@@ -32,7 +32,7 @@ type EraserDrawToolSettings = {
 export class EraserDrawTool implements DrawTool {
   private previousPosition: Position | null = null;
 
-  constructor(private context: CanvasContext) {}
+  constructor(private context: CanvasRasterContext) {}
 
   configure(settings: EraserDrawToolSettings): void {
     const { size } = settings;
@@ -41,21 +41,24 @@ export class EraserDrawTool implements DrawTool {
     this.context.lineCap = "round";
   }
 
-  draw(payload: DrawPayload) {
-    if (this.previousPosition) {
-      this.context.save();
-      this.context.globalCompositeOperation = "destination-out";
-      this.context.beginPath();
-      this.context.moveTo(this.previousPosition.x, this.previousPosition.y);
-      this.context.lineTo(payload.position.x, payload.position.y);
-      this.context.stroke();
-      this.context.restore();
+  processEvent(event: DrawToolEvent) {
+    if (!this.previousPosition) {
+      this.previousPosition = event.position;
     }
 
-    this.previousPosition = payload.position;
+    this.context.save();
+    this.context.globalCompositeOperation = "destination-out";
+    this.context.beginPath();
+    this.context.moveTo(this.previousPosition.x, this.previousPosition.y);
+    this.context.lineTo(event.position.x, event.position.y);
+    this.context.stroke();
+    this.context.restore();
+
+    this.previousPosition = event.position;
   }
 
   reset() {
     this.previousPosition = null;
   }
 }
+

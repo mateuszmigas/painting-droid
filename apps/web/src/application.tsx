@@ -10,7 +10,7 @@ import { DialogHost, type DialogService } from "./components/dialogHost";
 import { useHasStoreHydrated, useIdleCallback } from "./hooks";
 import { coreClient } from "./wasm/core/coreClient";
 import { CanvasPreviewContextStoreContext } from "./contexts/canvasPreviewContextStore";
-import type { CanvasContext } from "./utils/common";
+import type { CanvasRasterContext, CanvasVectorContext } from "./utils/common";
 import { useState } from "react";
 import { DialogServiceContext } from "./contexts/dialogService";
 import { CommandServiceContext } from "./contexts/commandService";
@@ -25,9 +25,11 @@ import { windowHandle } from "./utils/window-handle";
 export const App = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
 
-  const [previewContext, setPreviewContext] = useState<CanvasContext | null>(
-    null
-  );
+  const [rasterContext, setRasterContext] =
+    useState<CanvasRasterContext | null>(null);
+  const [vectorContext, setVectorContext] =
+    useState<CanvasVectorContext | null>(null);
+
   const [dialogService, setDialogService] = useState<DialogService | null>(
     null
   );
@@ -48,7 +50,12 @@ export const App = () => {
   return (
     <div className="size-full flex flex-col select-none">
       <CanvasPreviewContextStoreContext.Provider
-        value={{ previewContext, setPreviewContext }}
+        value={{
+          rasterContext,
+          setRasterContext,
+          vectorContext,
+          setVectorContext,
+        }}
       >
         <NotificationServiceContext.Provider value={notificationService}>
           <DialogServiceContext.Provider value={dialogService!}>

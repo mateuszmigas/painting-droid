@@ -7,7 +7,6 @@ import type {
   useLayoutStore,
   useToolStore,
 } from "@/store";
-import type { CanvasContext } from "@/utils/common";
 
 export type CommandContext = {
   stores: {
@@ -16,8 +15,8 @@ export type CommandContext = {
     layout: () => ReturnType<typeof useLayoutStore.getState>;
     tool: () => ReturnType<typeof useToolStore.getState>;
   };
-  getActiveCanvasContext: () => CanvasContext | null;
   dialogService: DialogService;
   notificationService: NotificationService;
   canvasActionDispatcher: CanvasActionDispatcher;
 };
+

@@ -31,7 +31,7 @@ export const AdjustmentsPopup = memo(() => {
   const closePopup = useWorkspacesStore((store) => store.closeApplyPopup);
   const adjustment = adjustmentsMetadata[popup.adjustmentId];
   const activeLayer = layers[activeLayerIndex];
-  const { previewContext } = useCanvasPreviewContextStore();
+  const { rasterContext: previewContext } = useCanvasPreviewContextStore();
 
   const runAdjustment = useStableCallback(async () => {
     const data = activeLayer.data;
@@ -103,3 +103,4 @@ export const AdjustmentsPopup = memo(() => {
     </div>
   );
 });
+
