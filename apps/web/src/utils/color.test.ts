@@ -18,9 +18,9 @@ describe("areColorsClose", () => {
   test("returns true if colors are close", () => {
     expect(
       areColorsClose(
-        { r: 0, g: 0, b: 0, a: 255 },
-        { r: 0, g: 0, b: 0, a: 254 },
-        2
+        { r: 255, g: 0, b: 0, a: 1 },
+        { r: 254, g: 0, b: 0, a: 1 },
+        10
       )
     ).toBe(true);
   });
