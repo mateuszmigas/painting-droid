@@ -35,7 +35,7 @@ export const useSyncCanvasVectorContext = (
     return () => {
       unmount();
     };
-  }, [getStore, elementRef.current]);
+  }, [getStore, setStore, setVectorContext, elementRef.current]);
 
   useListener(viewport, (viewport) => setStore("viewport", viewport));
 };

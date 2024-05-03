@@ -1,4 +1,4 @@
-import { CanvasOverlayShape } from "@/canvas/canvasState";
+import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import type { RgbaColor } from "./color";
 
 export type Position = {

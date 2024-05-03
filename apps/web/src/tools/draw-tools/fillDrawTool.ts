@@ -1,7 +1,7 @@
 import type { DrawTool, DrawToolEvent, DrawToolMetadata } from "./drawTool";
 import type { CanvasRasterContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
-import { RgbaColor, areColorsClose } from "@/utils/color";
+import { type RgbaColor, areColorsClose } from "@/utils/color";
 import { floodFill } from "@/utils/imageOperations";
 
 const translations = getTranslations().tools.draw.fill;
