@@ -31,16 +31,17 @@ export const createShapeToolHandlers = (
       }
 
       const box = shape.boundingBox;
+      console.log("box", box);
+      const data = await ImageProcessor.fromCropContext(
+        activeContext!,
+        box
+      ).toCompressedData();
+      //optimistic clear
+      activeContext?.clearRect(box.x, box.y, box.width, box.height);
       await canvasActionDispatcher.execute("drawOverlayShape", {
         overlayShape: {
           ...shape,
-          captured: {
-            box,
-            data: await ImageProcessor.fromCropContext(
-              activeContext!,
-              box
-            ).toCompressedData(),
-          },
+          captured: { box, data },
         },
       });
     },
