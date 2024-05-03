@@ -56,10 +56,10 @@ test.describe("tools", () => {
   test("fills triangle", async ({ page }) => {
     const app = await TestApp.from(page);
     await app.selectTool("pencil");
-    await app.setToolSetting("color", "#ffff00");
-    await drawRectangle(app);
+    await app.setToolSetting("color", "#000000");
+    await drawTriangle(app);
     await app.selectTool("fill");
-    await app.setToolSetting("color", "#ff0000");
+    await app.setToolSetting("color", "#ffffff");
     const box = await app.getLayerCanvasBoundingBox(0);
     await app.moveMouse(box.x + box.width / 2, box.y + box.height / 2);
     await app.mouseDown();
