@@ -52,5 +52,19 @@ test.describe("tools", () => {
     const buffer = await app.getLayerCanvasBuffer(0);
     await expect(buffer).toMatchSnapshot(["tool-eraser.png"]);
   });
+
+  test("fills triangle", async ({ page }) => {
+    const app = await TestApp.from(page);
+    await app.selectTool("brush");
+    await app.setToolSetting("color", "#ffff00");
+    await drawTriangle(app);
+    await app.selectTool("fill");
+    await app.setToolSetting("color", "#ff0000");
+    const box = await app.getLayerCanvasBoundingBox(0);
+    await app.moveMouse(box.x + box.width / 2, box.y + box.height / 2);
+    await app.mouseDown();
+    const buffer = await app.getLayerCanvasBuffer(0);
+    await expect(buffer).toMatchSnapshot(["tool-fill.png"]);
+  });
 });
 
