@@ -69,11 +69,12 @@ export const subscribeToManipulationEvents = (
   };
   element.addEventListener("pointerdown", onPointerDown);
   element.addEventListener("pointermove", onPointerMove);
-  element.addEventListener("pointerup", onPointerUp);
+  document.addEventListener("pointerup", onPointerUp);
 
   return () => {
     element.removeEventListener("pointerdown", onPointerDown);
     element.removeEventListener("pointermove", onPointerMove);
-    element.removeEventListener("pointerup", onPointerUp);
+    document.removeEventListener("pointerup", onPointerUp);
   };
 };
+

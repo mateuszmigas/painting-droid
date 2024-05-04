@@ -31,7 +31,7 @@ export class FillDrawTool implements CanvasTool {
   private fillColor: RgbaColor | null = null;
   private onCommitCallback: (() => void) | null = null;
 
-  constructor(private context: CanvasBitmapContext) {}
+  constructor(private bitmapContext: CanvasBitmapContext) {}
 
   configure(settings: FillDrawToolSettings): void {
     const { color } = settings;
@@ -42,11 +42,11 @@ export class FillDrawTool implements CanvasTool {
     if (event.type !== "manipulationStart") {
       return;
     }
-    const imageData = this.context.getImageData(
+    const imageData = this.bitmapContext.getImageData(
       0,
       0,
-      this.context.canvas.width,
-      this.context.canvas.height
+      this.bitmapContext.canvas.width,
+      this.bitmapContext.canvas.height
     );
 
     const filledData = floodFill(
@@ -57,7 +57,7 @@ export class FillDrawTool implements CanvasTool {
     );
 
     imageData.data.set(filledData.data);
-    this.context.putImageData(imageData, 0, 0);
+    this.bitmapContext.putImageData(imageData, 0, 0);
     this.onCommitCallback?.();
   }
 

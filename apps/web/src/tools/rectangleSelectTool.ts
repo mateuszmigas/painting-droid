@@ -20,48 +20,55 @@ export const rectangleSelectToolMetadata: CanvasToolMetadata = {
   settings: {},
 } as const;
 
+const minSize = 1;
+
 export class RectangleSelectTool implements CanvasTool {
   private startPosition: Position | null = null;
-  private endPosition: Position | null = null;
   private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
+  private shape: CanvasOverlayShape | null = null;
 
-  constructor(private canvasVectorContext: CanvasVectorContext) {}
+  constructor(private vectorContext: CanvasVectorContext) {}
 
   configure(_: unknown): void {}
 
   processEvent(event: CanvasToolEvent) {
-    if (!this.startPosition) {
+    if (event.type === "manipulationStart") {
       this.startPosition = {
         x: fastRound(event.position.x),
         y: fastRound(event.position.y),
       };
+      this.shape = {
+        id: uuid(),
+        type: "rectangle",
+        boundingBox: { x: 0, y: 0, width: 0, height: 0 },
+        captured: null,
+      };
     }
 
-    this.endPosition = {
+    if (!this.startPosition || !this.shape) {
+      throw new Error("RectangleSelectTool: start or shape not set");
+    }
+
+    const endPosition = {
       x: fastRound(event.position.x),
       y: fastRound(event.position.y),
     };
 
-    const x = Math.min(this.startPosition.x, this.endPosition.x);
-    const y = Math.min(this.startPosition.y, this.endPosition.y);
-    const width = Math.abs(this.startPosition.x - this.endPosition.x);
-    const height = Math.abs(this.startPosition.y - this.endPosition.y);
+    const x = Math.min(this.startPosition.x, endPosition.x);
+    const y = Math.min(this.startPosition.y, endPosition.y);
+    const width = Math.max(
+      Math.abs(this.startPosition.x - endPosition.x),
+      minSize
+    );
+    const height = Math.max(
+      Math.abs(this.startPosition.y - endPosition.y),
+      minSize
+    );
+    this.shape.boundingBox = { x, y, width, height };
+    this.vectorContext.render(this.shape);
 
-    if (width === 0 || height === 0) {
-      return null;
-    }
-
-    const shape = {
-      id: uuid(),
-      type: "rectangle",
-      boundingBox: { x, y, width, height },
-      captured: null,
-    } as CanvasOverlayShape;
-
-    if (event.type !== "manipulationEnd") {
-      this.canvasVectorContext.render(shape);
-    } else {
-      this.onCommitCallback?.({ shape });
+    if (event.type === "manipulationEnd") {
+      this.onCommitCallback?.({ shape: this.shape });
     }
   }
 
@@ -71,7 +78,6 @@ export class RectangleSelectTool implements CanvasTool {
 
   reset() {
     this.startPosition = null;
-    this.endPosition = null;
   }
 }
 

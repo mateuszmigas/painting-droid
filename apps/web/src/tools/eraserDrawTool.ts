@@ -3,7 +3,7 @@ import type {
   CanvasToolEvent,
   CanvasToolMetadata,
 } from "./canvasTool";
-import type { CanvasBitmapContext, Position } from "@/utils/common";
+import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 
 const translations = getTranslations().tools.draw.eraser;
@@ -34,35 +34,36 @@ type EraserDrawToolSettings = {
 };
 
 export class EraserDrawTool implements CanvasTool {
-  private previousPosition: Position | null = null;
   private onCommitCallback: (() => void) | null = null;
 
-  constructor(private context: CanvasBitmapContext) {}
+  constructor(private bitmapContext: CanvasBitmapContext) {}
 
   configure(settings: EraserDrawToolSettings): void {
     const { size } = settings;
-    this.context.lineWidth = size;
-    this.context.strokeStyle = "white";
-    this.context.lineCap = "round";
+    this.bitmapContext.lineWidth = size;
+    this.bitmapContext.strokeStyle = "white";
+    this.bitmapContext.lineCap = "round";
+    this.bitmapContext.lineJoin = "round";
   }
 
   processEvent(event: CanvasToolEvent) {
-    if (!this.previousPosition) {
-      this.previousPosition = event.position;
+    if (event.type === "manipulationStart") {
+      this.bitmapContext.save();
+      this.bitmapContext.globalCompositeOperation = "destination-out";
+      this.bitmapContext.beginPath();
+      this.bitmapContext.moveTo(event.position.x, event.position.y);
+      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.stroke();
     }
 
-    this.context.save();
-    this.context.globalCompositeOperation = "destination-out";
-    this.context.beginPath();
-    this.context.moveTo(this.previousPosition.x, this.previousPosition.y);
-    this.context.lineTo(event.position.x, event.position.y);
-    this.context.stroke();
-    this.context.restore();
-
-    this.previousPosition = event.position;
+    if (event.type === "manipulationStep") {
+      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.stroke();
+    }
 
     if (event.type === "manipulationEnd") {
-      this.previousPosition = null;
+      this.bitmapContext.closePath();
+      this.bitmapContext.restore();
       this.onCommitCallback?.();
     }
   }
@@ -71,8 +72,6 @@ export class EraserDrawTool implements CanvasTool {
     this.onCommitCallback = callback;
   }
 
-  reset() {
-    this.previousPosition = null;
-  }
+  reset() {}
 }
 

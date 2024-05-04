@@ -3,7 +3,7 @@ import type {
   CanvasToolEvent,
   CanvasToolMetadata,
 } from "./canvasTool";
-import type { CanvasBitmapContext, Color, Position } from "@/utils/common";
+import type { CanvasBitmapContext, Color } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
@@ -41,34 +41,34 @@ type BrushDrawToolSettings = {
 };
 
 export class BrushDrawTool implements CanvasTool {
-  private previousPosition: Position | null = null;
   private onCommitCallback: (() => void) | null = null;
 
-  constructor(private rasterContext: CanvasBitmapContext) {}
+  constructor(private bitmapContext: CanvasBitmapContext) {}
 
   configure(settings: BrushDrawToolSettings): void {
     const { size, color } = settings;
-    this.rasterContext.lineWidth = size;
-    this.rasterContext.strokeStyle =
+    this.bitmapContext.lineWidth = size;
+    this.bitmapContext.strokeStyle =
       ColorProcessor.fromRgba(color).toRgbaString();
-    this.rasterContext.lineCap = "round";
+    this.bitmapContext.lineCap = "round";
+    this.bitmapContext.lineJoin = "round";
   }
 
   processEvent(event: CanvasToolEvent): void {
-    if (this.previousPosition) {
-      this.rasterContext.beginPath();
-      this.rasterContext.moveTo(
-        this.previousPosition.x,
-        this.previousPosition.y
-      );
-      this.rasterContext.lineTo(event.position.x, event.position.y);
-      this.rasterContext.stroke();
+    if (event.type === "manipulationStart") {
+      this.bitmapContext.beginPath();
+      this.bitmapContext.moveTo(event.position.x, event.position.y);
+      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.stroke();
     }
 
-    this.previousPosition = event.position;
+    if (event.type === "manipulationStep") {
+      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.stroke();
+    }
 
     if (event.type === "manipulationEnd") {
-      this.previousPosition = null;
+      this.bitmapContext.closePath();
       this.onCommitCallback?.();
     }
   }
@@ -77,8 +77,6 @@ export class BrushDrawTool implements CanvasTool {
     this.onCommitCallback = callback;
   }
 
-  reset() {
-    this.previousPosition = null;
-  }
+  reset() {}
 }
 

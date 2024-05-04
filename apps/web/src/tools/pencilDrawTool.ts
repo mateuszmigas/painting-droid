@@ -3,7 +3,7 @@ import type {
   CanvasToolEvent,
   CanvasToolMetadata,
 } from "./canvasTool";
-import type { CanvasBitmapContext, Color, Position } from "@/utils/common";
+import type { CanvasBitmapContext, Color } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
@@ -27,29 +27,32 @@ type PencilDrawToolSettings = {
 };
 
 export class PencilDrawTool implements CanvasTool {
-  private previousPosition: Position | null = null;
   private onCommitCallback: (() => void) | null = null;
 
-  constructor(private context: CanvasBitmapContext) {}
+  constructor(private bitmapContext: CanvasBitmapContext) {}
 
   configure(settings: PencilDrawToolSettings): void {
     const { color } = settings;
-    this.context.lineWidth = 1;
-    this.context.strokeStyle = ColorProcessor.fromRgba(color).toRgbaString();
+    this.bitmapContext.lineWidth = 1;
+    this.bitmapContext.strokeStyle =
+      ColorProcessor.fromRgba(color).toRgbaString();
   }
 
   processEvent(event: CanvasToolEvent) {
-    if (this.previousPosition) {
-      this.context.beginPath();
-      this.context.moveTo(this.previousPosition.x, this.previousPosition.y);
-      this.context.lineTo(event.position.x, event.position.y);
-      this.context.stroke();
+    if (event.type === "manipulationStart") {
+      this.bitmapContext.beginPath();
+      this.bitmapContext.moveTo(event.position.x, event.position.y);
+      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.stroke();
     }
 
-    this.previousPosition = event.position;
+    if (event.type === "manipulationStep") {
+      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.stroke();
+    }
 
     if (event.type === "manipulationEnd") {
-      this.previousPosition = null;
+      this.bitmapContext.closePath();
       this.onCommitCallback?.();
     }
   }
@@ -58,8 +61,6 @@ export class PencilDrawTool implements CanvasTool {
     this.onCommitCallback = callback;
   }
 
-  reset() {
-    this.previousPosition = null;
-  }
+  reset() {}
 }
 
