@@ -1,10 +1,14 @@
-import type { DrawTool, DrawToolEvent, DrawToolMetadata } from "./drawTool";
-import type { CanvasRasterContext, Position } from "@/utils/common";
+import type {
+  CanvasTool,
+  CanvasToolEvent,
+  CanvasToolMetadata,
+} from "./canvasTool";
+import type { CanvasBitmapContext, Position } from "@/utils/common";
 import { getTranslations } from "@/translations";
 
 const translations = getTranslations().tools.draw.eraser;
 
-export const eraserDrawToolMetadata: DrawToolMetadata = {
+export const eraserDrawToolMetadata: CanvasToolMetadata = {
   id: "eraser",
   name: translations.name,
   icon: "eraser",
@@ -29,10 +33,11 @@ type EraserDrawToolSettings = {
   size: number;
 };
 
-export class EraserDrawTool implements DrawTool {
+export class EraserDrawTool implements CanvasTool {
   private previousPosition: Position | null = null;
+  private onCommitCallback: (() => void) | null = null;
 
-  constructor(private context: CanvasRasterContext) {}
+  constructor(private context: CanvasBitmapContext) {}
 
   configure(settings: EraserDrawToolSettings): void {
     const { size } = settings;
@@ -41,7 +46,7 @@ export class EraserDrawTool implements DrawTool {
     this.context.lineCap = "round";
   }
 
-  processEvent(event: DrawToolEvent) {
+  processEvent(event: CanvasToolEvent) {
     if (!this.previousPosition) {
       this.previousPosition = event.position;
     }
@@ -55,6 +60,15 @@ export class EraserDrawTool implements DrawTool {
     this.context.restore();
 
     this.previousPosition = event.position;
+
+    if (event.type === "manipulationEnd") {
+      this.previousPosition = null;
+      this.onCommitCallback?.();
+    }
+  }
+
+  onCommit(callback: () => void) {
+    this.onCommitCallback = callback;
   }
 
   reset() {

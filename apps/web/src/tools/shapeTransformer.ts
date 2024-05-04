@@ -1,8 +1,9 @@
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
-import { type Position, isPositionInRectangle } from "@/utils/common";
+import type { Position } from "@/utils/common";
+import { arePointsClose } from "@/utils/geometry";
 import { fastRound } from "@/utils/math";
 
-export class TransformShapeTool {
+export class ShapeTransformer {
   private target: CanvasOverlayShape | null = null;
   private startPosition: Position | null = null;
   private endPosition: Position | null = null;
@@ -11,23 +12,12 @@ export class TransformShapeTool {
     this.target = target;
   }
 
-  isInside(position: Position) {
-    return (
-      this.target && isPositionInRectangle(position, this.target.boundingBox)
-    );
-  }
-
-  update(position: Position) {
-    if (!this.target) {
-      return;
-    }
-
+  transform(position: Position) {
     if (!this.startPosition) {
       this.startPosition = {
         x: fastRound(position.x),
         y: fastRound(position.y),
       };
-      return;
     }
 
     this.endPosition = {
@@ -36,9 +26,13 @@ export class TransformShapeTool {
     };
   }
 
-  getShape() {
-    if (!this.target || !this.startPosition || !this.endPosition) {
-      return null;
+  getResult(): CanvasOverlayShape | false {
+    if (!this.startPosition || !this.endPosition) {
+      throw new Error("ShapeTransformer: getResult called before transform");
+    }
+
+    if (arePointsClose(this.startPosition, this.endPosition, 1)) {
+      return false;
     }
 
     const distance = {
@@ -49,11 +43,11 @@ export class TransformShapeTool {
     return {
       ...this.target,
       boundingBox: {
-        ...this.target.boundingBox,
-        x: this.target.boundingBox.x + distance.x,
-        y: this.target.boundingBox.y + distance.y,
+        ...this.target!.boundingBox,
+        x: this.target!.boundingBox.x + distance.x,
+        y: this.target!.boundingBox.y + distance.y,
       },
-    };
+    } as CanvasOverlayShape;
   }
 
   reset() {
@@ -61,3 +55,4 @@ export class TransformShapeTool {
     this.endPosition = null;
   }
 }
+

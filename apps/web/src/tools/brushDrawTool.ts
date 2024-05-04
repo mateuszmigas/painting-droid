@@ -1,11 +1,15 @@
-import type { DrawTool, DrawToolEvent, DrawToolMetadata } from "./drawTool";
-import type { CanvasRasterContext, Color, Position } from "@/utils/common";
+import type {
+  CanvasTool,
+  CanvasToolEvent,
+  CanvasToolMetadata,
+} from "./canvasTool";
+import type { CanvasBitmapContext, Color, Position } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
 const translations = getTranslations().tools.draw.brush;
 
-export const brushDrawToolMetadata: DrawToolMetadata = {
+export const brushDrawToolMetadata: CanvasToolMetadata = {
   id: "brush",
   name: translations.name,
   icon: "brush",
@@ -36,10 +40,11 @@ type BrushDrawToolSettings = {
   size: number;
 };
 
-export class BrushDrawTool implements DrawTool {
+export class BrushDrawTool implements CanvasTool {
   private previousPosition: Position | null = null;
+  private onCommitCallback: (() => void) | null = null;
 
-  constructor(private rasterContext: CanvasRasterContext) {}
+  constructor(private rasterContext: CanvasBitmapContext) {}
 
   configure(settings: BrushDrawToolSettings): void {
     const { size, color } = settings;
@@ -49,7 +54,7 @@ export class BrushDrawTool implements DrawTool {
     this.rasterContext.lineCap = "round";
   }
 
-  processEvent(event: DrawToolEvent): void {
+  processEvent(event: CanvasToolEvent): void {
     if (this.previousPosition) {
       this.rasterContext.beginPath();
       this.rasterContext.moveTo(
@@ -61,6 +66,15 @@ export class BrushDrawTool implements DrawTool {
     }
 
     this.previousPosition = event.position;
+
+    if (event.type === "manipulationEnd") {
+      this.previousPosition = null;
+      this.onCommitCallback?.();
+    }
+  }
+
+  onCommit(callback: () => void) {
+    this.onCommitCallback = callback;
   }
 
   reset() {

@@ -3,22 +3,22 @@ import {
   createCanvasContext,
   convertToBlob,
 } from "./canvas";
-import type { CanvasRasterContext, Rectangle, Size } from "./common";
+import type { CanvasBitmapContext, Rectangle, Size } from "./common";
 import { dataUrlToImage } from "./image";
 import type { ImageCompressedData, ImageUncompressed } from "./imageData";
 
 export class ImageProcessor {
-  private context!: CanvasRasterContext;
+  private context!: CanvasBitmapContext;
   private tasks: (() => Promise<void>)[] = [];
 
-  private constructor(contextFactory: () => Promise<CanvasRasterContext>) {
+  private constructor(contextFactory: () => Promise<CanvasBitmapContext>) {
     this.tasks.push(async () => {
       const context = await contextFactory();
       this.context = context;
     });
   }
 
-  public static fromContext(context: CanvasRasterContext) {
+  public static fromContext(context: CanvasBitmapContext) {
     return new ImageProcessor(() => Promise.resolve(context));
   }
 
@@ -56,7 +56,7 @@ export class ImageProcessor {
   }
 
   public static fromCropContext(
-    context: CanvasRasterContext,
+    context: CanvasBitmapContext,
     rectangle: Rectangle
   ) {
     return new ImageProcessor(async () => {
@@ -104,7 +104,7 @@ export class ImageProcessor {
     return new ImageProcessor(async () => createCanvasContext(width, height));
   }
 
-  useContext(callback: (context: CanvasRasterContext) => Promise<void>) {
+  useContext(callback: (context: CanvasBitmapContext) => Promise<void>) {
     this.tasks.push(() => callback(this.context!));
     return this;
   }

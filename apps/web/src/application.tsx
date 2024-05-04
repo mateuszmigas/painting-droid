@@ -9,8 +9,8 @@ import {
 import { DialogHost, type DialogService } from "./components/dialogHost";
 import { useHasStoreHydrated, useIdleCallback } from "./hooks";
 import { coreClient } from "./wasm/core/coreClient";
-import { CanvasPreviewContextStoreContext } from "./contexts/canvasPreviewContextStore";
-import type { CanvasRasterContext, CanvasVectorContext } from "./utils/common";
+import { CanvasPreviewContextStoreContext } from "./contexts/canvasContextStore";
+import type { CanvasBitmapContext, CanvasVectorContext } from "./utils/common";
 import { useState } from "react";
 import { DialogServiceContext } from "./contexts/dialogService";
 import { CommandServiceContext } from "./contexts/commandService";
@@ -25,8 +25,8 @@ import { windowHandle } from "./utils/window-handle";
 export const App = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
 
-  const [rasterContext, setRasterContext] =
-    useState<CanvasRasterContext | null>(null);
+  const [rasterContext, setBitmapContext] =
+    useState<CanvasBitmapContext | null>(null);
   const [vectorContext, setVectorContext] =
     useState<CanvasVectorContext | null>(null);
 
@@ -51,9 +51,8 @@ export const App = () => {
     <div className="size-full flex flex-col select-none">
       <CanvasPreviewContextStoreContext.Provider
         value={{
-          rasterContext,
-          setRasterContext,
-          vectorContext,
+          context: { bitmap: rasterContext, vector: vectorContext },
+          setBitmapContext,
           setVectorContext,
         }}
       >

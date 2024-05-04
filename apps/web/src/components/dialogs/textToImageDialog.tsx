@@ -1,7 +1,7 @@
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { memo, useEffect, useState } from "react";
-import { scaleRectangleToFitParent, type Size } from "@/utils/common";
+import type { Size } from "@/utils/common";
 import { Input } from "../ui/input";
 import { Icon } from "../icons/icon";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,6 +32,7 @@ import { OptionSizeCustomField } from "../custom-fields/optionSizeCustomField";
 import { StringCustomField } from "../custom-fields/stringCustomField";
 import type { TextToImageModelInfo } from "@/hooks/useTextToImageModels";
 import { OptionNumberCustomField } from "../custom-fields/optionNumberCustomField";
+import { scaleRectangleToFitParent } from "@/utils/geometry";
 
 const translations = getTranslations();
 const FormSchema = z.object({

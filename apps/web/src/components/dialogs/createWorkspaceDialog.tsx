@@ -9,7 +9,8 @@ import { memo } from "react";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { useState } from "react";
-import { type Size, scaleRectangleToFitParent } from "@/utils/common";
+import type { Size } from "@/utils/common";
+import { scaleRectangleToFitParent } from "@/utils/geometry";
 
 const parentSize = { width: 96, height: 64 };
 const calculateSvgRect = (width: number, height: number) => {
@@ -124,3 +125,4 @@ export const CreateWorkspaceDialog = memo(
     );
   }
 );
+

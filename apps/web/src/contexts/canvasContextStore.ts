@@ -1,16 +1,19 @@
-import type { CanvasRasterContext, CanvasVectorContext } from "@/utils/common";
+import type {
+  CanvasBitmapContext,
+  CanvasContext,
+  CanvasVectorContext,
+} from "@/utils/common";
 import { createContext, useContext } from "react";
 
 type CanvasPreviewContextStore = {
-  rasterContext: CanvasRasterContext | null;
-  setRasterContext: (context: CanvasRasterContext) => void;
-  vectorContext: CanvasVectorContext | null;
+  context: CanvasContext;
+  setBitmapContext: (context: CanvasBitmapContext) => void;
   setVectorContext: (context: CanvasVectorContext) => void;
 };
 
 export const CanvasPreviewContextStoreContext =
   createContext<CanvasPreviewContextStore>({} as CanvasPreviewContextStore);
 
-export const useCanvasPreviewContextStore = () =>
+export const useCanvasContextStore = () =>
   useContext<CanvasPreviewContextStore>(CanvasPreviewContextStoreContext);
 

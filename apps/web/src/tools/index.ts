@@ -1,47 +1,35 @@
-import {
-  type DrawToolId,
-  drawToolsMetadata,
-  getDefaultDrawToolSettings,
-} from "./draw-tools";
-import {
-  type ShapeToolId,
-  shapeToolsMetadata,
-  getDefaultShapeToolSettings,
-} from "./shape-tools";
+import { brushDrawToolMetadata } from "./brushDrawTool";
+import { pencilDrawToolMetadata } from "./pencilDrawTool";
+import { eraserDrawToolMetadata } from "./eraserDrawTool";
+import { fillDrawToolMetadata } from "./fillDrawTool";
+import { rectangleSelectToolMetadata } from "./rectangleSelectTool";
 
-export type ToolId = DrawToolId | ShapeToolId;
-
-const defaultDrawToolsSettings = Object.keys(drawToolsMetadata).reduce(
-  (result, toolId) => {
-    result[toolId as ToolId] = getDefaultDrawToolSettings(toolId as DrawToolId);
-    return result;
-  },
-  {} as Record<ToolId, Record<string, unknown>>
-);
-
-const defaultShapeToolsSettings = Object.keys(shapeToolsMetadata).reduce(
-  (result, toolId) => {
-    result[toolId as ToolId] = getDefaultShapeToolSettings(
-      toolId as ShapeToolId
-    );
-    return result;
-  },
-  {} as Record<ToolId, Record<string, unknown>>
-);
-
-export const defaultToolsSettings = {
-  ...defaultDrawToolsSettings,
-  ...defaultShapeToolsSettings,
-};
-
-export const toolsMetadata = {
-  ...drawToolsMetadata,
-  ...shapeToolsMetadata,
+export const canvasToolsMetadata = {
+  brush: brushDrawToolMetadata,
+  pencil: pencilDrawToolMetadata,
+  eraser: eraserDrawToolMetadata,
+  fill: fillDrawToolMetadata,
+  rectangleSelect: rectangleSelectToolMetadata,
 } as const;
 
-export const isDrawTool = (toolId: ToolId): toolId is DrawToolId =>
-  toolId in drawToolsMetadata;
+const getDefaultCanvasToolSettings = (toolId: CanvasToolId) => {
+  const result: Record<string, unknown> = {};
+  Object.entries(canvasToolsMetadata[toolId].settings).forEach(
+    ([key, value]) => {
+      result[key] = value.default;
+    }
+  );
+  return result;
+};
 
-export const isShapeTool = (toolId: ToolId): toolId is ShapeToolId =>
-  toolId in shapeToolsMetadata;
+export type CanvasToolId = keyof typeof canvasToolsMetadata;
+
+export const defaultCanvasToolsSettings = Object.keys(
+  canvasToolsMetadata
+).reduce((result, toolId) => {
+  result[toolId as CanvasToolId] = getDefaultCanvasToolSettings(
+    toolId as CanvasToolId
+  );
+  return result;
+}, {} as Record<CanvasToolId, Record<string, unknown>>);
 

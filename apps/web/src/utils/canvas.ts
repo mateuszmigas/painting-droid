@@ -1,17 +1,17 @@
-import type { CanvasRasterContext } from "./common";
+import type { CanvasBitmapContext } from "./common";
 import type { ImageCompressedData, ImageUncompressed } from "./imageData";
 
 export const createCanvasContext = (width: number, height: number) => {
   const canvas = new OffscreenCanvas(width, height);
-  const context = canvas.getContext("2d") as CanvasRasterContext;
+  const context = canvas.getContext("2d") as CanvasBitmapContext;
   return context;
 };
 
-export const clearContext = (context: CanvasRasterContext) => {
+export const clearContext = (context: CanvasBitmapContext) => {
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 };
 
-export const convertToBlob = (context: CanvasRasterContext, type: string) => {
+export const convertToBlob = (context: CanvasBitmapContext, type: string) => {
   if (context instanceof OffscreenCanvasRenderingContext2D) {
     return context.canvas.convertToBlob({ type });
   }
@@ -21,7 +21,7 @@ export const convertToBlob = (context: CanvasRasterContext, type: string) => {
 };
 
 export const restoreContextFromCompressed = async (
-  context: CanvasRasterContext,
+  context: CanvasBitmapContext,
   data: ImageCompressedData
 ) => {
   const image = await createImageBitmap(data);
@@ -31,7 +31,7 @@ export const restoreContextFromCompressed = async (
 };
 
 export const restoreContextFromUncompressed = (
-  context: CanvasRasterContext,
+  context: CanvasBitmapContext,
   uncompressed: ImageUncompressed
 ) => {
   context.putImageData(

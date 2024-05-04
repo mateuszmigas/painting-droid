@@ -1,22 +1,22 @@
-import { defaultToolsSettings, type ToolId } from "@/tools";
+import { defaultCanvasToolsSettings, type CanvasToolId } from "@/tools";
 import { create, type StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
 import { createSyncStorage } from "./syncStorage";
 
 type AppToolState = {
-  selectedToolId: ToolId;
-  toolSettings: Record<ToolId, Record<string, unknown>>;
+  selectedToolId: CanvasToolId;
+  toolSettings: Record<CanvasToolId, Record<string, unknown>>;
 };
 
 const defaultState: AppToolState = {
   selectedToolId: "brush",
-  toolSettings: defaultToolsSettings,
+  toolSettings: defaultCanvasToolsSettings,
 };
 
 type AppToolSlice = AppToolState & {
-  setSelectedToolId: (type: ToolId) => void;
+  setSelectedToolId: (type: CanvasToolId) => void;
   updateToolSettings: (
-    toolId: ToolId,
+    toolId: CanvasToolId,
     settings: Record<string, unknown>
   ) => void;
 };

@@ -1,9 +1,10 @@
+import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import type { IconType } from "@/components/icons/icon";
 import type { Position } from "@/utils/common";
 
-export type DrawToolSettingType = "color" | "size";
+export type CanvasToolSettingType = "color" | "size";
 
-export type DrawToolMetadata = {
+export type CanvasToolMetadata = {
   id: string;
   name: string;
   icon: IconType;
@@ -11,21 +12,26 @@ export type DrawToolMetadata = {
     string,
     {
       name: string;
-      type: DrawToolSettingType;
+      type: CanvasToolSettingType;
       default: unknown;
       options?: Array<{ value: unknown; label: string }>;
     }
   >;
 };
 
-export type DrawToolEvent =
+export type CanvasToolEvent =
   | { type: "manipulationStart"; position: Position }
   | { type: "manipulationStep"; position: Position }
   | { type: "manipulationEnd"; position: Position };
 
-export interface DrawTool {
+export type CanvasToolResult = {
+  shape?: CanvasOverlayShape;
+};
+
+export interface CanvasTool {
   configure(settings: unknown): void;
-  processEvent(event: DrawToolEvent): void;
+  processEvent(event: CanvasToolEvent): void;
+  onCommit(callback: (result?: CanvasToolResult) => void): void;
   reset(): void;
 }
 

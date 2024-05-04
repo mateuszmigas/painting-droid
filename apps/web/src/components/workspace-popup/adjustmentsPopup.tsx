@@ -10,7 +10,7 @@ import { getTranslations } from "@/translations";
 import { coreClient } from "@/wasm/core/coreClient";
 import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
 import { adjustmentsMetadata } from "@/adjustments";
-import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
+import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 import {
   clearContext,
   restoreContextFromCompressed,
@@ -31,7 +31,9 @@ export const AdjustmentsPopup = memo(() => {
   const closePopup = useWorkspacesStore((store) => store.closeApplyPopup);
   const adjustment = adjustmentsMetadata[popup.adjustmentId];
   const activeLayer = layers[activeLayerIndex];
-  const { rasterContext: previewContext } = useCanvasPreviewContextStore();
+  const {
+    context: { bitmap: previewContext },
+  } = useCanvasContextStore();
 
   const runAdjustment = useStableCallback(async () => {
     const data = activeLayer.data;

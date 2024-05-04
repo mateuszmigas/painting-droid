@@ -1,31 +1,17 @@
 import type { CanvasLayer, CanvasOverlayShape } from "@/canvas/canvasState";
-import type { CanvasRasterContext } from "@/utils/common";
+import type { CanvasBitmapContext } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { clearContext } from "@/utils/canvas";
 import { features } from "@/constants";
-import { useStableCallback } from ".";
+import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 
 const restoreLayers = async (
-  contextStack: CanvasRasterContext[],
-  overlayContext: CanvasRasterContext | null,
+  contextStack: CanvasBitmapContext[],
   layers: CanvasLayer[],
-  overlayShape: CanvasOverlayShape | null
+  _: CanvasOverlayShape | null
 ) => {
   //run all operations together to avoid flickering
   const canvasOperations: (() => void)[] = [];
-
-  if (overlayShape !== null) {
-    const { width, height } = overlayShape.boundingBox;
-    const image = await createImageBitmap(overlayShape.captured!.data);
-    canvasOperations.push(() => {
-      overlayContext!.canvas.width = width;
-      overlayContext!.canvas.height = height;
-      overlayContext!.clearRect(0, 0, width, height);
-      overlayContext!.drawImage(image, 0, 0, width, height);
-    });
-  } else {
-    canvasOperations.push(() => clearContext(overlayContext!));
-  }
 
   for (let i = 0; i < layers.length; i++) {
     const layer = layers[i];
@@ -48,16 +34,14 @@ const restoreLayers = async (
 
 export const useSyncCanvasWithLayers = (
   canvasStackRef: RefObject<HTMLCanvasElement[]>,
-  canvasOverlayRef: RefObject<HTMLCanvasElement>,
   layers: CanvasLayer[],
   activeLayerIndex: number,
-  overlayShape: CanvasOverlayShape | null,
-  onFinished: (activeLayerContext: CanvasRasterContext) => void
+  overlayShape: CanvasOverlayShape | null
 ) => {
+  const { setBitmapContext } = useCanvasContextStore();
   const contextsMap = useRef(
-    new WeakMap<HTMLCanvasElement, CanvasRasterContext>()
+    new WeakMap<HTMLCanvasElement, CanvasBitmapContext>()
   );
-  const onFinishedStable = useStableCallback(onFinished);
 
   useEffect(() => {
     if (!canvasStackRef.current) {
@@ -78,25 +62,15 @@ export const useSyncCanvasWithLayers = (
       }
     );
 
-    if (!contextsMap.current.has(canvasOverlayRef.current!)) {
-      contextsMap.current.set(
-        canvasOverlayRef.current!,
-        canvasOverlayRef.current!.getContext("2d")!
-      );
-    }
-    const overlayContext =
-      contextsMap.current.get(canvasOverlayRef.current!) ?? null;
-
-    restoreLayers(stackContexts, overlayContext, layers, overlayShape).then(
-      () => onFinishedStable(stackContexts[activeLayerIndex])
+    restoreLayers(stackContexts, layers, overlayShape).then(() =>
+      setBitmapContext(stackContexts[activeLayerIndex])
     );
   }, [
     layers,
     activeLayerIndex,
     overlayShape,
     canvasStackRef,
-    canvasOverlayRef,
-    onFinishedStable,
+    setBitmapContext,
   ]);
 };
 

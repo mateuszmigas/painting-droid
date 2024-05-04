@@ -1,17 +1,21 @@
 import { IconButton } from "../icons/iconButton";
 import { useToolStore } from "@/store";
 import { memo } from "react";
-import { type ToolId, defaultToolsSettings, toolsMetadata } from "@/tools";
+import {
+  type CanvasToolId,
+  defaultCanvasToolsSettings,
+  canvasToolsMetadata,
+} from "@/tools";
 import type { IconType } from "../icons/icon";
 import { useCommandService } from "@/contexts/commandService";
 import { CommandIconButton } from "../commandIconButton";
 import { Separator } from "../ui/separator";
 import { testIds } from "@/utils/testIds";
 
-const tools: { id: ToolId; icon: IconType; name: string }[] = (
-  Object.keys(defaultToolsSettings) as ToolId[]
+const tools: { id: CanvasToolId; icon: IconType; name: string }[] = (
+  Object.keys(defaultCanvasToolsSettings) as CanvasToolId[]
 ).map((id) => {
-  const metadata = toolsMetadata[id];
+  const metadata = canvasToolsMetadata[id];
   return {
     id,
     icon: metadata.icon,

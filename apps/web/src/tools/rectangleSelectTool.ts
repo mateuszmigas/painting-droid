@@ -1,41 +1,46 @@
-import type { Position } from "@/utils/common";
-import type { ShapePayload, ShapeTool, ShapeToolMetadata } from "./shapeTool";
+import type { CanvasVectorContext, Position } from "@/utils/common";
+
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import { fastRound } from "@/utils/math";
 import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
+import type {
+  CanvasTool,
+  CanvasToolEvent,
+  CanvasToolMetadata,
+  CanvasToolResult,
+} from "./canvasTool";
 
 const translations = getTranslations().tools.shape.rectangleSelect;
 
-export const rectangleSelectToolMetadata: ShapeToolMetadata = {
+export const rectangleSelectToolMetadata: CanvasToolMetadata = {
   id: "rectangleSelect",
   name: translations.name,
   icon: "rectangle-select",
   settings: {},
 } as const;
 
-export class RectangleSelectTool implements ShapeTool {
+export class RectangleSelectTool implements CanvasTool {
   private startPosition: Position | null = null;
   private endPosition: Position | null = null;
+  private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
 
-  update(payload: ShapePayload) {
+  constructor(private canvasVectorContext: CanvasVectorContext) {}
+
+  configure(_: unknown): void {}
+
+  processEvent(event: CanvasToolEvent) {
     if (!this.startPosition) {
       this.startPosition = {
-        x: fastRound(payload.position.x),
-        y: fastRound(payload.position.y),
+        x: fastRound(event.position.x),
+        y: fastRound(event.position.y),
       };
     }
 
     this.endPosition = {
-      x: fastRound(payload.position.x),
-      y: fastRound(payload.position.y),
+      x: fastRound(event.position.x),
+      y: fastRound(event.position.y),
     };
-  }
-
-  getShape() {
-    if (!this.startPosition || !this.endPosition) {
-      return null;
-    }
 
     const x = Math.min(this.startPosition.x, this.endPosition.x);
     const y = Math.min(this.startPosition.y, this.endPosition.y);
@@ -46,12 +51,22 @@ export class RectangleSelectTool implements ShapeTool {
       return null;
     }
 
-    return {
+    const shape = {
       id: uuid(),
       type: "rectangle",
       boundingBox: { x, y, width, height },
       captured: null,
     } as CanvasOverlayShape;
+
+    if (event.type !== "manipulationEnd") {
+      this.canvasVectorContext.render(shape);
+    } else {
+      this.onCommitCallback?.({ shape });
+    }
+  }
+
+  onCommit(callback: (result: CanvasToolResult) => void) {
+    this.onCommitCallback = callback;
   }
 
   reset() {
@@ -59,3 +74,4 @@ export class RectangleSelectTool implements ShapeTool {
     this.endPosition = null;
   }
 }
+
