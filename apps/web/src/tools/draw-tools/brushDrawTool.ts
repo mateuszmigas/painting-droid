@@ -38,6 +38,7 @@ type BrushDrawToolSettings = {
 
 export class BrushDrawTool implements DrawTool {
   private previousPosition: Position | null = null;
+  private onCommitCallback: (() => void) | null = null;
 
   constructor(private rasterContext: CanvasRasterContext) {}
 
@@ -61,6 +62,15 @@ export class BrushDrawTool implements DrawTool {
     }
 
     this.previousPosition = event.position;
+
+    if (event.type === "manipulationEnd") {
+      this.previousPosition = null;
+      this.onCommitCallback?.();
+    }
+  }
+
+  onCommit(callback: () => void) {
+    this.onCommitCallback = callback;
   }
 
   reset() {

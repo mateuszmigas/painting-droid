@@ -2,6 +2,7 @@
 import * as Solid from "solid-js";
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import type { Viewport } from "@/utils/manipulation";
+import { BlobImage } from "./blobImage.solid";
 
 export const OverlayShape = (props: {
   overlayShape: CanvasOverlayShape | null;
@@ -27,7 +28,12 @@ export const OverlayShape = (props: {
           }px`,
         }}
         class="absolute border-primary border-2 border-dashed"
-      />
+      >
+        {/* <Solid.Show when={!!props.overlayShape!.captured}>
+          <BlobImage blob={props.overlayShape!.captured?.data} />
+        </Solid.Show> */}
+      </div>
     </Solid.Show>
   );
 };
+

@@ -1,5 +1,5 @@
 export { useDebounce } from "./useDebounce";
-export { useDrawTool } from "./useDrawTool";
+export { useTool } from "./useTool";
 export { useAfterPaintEffect } from "./useAfterPaintEffect";
 export { useViewportManipulator } from "./useViewportManipulator";
 export { useSyncTheme } from "./useSyncTheme";
@@ -11,7 +11,6 @@ export { useSyncCanvasWithLayers } from "./useSyncCanvasWithLayers";
 export { useCanvasActionDispatcher } from "./useCanvasActionDispatcher";
 export { useGlobalKeyboardHandler } from "./useGlobalKeyboardHandler";
 export { useSyncCanvasVectorContext } from "./useSyncCanvasVectorContext";
-export { useShapeTool } from "./useShapeTool";
 export { useIdleCallback } from "./useIdleCallback";
 export { useBlobUrl } from "./useBlobUrl";
 export { useHasStoreHydrated } from "./useHasStoreHydrated";

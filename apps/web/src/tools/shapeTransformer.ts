@@ -2,7 +2,7 @@ import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import { type Position, isPositionInRectangle } from "@/utils/common";
 import { fastRound } from "@/utils/math";
 
-export class TransformShapeTool {
+export class ShapeTransformer {
   private target: CanvasOverlayShape | null = null;
   private startPosition: Position | null = null;
   private endPosition: Position | null = null;
@@ -61,3 +61,4 @@ export class TransformShapeTool {
     this.endPosition = null;
   }
 }
+

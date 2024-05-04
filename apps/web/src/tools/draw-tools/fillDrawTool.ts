@@ -25,6 +25,7 @@ type FillDrawToolSettings = {
 
 export class FillDrawTool implements DrawTool {
   private fillColor: RgbaColor | null = null;
+  private onCommitCallback: (() => void) | null = null;
 
   constructor(private context: CanvasRasterContext) {}
 
@@ -53,6 +54,11 @@ export class FillDrawTool implements DrawTool {
 
     imageData.data.set(filledData.data);
     this.context.putImageData(imageData, 0, 0);
+    this.onCommitCallback?.();
+  }
+
+  onCommit(callback: () => void) {
+    this.onCommitCallback = callback;
   }
 
   reset() {}

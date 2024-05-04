@@ -2,10 +2,9 @@ import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
 import {
   useCanvasActionDispatcher,
-  useDrawTool,
+  useTool,
   useListener,
   useSyncCanvasVectorContext,
-  useShapeTool,
   useStableCallback,
   useSyncCanvasWithLayers,
   useViewportManipulator,
@@ -15,16 +14,12 @@ import {
   activeWorkspaceCanvasDataSelector,
   useWorkspacesStore,
 } from "@/store/workspacesStore";
-import { isDrawTool, isShapeTool } from "@/tools";
 import type { DrawToolId } from "@/tools/draw-tools";
 import type { Size } from "@/utils/common";
 import { type Viewport, screenToViewportPosition } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
 import { memo, useRef, useEffect } from "react";
-import {
-  createDrawToolHandlers,
-  createShapeToolHandlers,
-} from "./toolHandlers";
+import { createDrawToolHandlers } from "./toolHandlers";
 import { domNames } from "@/constants";
 import { testIds } from "@/utils/testIds";
 
@@ -141,32 +136,21 @@ export const CanvasViewport = memo(
       vectorContext?.render(overlayShape);
     }, [vectorContext, overlayShape]);
 
-    useShapeTool(
-      hostElementRef,
-      "rectangleSelect",
-      (position) => screenToViewportPosition(position, viewport.getValue()),
-      () => overlayShape,
-      createShapeToolHandlers(
-        rasterContext,
-        renderShape,
-        canvasActionDispatcher
-      ),
-      !isLocked && isShapeTool(toolId)
-    );
-
-    useDrawTool(
+    useTool(
       hostElementRef,
       toolId as DrawToolId,
       toolSettings,
       rasterContext,
       vectorContext,
+      () => overlayShape,
       (position) => screenToViewportPosition(position, viewport.getValue()),
       createDrawToolHandlers(
         rasterContext,
+        vectorContext,
         layers[activeLayerIndex],
         canvasActionDispatcher
       ),
-      !isLocked && isDrawTool(toolId) && !!rasterContext
+      !isLocked && !!rasterContext
     );
 
     useViewportManipulator(
