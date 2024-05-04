@@ -80,12 +80,17 @@ export const scaleRectangleToFitParent = (
 
 export type Color = RgbaColor;
 
-export type CanvasRasterContext =
+export type CanvasBitmapContext =
   | CanvasRenderingContext2D
   | OffscreenCanvasRenderingContext2D;
 
 export type CanvasVectorContext = {
   render: (shape: CanvasOverlayShape | null) => void;
+};
+
+export type CanvasContext = {
+  bitmap: CanvasBitmapContext | null;
+  vector: CanvasVectorContext | null;
 };
 
 export const calculateScaleToFit = (child: Size, parent: Size) => {

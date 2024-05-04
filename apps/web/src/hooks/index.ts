@@ -1,5 +1,5 @@
 export { useDebounce } from "./useDebounce";
-export { useTool } from "./useTool";
+export { useTool } from "./useCanvasTool";
 export { useAfterPaintEffect } from "./useAfterPaintEffect";
 export { useViewportManipulator } from "./useViewportManipulator";
 export { useSyncTheme } from "./useSyncTheme";

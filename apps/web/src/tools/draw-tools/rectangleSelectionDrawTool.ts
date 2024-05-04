@@ -5,31 +5,31 @@ import { fastRound } from "@/utils/math";
 import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
 import type {
-  DrawTool,
-  DrawToolEvent,
-  DrawToolMetadata,
-  DrawToolResult,
-} from "./drawTool";
+  CanvasTool,
+  CanvasToolEvent,
+  CanvasToolMetadata,
+  CanvasToolResult,
+} from "./canvasTool";
 
 const translations = getTranslations().tools.shape.rectangleSelect;
 
-export const rectangleSelectToolMetadata: DrawToolMetadata = {
+export const rectangleSelectToolMetadata: CanvasToolMetadata = {
   id: "rectangleSelect",
   name: translations.name,
   icon: "rectangle-select",
   settings: {},
 } as const;
 
-export class RectangleSelectTool implements DrawTool {
+export class RectangleSelectTool implements CanvasTool {
   private startPosition: Position | null = null;
   private endPosition: Position | null = null;
-  private onCommitCallback: ((result: DrawToolResult) => void) | null = null;
+  private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
 
   constructor(private canvasVectorContext: CanvasVectorContext) {}
 
   configure(_: unknown): void {}
 
-  processEvent(event: DrawToolEvent) {
+  processEvent(event: CanvasToolEvent) {
     if (!this.startPosition) {
       this.startPosition = {
         x: fastRound(event.position.x),
@@ -65,7 +65,7 @@ export class RectangleSelectTool implements DrawTool {
     }
   }
 
-  onCommit(callback: (result: DrawToolResult) => void) {
+  onCommit(callback: (result: CanvasToolResult) => void) {
     this.onCommitCallback = callback;
   }
 

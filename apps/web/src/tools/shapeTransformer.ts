@@ -2,6 +2,13 @@ import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import { type Position, isPositionInRectangle } from "@/utils/common";
 import { fastRound } from "@/utils/math";
 
+export const isPositionInsideShape = (
+  position: Position,
+  shape: CanvasOverlayShape
+) => {
+  return isPositionInRectangle(position, shape.boundingBox);
+};
+
 export class ShapeTransformer {
   private target: CanvasOverlayShape | null = null;
   private startPosition: Position | null = null;
@@ -9,12 +16,6 @@ export class ShapeTransformer {
 
   setTarget(target: CanvasOverlayShape | null) {
     this.target = target;
-  }
-
-  isInside(position: Position) {
-    return (
-      this.target && isPositionInRectangle(position, this.target.boundingBox)
-    );
   }
 
   update(position: Position) {
@@ -37,8 +38,8 @@ export class ShapeTransformer {
   }
 
   getShape() {
-    if (!this.target || !this.startPosition || !this.endPosition) {
-      return null;
+    if (!this.startPosition || !this.endPosition) {
+      return this.target;
     }
 
     const distance = {
@@ -49,9 +50,9 @@ export class ShapeTransformer {
     return {
       ...this.target,
       boundingBox: {
-        ...this.target.boundingBox,
-        x: this.target.boundingBox.x + distance.x,
-        y: this.target.boundingBox.y + distance.y,
+        ...this.target!.boundingBox,
+        x: this.target!.boundingBox.x + distance.x,
+        y: this.target!.boundingBox.y + distance.y,
       },
     };
   }

@@ -1,14 +1,16 @@
 import {
-  type DrawToolId,
-  drawToolsMetadata,
-  getDefaultDrawToolSettings,
+  type CanvasToolId,
+  canvasToolsMetadata,
+  getDefaultCanvasToolSettings,
 } from "./draw-tools";
 
-export type ToolId = DrawToolId;
+export type ToolId = CanvasToolId;
 
-const defaultDrawToolsSettings = Object.keys(drawToolsMetadata).reduce(
+const defaultDrawToolsSettings = Object.keys(canvasToolsMetadata).reduce(
   (result, toolId) => {
-    result[toolId as ToolId] = getDefaultDrawToolSettings(toolId as DrawToolId);
+    result[toolId as ToolId] = getDefaultCanvasToolSettings(
+      toolId as CanvasToolId
+    );
     return result;
   },
   {} as Record<ToolId, Record<string, unknown>>
@@ -19,6 +21,6 @@ export const defaultToolsSettings = {
 };
 
 export const toolsMetadata = {
-  ...drawToolsMetadata,
+  ...canvasToolsMetadata,
 } as const;
 

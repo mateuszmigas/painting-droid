@@ -1,11 +1,15 @@
-import type { DrawTool, DrawToolEvent, DrawToolMetadata } from "./drawTool";
-import type { CanvasRasterContext, Color, Position } from "@/utils/common";
+import type {
+  CanvasTool,
+  CanvasToolEvent,
+  CanvasToolMetadata,
+} from "./canvasTool";
+import type { CanvasBitmapContext, Color, Position } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
 const translations = getTranslations().tools.draw.pencil;
 
-export const pencilDrawToolMetadata: DrawToolMetadata = {
+export const pencilDrawToolMetadata: CanvasToolMetadata = {
   id: "Pencil",
   name: translations.name,
   icon: "pencil",
@@ -22,11 +26,11 @@ type PencilDrawToolSettings = {
   color: Color;
 };
 
-export class PencilDrawTool implements DrawTool {
+export class PencilDrawTool implements CanvasTool {
   private previousPosition: Position | null = null;
   private onCommitCallback: (() => void) | null = null;
 
-  constructor(private context: CanvasRasterContext) {}
+  constructor(private context: CanvasBitmapContext) {}
 
   configure(settings: PencilDrawToolSettings): void {
     const { color } = settings;
@@ -34,7 +38,7 @@ export class PencilDrawTool implements DrawTool {
     this.context.strokeStyle = ColorProcessor.fromRgba(color).toRgbaString();
   }
 
-  processEvent(event: DrawToolEvent) {
+  processEvent(event: CanvasToolEvent) {
     if (this.previousPosition) {
       this.context.beginPath();
       this.context.moveTo(this.previousPosition.x, this.previousPosition.y);

@@ -1,36 +1,41 @@
 import type {
-  CanvasRasterContext,
+  CanvasBitmapContext,
   CanvasVectorContext,
   Position,
 } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { assertNever } from "@/utils/typeGuards";
-import type { DrawToolId } from "@/tools/draw-tools";
+import type { CanvasToolId } from "@/tools/draw-tools";
 import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
-import type { DrawTool, DrawToolResult } from "@/tools/draw-tools/drawTool";
+import type { CanvasTool } from "@/tools/draw-tools/canvasTool";
 import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
 import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
 import { useStableCallback } from ".";
 import { EraserDrawTool } from "@/tools/draw-tools/eraserDrawTool";
 import { FillDrawTool } from "@/tools/draw-tools/fillDrawTool";
 import { RectangleSelectTool } from "@/tools/draw-tools/rectangleSelectionDrawTool";
-import { ShapeTransformer } from "@/tools/shapeTransformer";
+import {
+  ShapeTransformer,
+  isPositionInsideShape,
+} from "@/tools/shapeTransformer";
+import { useToolHandlers } from "./useCanvasToolHandlers";
+import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
 
 const createTool = (
-  id: DrawToolId,
-  rasterContext: CanvasRasterContext,
+  id: CanvasToolId,
+  bitmapContext: CanvasBitmapContext,
   vectorContext: CanvasVectorContext
 ) => {
   switch (id) {
     case "pencil":
-      return new PencilDrawTool(rasterContext);
+      return new PencilDrawTool(bitmapContext);
     case "brush":
-      return new BrushDrawTool(rasterContext);
+      return new BrushDrawTool(bitmapContext);
     case "eraser":
-      return new EraserDrawTool(rasterContext);
+      return new EraserDrawTool(bitmapContext);
     case "fill":
-      return new FillDrawTool(rasterContext);
+      return new FillDrawTool(bitmapContext);
     case "rectangleSelect":
       return new RectangleSelectTool(vectorContext);
     default:
@@ -40,39 +45,26 @@ const createTool = (
 
 export const useTool = (
   elementRef: RefObject<HTMLElement>,
-  toolId: DrawToolId | null,
+  toolId: CanvasToolId | null,
   toolSettings: Record<string, unknown>,
-  canvasRasterContext: CanvasRasterContext | null,
-  canvasVectorContext: CanvasVectorContext | null,
-  getCurrentShape: () => CanvasOverlayShape | null,
   transformToCanvasPosition: (position: Position) => Position,
-  handlers: {
-    cancel: () => Promise<void>;
-    commitDraw: (
-      drawToolId: DrawToolId,
-      result?: DrawToolResult
-    ) => Promise<void>;
-    commitTransform: (shape: CanvasOverlayShape | null) => Promise<void>;
-  },
   enable: boolean
 ) => {
-  const toolRef = useRef<DrawTool | null>(null);
-  const previousToolId = useRef<DrawToolId | null>(null);
-  const cancelStable = useStableCallback(handlers.cancel);
-  const commitDrawStable = useStableCallback(handlers.commitDraw);
-  const commitTransformStable = useStableCallback(handlers.commitTransform);
-  const getCurrentShapeStable = useStableCallback(getCurrentShape);
+  const { context } = useCanvasContextStore();
+  const toolRef = useRef<CanvasTool | null>(null);
+  const previousToolId = useRef<CanvasToolId | null>(null);
+  const toolHandlers = useToolHandlers();
   const transformToCanvasPositionStable = useStableCallback(
     transformToCanvasPosition
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: toolSettings is handled in next useEffect
   useEffect(() => {
     if (
       !elementRef.current ||
       toolId === null ||
-      canvasRasterContext === null ||
-      canvasVectorContext === null ||
+      context.bitmap === null ||
+      context.vector === null ||
       !enable
     ) {
       return;
@@ -80,13 +72,9 @@ export const useTool = (
 
     const element = elementRef.current;
     const shapeTransformer = new ShapeTransformer();
-    const tool: DrawTool = createTool(
-      toolId,
-      canvasRasterContext,
-      canvasVectorContext
-    );
+    const tool: CanvasTool = createTool(toolId, context.bitmap, context.vector);
     tool.configure(toolSettings as never);
-    tool.onCommit((result) => commitDrawStable(toolId!, result));
+    tool.onCommit((result) => toolHandlers.commitDraw(toolId!, result));
     toolRef.current = tool;
     let operation: "draw" | "transform" | null = null;
 
@@ -98,13 +86,20 @@ export const useTool = (
 
     const onManipulationStart = (position: Position) => {
       const currentPosition = transformToCanvasPositionStable(position);
-      shapeTransformer.setTarget(getCurrentShapeStable());
+      const selectedShape = toolHandlers.getShape();
 
-      if (shapeTransformer.isInside(currentPosition)) {
-        console.log("inside");
+      if (
+        selectedShape &&
+        isPositionInsideShape(currentPosition, selectedShape)
+      ) {
         operation = "transform";
+        shapeTransformer.setTarget(selectedShape);
         shapeTransformer.update(currentPosition);
       } else {
+        if (selectedShape) {
+          console.log("unselect");
+          toolHandlers.cancelTransform();
+        }
         console.log("outside");
         operation = "draw";
         tool.processEvent({
@@ -126,7 +121,10 @@ export const useTool = (
       if (operation === "transform") {
         console.log("transforming");
         shapeTransformer.update(currentPosition);
-        canvasVectorContext.render(shapeTransformer.getShape());
+        // console.log(shapeTransformer.getShape()?.boundingBox);
+        context.vector?.render(
+          shapeTransformer.getShape() as CanvasOverlayShape
+        );
       }
     };
 
@@ -138,17 +136,21 @@ export const useTool = (
         });
       }
       if (operation === "transform") {
-        commitTransformStable(shapeTransformer.getShape());
-        // shapeTransformer.apply();
+        console.log("transform");
+        toolHandlers.transform(
+          shapeTransformer.getShape() as CanvasOverlayShape
+        );
       }
       reset();
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        //} && operation) {
         reset();
-        cancelStable();
+        toolHandlers.cancel();
+      }
+      if (event.key === "Enter") {
+        toolHandlers.applyTransform();
       }
     };
 
@@ -168,13 +170,11 @@ export const useTool = (
     };
   }, [
     toolId,
-    cancelStable,
-    commitDrawStable,
-    commitTransformStable,
-    canvasRasterContext,
+    toolHandlers,
     elementRef,
+    context.bitmap,
+    context.vector,
     transformToCanvasPositionStable,
-    getCurrentShapeStable,
     enable,
   ]);
 

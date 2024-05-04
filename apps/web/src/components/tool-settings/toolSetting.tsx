@@ -1,4 +1,4 @@
-import type { DrawToolSettingType } from "@/tools/draw-tools/drawTool";
+import type { CanvasToolSettingType } from "@/tools/draw-tools/canvasTool";
 import { ColorSetting } from "./colorSetting";
 import { type ToolId, toolsMetadata } from "@/tools";
 import { OptionSetting } from "./optionSetting";
@@ -7,7 +7,7 @@ import type { RgbaColor } from "@/utils/color";
 export const ToolSetting = (props: {
   toolId: ToolId;
   settingKey: string;
-  type: DrawToolSettingType;
+  type: CanvasToolSettingType;
   value: unknown;
   onChange: (newValue: unknown) => void;
 }) => {

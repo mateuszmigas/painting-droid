@@ -4,7 +4,7 @@ import { eraserDrawToolMetadata } from "./eraserDrawTool";
 import { fillDrawToolMetadata } from "./fillDrawTool";
 import { rectangleSelectToolMetadata } from "./rectangleSelectionDrawTool";
 
-export const drawToolsMetadata = {
+export const canvasToolsMetadata = {
   brush: brushDrawToolMetadata,
   pencil: pencilDrawToolMetadata,
   eraser: eraserDrawToolMetadata,
@@ -12,13 +12,15 @@ export const drawToolsMetadata = {
   rectangleSelect: rectangleSelectToolMetadata,
 } as const;
 
-export type DrawToolId = keyof typeof drawToolsMetadata;
+export type CanvasToolId = keyof typeof canvasToolsMetadata;
 
-export const getDefaultDrawToolSettings = (toolId: DrawToolId) => {
+export const getDefaultCanvasToolSettings = (toolId: CanvasToolId) => {
   const result: Record<string, unknown> = {};
-  Object.entries(drawToolsMetadata[toolId].settings).forEach(([key, value]) => {
-    result[key] = value.default;
-  });
+  Object.entries(canvasToolsMetadata[toolId].settings).forEach(
+    ([key, value]) => {
+      result[key] = value.default;
+    }
+  );
   return result;
 };
 

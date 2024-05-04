@@ -6,13 +6,13 @@ import { useListener } from ".";
 import { createComponent, render } from "solid-js/web";
 import { createStore } from "solid-js/store";
 import { OverlayShape } from "../components/solid/overlayShape.solid";
-import { useCanvasPreviewContextStore } from "@/contexts/canvasPreviewContextStore";
+import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 
 export const useSyncCanvasVectorContext = (
   elementRef: RefObject<HTMLElement>,
   viewport: Observable<Viewport>
 ) => {
-  const { setVectorContext } = useCanvasPreviewContextStore();
+  const { setVectorContext } = useCanvasContextStore();
   const [getStore, setStore] = useMemo(
     () =>
       createStore<{

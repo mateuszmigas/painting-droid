@@ -1,12 +1,16 @@
-import type { DrawTool, DrawToolEvent, DrawToolMetadata } from "./drawTool";
-import type { CanvasRasterContext } from "@/utils/common";
+import type {
+  CanvasTool,
+  CanvasToolEvent,
+  CanvasToolMetadata,
+} from "./canvasTool";
+import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { type RgbaColor, areColorsClose } from "@/utils/color";
 import { floodFill } from "@/utils/imageOperations";
 
 const translations = getTranslations().tools.draw.fill;
 
-export const fillDrawToolMetadata: DrawToolMetadata = {
+export const fillDrawToolMetadata: CanvasToolMetadata = {
   id: "fill",
   name: translations.name,
   icon: "paint-bucket",
@@ -23,18 +27,18 @@ type FillDrawToolSettings = {
   color: RgbaColor;
 };
 
-export class FillDrawTool implements DrawTool {
+export class FillDrawTool implements CanvasTool {
   private fillColor: RgbaColor | null = null;
   private onCommitCallback: (() => void) | null = null;
 
-  constructor(private context: CanvasRasterContext) {}
+  constructor(private context: CanvasBitmapContext) {}
 
   configure(settings: FillDrawToolSettings): void {
     const { color } = settings;
     this.fillColor = color;
   }
 
-  processEvent(event: DrawToolEvent) {
+  processEvent(event: CanvasToolEvent) {
     if (event.type !== "manipulationStart") {
       return;
     }
