@@ -1,32 +1,29 @@
 import type {
   CanvasBitmapContext,
+  CanvasContext,
   CanvasVectorContext,
   Position,
 } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { assertNever } from "@/utils/typeGuards";
-import type { CanvasToolId } from "@/tools/draw-tools";
-import { BrushDrawTool } from "@/tools/draw-tools/brushDrawTool";
-import type { CanvasTool } from "@/tools/draw-tools/canvasTool";
-import { PencilDrawTool } from "@/tools/draw-tools/pencilDrawTool";
+import type { CanvasToolId } from "@/tools";
+import { BrushDrawTool } from "@/tools/brushDrawTool";
+import type { CanvasTool } from "@/tools/canvasTool";
+import { PencilDrawTool } from "@/tools/pencilDrawTool";
 import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
 import { useStableCallback } from ".";
-import { EraserDrawTool } from "@/tools/draw-tools/eraserDrawTool";
-import { FillDrawTool } from "@/tools/draw-tools/fillDrawTool";
-import { RectangleSelectTool } from "@/tools/draw-tools/rectangleSelectionDrawTool";
-import {
-  ShapeTransformer,
-  isPositionInsideShape,
-} from "@/tools/shapeTransformer";
-import { useToolHandlers } from "./useCanvasToolHandlers";
-import { useCanvasContextStore } from "@/contexts/canvasContextStore";
-import type { CanvasOverlayShape } from "@/canvas/canvasState";
+import { EraserDrawTool } from "@/tools/eraserDrawTool";
+import { FillDrawTool } from "@/tools/fillDrawTool";
+import { RectangleSelectTool } from "@/tools/rectangleSelectTool";
+import { ShapeTransformer } from "@/tools/shapeTransformer";
+import { useCanvasToolHandlers } from "./useCanvasToolHandlers";
+import { isPositionInRectangle } from "@/utils/geometry";
 
 const createTool = (
   id: CanvasToolId,
   bitmapContext: CanvasBitmapContext,
   vectorContext: CanvasVectorContext
-) => {
+): CanvasTool => {
   switch (id) {
     case "pencil":
       return new PencilDrawTool(bitmapContext);
@@ -43,19 +40,19 @@ const createTool = (
   }
 };
 
-export const useTool = (
+export const useCanvasTool = (
   elementRef: RefObject<HTMLElement>,
   toolId: CanvasToolId | null,
   toolSettings: Record<string, unknown>,
-  transformToCanvasPosition: (position: Position) => Position,
+  screenToCanvasConverter: (position: Position) => Position,
+  context: CanvasContext,
   enable: boolean
 ) => {
-  const { context } = useCanvasContextStore();
   const toolRef = useRef<CanvasTool | null>(null);
   const previousToolId = useRef<CanvasToolId | null>(null);
-  const toolHandlers = useToolHandlers();
-  const transformToCanvasPositionStable = useStableCallback(
-    transformToCanvasPosition
+  const toolHandlers = useCanvasToolHandlers();
+  const screenToCanvasConverterStable = useStableCallback(
+    screenToCanvasConverter
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: toolSettings is handled in next useEffect
@@ -72,74 +69,60 @@ export const useTool = (
 
     const element = elementRef.current;
     const shapeTransformer = new ShapeTransformer();
-    const tool: CanvasTool = createTool(toolId, context.bitmap, context.vector);
+    const tool = createTool(toolId, context.bitmap, context.vector);
     tool.configure(toolSettings as never);
-    tool.onCommit((result) => toolHandlers.commitDraw(toolId!, result));
+    tool.onCommit((result) => toolHandlers.toolCommit(toolId, result));
     toolRef.current = tool;
-    let operation: "draw" | "transform" | null = null;
+    let currentOperation: "draw" | "transform" | null = null;
 
     const reset = () => {
       tool.reset();
       shapeTransformer.reset();
-      operation = null;
+      currentOperation = null;
     };
 
-    const onManipulationStart = (position: Position) => {
-      const currentPosition = transformToCanvasPositionStable(position);
-      const selectedShape = toolHandlers.getShape();
+    const onManipulationStart = (screenPosition: Position) => {
+      const position = screenToCanvasConverterStable(screenPosition);
+      const selectedShape = toolHandlers.getSelectedShape();
 
       if (
         selectedShape &&
-        isPositionInsideShape(currentPosition, selectedShape)
+        isPositionInRectangle(position, selectedShape.boundingBox)
       ) {
-        operation = "transform";
+        currentOperation = "transform";
         shapeTransformer.setTarget(selectedShape);
-        shapeTransformer.update(currentPosition);
+        shapeTransformer.transform(position);
       } else {
+        currentOperation = "draw";
         if (selectedShape) {
-          console.log("unselect");
-          toolHandlers.cancelTransform();
+          toolHandlers.applyOrClearSelectedShape();
         }
-        console.log("outside");
-        operation = "draw";
-        tool.processEvent({
-          type: "manipulationStart",
-          position: currentPosition,
-        });
+        tool.processEvent({ type: "manipulationStart", position });
       }
     };
 
-    const onManipulationUpdate = (position: Position) => {
-      const currentPosition = transformToCanvasPositionStable(position);
+    const onManipulationUpdate = (screenPosition: Position) => {
+      const position = screenToCanvasConverterStable(screenPosition);
 
-      if (operation === "draw") {
-        tool.processEvent({
-          type: "manipulationStep",
-          position: currentPosition,
-        });
+      if (currentOperation === "draw") {
+        tool.processEvent({ type: "manipulationStep", position });
       }
-      if (operation === "transform") {
-        console.log("transforming");
-        shapeTransformer.update(currentPosition);
-        // console.log(shapeTransformer.getShape()?.boundingBox);
-        context.vector?.render(
-          shapeTransformer.getShape() as CanvasOverlayShape
-        );
+      if (currentOperation === "transform") {
+        shapeTransformer.transform(position);
+        const result = shapeTransformer.getResult();
+        result && toolHandlers.drawSelectedShape(result);
       }
     };
 
-    const onManipulationEnd = (position: Position) => {
-      if (operation === "draw") {
-        tool.processEvent({
-          type: "manipulationEnd",
-          position: transformToCanvasPositionStable(position),
-        });
+    const onManipulationEnd = (screenPosition: Position) => {
+      const position = screenToCanvasConverterStable(screenPosition);
+
+      if (currentOperation === "draw") {
+        tool.processEvent({ type: "manipulationEnd", position });
       }
-      if (operation === "transform") {
-        console.log("transform");
-        toolHandlers.transform(
-          shapeTransformer.getShape() as CanvasOverlayShape
-        );
+      if (currentOperation === "transform") {
+        const result = shapeTransformer.getResult();
+        result && toolHandlers.transformSelectedShape(result);
       }
       reset();
     };
@@ -150,7 +133,7 @@ export const useTool = (
         toolHandlers.cancel();
       }
       if (event.key === "Enter") {
-        toolHandlers.applyTransform();
+        toolHandlers.applyOrClearSelectedShape();
       }
     };
 
@@ -174,7 +157,7 @@ export const useTool = (
     elementRef,
     context.bitmap,
     context.vector,
-    transformToCanvasPositionStable,
+    screenToCanvasConverterStable,
     enable,
   ]);
 

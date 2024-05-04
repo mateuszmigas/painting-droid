@@ -1,6 +1,6 @@
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
-import { areRectanglesEqual } from "@/utils/common";
 import type { CommandContext } from "./context";
+import { areRectanglesEqual } from "@/utils/geometry";
 
 export const clearOrApplyOverlayShape = async (context: CommandContext) => {
   const shape = activeWorkspaceCanvasDataSelector(
@@ -26,3 +26,4 @@ export const clearOrApplyOverlayShape = async (context: CommandContext) => {
     }
   }
 };
+

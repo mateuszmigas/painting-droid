@@ -1,8 +1,8 @@
 import { useToolStore } from "@/store/toolState";
-import { toolsMetadata } from "@/tools";
+import { canvasToolsMetadata } from "@/tools";
 import { ToolSetting } from "./tool-settings/toolSetting";
 import { Separator } from "@radix-ui/react-separator";
-import type { CanvasToolSettingType } from "@/tools/draw-tools/canvasTool";
+import type { CanvasToolSettingType } from "@/tools/canvasTool";
 import { testIds } from "@/utils/testIds";
 
 export const ToolSettingsBar = () => {
@@ -13,7 +13,7 @@ export const ToolSettingsBar = () => {
   return (
     <div className="h-10 border-b px-2 flex flex-row gap-big items-center">
       {Object.entries(settings).map(([id, value]) => {
-        const label = toolsMetadata[selectedToolId].settings[id].name;
+        const label = canvasToolsMetadata[selectedToolId].settings[id].name;
         return (
           <div
             data-testid={testIds.toolSetting(id)}
@@ -25,7 +25,7 @@ export const ToolSettingsBar = () => {
               toolId={selectedToolId}
               settingKey={id}
               type={
-                toolsMetadata[selectedToolId].settings[id]
+                canvasToolsMetadata[selectedToolId].settings[id]
                   .type as CanvasToolSettingType
               }
               value={value}

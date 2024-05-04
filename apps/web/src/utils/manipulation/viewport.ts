@@ -1,9 +1,5 @@
-import {
-  type Position,
-  type Rectangle,
-  type Size,
-  scaleRectangleToFitParent,
-} from "../common";
+import type { Position, Rectangle, Size } from "../common";
+import { scaleRectangleToFitParent } from "../geometry";
 
 export type Viewport = {
   position: Position;
@@ -62,3 +58,4 @@ export const screenToViewportPosition = (
     y: (position.y - viewport.position.y) / viewport.zoom,
   };
 };
+

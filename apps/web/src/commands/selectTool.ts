@@ -1,4 +1,4 @@
-import type { ToolId } from "@/tools";
+import type { CanvasToolId } from "@/tools";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { clearOrApplyOverlayShape } from "./utils";
@@ -9,7 +9,7 @@ export const command = createCommand({
   execute: async (
     context: CommandContext,
     payload: {
-      toolId: ToolId;
+      toolId: CanvasToolId;
     }
   ) => {
     const { toolId } = payload;
@@ -17,3 +17,4 @@ export const command = createCommand({
     context.stores.tool().setSelectedToolId(toolId);
   },
 });
+

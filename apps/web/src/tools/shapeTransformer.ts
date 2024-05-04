@@ -1,13 +1,7 @@
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
-import { type Position, isPositionInRectangle } from "@/utils/common";
+import type { Position } from "@/utils/common";
+import { arePointsClose } from "@/utils/geometry";
 import { fastRound } from "@/utils/math";
-
-export const isPositionInsideShape = (
-  position: Position,
-  shape: CanvasOverlayShape
-) => {
-  return isPositionInRectangle(position, shape.boundingBox);
-};
 
 export class ShapeTransformer {
   private target: CanvasOverlayShape | null = null;
@@ -18,17 +12,12 @@ export class ShapeTransformer {
     this.target = target;
   }
 
-  update(position: Position) {
-    if (!this.target) {
-      return;
-    }
-
+  transform(position: Position) {
     if (!this.startPosition) {
       this.startPosition = {
         x: fastRound(position.x),
         y: fastRound(position.y),
       };
-      return;
     }
 
     this.endPosition = {
@@ -37,9 +26,13 @@ export class ShapeTransformer {
     };
   }
 
-  getShape() {
+  getResult(): CanvasOverlayShape | false {
     if (!this.startPosition || !this.endPosition) {
-      return this.target;
+      throw new Error("ShapeTransformer: getResult called before transform");
+    }
+
+    if (arePointsClose(this.startPosition, this.endPosition, 1)) {
+      return false;
     }
 
     const distance = {
@@ -54,7 +47,7 @@ export class ShapeTransformer {
         x: this.target!.boundingBox.x + distance.x,
         y: this.target!.boundingBox.y + distance.y,
       },
-    };
+    } as CanvasOverlayShape;
   }
 
   reset() {

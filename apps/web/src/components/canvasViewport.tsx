@@ -1,6 +1,6 @@
 import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 import {
-  useTool,
+  useCanvasTool,
   useListener,
   useSyncCanvasVectorContext,
   useStableCallback,
@@ -12,7 +12,7 @@ import {
   activeWorkspaceCanvasDataSelector,
   useWorkspacesStore,
 } from "@/store/workspacesStore";
-import type { CanvasToolId } from "@/tools/draw-tools";
+import type { CanvasToolId } from "@/tools";
 import type { Size } from "@/utils/common";
 import { type Viewport, screenToViewportPosition } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
@@ -90,11 +90,12 @@ export const CanvasViewport = memo(
       context.vector?.render(overlayShape);
     }, [context.vector, overlayShape]);
 
-    useTool(
+    useCanvasTool(
       hostElementRef,
       toolId as CanvasToolId,
       toolSettings,
       (position) => screenToViewportPosition(position, viewport.getValue()),
+      context,
       !isLocked
     );
 
