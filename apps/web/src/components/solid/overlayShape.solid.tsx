@@ -29,9 +29,9 @@ export const OverlayShape = (props: {
         }}
         class="absolute border-primary border-2 border-dashed"
       >
-        {/* <Solid.Show when={!!props.overlayShape!.captured}>
+        <Solid.Show when={!!props.overlayShape!.captured}>
           <BlobImage blob={props.overlayShape!.captured?.data} />
-        </Solid.Show> */}
+        </Solid.Show>
       </div>
     </Solid.Show>
   );
