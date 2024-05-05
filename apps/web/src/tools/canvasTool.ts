@@ -2,7 +2,7 @@ import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import type { IconType } from "@/components/icons/icon";
 import type { Position } from "@/utils/common";
 
-export type CanvasToolSettingType = "color" | "size";
+export type CanvasToolSettingType = "color" | "size" | "number";
 
 export type CanvasToolMetadata = {
   id: string;

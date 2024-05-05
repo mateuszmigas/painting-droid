@@ -1,4 +1,4 @@
-export const createRaf = (
+export const createFrameTicker = (
   callback: (sinceLastTickMs: number, isLastTick?: boolean) => void
 ) => {
   let rafHandle = 0;
@@ -22,4 +22,5 @@ export const createRaf = (
     },
   };
 };
+export type FrameTicker = ReturnType<typeof createFrameTicker>;
 

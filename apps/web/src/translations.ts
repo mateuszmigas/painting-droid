@@ -88,6 +88,14 @@ const translations = {
           color: "Color",
         },
       },
+      spray: {
+        name: "Spray",
+        settings: {
+          color: "Color",
+          range: "Range",
+          density: "Density",
+        },
+      },
     },
   },
   dialogs: {

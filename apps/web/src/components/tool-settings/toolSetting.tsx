@@ -16,7 +16,7 @@ export const ToolSetting = (props: {
   if (type === "color") {
     return <ColorSetting value={value as RgbaColor} onChange={onChange} />;
   }
-  if (type === "size") {
+  if (type === "size" || type === "number") {
     const options = canvasToolsMetadata[toolId].settings[settingKey].options;
     return (
       <OptionSetting

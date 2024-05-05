@@ -3,12 +3,14 @@ import { pencilDrawToolMetadata } from "./pencilDrawTool";
 import { eraserDrawToolMetadata } from "./eraserDrawTool";
 import { fillDrawToolMetadata } from "./fillDrawTool";
 import { rectangleSelectToolMetadata } from "./rectangleSelectTool";
+import { sprayDrawToolMetadata } from "./sprayDrawTool";
 
 export const canvasToolsMetadata = {
   brush: brushDrawToolMetadata,
   pencil: pencilDrawToolMetadata,
   eraser: eraserDrawToolMetadata,
   fill: fillDrawToolMetadata,
+  spray: sprayDrawToolMetadata,
   rectangleSelect: rectangleSelectToolMetadata,
 } as const;
 

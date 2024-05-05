@@ -18,6 +18,7 @@ import { RectangleSelectTool } from "@/tools/rectangleSelectTool";
 import { ShapeTransformer } from "@/tools/shapeTransformer";
 import { useCanvasToolHandlers } from "./useCanvasToolHandlers";
 import { isPositionInRectangle } from "@/utils/geometry";
+import { SprayDrawTool } from "@/tools/sprayDrawTool";
 
 const createTool = (
   id: CanvasToolId,
@@ -33,6 +34,8 @@ const createTool = (
       return new EraserDrawTool(bitmapContext);
     case "fill":
       return new FillDrawTool(bitmapContext);
+    case "spray":
+      return new SprayDrawTool(bitmapContext);
     case "rectangleSelect":
       return new RectangleSelectTool(vectorContext);
     default:
