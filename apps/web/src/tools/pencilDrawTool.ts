@@ -1,32 +1,27 @@
-import type {
-  CanvasTool,
-  CanvasToolEvent,
-  CanvasToolMetadata,
+import {
+  type InferToolSettings,
+  createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
+  type CanvasTool,
+  type CanvasToolEvent,
 } from "./canvasTool";
-import type { CanvasBitmapContext, Color } from "@/utils/common";
+import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
 const translations = getTranslations().tools.draw.pencil;
 
-export const pencilDrawToolMetadata: CanvasToolMetadata = {
-  id: "Pencil",
-  name: translations.name,
-  icon: "pencil",
-  settings: {
-    color: {
-      name: translations.settings.color,
-      type: "color",
-      default: { b: 200, g: 243, r: 75, a: 1 },
-    },
+const settingsSchema = createCanvasToolSettingsSchema({
+  color: {
+    name: translations.settings.color,
+    type: "color",
+    defaultValue: { b: 200, g: 243, r: 75, a: 1 },
   },
-} as const;
+});
 
-type PencilDrawToolSettings = {
-  color: Color;
-};
+type PencilDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
-export class PencilDrawTool implements CanvasTool {
+class PencilDrawTool implements CanvasTool<PencilDrawToolSettings> {
   private onCommitCallback: (() => void) | null = null;
 
   constructor(private bitmapContext: CanvasBitmapContext) {}
@@ -63,4 +58,12 @@ export class PencilDrawTool implements CanvasTool {
 
   reset() {}
 }
+
+export const pencilDrawToolMetadata = createCanvasToolMetadata({
+  id: "Pencil",
+  name: translations.name,
+  icon: "pencil",
+  settingsSchema,
+  create: (context) => new PencilDrawTool(context.bitmap),
+});
 

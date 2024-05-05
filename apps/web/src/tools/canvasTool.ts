@@ -1,22 +1,24 @@
 import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import type { IconType } from "@/components/icons/icon";
-import type { Position } from "@/utils/common";
+import type {
+  CanvasBitmapContext,
+  CanvasVectorContext,
+  Position,
+} from "@/utils/common";
+import type {
+  CustomFieldsSchema,
+  CustomFieldsSchemaAsValues,
+} from "@/utils/customFieldsSchema";
 
-export type CanvasToolSettingType = "color" | "size" | "number";
-
-export type CanvasToolMetadata = {
+type CanvasToolMetadata<TSchema extends CustomFieldsSchema> = {
   id: string;
   name: string;
   icon: IconType;
-  settings: Record<
-    string,
-    {
-      name: string;
-      type: CanvasToolSettingType;
-      default: unknown;
-      options?: Array<{ value: unknown; label: string }>;
-    }
-  >;
+  settingsSchema: TSchema;
+  create: (context: {
+    bitmap: CanvasBitmapContext;
+    vector: CanvasVectorContext;
+  }) => CanvasTool<CustomFieldsSchemaAsValues<TSchema>>;
 };
 
 export type CanvasToolEvent =
@@ -28,10 +30,23 @@ export type CanvasToolResult = {
   shape?: CanvasOverlayShape;
 };
 
-export interface CanvasTool {
-  configure(settings: unknown): void;
+export interface CanvasTool<T> {
+  configure(settings: T): void;
   processEvent(event: CanvasToolEvent): void;
   onCommit(callback: (result?: CanvasToolResult) => void): void;
   reset(): void;
 }
+
+export type InferToolSettings<TSchema extends CustomFieldsSchema> =
+  CustomFieldsSchemaAsValues<TSchema>;
+
+export const createCanvasToolSettingsSchema = <
+  TSchema extends CustomFieldsSchema
+>(
+  schema: TSchema
+) => schema;
+
+export const createCanvasToolMetadata = <TSchema extends CustomFieldsSchema>(
+  metadata: CanvasToolMetadata<TSchema>
+) => metadata;
 

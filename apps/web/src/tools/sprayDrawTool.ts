@@ -1,9 +1,11 @@
-import type {
-  CanvasTool,
-  CanvasToolEvent,
-  CanvasToolMetadata,
+import {
+  type InferToolSettings,
+  createCanvasToolSettingsSchema,
+  type CanvasTool,
+  type CanvasToolEvent,
+  createCanvasToolMetadata,
 } from "./canvasTool";
-import type { CanvasBitmapContext, Color, Position } from "@/utils/common";
+import type { CanvasBitmapContext, Position } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 import { createFrameTicker, type FrameTicker } from "@/utils/frame";
@@ -11,47 +13,38 @@ import { randomRange } from "@/utils/number";
 
 const translations = getTranslations().tools.draw.spray;
 
-export const sprayDrawToolMetadata: CanvasToolMetadata = {
-  id: "spray",
-  name: translations.name,
-  icon: "spray-can",
-  settings: {
-    color: {
-      name: translations.settings.color,
-      type: "color",
-      default: { r: 23, b: 139, g: 84, a: 1 },
-    },
-    density: {
-      name: translations.settings.density,
-      type: "number",
-      default: 10,
-      options: [
-        { value: 5, label: "5" },
-        { value: 10, label: "10" },
-        { value: 20, label: "20" },
-      ],
-    },
-    range: {
-      name: translations.settings.range,
-      type: "size",
-      default: 20,
-      options: [
-        { value: 5, label: "5px" },
-        { value: 10, label: "10px" },
-        { value: 20, label: "20px" },
-        { value: 50, label: "50px" },
-      ],
-    },
+const settingsSchema = createCanvasToolSettingsSchema({
+  color: {
+    name: translations.settings.color,
+    type: "color",
+    defaultValue: { r: 23, b: 139, g: 84, a: 1 },
   },
-} as const;
+  density: {
+    name: translations.settings.density,
+    type: "option-number",
+    defaultValue: 10,
+    options: [
+      { value: 5, label: "5" },
+      { value: 10, label: "10" },
+      { value: 20, label: "20" },
+    ],
+  },
+  range: {
+    name: translations.settings.range,
+    type: "option-number",
+    defaultValue: 20,
+    options: [
+      { value: 5, label: "5px" },
+      { value: 10, label: "10px" },
+      { value: 20, label: "20px" },
+      { value: 50, label: "50px" },
+    ],
+  },
+});
 
-type SprayDrawToolSettings = {
-  color: Color;
-  density: number;
-  range: number;
-};
+type SprayDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
-export class SprayDrawTool implements CanvasTool {
+class SprayDrawTool implements CanvasTool<SprayDrawToolSettings> {
   private onCommitCallback: (() => void) | null = null;
   private frameTicker: FrameTicker | null = null;
   private density = 30;
@@ -102,4 +95,12 @@ export class SprayDrawTool implements CanvasTool {
     }
   }
 }
+
+export const sprayDrawToolMetadata = createCanvasToolMetadata({
+  id: "spray",
+  name: translations.name,
+  icon: "spray-can",
+  settingsSchema,
+  create: (context) => new SprayDrawTool(context.bitmap),
+});
 

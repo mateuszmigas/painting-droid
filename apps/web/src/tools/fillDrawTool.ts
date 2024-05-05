@@ -1,7 +1,9 @@
-import type {
-  CanvasTool,
-  CanvasToolEvent,
-  CanvasToolMetadata,
+import {
+  type InferToolSettings,
+  createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
+  type CanvasTool,
+  type CanvasToolEvent,
 } from "./canvasTool";
 import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
@@ -10,24 +12,17 @@ import { floodFill } from "@/utils/imageOperations";
 
 const translations = getTranslations().tools.draw.fill;
 
-export const fillDrawToolMetadata: CanvasToolMetadata = {
-  id: "fill",
-  name: translations.name,
-  icon: "paint-bucket",
-  settings: {
-    color: {
-      name: translations.settings.color,
-      type: "color",
-      default: { b: 200, g: 243, r: 75, a: 1 },
-    },
+const settingsSchema = createCanvasToolSettingsSchema({
+  color: {
+    name: translations.settings.color,
+    type: "color",
+    defaultValue: { b: 200, g: 243, r: 75, a: 1 },
   },
-} as const;
+});
 
-type FillDrawToolSettings = {
-  color: RgbaColor;
-};
+type FillDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
-export class FillDrawTool implements CanvasTool {
+export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
   private fillColor: RgbaColor | null = null;
   private onCommitCallback: (() => void) | null = null;
 
@@ -67,4 +62,12 @@ export class FillDrawTool implements CanvasTool {
 
   reset() {}
 }
+
+export const fillDrawToolMetadata = createCanvasToolMetadata({
+  id: "fill",
+  name: translations.name,
+  icon: "paint-bucket",
+  settingsSchema,
+  create: (context) => new FillDrawTool(context.bitmap),
+});
 

@@ -1,47 +1,12 @@
-import type {
-  CanvasBitmapContext,
-  CanvasContext,
-  CanvasVectorContext,
-  Position,
-} from "@/utils/common";
+import type { CanvasContext, Position } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
-import { assertNever } from "@/utils/typeGuards";
-import type { CanvasToolId } from "@/tools";
-import { BrushDrawTool } from "@/tools/brushDrawTool";
+import { canvasToolsMetadata, type CanvasToolId } from "@/tools";
 import type { CanvasTool } from "@/tools/canvasTool";
-import { PencilDrawTool } from "@/tools/pencilDrawTool";
 import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
 import { useStableCallback } from ".";
-import { EraserDrawTool } from "@/tools/eraserDrawTool";
-import { FillDrawTool } from "@/tools/fillDrawTool";
-import { RectangleSelectTool } from "@/tools/rectangleSelectTool";
 import { ShapeTransformer } from "@/tools/shapeTransformer";
 import { useCanvasToolHandlers } from "./useCanvasToolHandlers";
 import { isPositionInRectangle } from "@/utils/geometry";
-import { SprayDrawTool } from "@/tools/sprayDrawTool";
-
-const createTool = (
-  id: CanvasToolId,
-  bitmapContext: CanvasBitmapContext,
-  vectorContext: CanvasVectorContext
-): CanvasTool => {
-  switch (id) {
-    case "pencil":
-      return new PencilDrawTool(bitmapContext);
-    case "brush":
-      return new BrushDrawTool(bitmapContext);
-    case "eraser":
-      return new EraserDrawTool(bitmapContext);
-    case "fill":
-      return new FillDrawTool(bitmapContext);
-    case "spray":
-      return new SprayDrawTool(bitmapContext);
-    case "rectangleSelect":
-      return new RectangleSelectTool(vectorContext);
-    default:
-      return assertNever(id);
-  }
-};
 
 export const useCanvasTool = (
   elementRef: RefObject<HTMLElement>,
@@ -51,7 +16,7 @@ export const useCanvasTool = (
   context: CanvasContext,
   enable: boolean
 ) => {
-  const toolRef = useRef<CanvasTool | null>(null);
+  const toolRef = useRef<CanvasTool<unknown> | null>(null);
   const previousToolId = useRef<CanvasToolId | null>(null);
   const toolHandlers = useCanvasToolHandlers();
   const screenToCanvasConverterStable = useStableCallback(
@@ -72,7 +37,10 @@ export const useCanvasTool = (
 
     const element = elementRef.current;
     const shapeTransformer = new ShapeTransformer();
-    const tool = createTool(toolId, context.bitmap, context.vector);
+    const tool: CanvasTool<unknown> = canvasToolsMetadata[toolId].create({
+      bitmap: context.bitmap,
+      vector: context.vector,
+    });
     tool.configure(toolSettings as never);
     tool.onCommit((result) => toolHandlers.toolCommit(toolId, result));
     toolRef.current = tool;

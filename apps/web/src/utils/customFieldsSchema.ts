@@ -1,10 +1,15 @@
-import type { Size } from "./common";
+import type { Color, Size } from "./common";
 
 export type CustomField =
   | {
       type: "string";
       name: string;
       defaultValue: string;
+    }
+  | {
+      type: "color";
+      name: string;
+      defaultValue: Color;
     }
   | {
       type: "option-size";
@@ -27,9 +32,10 @@ export type CustomField =
 
 export type CustomFieldsSchema = Record<string, CustomField>;
 
-export type CustomFieldsSchemaValues<T extends Record<string, CustomField>> = {
-  [K in keyof T]: T[K]["defaultValue"];
-};
+export type CustomFieldsSchemaAsValues<T extends Record<string, CustomField>> =
+  {
+    [K in keyof T]: T[K]["defaultValue"];
+  };
 
 export const getDefaultValues = (schema: Record<string, CustomField>) => {
   return Object.entries(schema).reduce((acc, [key, value]) => {

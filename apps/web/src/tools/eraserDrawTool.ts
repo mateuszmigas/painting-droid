@@ -1,39 +1,34 @@
-import type {
-  CanvasTool,
-  CanvasToolEvent,
-  CanvasToolMetadata,
+import {
+  type InferToolSettings,
+  createCanvasToolSettingsSchema,
+  type CanvasTool,
+  type CanvasToolEvent,
+  createCanvasToolMetadata,
 } from "./canvasTool";
 import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 
 const translations = getTranslations().tools.draw.eraser;
 
-export const eraserDrawToolMetadata: CanvasToolMetadata = {
-  id: "eraser",
-  name: translations.name,
-  icon: "eraser",
-  settings: {
-    size: {
-      name: translations.settings.size,
-      type: "size",
-      default: 3,
-      options: [
-        { value: 1, label: "1px" },
-        { value: 3, label: "3px" },
-        { value: 5, label: "5px" },
-        { value: 10, label: "10px" },
-        { value: 20, label: "20px" },
-        { value: 50, label: "50px" },
-      ],
-    },
+const settingsSchema = createCanvasToolSettingsSchema({
+  size: {
+    name: translations.settings.size,
+    type: "option-number",
+    defaultValue: 3,
+    options: [
+      { value: 1, label: "1px" },
+      { value: 3, label: "3px" },
+      { value: 5, label: "5px" },
+      { value: 10, label: "10px" },
+      { value: 20, label: "20px" },
+      { value: 50, label: "50px" },
+    ],
   },
-} as const;
+});
 
-type EraserDrawToolSettings = {
-  size: number;
-};
+type EraserDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
-export class EraserDrawTool implements CanvasTool {
+class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
   private onCommitCallback: (() => void) | null = null;
 
   constructor(private bitmapContext: CanvasBitmapContext) {}
@@ -74,4 +69,12 @@ export class EraserDrawTool implements CanvasTool {
 
   reset() {}
 }
+
+export const eraserDrawToolMetadata = createCanvasToolMetadata({
+  id: "eraser",
+  name: translations.name,
+  icon: "eraser",
+  settingsSchema,
+  create: (context) => new EraserDrawTool(context.bitmap),
+});
 

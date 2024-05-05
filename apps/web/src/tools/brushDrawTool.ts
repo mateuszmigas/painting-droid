@@ -1,46 +1,40 @@
-import type {
-  CanvasTool,
-  CanvasToolEvent,
-  CanvasToolMetadata,
+import {
+  createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
+  type CanvasTool,
+  type CanvasToolEvent,
+  type InferToolSettings,
 } from "./canvasTool";
-import type { CanvasBitmapContext, Color } from "@/utils/common";
+import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
 const translations = getTranslations().tools.draw.brush;
 
-export const brushDrawToolMetadata: CanvasToolMetadata = {
-  id: "brush",
-  name: translations.name,
-  icon: "brush",
-  settings: {
-    color: {
-      name: translations.settings.color,
-      type: "color",
-      default: { r: 23, b: 139, g: 84, a: 1 },
-    },
-    size: {
-      name: translations.settings.size,
-      type: "size",
-      default: 3,
-      options: [
-        { value: 1, label: "1px" },
-        { value: 3, label: "3px" },
-        { value: 5, label: "5px" },
-        { value: 10, label: "10px" },
-        { value: 20, label: "20px" },
-        { value: 50, label: "50px" },
-      ],
-    },
+const settingsSchema = createCanvasToolSettingsSchema({
+  color: {
+    name: translations.settings.color,
+    type: "color",
+    defaultValue: { r: 23, b: 139, g: 84, a: 1 },
   },
-} as const;
+  size: {
+    name: translations.settings.size,
+    type: "option-number",
+    defaultValue: 3,
+    options: [
+      { value: 1, label: "1px" },
+      { value: 3, label: "3px" },
+      { value: 5, label: "5px" },
+      { value: 10, label: "10px" },
+      { value: 20, label: "20px" },
+      { value: 50, label: "50px" },
+    ],
+  },
+});
 
-type BrushDrawToolSettings = {
-  color: Color;
-  size: number;
-};
+type BrushDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
-export class BrushDrawTool implements CanvasTool {
+class BrushDrawTool implements CanvasTool<BrushDrawToolSettings> {
   private onCommitCallback: (() => void) | null = null;
 
   constructor(private bitmapContext: CanvasBitmapContext) {}
@@ -79,4 +73,12 @@ export class BrushDrawTool implements CanvasTool {
 
   reset() {}
 }
+
+export const brushDrawToolMetadata = createCanvasToolMetadata({
+  id: "brush",
+  name: translations.name,
+  icon: "brush",
+  settingsSchema,
+  create: (context) => new BrushDrawTool(context.bitmap),
+});
 

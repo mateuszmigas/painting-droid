@@ -2,33 +2,33 @@ import { useToolStore } from "@/store/toolState";
 import { canvasToolsMetadata } from "@/tools";
 import { ToolSetting } from "./tool-settings/toolSetting";
 import { Separator } from "@radix-ui/react-separator";
-import type { CanvasToolSettingType } from "@/tools/canvasTool";
 import { testIds } from "@/utils/testIds";
+import type { CustomFieldsSchema } from "@/utils/customFieldsSchema";
 
 export const ToolSettingsBar = () => {
   const selectedToolId = useToolStore((state) => state.selectedToolId);
   const settings = useToolStore((state) => state.toolSettings[selectedToolId]);
   const updateToolSettings = useToolStore((state) => state.updateToolSettings);
+  const schema = canvasToolsMetadata[selectedToolId]
+    .settingsSchema as CustomFieldsSchema;
 
   return (
-    <div className="h-10 border-b px-2 flex flex-row gap-big items-center">
-      {Object.entries(settings).map(([id, value]) => {
-        const label = canvasToolsMetadata[selectedToolId].settings[id].name;
+    <div className="h-10 border-b px-2 flex flex-row gap-small items-center">
+      {Object.entries(schema).map(([id, customField]) => {
         return (
           <div
             data-testid={testIds.toolSetting(id)}
             key={id}
             className="flex flex-row items-center gap-small text-xs"
           >
-            {label}
+            {customField.name}
             <ToolSetting
-              toolId={selectedToolId}
-              settingKey={id}
-              type={
-                canvasToolsMetadata[selectedToolId].settings[id]
-                  .type as CanvasToolSettingType
+              customField={schema[id]}
+              value={
+                settings[id] !== undefined
+                  ? settings[id]
+                  : customField.defaultValue
               }
-              value={value}
               onChange={(newValue) => {
                 updateToolSettings(selectedToolId, {
                   ...settings,

@@ -1,28 +1,25 @@
-import type { CanvasToolSettingType } from "@/tools/canvasTool";
 import { ColorSetting } from "./colorSetting";
-import { type CanvasToolId, canvasToolsMetadata } from "@/tools";
 import { OptionSetting } from "./optionSetting";
 import type { RgbaColor } from "@/utils/color";
+import type { CustomField } from "@/utils/customFieldsSchema";
 
 export const ToolSetting = (props: {
-  toolId: CanvasToolId;
-  settingKey: string;
-  type: CanvasToolSettingType;
+  customField: CustomField;
   value: unknown;
   onChange: (newValue: unknown) => void;
 }) => {
-  const { type, value, onChange, toolId, settingKey } = props;
+  const { customField, value, onChange } = props;
+  const { type } = customField;
 
   if (type === "color") {
     return <ColorSetting value={value as RgbaColor} onChange={onChange} />;
   }
-  if (type === "size" || type === "number") {
-    const options = canvasToolsMetadata[toolId].settings[settingKey].options;
+  if (type === "option-number" || type === "option-string") {
     return (
       <OptionSetting
         value={value as number}
         onChange={onChange}
-        options={options as { value: number; label: string }[]}
+        options={customField.options as { value: number; label: string }[]}
       />
     );
   }

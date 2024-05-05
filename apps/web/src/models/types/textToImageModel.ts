@@ -2,7 +2,7 @@ import type { ImageCompressed } from "@/utils/imageData";
 import type { BaseModel } from "./baseModel";
 import type {
   CustomFieldsSchema,
-  CustomFieldsSchemaValues,
+  CustomFieldsSchemaAsValues,
 } from "@/utils/customFieldsSchema";
 
 export type TextToImageSection<TSchema extends CustomFieldsSchema> = {
@@ -10,7 +10,7 @@ export type TextToImageSection<TSchema extends CustomFieldsSchema> = {
   execute: (
     modelId: string,
     text: string,
-    options: CustomFieldsSchemaValues<TSchema>
+    options: CustomFieldsSchemaAsValues<TSchema>
   ) => Promise<ImageCompressed>;
 };
 

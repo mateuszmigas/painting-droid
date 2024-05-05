@@ -4,32 +4,25 @@ import type { CanvasOverlayShape } from "@/canvas/canvasState";
 import { fastRound } from "@/utils/math";
 import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
-import type {
-  CanvasTool,
-  CanvasToolEvent,
-  CanvasToolMetadata,
-  CanvasToolResult,
+import {
+  createCanvasToolMetadata,
+  type CanvasTool,
+  type CanvasToolEvent,
+  type CanvasToolResult,
 } from "./canvasTool";
 
 const translations = getTranslations().tools.shape.rectangleSelect;
 
-export const rectangleSelectToolMetadata: CanvasToolMetadata = {
-  id: "rectangleSelect",
-  name: translations.name,
-  icon: "rectangle-select",
-  settings: {},
-} as const;
-
 const minSize = 1;
 
-export class RectangleSelectTool implements CanvasTool {
+class RectangleSelectTool implements CanvasTool<never> {
   private startPosition: Position | null = null;
   private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
   private shape: CanvasOverlayShape | null = null;
 
   constructor(private vectorContext: CanvasVectorContext) {}
 
-  configure(_: unknown): void {}
+  configure(_: never): void {}
 
   processEvent(event: CanvasToolEvent) {
     if (event.type === "manipulationStart") {
@@ -80,4 +73,12 @@ export class RectangleSelectTool implements CanvasTool {
     this.startPosition = null;
   }
 }
+
+export const rectangleSelectToolMetadata = createCanvasToolMetadata({
+  id: "rectangleSelect",
+  name: translations.name,
+  icon: "rectangle-select",
+  settingsSchema: {},
+  create: (context) => new RectangleSelectTool(context.vector),
+});
 

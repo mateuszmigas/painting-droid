@@ -16,9 +16,9 @@ export const canvasToolsMetadata = {
 
 const getDefaultCanvasToolSettings = (toolId: CanvasToolId) => {
   const result: Record<string, unknown> = {};
-  Object.entries(canvasToolsMetadata[toolId].settings).forEach(
+  Object.entries(canvasToolsMetadata[toolId].settingsSchema).forEach(
     ([key, value]) => {
-      result[key] = value.default;
+      result[key] = (value as { defaultValue: unknown }).defaultValue;
     }
   );
   return result;

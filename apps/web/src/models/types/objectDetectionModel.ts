@@ -3,7 +3,7 @@ import type { ImageCompressed } from "@/utils/imageData";
 import type { BaseModel } from "./baseModel";
 import type {
   CustomFieldsSchema,
-  CustomFieldsSchemaValues,
+  CustomFieldsSchemaAsValues,
 } from "@/utils/customFieldsSchema";
 
 export type ObjectDetectionResult = {
@@ -17,7 +17,7 @@ export type ObjectDetectionSection<TSchema extends CustomFieldsSchema> = {
   execute: (
     image: ImageCompressed,
     onProgress: (value: number, message: string) => void,
-    options: CustomFieldsSchemaValues<TSchema>
+    options: CustomFieldsSchemaAsValues<TSchema>
   ) => Promise<ObjectDetectionResult>;
 };
 
