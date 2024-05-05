@@ -28,6 +28,20 @@ export type CustomField =
       name: string;
       options: { value: number; label: string }[];
       defaultValue: number;
+    }
+  | {
+      type: "range-number";
+      name: string;
+      defaultValue: number;
+      min: number;
+      max: number;
+    }
+  | {
+      type: "range-percent";
+      name: string;
+      defaultValue: number;
+      min: number;
+      max: number;
     };
 
 export type CustomFieldsSchema = Record<string, CustomField>;

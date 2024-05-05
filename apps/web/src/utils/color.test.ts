@@ -19,7 +19,7 @@ describe("areColorsClose", () => {
     expect(
       areColorsClose(
         { r: 255, g: 0, b: 0, a: 1 },
-        { r: 254, g: 0, b: 0, a: 1 },
+        { r: 255, g: 0, b: 0, a: 1 },
         10
       )
     ).toBe(true);

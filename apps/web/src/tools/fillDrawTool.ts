@@ -18,19 +18,28 @@ const settingsSchema = createCanvasToolSettingsSchema({
     type: "color",
     defaultValue: { b: 200, g: 243, r: 75, a: 1 },
   },
+  tolerance: {
+    name: translations.settings.tolerance,
+    type: "range-percent",
+    defaultValue: 10,
+    min: 0,
+    max: 50,
+  },
 });
 
 type FillDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
 export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
   private fillColor: RgbaColor | null = null;
+  private tolerance = 0;
   private onCommitCallback: (() => void) | null = null;
 
   constructor(private bitmapContext: CanvasBitmapContext) {}
 
   configure(settings: FillDrawToolSettings): void {
-    const { color } = settings;
+    const { color, tolerance } = settings;
     this.fillColor = color;
+    this.tolerance = tolerance;
   }
 
   processEvent(event: CanvasToolEvent) {
@@ -48,7 +57,8 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
       imageData,
       { x: ~~event.position.x, y: ~~event.position.y },
       this.fillColor!,
-      (targetColor, originColor) => areColorsClose(targetColor, originColor, 10)
+      (targetColor, originColor) =>
+        areColorsClose(targetColor, originColor, this.tolerance)
     );
 
     imageData.data.set(filledData.data);

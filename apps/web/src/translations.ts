@@ -86,6 +86,7 @@ const translations = {
         name: "Fill",
         settings: {
           color: "Color",
+          tolerance: "Tolerance",
         },
       },
       spray: {
