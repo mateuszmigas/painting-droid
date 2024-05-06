@@ -1,7 +1,7 @@
 import { useCommandService } from "@/contexts/commandService";
 import { useWorkspacesStore } from "@/store";
 import { memo, useEffect } from "react";
-import { createMenuBarDefinition } from "./menuBarDefiniotion";
+import { createMenuBarDefinition } from "./menuBarDefinition";
 import {
   Menu as NativeMenu,
   MenuItem as NativeMenuItem,
