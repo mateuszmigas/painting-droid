@@ -52,7 +52,9 @@ export const LayersPanel = memo(() => {
   );
   const activeLayerId = layers[activeLayerIndex].id;
   const canvasActionDispatcher = useCanvasActionDispatcher();
-  const reverseLayers = useMemo(() => [...layers].reverse(), [layers]);
+
+  const sortedLayers = useMemo(() => layers.slice().sort((a, b) => a.id.localeCompare(b.id)), [layers]);
+  const layersOrder = useMemo(() => layers.map((layer) => layer.id).reverse(), [layers]);
 
   return (
     <div className="flex flex-col size-full p-small gap-small">
@@ -115,11 +117,11 @@ export const LayersPanel = memo(() => {
         />
       </div>
       <div className="flex flex-col gap-small overflow-auto relative flex-1">
-        {reverseLayers.map((layer, index) => (
+        {sortedLayers.map((layer) => (
           <div
             className="absolute transition-transform duration-standard bg-background"
             style={{
-              transform: `translateY(${index * (76 + 6)}px)`,
+              transform: `translateY(${layersOrder.indexOf(layer.id) * (76 + 6)}px)`,
               zIndex: activeLayerId === layer.id ? 1 : 0,
               width: "100%",
             }}

@@ -10,7 +10,7 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { createMenuBarDefinition } from "./menuBarDefiniotion";
+import { createMenuBarDefinition } from "./menuBarDefinition";
 import type { MenuItem } from "@/utils/menuItem";
 import { Fragment } from "react/jsx-runtime";
 import { useCommandService } from "@/contexts/commandService";
