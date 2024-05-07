@@ -48,8 +48,9 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 2. Make sure you have Docker, Visual Studio Code and [Dev Container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension installed
 3. Open the repository in Visual Studio Code
 4. Open the command palette and run `Dev Containers: Reopen in Container`
-5. Install the dependencies using `pnpm install`
-6. Run the app using `pnpm dev:web`
+5. Change pnpm store dir `pnpm config set store-dir ~/.local/share/pnpm/store`
+6. Install the dependencies using `pnpm install`
+8. Run the app using `pnpm dev:web`
 
 #### Using Github Codespaces
 
