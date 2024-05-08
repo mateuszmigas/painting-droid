@@ -22,9 +22,11 @@ type CanvasToolMetadata<TSchema extends CustomFieldsSchema> = {
 };
 
 export type CanvasToolEvent =
-  | { type: "manipulationStart"; position: Position }
-  | { type: "manipulationStep"; position: Position }
-  | { type: "manipulationEnd"; position: Position };
+  | { type: "pointerDown"; position: Position }
+  | { type: "pointerMove"; position: Position }
+  | { type: "pointerUp"; position: Position }
+  | { type: "pointerMove"; position: Position }
+  | { type: "pointerLeave" };
 
 export type CanvasToolResult = {
   shape?: CanvasCapturedArea;

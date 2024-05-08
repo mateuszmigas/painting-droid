@@ -12,7 +12,7 @@ export const createCanvasAction = async (
   const { size } = state;
 
   if (!state.capturedArea?.captured) {
-    throw new Error("No overlay shape to apply");
+    throw new Error("No captured area to apply");
   }
 
   const capturedArea = state.capturedArea;

@@ -7,6 +7,7 @@ import { createComponent, render } from "solid-js/web";
 import { createStore } from "solid-js/store";
 import { VectorCanvas } from "../components/solid/vectorCanvas.solid";
 import { useCanvasContextStore } from "@/contexts/canvasContextStore";
+import type { CanvasShape } from "@/components/solid/shapes/shape.solid";
 
 export const useSyncCanvasVectorContext = (
   elementRef: RefObject<HTMLElement>,
@@ -17,8 +18,9 @@ export const useSyncCanvasVectorContext = (
     () =>
       createStore<{
         capturedArea: CanvasCapturedArea | null;
+        shapes: CanvasShape[];
         viewport: Viewport;
-      }>({ capturedArea: null, viewport: viewport.getValue() }),
+      }>({ capturedArea: null, shapes: [], viewport: viewport.getValue() }),
     [viewport]
   );
 
@@ -29,8 +31,11 @@ export const useSyncCanvasVectorContext = (
       elementRef.current
     );
     setVectorContext({
-      render: (shape: CanvasCapturedArea | null) =>
-        setStore("capturedArea", shape ? { ...shape } : null),
+      renderCapturedArea: (area: CanvasCapturedArea | null) =>
+        setStore("capturedArea", area ? { ...area } : null),
+      renderShapes: (shapes: CanvasShape[]) => {
+        setStore("shapes", shapes);
+      },
     });
     return () => {
       unmount();

@@ -5,7 +5,7 @@ import {
   type CanvasToolEvent,
   type InferToolSettings,
 } from "./canvasTool";
-import type { CanvasBitmapContext } from "@/utils/common";
+import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
@@ -36,8 +36,12 @@ type BrushDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
 class BrushDrawTool implements CanvasTool<BrushDrawToolSettings> {
   private onCommitCallback: (() => void) | null = null;
+  private isDrawing = false;
 
-  constructor(private bitmapContext: CanvasBitmapContext) {}
+  constructor(
+    private bitmapContext: CanvasBitmapContext,
+    private vectorContext: CanvasVectorContext
+  ) {}
 
   configure(settings: BrushDrawToolSettings): void {
     const { size, color } = settings;
@@ -49,21 +53,37 @@ class BrushDrawTool implements CanvasTool<BrushDrawToolSettings> {
   }
 
   processEvent(event: CanvasToolEvent): void {
-    if (event.type === "manipulationStart") {
+    if (event.type === "pointerDown") {
+      this.isDrawing = true;
       this.bitmapContext.beginPath();
       this.bitmapContext.moveTo(event.position.x, event.position.y);
       this.bitmapContext.lineTo(event.position.x, event.position.y);
       this.bitmapContext.stroke();
     }
 
-    if (event.type === "manipulationStep") {
-      this.bitmapContext.lineTo(event.position.x, event.position.y);
-      this.bitmapContext.stroke();
+    if (event.type === "pointerMove") {
+      this.vectorContext.renderShapes([
+        {
+          type: "selection-circle",
+          position: event.position,
+          radius: this.bitmapContext.lineWidth / 2,
+        },
+      ]);
+
+      if (this.isDrawing) {
+        this.bitmapContext.lineTo(event.position.x, event.position.y);
+        this.bitmapContext.stroke();
+      }
     }
 
-    if (event.type === "manipulationEnd") {
+    if (event.type === "pointerUp" && this.isDrawing === true) {
       this.bitmapContext.closePath();
       this.onCommitCallback?.();
+      this.isDrawing = false;
+    }
+
+    if (event.type === "pointerLeave") {
+      this.vectorContext.renderShapes([]);
     }
   }
 
@@ -71,7 +91,9 @@ class BrushDrawTool implements CanvasTool<BrushDrawToolSettings> {
     this.onCommitCallback = callback;
   }
 
-  reset() {}
+  reset() {
+    this.isDrawing = false;
+  }
 }
 
 export const brushDrawToolMetadata = createCanvasToolMetadata({
@@ -79,6 +101,6 @@ export const brushDrawToolMetadata = createCanvasToolMetadata({
   name: translations.name,
   icon: "brush",
   settingsSchema,
-  create: (context) => new BrushDrawTool(context.bitmap),
+  create: (context) => new BrushDrawTool(context.bitmap, context.vector),
 });
 
