@@ -266,7 +266,7 @@ const storage: PersistStorage<AppWorkspacesState> = {
         ...workspace,
         canvasData: {
           ...workspace.canvasData,
-          overlayShape: null,
+          capturedArea: null,
           layers: workspace.canvasData.layers.map((layer) => ({
             ...layer,
             data: null,

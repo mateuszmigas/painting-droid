@@ -3,7 +3,7 @@ import { useCanvasActionDispatcher } from "./useCanvasActionDispatcher";
 import { useStableCallback } from "./useStableCallback";
 import { useWorkspacesStore } from "@/store";
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
-import type { CanvasOverlayShape } from "@/canvas/canvasState";
+import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import { canvasToolsMetadata } from "@/tools";
 import type { CanvasToolId } from "@/tools";
 import type { CanvasToolResult } from "@/tools/canvasTool";
@@ -15,16 +15,16 @@ import { areRectanglesEqual } from "@/utils/geometry";
 export const useCanvasToolHandlers = () => {
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const { context } = useCanvasContextStore();
-  const { layers, activeLayerIndex, overlayShape } = useWorkspacesStore(
+  const { layers, activeLayerIndex, capturedArea } = useWorkspacesStore(
     activeWorkspaceCanvasDataSelector
   );
 
-  const getSelectedShape = useStableCallback(() => overlayShape);
+  const getSelectedShape = useStableCallback(() => capturedArea);
 
   const transformSelectedShape = useStableCallback(
-    async (shape: CanvasOverlayShape) => {
-      await canvasActionDispatcher.execute("transformOverlayShape", {
-        overlayShape: shape,
+    async (shape: CanvasCapturedArea) => {
+      await canvasActionDispatcher.execute("transformCapturedArea", {
+        capturedArea: shape,
       });
     }
   );
@@ -40,14 +40,14 @@ export const useCanvasToolHandlers = () => {
       areRectanglesEqual(selectedShape.boundingBox, selectedShape.captured.box);
 
     if (clearShape) {
-      await canvasActionDispatcher.execute("clearOverlayShape", undefined);
+      await canvasActionDispatcher.execute("clearCapturedArea", undefined);
     } else {
-      await canvasActionDispatcher.execute("applyOverlayShape", undefined);
+      await canvasActionDispatcher.execute("applyCapturedArea", undefined);
     }
   });
 
   const drawSelectedShape = useStableCallback(
-    async (shape: CanvasOverlayShape) => {
+    async (shape: CanvasCapturedArea) => {
       context.vector?.render(shape);
     }
   );
@@ -56,12 +56,11 @@ export const useCanvasToolHandlers = () => {
     async (toolId: CanvasToolId, result?: CanvasToolResult) => {
       if (!context.bitmap) return;
 
-      //todo: merge updateLayerData with drawOverlayShape
       if (result?.shape) {
         const shape = result.shape;
         const box = shape.boundingBox;
-        await canvasActionDispatcher.execute("drawOverlayShape", {
-          overlayShape: {
+        await canvasActionDispatcher.execute("drawCapturedArea", {
+          capturedArea: {
             ...shape,
             captured: {
               box,
@@ -99,7 +98,7 @@ export const useCanvasToolHandlers = () => {
   );
   const toolDiscard = useStableCallback(async () => {
     if (getSelectedShape()) {
-      await canvasActionDispatcher.execute("clearOverlayShape", undefined);
+      await canvasActionDispatcher.execute("clearCapturedArea", undefined);
     }
 
     if (context.vector) {

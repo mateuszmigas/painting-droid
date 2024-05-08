@@ -15,7 +15,7 @@ export type CanvasLayer = {
   data: CanvasLayerData;
 };
 
-export type CanvasOverlayShape = {
+export type CanvasCapturedArea = {
   id: string;
   type: "rectangle";
   boundingBox: Rectangle;
@@ -28,7 +28,7 @@ export type CanvasOverlayShape = {
 export type CanvasState = {
   activeLayerIndex: number;
   layers: CanvasLayer[];
-  overlayShape: CanvasOverlayShape | null;
+  capturedArea: CanvasCapturedArea | null;
   size: Size;
 };
 
@@ -43,6 +43,7 @@ export const createDefaultLayer = (): CanvasLayer => ({
 export const createDefaultCanvasState = (size: Size): CanvasState => ({
   activeLayerIndex: 0,
   layers: [createDefaultLayer()],
-  overlayShape: null,
+  capturedArea: null,
   size,
 });
+

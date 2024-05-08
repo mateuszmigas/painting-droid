@@ -1,6 +1,6 @@
 import type { CanvasVectorContext, Position } from "@/utils/common";
 
-import type { CanvasOverlayShape } from "@/canvas/canvasState";
+import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import { fastRound } from "@/utils/math";
 import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
@@ -18,7 +18,7 @@ const minSize = 1;
 class RectangleSelectTool implements CanvasTool<never> {
   private startPosition: Position | null = null;
   private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
-  private shape: CanvasOverlayShape | null = null;
+  private shape: CanvasCapturedArea | null = null;
 
   constructor(private vectorContext: CanvasVectorContext) {}
 

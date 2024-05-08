@@ -11,13 +11,13 @@ export const createCanvasAction = async (
   const state = context.getState();
   const { size } = state;
 
-  if (!state.overlayShape?.captured) {
+  if (!state.capturedArea?.captured) {
     throw new Error("No overlay shape to apply");
   }
 
-  const overlayShape = state.overlayShape;
-  const overlayShapeContext = await ImageProcessor.fromCompressedData(
-    overlayShape.captured!.data
+  const capturedArea = state.capturedArea;
+  const capturedAreaContext = await ImageProcessor.fromCompressedData(
+    capturedArea.captured!.data
   ).toContext();
 
   const layerData = state.layers[state.activeLayerIndex].data;
@@ -28,15 +28,15 @@ export const createCanvasAction = async (
 
   const newLayerData = await processor
     .useContext(async (context) => {
-      const { x, y, width, height } = overlayShape.boundingBox;
-      context.drawImage(overlayShapeContext.canvas, x, y, width, height);
+      const { x, y, width, height } = capturedArea.boundingBox;
+      context.drawImage(capturedAreaContext.canvas, x, y, width, height);
     })
     .toCompressedData();
 
   const capturedData = {
-    previousOverlayShape: overlayShape,
+    previousCapturedArea: capturedArea,
     previousLayerData: layerData,
-    newOverlayShape: null,
+    newCapturedArea: null,
     newLayerData,
   };
 
@@ -52,7 +52,7 @@ export const createCanvasAction = async (
           }
           return layer;
         }),
-        overlayShape: capturedData.newOverlayShape,
+        capturedArea: capturedData.newCapturedArea,
       };
     },
     undo: async (state) => {
@@ -64,7 +64,7 @@ export const createCanvasAction = async (
           }
           return layer;
         }),
-        overlayShape: capturedData.previousOverlayShape,
+        capturedArea: capturedData.previousCapturedArea,
       };
     },
   };

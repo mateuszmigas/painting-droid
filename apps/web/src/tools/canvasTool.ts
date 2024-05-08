@@ -1,4 +1,4 @@
-import type { CanvasOverlayShape } from "@/canvas/canvasState";
+import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import type { IconType } from "@/components/icons/icon";
 import type {
   CanvasBitmapContext,
@@ -27,7 +27,7 @@ export type CanvasToolEvent =
   | { type: "manipulationEnd"; position: Position };
 
 export type CanvasToolResult = {
-  shape?: CanvasOverlayShape;
+  shape?: CanvasCapturedArea;
 };
 
 export interface CanvasTool<T> {

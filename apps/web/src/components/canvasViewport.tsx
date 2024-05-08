@@ -59,7 +59,7 @@ export const CanvasViewport = memo(
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
     const shapeOverlayRef = useRef<HTMLDivElement>(null);
     const { context } = useCanvasContextStore();
-    const { layers, activeLayerIndex, overlayShape } = useWorkspacesStore(
+    const { layers, activeLayerIndex, capturedArea } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
 
@@ -68,7 +68,7 @@ export const CanvasViewport = memo(
       canvasStackRef,
       layers,
       activeLayerIndex,
-      overlayShape
+      capturedArea
     );
 
     const toolId = useToolStore((state) => state.selectedToolId);
@@ -87,8 +87,8 @@ export const CanvasViewport = memo(
 
     //sync shape overlay
     useEffect(() => {
-      context.vector?.render(overlayShape);
-    }, [context.vector, overlayShape]);
+      context.vector?.render(capturedArea);
+    }, [context.vector, capturedArea]);
 
     useCanvasTool(
       hostElementRef,

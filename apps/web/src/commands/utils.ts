@@ -2,10 +2,10 @@ import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import type { CommandContext } from "./context";
 import { areRectanglesEqual } from "@/utils/geometry";
 
-export const clearOrApplyOverlayShape = async (context: CommandContext) => {
+export const clearOrApplyCapturedArea = async (context: CommandContext) => {
   const shape = activeWorkspaceCanvasDataSelector(
     context.stores.workspaces()
-  ).overlayShape;
+  ).capturedArea;
 
   if (shape) {
     const apply =
@@ -14,13 +14,13 @@ export const clearOrApplyOverlayShape = async (context: CommandContext) => {
 
     if (apply) {
       await context.canvasActionDispatcher.execute(
-        "applyOverlayShape",
+        "applyCapturedArea",
         undefined
       );
     } else {
       shape &&
         (await context.canvasActionDispatcher.execute(
-          "clearOverlayShape",
+          "clearCapturedArea",
           undefined
         ));
     }

@@ -7,11 +7,11 @@ import { createCanvasAction as moveLayerUp } from "./moveLayerUp";
 import { createCanvasAction as moveLayerDown } from "./moveLayerDown";
 import { createCanvasAction as hideLayer } from "./hideLayer";
 import { createCanvasAction as showLayer } from "./showLayer";
-import { createCanvasAction as drawOverlayShape } from "./drawOverlayShape";
-import { createCanvasAction as transformOverlayShape } from "./transformOverlayShape";
-import { createCanvasAction as clearOverlayShape } from "./clearOverlayShape";
-import { createCanvasAction as applyOverlayShape } from "./applyOverlayShape";
-import { createCanvasAction as cutOverlayShape } from "./cutOverlayShape";
+import { createCanvasAction as drawCapturedArea } from "./drawCapturedArea";
+import { createCanvasAction as transformCapturedArea } from "./transformCapturedArea";
+import { createCanvasAction as clearCapturedArea } from "./clearCapturedArea";
+import { createCanvasAction as applyCapturedArea } from "./applyCapturedArea";
+import { createCanvasAction as cutCapturedArea } from "./cutCapturedArea";
 import { createCanvasAction as cropCanvas } from "./cropCanvas";
 import { createCanvasAction as resizeCanvas } from "./resizeCanvas";
 import { createCanvasAction as mergeLayerDown } from "./mergeLayerDown";
@@ -26,11 +26,11 @@ export const canvasActions = {
   moveLayerDown,
   hideLayer,
   showLayer,
-  drawOverlayShape,
-  transformOverlayShape,
-  clearOverlayShape,
-  applyOverlayShape,
-  cutOverlayShape,
+  drawCapturedArea,
+  transformCapturedArea,
+  clearCapturedArea,
+  applyCapturedArea,
+  cutCapturedArea,
   cropCanvas,
   resizeCanvas,
   mergeLayerDown,

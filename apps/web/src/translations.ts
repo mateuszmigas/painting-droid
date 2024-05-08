@@ -11,10 +11,10 @@ const translations = {
     addLayer: "Add Layer",
     applySelection: "Apply Selection",
     deselect: "Deselect",
-    drawOverlayShape: {
+    drawCapturedArea: {
       rectangle: "Rectangle Select",
     },
-    transformOverlayShape: {
+    transformCapturedArea: {
       rectangle: "Move Rectangle",
     },
     duplicateLayer: "Duplicate Layer",
@@ -25,7 +25,7 @@ const translations = {
     moveLayerUp: "Move Layer Up",
     removeLayer: "Remove Layer",
     selectLayer: "Select Layer",
-    cutOverlayShape: "Cut Selection",
+    cutCapturedArea: "Cut Selection",
     cropCanvas: "Crop Canvas",
     resizeCanvas: "Resize Canvas",
   },

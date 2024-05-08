@@ -1,14 +1,14 @@
-import type { CanvasOverlayShape } from "@/canvas/canvasState";
+import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import type { Position } from "@/utils/common";
 import { arePointsClose } from "@/utils/geometry";
 import { fastRound } from "@/utils/math";
 
 export class ShapeTransformer {
-  private target: CanvasOverlayShape | null = null;
+  private target: CanvasCapturedArea | null = null;
   private startPosition: Position | null = null;
   private endPosition: Position | null = null;
 
-  setTarget(target: CanvasOverlayShape | null) {
+  setTarget(target: CanvasCapturedArea | null) {
     this.target = target;
   }
 
@@ -26,7 +26,7 @@ export class ShapeTransformer {
     };
   }
 
-  getResult(): CanvasOverlayShape | false {
+  getResult(): CanvasCapturedArea | false {
     if (!this.startPosition || !this.endPosition) {
       throw new Error("ShapeTransformer: getResult called before transform");
     }
@@ -47,7 +47,7 @@ export class ShapeTransformer {
         x: this.target!.boundingBox.x + distance.x,
         y: this.target!.boundingBox.y + distance.y,
       },
-    } as CanvasOverlayShape;
+    } as CanvasCapturedArea;
   }
 
   reset() {

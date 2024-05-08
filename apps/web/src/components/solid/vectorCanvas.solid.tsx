@@ -1,36 +1,36 @@
 /* @jsxImportSource solid-js */
 import * as Solid from "solid-js";
-import type { CanvasOverlayShape } from "@/canvas/canvasState";
+import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import type { Viewport } from "@/utils/manipulation";
 import { BlobImage } from "./blobImage.solid";
 
-export const OverlayShape = (props: {
-  overlayShape: CanvasOverlayShape | null;
+export const VectorCanvas = (props: {
+  capturedArea: CanvasCapturedArea | null;
   viewport: Viewport;
 }) => {
   return (
-    <Solid.Show when={!!props.overlayShape}>
+    <Solid.Show when={!!props.capturedArea}>
       <div
         style={{
           left: `${
-            props.overlayShape!.boundingBox.x * props.viewport.zoom +
+            props.capturedArea!.boundingBox.x * props.viewport.zoom +
             props.viewport.position.x
           }px`,
           top: `${
-            props.overlayShape!.boundingBox.y * props.viewport.zoom +
+            props.capturedArea!.boundingBox.y * props.viewport.zoom +
             props.viewport.position.y
           }px`,
           width: `${
-            props.overlayShape!.boundingBox.width * props.viewport.zoom
+            props.capturedArea!.boundingBox.width * props.viewport.zoom
           }px`,
           height: `${
-            props.overlayShape!.boundingBox.height * props.viewport.zoom
+            props.capturedArea!.boundingBox.height * props.viewport.zoom
           }px`,
         }}
         class="absolute"
       >
-        <Solid.Show when={!!props.overlayShape!.captured}>
-          <BlobImage blob={props.overlayShape!.captured?.data} />
+        <Solid.Show when={!!props.capturedArea!.captured}>
+          <BlobImage blob={props.capturedArea!.captured?.data} />
         </Solid.Show>
         <div class="absolute size-full border-primary border-2 border-dashed" />
       </div>

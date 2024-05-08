@@ -8,11 +8,11 @@ export const createCanvasAction = async (
   context: CanvasActionContext
 ): Promise<CanvasAction> => {
   const state = context.getState();
-  const previousOverlayShape = state.overlayShape;
+  const previousCapturedArea = state.capturedArea;
 
   const capturedData = {
-    previousOverlayShape,
-    newOverlayShape: null,
+    previousCapturedArea: previousCapturedArea,
+    newCapturedArea: null,
   };
 
   return {
@@ -21,13 +21,13 @@ export const createCanvasAction = async (
     execute: async (state) => {
       return {
         ...state,
-        overlayShape: capturedData.newOverlayShape,
+        capturedArea: capturedData.newCapturedArea,
       };
     },
     undo: async (state) => {
       return {
         ...state,
-        overlayShape: capturedData.previousOverlayShape,
+        capturedArea: capturedData.previousCapturedArea,
       };
     },
   };

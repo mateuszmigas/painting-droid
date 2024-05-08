@@ -1,4 +1,4 @@
-import type { CanvasOverlayShape } from "@/canvas/canvasState";
+import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import type { RgbaColor } from "./color";
 
 export type Position = {
@@ -20,7 +20,7 @@ export type CanvasBitmapContext =
   | OffscreenCanvasRenderingContext2D;
 
 export type CanvasVectorContext = {
-  render: (shape: CanvasOverlayShape | null) => void;
+  render: (shape: CanvasCapturedArea | null) => void;
 };
 
 export type CanvasContext = {

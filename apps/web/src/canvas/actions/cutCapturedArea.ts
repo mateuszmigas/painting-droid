@@ -15,30 +15,30 @@ export const createCanvasAction = async (
 ): Promise<CanvasAction> => {
   const { display, icon } = payload;
   const state = context.getState();
-  const previousOverlayShape = state.overlayShape;
+  const previousCapturedArea = state.capturedArea;
 
   const layerData = state.layers[state.activeLayerIndex].data;
 
-  if (!layerData || !state.overlayShape?.captured) {
+  if (!layerData || !state.capturedArea?.captured) {
     throw new Error("No layer data to cut");
   }
 
   const newLayerData = await ImageProcessor.fromCompressedData(layerData)
     .useContext(async (context) => {
-      const { x, y, width, height } = state.overlayShape!.boundingBox;
+      const { x, y, width, height } = state.capturedArea!.boundingBox;
       context.clearRect(x, y, width, height);
     })
     .toCompressedData();
 
   const capturedData = {
-    previousOverlayShape,
+    previousCapturedArea,
     previousLayerData: layerData,
-    newOverlayShape: null,
+    newCapturedArea: null,
     newLayerData,
   };
 
   return {
-    display: display ?? translations.canvasActions.cutOverlayShape,
+    display: display ?? translations.canvasActions.cutCapturedArea,
     icon: icon ?? "clipboard-cut",
     execute: async (state) => {
       return {
@@ -49,7 +49,7 @@ export const createCanvasAction = async (
           }
           return layer;
         }),
-        overlayShape: capturedData.newOverlayShape,
+        capturedArea: capturedData.newCapturedArea,
       };
     },
     undo: async (state) => {
@@ -61,7 +61,7 @@ export const createCanvasAction = async (
           }
           return layer;
         }),
-        overlayShape: capturedData.previousOverlayShape,
+        capturedArea: capturedData.previousCapturedArea,
       };
     },
   };

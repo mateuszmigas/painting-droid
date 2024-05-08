@@ -18,11 +18,11 @@ export const command = createCommand({
       context.stores.workspaces()
     );
 
-    if (canvasData.overlayShape?.captured) {
-      await clipboard.copyImage(canvasData.overlayShape.captured.data);
+    if (canvasData.capturedArea?.captured) {
+      await clipboard.copyImage(canvasData.capturedArea.captured.data);
 
       if (canvasData.layers[canvasData.activeLayerIndex].data !== null) {
-        await context.canvasActionDispatcher.execute("cutOverlayShape", {
+        await context.canvasActionDispatcher.execute("cutCapturedArea", {
           display: translations.commands.cutImage,
           icon: "clipboard-cut",
         });

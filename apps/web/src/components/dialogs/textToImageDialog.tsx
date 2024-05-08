@@ -116,9 +116,9 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     await executeCommand("selectTool", { toolId: "rectangleSelect" });
     const currentSize = (form.watch("modelOptionsValues.size") ??
       defaultSize) as Size;
-    await canvasActionDispatcher.execute("drawOverlayShape", {
+    await canvasActionDispatcher.execute("drawCapturedArea", {
       display: translations.models.textToImage.name,
-      overlayShape: {
+      capturedArea: {
         id: uuid(),
         type: "rectangle",
         boundingBox: {

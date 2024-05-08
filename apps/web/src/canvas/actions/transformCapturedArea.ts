@@ -1,13 +1,13 @@
-import type { CanvasOverlayShape } from "../canvasState";
+import type { CanvasCapturedArea } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
-const translate = (shape: CanvasOverlayShape) => {
+const translate = (shape: CanvasCapturedArea) => {
   if (shape.type === "rectangle") {
-    return translations.canvasActions.transformOverlayShape.rectangle;
+    return translations.canvasActions.transformCapturedArea.rectangle;
   }
   return translations.general.unknown;
 };
@@ -15,31 +15,31 @@ const translate = (shape: CanvasOverlayShape) => {
 export const createCanvasAction = async (
   context: CanvasActionContext,
   payload: {
-    overlayShape: CanvasOverlayShape;
+    capturedArea: CanvasCapturedArea;
   }
 ): Promise<CanvasAction> => {
-  const { overlayShape } = payload;
+  const { capturedArea } = payload;
   const state = context.getState();
-  const previousOverlayShape = state.overlayShape;
+  const previousCapturedArea = state.capturedArea;
 
   const capturedData = {
-    previousOverlayShape,
-    newOverlayShape: overlayShape,
+    previousCapturedArea,
+    newCapturedArea: capturedArea,
   };
 
   return {
-    display: translate(overlayShape),
+    display: translate(capturedArea),
     icon: "mouse-pointer-square-dashed",
     execute: async (state) => {
       return {
         ...state,
-        overlayShape: capturedData.newOverlayShape,
+        capturedArea: capturedData.newCapturedArea,
       };
     },
     undo: async (state) => {
       return {
         ...state,
-        overlayShape: capturedData.previousOverlayShape,
+        capturedArea: capturedData.previousCapturedArea,
       };
     },
   };

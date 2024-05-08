@@ -18,9 +18,9 @@ export const command = createCommand({
       context.stores.workspaces()
     );
 
-    if (canvasData.overlayShape?.captured) {
+    if (canvasData.capturedArea?.captured) {
       try {
-        await clipboard.copyImage(canvasData.overlayShape.captured.data);
+        await clipboard.copyImage(canvasData.capturedArea.captured.data);
       } catch {
         context.notificationService.showError(
           translations.errors.copyClipboardError

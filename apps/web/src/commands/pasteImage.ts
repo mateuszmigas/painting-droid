@@ -32,10 +32,10 @@ export const command = createCommand({
 
     const { width, height } = await createImageBitmap(data);
 
-    await context.canvasActionDispatcher.execute("drawOverlayShape", {
+    await context.canvasActionDispatcher.execute("drawCapturedArea", {
       display: translations.commands.pasteImage,
       icon: "clipboard-paste",
-      overlayShape: {
+      capturedArea: {
         id: uuid(),
         type: "rectangle",
         boundingBox: {

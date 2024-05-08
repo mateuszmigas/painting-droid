@@ -1,4 +1,4 @@
-import type { CanvasLayer, CanvasOverlayShape } from "@/canvas/canvasState";
+import type { CanvasLayer, CanvasCapturedArea } from "@/canvas/canvasState";
 import type { CanvasBitmapContext } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { clearContext } from "@/utils/canvas";
@@ -8,7 +8,7 @@ import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 const restoreLayers = async (
   contextStack: CanvasBitmapContext[],
   layers: CanvasLayer[],
-  _: CanvasOverlayShape | null
+  _: CanvasCapturedArea | null
 ) => {
   //run all operations together to avoid flickering
   const canvasOperations: (() => void)[] = [];
@@ -36,7 +36,7 @@ export const useSyncCanvasWithLayers = (
   canvasStackRef: RefObject<HTMLCanvasElement[]>,
   layers: CanvasLayer[],
   activeLayerIndex: number,
-  overlayShape: CanvasOverlayShape | null
+  capturedArea: CanvasCapturedArea | null
 ) => {
   const { setBitmapContext } = useCanvasContextStore();
   const contextsMap = useRef(
@@ -62,13 +62,13 @@ export const useSyncCanvasWithLayers = (
       }
     );
 
-    restoreLayers(stackContexts, layers, overlayShape).then(() =>
+    restoreLayers(stackContexts, layers, capturedArea).then(() =>
       setBitmapContext(stackContexts[activeLayerIndex])
     );
   }, [
     layers,
     activeLayerIndex,
-    overlayShape,
+    capturedArea,
     canvasStackRef,
     setBitmapContext,
   ]);

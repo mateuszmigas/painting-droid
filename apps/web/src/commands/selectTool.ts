@@ -1,7 +1,7 @@
 import type { CanvasToolId } from "@/tools";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { clearOrApplyOverlayShape } from "./utils";
+import { clearOrApplyCapturedArea } from "./utils";
 
 export const command = createCommand({
   id: "selectTool",
@@ -13,7 +13,7 @@ export const command = createCommand({
     }
   ) => {
     const { toolId } = payload;
-    await clearOrApplyOverlayShape(context);
+    await clearOrApplyCapturedArea(context);
     context.stores.tool().setSelectedToolId(toolId);
   },
 });
