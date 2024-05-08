@@ -16,7 +16,8 @@ type IconAnchorProps = Omit<
 
 export const IconAnchor = forwardRef<HTMLAnchorElement, IconAnchorProps>(
   (props, ref) => {
-    const { type, size, href, className, iconClassName, ...rest } = props;
+    const { type, size, href, className, iconClassName, title, ...rest } =
+      props;
 
     return (
       <a
@@ -29,6 +30,8 @@ export const IconAnchor = forwardRef<HTMLAnchorElement, IconAnchorProps>(
         href={href}
         target="_blank"
         rel="noreferrer"
+        aria-label={title}
+        title={title}
       >
         <Icon type={type} size={size} className={iconClassName} />
       </a>

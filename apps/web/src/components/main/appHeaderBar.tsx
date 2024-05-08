@@ -5,7 +5,6 @@ import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useWorkspacesStore } from "@/store";
 import { memo, useLayoutEffect, useRef, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
-import { IconButton } from "../icons/iconButton";
 import { CommandIconButton } from "../commandIconButton";
 import {
   ContextMenu,
@@ -14,10 +13,12 @@ import {
   ContextMenuItem,
 } from "../ui/context-menu";
 import { IconAnchor } from "../icons/iconAnchor";
-import { useCommandService } from "@/contexts/commandService";
 import { Separator } from "../ui/separator";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { features } from "@/constants";
+import { domNames, features } from "@/constants";
+import { getTranslations } from "@/translations";
+
+const translations = getTranslations();
 
 const compactThreshold = 640;
 
@@ -26,7 +27,6 @@ export const AppHeaderBar = memo(() => {
   const [compactMenuBar, setCompactMenuBar] = useState<boolean>(false);
   const { workspaces, activeWorkspaceId, selectWorkspace, closeWorkspace } =
     useWorkspacesStore((state) => state);
-  const { executeCommand } = useCommandService();
 
   useLayoutEffect(() => {
     if (containerRef.current) {
@@ -63,6 +63,7 @@ export const AppHeaderBar = memo(() => {
                 <ContextMenu key={tab.id}>
                   <ContextMenuTrigger>
                     <TabsTrigger
+                      aria-controls={domNames.workspaceViewport}
                       value={tab.id}
                       onMouseDown={(e) =>
                         e.button === 1 && closeWorkspace(tab.id)
@@ -74,7 +75,7 @@ export const AppHeaderBar = memo(() => {
                   </ContextMenuTrigger>
                   <ContextMenuContent>
                     <ContextMenuItem onSelect={() => closeWorkspace(tab.id)}>
-                      Close
+                      {translations.general.close}
                     </ContextMenuItem>
                   </ContextMenuContent>
                 </ContextMenu>
@@ -83,10 +84,10 @@ export const AppHeaderBar = memo(() => {
           </Tabs>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-        <IconButton
-          type="plus"
+        <CommandIconButton
+          commandId="newActiveWorkspace"
+          icon="plus"
           size="small-medium"
-          onClick={() => executeCommand("newActiveWorkspace")}
         />
       </div>
       <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
@@ -96,11 +97,13 @@ export const AppHeaderBar = memo(() => {
           type="bug"
           size="small"
           href="https://github.com/mateuszmigas/painting-droid/issues"
+          title={translations.links.reportIssue}
         />
         <IconAnchor
           type="github"
           size="small"
           href="https://github.com/mateuszmigas/painting-droid"
+          title={translations.links.viewSource}
         />
         <CommandIconButton commandId="openCommandPalette" />
         <ModeToggle />

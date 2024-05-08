@@ -54,17 +54,17 @@ export const AppContent = memo(() => {
             <WorkspaceViewport />
           </>
         </AppColumn>
-        <ResizableHandle />
+        <ResizableHandle title="dupa1" />
         <AppColumn {...createColumnProps("right")}>
           <ResizablePanelGroup direction="vertical">
             <AppEdgePanel {...createPanelProps("layers")}>
               <LayersPanel />
             </AppEdgePanel>
-            <ResizableHandle />
+            <ResizableHandle title="dupa1" />
             <AppEdgePanel {...createPanelProps("history")}>
               <HistoryPanel />
             </AppEdgePanel>
-            <ResizableHandle />
+            <ResizableHandle title="dupa1" />
             <AppEdgePanel {...createPanelProps("metadata")}>
               <MetadataPanel />
             </AppEdgePanel>
@@ -74,3 +74,4 @@ export const AppContent = memo(() => {
     </div>
   );
 });
+

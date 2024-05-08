@@ -7,9 +7,10 @@ export const RangeSetting = (props: {
   min: number;
   max: number;
   format: "number" | "percent";
+  title: string;
   className?: string;
 }) => {
-  const { value, onChange, format, min, max, className } = props;
+  const { value, onChange, format, min, max, title, className } = props;
   return (
     <SliderPrimitive.Root
       className={cn(
@@ -21,6 +22,7 @@ export const RangeSetting = (props: {
       max={max}
       onValueChange={(values) => onChange(values[0])}
       orientation="horizontal"
+      title={title}
     >
       <SliderPrimitive.Track className="relative h-input-thin w-full grow overflow-hidden rounded-md bg-primary/20 border">
         <SliderPrimitive.Range className="absolute h-full bg-primary" />

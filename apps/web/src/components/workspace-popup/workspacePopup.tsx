@@ -3,6 +3,8 @@ import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { useWorkspacesStore } from "@/store";
 import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { AdjustmentsPopup } from "./adjustmentsPopup";
+import { getTranslations } from "@/translations";
+const translations = getTranslations();
 
 export const WorkspacePopup = memo(() => {
   const popup = useWorkspacesStore(
@@ -14,7 +16,7 @@ export const WorkspacePopup = memo(() => {
       open={popup !== null}
       onOpenChange={(open) => !open && closePopup()}
     >
-      <PopoverTrigger />
+      <PopoverTrigger title={translations.adjustments.name} />
       <PopoverContent className="absolute left-5 w-auto">
         {popup?.type === "adjustments" && <AdjustmentsPopup />}
       </PopoverContent>

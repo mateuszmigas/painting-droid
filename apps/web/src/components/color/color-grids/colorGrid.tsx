@@ -15,7 +15,7 @@ export const ColorGrid = memo(
               {colors[i] ? (
                 <ColorRectangle
                   onClick={() => onSelected(colors[i])}
-                  className="w-5 h-5 border"
+                  className="w-5 h-5 rounded-md border"
                   color={colors[i]}
                 />
               ) : (
