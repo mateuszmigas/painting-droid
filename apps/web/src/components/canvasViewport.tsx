@@ -57,13 +57,13 @@ export const CanvasViewport = memo(
     const hostElementRef = useRef<HTMLDivElement>(null);
     const canvasBackgroundRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
-    const shapeOverlayRef = useRef<HTMLDivElement>(null);
+    const vectorContextRef = useRef<HTMLDivElement>(null);
     const { context } = useCanvasContextStore();
     const { layers, activeLayerIndex, capturedArea } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
 
-    useSyncCanvasVectorContext(shapeOverlayRef, viewport);
+    useSyncCanvasVectorContext(vectorContextRef, viewport);
     useSyncCanvasWithLayers(
       canvasStackRef,
       layers,
@@ -87,7 +87,7 @@ export const CanvasViewport = memo(
 
     //sync shape overlay
     useEffect(() => {
-      context.vector?.render(capturedArea);
+      context.vector?.renderCapturedArea(capturedArea);
     }, [context.vector, capturedArea]);
 
     useCanvasTool(
@@ -156,7 +156,7 @@ export const CanvasViewport = memo(
         {/* show overlay shape, border and handles */}
         <div
           className="size-full origin-top-left absolute pointer-events-none left-0 top-0"
-          ref={shapeOverlayRef}
+          ref={vectorContextRef}
           style={{
             zIndex: layers.length + 1,
           }}

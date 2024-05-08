@@ -48,7 +48,7 @@ export const useCanvasToolHandlers = () => {
 
   const drawSelectedShape = useStableCallback(
     async (shape: CanvasCapturedArea) => {
-      context.vector?.render(shape);
+      context.vector?.renderCapturedArea(shape);
     }
   );
 
@@ -102,7 +102,7 @@ export const useCanvasToolHandlers = () => {
     }
 
     if (context.vector) {
-      context.vector.render(null);
+      context.vector.renderCapturedArea(null);
     }
 
     if (context.bitmap) {

@@ -58,7 +58,7 @@ class RectangleSelectTool implements CanvasTool<never> {
       minSize
     );
     this.shape.boundingBox = { x, y, width, height };
-    this.vectorContext.render(this.shape);
+    this.vectorContext.renderCapturedArea(this.shape);
 
     if (event.type === "manipulationEnd") {
       this.onCommitCallback?.({ shape: this.shape });
