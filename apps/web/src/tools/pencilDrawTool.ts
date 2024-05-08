@@ -23,6 +23,7 @@ type PencilDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
 class PencilDrawTool implements CanvasTool<PencilDrawToolSettings> {
   private onCommitCallback: (() => void) | null = null;
+  private isDrawing = false;
 
   constructor(private bitmapContext: CanvasBitmapContext) {}
 
@@ -34,21 +35,23 @@ class PencilDrawTool implements CanvasTool<PencilDrawToolSettings> {
   }
 
   processEvent(event: CanvasToolEvent) {
-    if (event.type === "manipulationStart") {
+    if (event.type === "pointerDown") {
+      this.isDrawing = true;
       this.bitmapContext.beginPath();
       this.bitmapContext.moveTo(event.position.x, event.position.y);
       this.bitmapContext.lineTo(event.position.x, event.position.y);
       this.bitmapContext.stroke();
     }
 
-    if (event.type === "manipulationStep") {
+    if (event.type === "pointerMove" && this.isDrawing === true) {
       this.bitmapContext.lineTo(event.position.x, event.position.y);
       this.bitmapContext.stroke();
     }
 
-    if (event.type === "manipulationEnd") {
+    if (event.type === "pointerUp" && this.isDrawing === true) {
       this.bitmapContext.closePath();
       this.onCommitCallback?.();
+      this.isDrawing = false;
     }
   }
 

@@ -2,7 +2,7 @@ import type { CanvasContext, Position } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { canvasToolsMetadata, type CanvasToolId } from "@/tools";
 import type { CanvasTool } from "@/tools/canvasTool";
-import { subscribeToManipulationEvents } from "@/utils/manipulation/manipulationEvents";
+import { subscribeToPointerEvents } from "@/utils/manipulation/pointerEvents";
 import { useStableCallback } from ".";
 import { ShapeTransformer } from "@/tools/shapeTransformer";
 import { useCanvasToolHandlers } from "./useCanvasToolHandlers";
@@ -52,7 +52,7 @@ export const useCanvasTool = (
       currentOperation = null;
     };
 
-    const onManipulationStart = (screenPosition: Position) => {
+    const onPointerDown = (screenPosition: Position) => {
       const position = screenToCanvasConverterStable(screenPosition);
       const selectedShape = toolHandlers.getSelectedShape();
 
@@ -68,34 +68,39 @@ export const useCanvasTool = (
         if (selectedShape) {
           toolHandlers.applyOrClearSelectedShape();
         }
-        tool.processEvent({ type: "manipulationStart", position });
+        tool.processEvent({ type: "pointerDown", position });
       }
     };
 
-    const onManipulationUpdate = (screenPosition: Position) => {
+    const onPointerMove = (screenPosition: Position) => {
       const position = screenToCanvasConverterStable(screenPosition);
 
       if (currentOperation === "draw") {
-        tool.processEvent({ type: "manipulationStep", position });
-      }
-      if (currentOperation === "transform") {
+        tool.processEvent({ type: "pointerMove", position });
+      } else if (currentOperation === "transform") {
         shapeTransformer.transform(position);
         const result = shapeTransformer.getResult();
         result && toolHandlers.drawSelectedShape(result);
+      } else {
+        tool.processEvent({ type: "pointerMove", position });
       }
     };
 
-    const onManipulationEnd = (screenPosition: Position) => {
+    const onPointerUp = (screenPosition: Position) => {
       const position = screenToCanvasConverterStable(screenPosition);
 
       if (currentOperation === "draw") {
-        tool.processEvent({ type: "manipulationEnd", position });
+        tool.processEvent({ type: "pointerUp", position });
       }
       if (currentOperation === "transform") {
         const result = shapeTransformer.getResult();
         result && toolHandlers.transformSelectedShape(result);
       }
       reset();
+    };
+
+    const onPointerLeave = () => {
+      tool.processEvent({ type: "pointerLeave" });
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -108,11 +113,12 @@ export const useCanvasTool = (
       }
     };
 
-    const unsubscribeManipulationEvents = subscribeToManipulationEvents(
+    const unsubscribeManipulationEvents = subscribeToPointerEvents(
       element,
-      onManipulationStart,
-      onManipulationUpdate,
-      onManipulationEnd
+      onPointerDown,
+      onPointerMove,
+      onPointerUp,
+      onPointerLeave
     );
 
     document.addEventListener("keydown", keyDownHandler);

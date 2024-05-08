@@ -5,7 +5,11 @@ import {
   type CanvasToolEvent,
   createCanvasToolMetadata,
 } from "./canvasTool";
-import type { CanvasBitmapContext, Position } from "@/utils/common";
+import type {
+  CanvasBitmapContext,
+  CanvasVectorContext,
+  Position,
+} from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 import { createFrameTicker, type FrameTicker } from "@/utils/frame";
@@ -51,7 +55,10 @@ class SprayDrawTool implements CanvasTool<SprayDrawToolSettings> {
   private range = 20;
   private position: Position = { x: 0, y: 0 };
 
-  constructor(private bitmapContext: CanvasBitmapContext) {}
+  constructor(
+    private bitmapContext: CanvasBitmapContext,
+    private vectorContext: CanvasVectorContext
+  ) {}
 
   configure(settings: SprayDrawToolSettings): void {
     const { range, density, color } = settings;
@@ -62,14 +69,29 @@ class SprayDrawTool implements CanvasTool<SprayDrawToolSettings> {
   }
 
   processEvent(event: CanvasToolEvent): void {
+    if (event.type === "pointerLeave") {
+      this.vectorContext.renderShapes([]);
+      return;
+    }
+
     this.position = event.position;
 
-    if (event.type === "manipulationStart") {
+    if (event.type === "pointerMove") {
+      this.vectorContext.renderShapes([
+        {
+          type: "selection-circle",
+          position: event.position,
+          radius: this.range / 2,
+        },
+      ]);
+    }
+
+    if (event.type === "pointerDown") {
       this.frameTicker = createFrameTicker(() => this.drawParticles());
       this.frameTicker.start();
     }
 
-    if (event.type === "manipulationEnd") {
+    if (event.type === "pointerUp") {
       this.frameTicker?.stop();
       this.frameTicker = null;
       this.onCommitCallback?.();
@@ -101,6 +123,6 @@ export const sprayDrawToolMetadata = createCanvasToolMetadata({
   name: translations.name,
   icon: "spray-can",
   settingsSchema,
-  create: (context) => new SprayDrawTool(context.bitmap),
+  create: (context) => new SprayDrawTool(context.bitmap, context.vector),
 });
 

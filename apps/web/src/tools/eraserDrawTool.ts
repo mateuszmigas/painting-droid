@@ -5,7 +5,7 @@ import {
   type CanvasToolEvent,
   createCanvasToolMetadata,
 } from "./canvasTool";
-import type { CanvasBitmapContext } from "@/utils/common";
+import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 
 const translations = getTranslations().tools.draw.eraser;
@@ -30,8 +30,12 @@ type EraserDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
 class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
   private onCommitCallback: (() => void) | null = null;
+  private isDrawing = false;
 
-  constructor(private bitmapContext: CanvasBitmapContext) {}
+  constructor(
+    private bitmapContext: CanvasBitmapContext,
+    private vectorContext: CanvasVectorContext
+  ) {}
 
   configure(settings: EraserDrawToolSettings): void {
     const { size } = settings;
@@ -42,7 +46,8 @@ class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
   }
 
   processEvent(event: CanvasToolEvent) {
-    if (event.type === "manipulationStart") {
+    if (event.type === "pointerDown") {
+      this.isDrawing = true;
       this.bitmapContext.save();
       this.bitmapContext.globalCompositeOperation = "destination-out";
       this.bitmapContext.beginPath();
@@ -51,15 +56,30 @@ class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
       this.bitmapContext.stroke();
     }
 
-    if (event.type === "manipulationStep") {
-      this.bitmapContext.lineTo(event.position.x, event.position.y);
-      this.bitmapContext.stroke();
+    if (event.type === "pointerMove") {
+      this.vectorContext.renderShapes([
+        {
+          type: "selection-circle",
+          position: event.position,
+          radius: this.bitmapContext.lineWidth / 2,
+        },
+      ]);
+
+      if (this.isDrawing) {
+        this.bitmapContext.lineTo(event.position.x, event.position.y);
+        this.bitmapContext.stroke();
+      }
     }
 
-    if (event.type === "manipulationEnd") {
+    if (event.type === "pointerUp" && this.isDrawing === true) {
       this.bitmapContext.closePath();
       this.bitmapContext.restore();
       this.onCommitCallback?.();
+      this.isDrawing = false;
+    }
+
+    if (event.type === "pointerLeave") {
+      this.vectorContext.renderShapes([]);
     }
   }
 
@@ -67,7 +87,9 @@ class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
     this.onCommitCallback = callback;
   }
 
-  reset() {}
+  reset() {
+    this.isDrawing = false;
+  }
 }
 
 export const eraserDrawToolMetadata = createCanvasToolMetadata({
@@ -75,6 +97,6 @@ export const eraserDrawToolMetadata = createCanvasToolMetadata({
   name: translations.name,
   icon: "eraser",
   settingsSchema,
-  create: (context) => new EraserDrawTool(context.bitmap),
+  create: (context) => new EraserDrawTool(context.bitmap, context.vector),
 });
 

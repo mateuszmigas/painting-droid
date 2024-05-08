@@ -25,7 +25,15 @@ class RectangleSelectTool implements CanvasTool<never> {
   configure(_: never): void {}
 
   processEvent(event: CanvasToolEvent) {
-    if (event.type === "manipulationStart") {
+    if (
+      event.type !== "pointerDown" &&
+      event.type !== "pointerMove" &&
+      event.type !== "pointerUp"
+    ) {
+      return;
+    }
+
+    if (event.type === "pointerDown") {
       this.startPosition = {
         x: fastRound(event.position.x),
         y: fastRound(event.position.y),
@@ -39,7 +47,7 @@ class RectangleSelectTool implements CanvasTool<never> {
     }
 
     if (!this.startPosition || !this.shape) {
-      throw new Error("RectangleSelectTool: start or shape not set");
+      return;
     }
 
     const endPosition = {
@@ -60,8 +68,9 @@ class RectangleSelectTool implements CanvasTool<never> {
     this.shape.boundingBox = { x, y, width, height };
     this.vectorContext.renderCapturedArea(this.shape);
 
-    if (event.type === "manipulationEnd") {
+    if (event.type === "pointerUp") {
       this.onCommitCallback?.({ shape: this.shape });
+      this.startPosition = null;
     }
   }
 

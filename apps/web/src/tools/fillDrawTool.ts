@@ -43,7 +43,7 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
   }
 
   processEvent(event: CanvasToolEvent) {
-    if (event.type !== "manipulationStart") {
+    if (event.type !== "pointerDown") {
       return;
     }
     const imageData = this.bitmapContext.getImageData(
