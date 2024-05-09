@@ -188,6 +188,7 @@ const translations = {
     apply: "Apply",
     cancel: "Cancel",
     close: "Close",
+    color: "Color",
     download: "Download",
     generate: "Generate",
     regenerate: "Regenerate",
@@ -232,6 +233,10 @@ const translations = {
     restart: "Restart",
     install: "Install",
     notifyDesktop: "Try desktop app for custom AI models",
+  },
+  links: {
+    reportIssue: "Report Issue",
+    viewSource: "View Source",
   },
 };
 

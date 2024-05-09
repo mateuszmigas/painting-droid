@@ -15,11 +15,18 @@ export const ToolSetting = memo(
     const { type } = customField;
 
     if (type === "color") {
-      return <ColorSetting value={value as RgbaColor} onChange={onChange} />;
+      return (
+        <ColorSetting
+          title={customField.name}
+          value={value as RgbaColor}
+          onChange={onChange}
+        />
+      );
     }
     if (type === "option-number" || type === "option-string") {
       return (
         <OptionSetting
+          title={customField.name}
           value={value as number}
           onChange={onChange}
           options={customField.options as { value: number; label: string }[]}
@@ -29,6 +36,7 @@ export const ToolSetting = memo(
     if (type === "range-number" || type === "range-percent") {
       return (
         <RangeSetting
+          title={customField.name}
           value={value as number}
           onChange={onChange}
           format={type === "range-percent" ? "percent" : "number"}

@@ -6,9 +6,10 @@ import { features } from "@/constants";
 export const ColorPicker = (props: {
   value: RgbaColor;
   onChange: (color: RgbaColor) => void;
+  title: string;
   className?: string;
 }) => {
-  const { value, onChange, className } = props;
+  const { value, onChange, title, className } = props;
   return features.nativeColorPicker ? (
     <NativeColorPicker
       value={value}
@@ -19,6 +20,7 @@ export const ColorPicker = (props: {
     <CustomColorPicker
       value={value}
       onChange={onChange}
+      title={title}
       className={className}
     />
   );

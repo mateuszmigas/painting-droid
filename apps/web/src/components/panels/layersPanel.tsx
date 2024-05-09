@@ -6,6 +6,9 @@ import { memo, useMemo } from "react";
 import type { CanvasLayer } from "@/canvas/canvasState";
 import { useCanvasActionDispatcher } from "@/hooks";
 import { ImageFromBlob } from "../image/imageFromBlob";
+import { CommandIconButton } from "../commandIconButton";
+import { getTranslations } from "@/translations";
+const translations = getTranslations();
 
 const LayerItem = (props: {
   layer: CanvasLayer;
@@ -26,6 +29,11 @@ const LayerItem = (props: {
       <IconButton
         type={layer.visible ? "visible" : "hidden"}
         size="small"
+        title={
+          layer.visible
+            ? translations.canvasActions.hideLayer
+            : translations.canvasActions.showLayer
+        }
         onClick={(e) => {
           e.stopPropagation();
           setVisibility(!layer.visible);
@@ -53,67 +61,37 @@ export const LayersPanel = memo(() => {
   const activeLayerId = layers[activeLayerIndex].id;
   const canvasActionDispatcher = useCanvasActionDispatcher();
 
-  const sortedLayers = useMemo(() => layers.slice().sort((a, b) => a.id.localeCompare(b.id)), [layers]);
-  const layersOrder = useMemo(() => layers.map((layer) => layer.id).reverse(), [layers]);
+  const sortedLayers = useMemo(
+    () => layers.slice().sort((a, b) => a.id.localeCompare(b.id)),
+    [layers]
+  );
+  const layersOrder = useMemo(
+    () => layers.map((layer) => layer.id).reverse(),
+    [layers]
+  );
 
   return (
     <div className="flex flex-col size-full p-small gap-small">
       <div className="flex flex-row gap-small items-center justify-between">
         <div className="flex flex-row gap-small items-center">
-          <IconButton
-            type="plus"
-            size="small"
-            onClick={() => canvasActionDispatcher.execute("addLayer", {})}
-          />
-          <IconButton
-            type="copy"
-            size="small"
-            onClick={() =>
-              canvasActionDispatcher.execute("duplicateLayer", {
-                layerId: activeLayerId,
-              })
-            }
-          />
-          <IconButton
+          <CommandIconButton commandId="addLayer" />
+          <CommandIconButton commandId="duplicateLayer" />
+          <CommandIconButton
             disabled={activeLayerIndex === layers.length - 1}
-            type="arrow-up"
-            size="small"
-            onClick={() =>
-              canvasActionDispatcher.execute("moveLayerUp", {
-                layerId: activeLayerId,
-              })
-            }
+            commandId="moveLayerUp"
           />
-          <IconButton
+          <CommandIconButton
             disabled={activeLayerIndex === 0}
-            type="arrow-down"
-            size="small"
-            onClick={() =>
-              canvasActionDispatcher.execute("moveLayerDown", {
-                layerId: activeLayerId,
-              })
-            }
+            commandId="moveLayerDown"
           />
-          <IconButton
+          <CommandIconButton
             disabled={activeLayerIndex === 0}
-            type="merge"
-            size="small"
-            onClick={() =>
-              canvasActionDispatcher.execute("mergeLayerDown", {
-                layerId: activeLayerId,
-              })
-            }
+            commandId="mergeLayerDown"
           />
         </div>
-        <IconButton
+        <CommandIconButton
           disabled={layers.length === 1}
-          type="x"
-          size="small"
-          onClick={() =>
-            canvasActionDispatcher.execute("removeLayer", {
-              layerId: activeLayerId,
-            })
-          }
+          commandId="removeLayer"
         />
       </div>
       <div className="flex flex-col gap-small overflow-auto relative flex-1">
@@ -121,7 +99,9 @@ export const LayersPanel = memo(() => {
           <div
             className="absolute transition-transform duration-standard bg-background"
             style={{
-              transform: `translateY(${layersOrder.indexOf(layer.id) * (76 + 6)}px)`,
+              transform: `translateY(${
+                layersOrder.indexOf(layer.id) * (76 + 6)
+              }px)`,
               zIndex: activeLayerId === layer.id ? 1 : 0,
               width: "100%",
             }}
