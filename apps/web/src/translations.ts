@@ -44,6 +44,12 @@ const translations = {
       },
     },
     textToImage: { name: "Text to Image" },
+    smartCrop: {
+      name: "Smart Crop",
+      result: {
+        noObjects: "No objects detected",
+      },
+    },
     errors: {
       429: "Rate limit exceeded",
       401: "API key invalid",

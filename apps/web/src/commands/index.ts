@@ -22,6 +22,7 @@ import { command as hideLayer } from "./hideLayer";
 import { command as showLayer } from "./showLayer";
 import { command as openLabelObjectsDialog } from "./openLabelObjectsDialog";
 import { command as openTextToImageDialog } from "./openTextToImageDialog";
+import { command as openSmartCropDialog } from "./openSmartCropDialog";
 import { command as copyImage } from "./copyImage";
 import { command as pasteImage } from "./pasteImage";
 import { command as cutImage } from "./cutImage";
@@ -62,6 +63,7 @@ export const commands = {
   openResizeCanvasDialog,
   openSettingsDialog,
   mergeLayerDown,
+  openSmartCropDialog,
 } as const;
 
 export type CommandId = keyof typeof commands;
