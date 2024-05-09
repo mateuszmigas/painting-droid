@@ -37,8 +37,8 @@ const translations = {
   models: {
     name: "Models",
     prompt: "Prompt",
-    objectDetection: {
-      name: "Object Detection",
+    labelObjects: {
+      name: "Label Objects",
       result: {
         noObjects: "No objects detected",
       },

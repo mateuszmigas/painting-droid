@@ -127,9 +127,10 @@ export const createMenuBarDefinition = (
       type: "parent",
       label: translations.models.name,
       items: [
-        itemFromCommand("openObjectDetectionDialog", executeCommand),
+        itemFromCommand("openLabelObjectsDialog", executeCommand),
         itemFromCommand("openTextToImageDialog", executeCommand),
       ],
     },
   ];
 };
+

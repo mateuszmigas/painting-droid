@@ -20,7 +20,7 @@ import { command as duplicateLayer } from "./duplicateLayer";
 import { command as mergeLayerDown } from "./mergeLayerDown";
 import { command as hideLayer } from "./hideLayer";
 import { command as showLayer } from "./showLayer";
-import { command as openObjectDetectionDialog } from "./openObjectDetectionDialog";
+import { command as openLabelObjectsDialog } from "./openLabelObjectsDialog";
 import { command as openTextToImageDialog } from "./openTextToImageDialog";
 import { command as copyImage } from "./copyImage";
 import { command as pasteImage } from "./pasteImage";
@@ -52,7 +52,7 @@ export const commands = {
   duplicateLayer,
   hideLayer,
   showLayer,
-  openObjectDetectionDialog,
+  openLabelObjectsDialog,
   openTextToImageDialog,
   copyImage,
   pasteImage,

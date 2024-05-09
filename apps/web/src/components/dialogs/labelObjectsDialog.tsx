@@ -57,7 +57,7 @@ const applyResultToImage = (
     .toCompressedData();
 };
 
-export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
+export const LabelObjectsDialog = memo((props: { close: () => void }) => {
   const { close } = props;
 
   const activeLayer = useWorkspacesStore((state) =>
@@ -127,7 +127,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
       data: imageData,
       layerId: activeLayer.id,
       icon: "brain",
-      display: translations.models.objectDetection.name,
+      display: translations.models.labelObjects.name,
     });
     close();
   };
@@ -137,7 +137,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
-        <DialogTitle>{translations.models.objectDetection.name}</DialogTitle>
+        <DialogTitle>{translations.models.labelObjects.name}</DialogTitle>
       </DialogHeader>
       <form
         className="flex flex-col gap-big sm:flex-row"
@@ -194,7 +194,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
                 </div>
               ) : (
                 <div className="text-xs">
-                  {translations.models.objectDetection.result.noObjects}
+                  {translations.models.labelObjects.result.noObjects}
                 </div>
               )}
             </div>
