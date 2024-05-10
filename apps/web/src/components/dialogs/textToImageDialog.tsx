@@ -154,6 +154,10 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
 
   const error = form.formState.errors.root?.message;
 
+  //todo: remove after release
+  const isLocked =
+    models.find((model) => model.id === modelId)?.definition?.type === "demo";
+
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
@@ -215,12 +219,17 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                   <FormItem>
                     <FormLabel>{translations.models.prompt}</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isLocked} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              {isLocked && (
+                <FormMessage className={"text-muted-foreground"}>
+                  {"Demo model prompt cannot be edited"}
+                </FormMessage>
+              )}
               <div className="flex flex-col gap-big">
                 {Object.entries(form.watch("modelOptionsValues"))
                   .filter(([key]) => modelOptions[key])
