@@ -29,7 +29,7 @@ export const ModelBadges = memo((props: { baseModel: BaseModel }) => {
           style={{ backgroundColor: markerColors[1] }}
           variant="outline"
         >
-          {translations.models.objectDetection.name}
+          {translations.models.labelObjects.name}
         </Badge>
       )}
     </div>

@@ -25,39 +25,10 @@ import {
   useCanvasActionDispatcher,
   useObjectDetectionModels,
 } from "@/hooks";
-import { ImageProcessor } from "@/utils/imageProcessor";
-import { markerColors } from "@/constants";
-
-const getColor = (index: number) => markerColors[index % markerColors.length];
 
 const translations = getTranslations();
 
-const applyResultToImage = (
-  imageData: ImageCompressedData,
-  result: ObjectDetectionResult
-) => {
-  return ImageProcessor.fromCompressedData(imageData)
-    .useContext(async (context) => {
-      context.lineWidth = 4;
-
-      for (let i = result.length - 1; i >= 0; i--) {
-        const item = result[i];
-        context.strokeStyle = getColor(i);
-        context.strokeRect(
-          item.box.x,
-          item.box.y,
-          item.box.width,
-          item.box.height
-        );
-        context.font = "16px Arial";
-        context.fillStyle = getColor(i);
-        context.fillText(item.label, item.box.x + 5, item.box.y + 16);
-      }
-    })
-    .toCompressedData();
-};
-
-export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
+export const SmartCropDialog = memo((props: { close: () => void }) => {
   const { close } = props;
 
   const activeLayer = useWorkspacesStore((state) =>
@@ -75,9 +46,17 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [progressMessage, setProgressMessage] = useState<string | null>(null);
-  const [result, setResult] = useState<ObjectDetectionResult | null | string>(
+  const [result, setResult] = useState<ObjectDetectionResult[] | null | string>(
     null
   );
+  const [selectedDetectionIndex, setSelectedDetectionIndex] = useState<
+    number | null
+  >(null);
+  const selectedCrop =
+    Array.isArray(result) && selectedDetectionIndex !== null
+      ? result[selectedDetectionIndex].box
+      : null;
+
   const [imageData, setImageData] = useState<ImageCompressedData | null>(
     activeLayer.data
   );
@@ -89,6 +68,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
       return;
     }
     setResult(null);
+    setSelectedDetectionIndex(null);
     setImageData(activeLayer.data);
     setIsProcessing(true);
 
@@ -107,11 +87,10 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
       );
 
       setResult(result);
-      if (result.length > 0) {
-        setImageData(await applyResultToImage(originalImage, result));
-      }
+      setSelectedDetectionIndex(result.length > 0 ? 0 : null);
     } catch (error) {
       setResult(translations.errors.processingError);
+      setSelectedDetectionIndex(null);
     } finally {
       setIsProcessing(false);
       setProgress(null);
@@ -120,14 +99,12 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
   };
 
   const apply = async () => {
-    if (imageData === null) {
+    if (imageData === null || selectedCrop === null) {
       return;
     }
-    await canvasActionDispatcher.execute("updateLayerData", {
-      data: imageData,
-      layerId: activeLayer.id,
-      icon: "brain",
-      display: translations.models.objectDetection.name,
+    await canvasActionDispatcher.execute("cropCanvas", {
+      crop: selectedCrop,
+      display: translations.models.smartCrop.name,
     });
     close();
   };
@@ -137,7 +114,7 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
-        <DialogTitle>{translations.models.objectDetection.name}</DialogTitle>
+        <DialogTitle>{translations.models.smartCrop.name}</DialogTitle>
       </DialogHeader>
       <form
         className="flex flex-col gap-big sm:flex-row"
@@ -147,10 +124,26 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
         }}
       >
         <ImageFit
-          containerClassName="border-primary border-2 border-dashed box-content self-center"
+          containerClassName="relative border box-content self-center"
           imageClassName="alpha-background"
           containerSize={{ width: 320, height: 320 }}
           src={imageDataUrl}
+          overlayNodeRenderer={() => {
+            if (selectedCrop === null) {
+              return null;
+            }
+            return (
+              <div
+                style={{
+                  width: `${(100 * selectedCrop.width) / size.width}%`,
+                  height: `${(100 * selectedCrop.height) / size.height}%`,
+                  left: `${(100 * selectedCrop.x) / size.width}%`,
+                  top: `${(100 * selectedCrop.y) / size.height}%`,
+                }}
+                className="absolute border-2 border-dashed border-primary"
+              />
+            );
+          }}
         />
 
         <div className="flex flex-col gap-big justify-between min-w-64">
@@ -176,25 +169,30 @@ export const ObjectDetectionDialog = memo((props: { close: () => void }) => {
               {typeof result === "string" ? (
                 <div className="text-destructive text-xs">{result}</div>
               ) : result.length > 0 ? (
-                <div className="rounded-md min-h-0 flex-1 border overflow-auto max-h-[176px] px-small py-0.5">
-                  {result?.map((r, index) => (
-                    <div
+                <Select
+                  value={selectedDetectionIndex?.toString() ?? ""}
+                  onValueChange={(value) =>
+                    setSelectedDetectionIndex(Number(value))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {result.map((model, index) => (
                       // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                      key={index}
-                      className="flex flex-row justify-between gap-small items-center"
-                    >
-                      <div
-                        style={{ backgroundColor: getColor(index) }}
-                        className="w-5 h-5 rounded-sm"
-                      />
-                      <div className="text-left flex-1">{r.label}</div>
-                      <div>{r.score.toFixed(2)}</div>
-                    </div>
-                  ))}
-                </div>
+                      <SelectItem key={index} value={index.toString()}>
+                        <div className="flex flex-row items-center gap-medium">
+                          <div>{model.score.toFixed(2)}</div>
+                          <div>{model.label}</div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               ) : (
                 <div className="text-xs">
-                  {translations.models.objectDetection.result.noObjects}
+                  {translations.models.labelObjects.result.noObjects}
                 </div>
               )}
             </div>

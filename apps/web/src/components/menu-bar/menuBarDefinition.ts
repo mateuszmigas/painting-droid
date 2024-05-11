@@ -106,6 +106,7 @@ export const createMenuBarDefinition = (
       label: translations.adjustments.name,
       items: [
         itemFromCommand("openCropCanvasDialog", executeCommand),
+        itemFromCommand("openSmartCropDialog", executeCommand),
         itemFromCommand("openResizeCanvasDialog", executeCommand),
         { type: "separator" },
         ...Object.entries(adjustmentsMetadata).map(
@@ -127,9 +128,10 @@ export const createMenuBarDefinition = (
       type: "parent",
       label: translations.models.name,
       items: [
-        itemFromCommand("openObjectDetectionDialog", executeCommand),
+        itemFromCommand("openLabelObjectsDialog", executeCommand),
         itemFromCommand("openTextToImageDialog", executeCommand),
       ],
     },
   ];
 };
+

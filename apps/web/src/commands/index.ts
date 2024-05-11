@@ -20,8 +20,9 @@ import { command as duplicateLayer } from "./duplicateLayer";
 import { command as mergeLayerDown } from "./mergeLayerDown";
 import { command as hideLayer } from "./hideLayer";
 import { command as showLayer } from "./showLayer";
-import { command as openObjectDetectionDialog } from "./openObjectDetectionDialog";
+import { command as openLabelObjectsDialog } from "./openLabelObjectsDialog";
 import { command as openTextToImageDialog } from "./openTextToImageDialog";
+import { command as openSmartCropDialog } from "./openSmartCropDialog";
 import { command as copyImage } from "./copyImage";
 import { command as pasteImage } from "./pasteImage";
 import { command as cutImage } from "./cutImage";
@@ -52,7 +53,7 @@ export const commands = {
   duplicateLayer,
   hideLayer,
   showLayer,
-  openObjectDetectionDialog,
+  openLabelObjectsDialog,
   openTextToImageDialog,
   copyImage,
   pasteImage,
@@ -62,6 +63,7 @@ export const commands = {
   openResizeCanvasDialog,
   openSettingsDialog,
   mergeLayerDown,
+  openSmartCropDialog,
 } as const;
 
 export type CommandId = keyof typeof commands;

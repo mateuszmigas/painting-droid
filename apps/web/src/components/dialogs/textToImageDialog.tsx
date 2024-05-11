@@ -174,7 +174,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                 width: `${imageSize.width * scale}px`,
                 height: `${imageSize.height * scale}px`,
               }}
-              className=" border-primary border-2 border-dashed object-contain box-content"
+              className="border object-contain box-content"
             >
               {image && (
                 <ImageFromBlob
