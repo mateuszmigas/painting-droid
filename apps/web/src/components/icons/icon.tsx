@@ -64,6 +64,7 @@ import {
   Star,
   PaintBucket,
   SprayCan,
+  Tags,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -137,7 +138,8 @@ export type IconType =
   | "merge"
   | "star"
   | "paint-bucket"
-  | "spray-can";
+  | "spray-can"
+  | "tags";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -315,6 +317,8 @@ const renderLucideIcon = (
       return <PaintBucket className={className} size={fontSize} />;
     case "spray-can":
       return <SprayCan className={className} size={fontSize} />;
+    case "tags":
+      return <Tags className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
