@@ -6,7 +6,7 @@ import { SmartCropDialog } from "@/components/dialogs/smartCropDialog";
 const translations = getTranslations();
 
 export const command = createCommand({
-  icon: "shapes",
+  icon: "scissors",
   id: "openSmartCropDialog",
   display: translations.models.smartCrop.name,
   settings: { showInPalette: true },

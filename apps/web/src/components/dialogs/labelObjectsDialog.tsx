@@ -34,7 +34,7 @@ const translations = getTranslations();
 
 const applyResultToImage = (
   imageData: ImageCompressedData,
-  result: ObjectDetectionResult
+  result: ObjectDetectionResult[]
 ) => {
   return ImageProcessor.fromCompressedData(imageData)
     .useContext(async (context) => {
@@ -75,7 +75,7 @@ export const LabelObjectsDialog = memo((props: { close: () => void }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [progressMessage, setProgressMessage] = useState<string | null>(null);
-  const [result, setResult] = useState<ObjectDetectionResult | null | string>(
+  const [result, setResult] = useState<ObjectDetectionResult[] | null | string>(
     null
   );
   const [imageData, setImageData] = useState<ImageCompressedData | null>(
@@ -147,7 +147,7 @@ export const LabelObjectsDialog = memo((props: { close: () => void }) => {
         }}
       >
         <ImageFit
-          containerClassName="border-primary border-2 border-dashed box-content self-center"
+          containerClassName="border box-content self-center"
           imageClassName="alpha-background"
           containerSize={{ width: 320, height: 320 }}
           src={imageDataUrl}

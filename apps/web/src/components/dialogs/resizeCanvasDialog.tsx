@@ -113,7 +113,7 @@ export const ResizeCanvasDialog = memo((props: { close: () => void }) => {
         >
           <div>
             <ImageFit
-              containerClassName="relative border box-content self-center overflow-hidden border-2 border-dashed border-primary"
+              containerClassName="relative border box-content self-center overflow-hidden border-border"
               imageClassName="alpha-background"
               originalImageSize={canvasData.size}
               containerSize={{ width: 320, height: 320 }}
