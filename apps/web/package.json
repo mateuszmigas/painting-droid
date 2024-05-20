@@ -18,7 +18,7 @@
     "analyze-bundle": "pnpm dlx vite-bundle-visualizer"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.3.4",
+    "@hookform/resolvers": "^3.4.0",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-context-menu": "^2.1.5",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -70,7 +70,7 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.isequal": "^4.5.8",
     "@types/lodash.throttle": "^4.1.9",
-    "@types/node": "^20.12.11",
+    "@types/node": "^20.12.12",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
     "@uiw/react-color-sketch": "^2.3.0",
