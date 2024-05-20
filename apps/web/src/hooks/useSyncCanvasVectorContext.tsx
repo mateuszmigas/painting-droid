@@ -30,10 +30,13 @@ export const useSyncCanvasVectorContext = (
     );
     setVectorContext({
       render: (groupId: string, shapes: Shape2d[]) => {
-        setStore("shapes", { ...getStore.shapes, [groupId]: shapes });
+        setStore(
+          "shapes",
+          reconcile({ ...getStore.shapes, [groupId]: shapes })
+        );
       },
       clear: (groupId: string) => {
-        setStore("shapes", { ...getStore.shapes, [groupId]: [] });
+        setStore("shapes", reconcile({ ...getStore.shapes, [groupId]: [] }));
       },
     });
     return () => {
