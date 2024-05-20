@@ -57,7 +57,7 @@ export const useCanvasTool = (
       if (shapeTransformTool.beginTransform(canvasPosition)) {
         shapeTransformTool.stepTransform(canvasPosition);
       } else {
-        toolHandlers.applyOrClearActiveShape();
+        toolHandlers.resolveActiveShape();
         drawTool.processEvent({
           type: "pointerDown",
           canvasPosition,
@@ -98,7 +98,9 @@ export const useCanvasTool = (
     };
 
     const onPointerLeave = () => {
-      drawTool.processEvent({ type: "pointerLeave" });
+      if (!shapeTransformTool.getIsTransforming()) {
+        drawTool.processEvent({ type: "pointerLeave" });
+      }
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
@@ -107,7 +109,7 @@ export const useCanvasTool = (
         toolHandlers.toolDiscard();
       }
       if (event.key === "Enter") {
-        toolHandlers.applyOrClearActiveShape();
+        toolHandlers.resolveActiveShape();
       }
     };
 

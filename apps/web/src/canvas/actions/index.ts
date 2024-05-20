@@ -11,6 +11,7 @@ import { createCanvasAction as addShape } from "./addShape";
 import { createCanvasAction as transformShape } from "./transformShape";
 import { createCanvasAction as clearActiveShape } from "./clearActiveShape";
 import { createCanvasAction as applyActiveShape } from "./applyActiveShape";
+import { createCanvasAction as resolveActiveShape } from "./resolveActiveShape";
 import { createCanvasAction as cutCapturedArea } from "./cutCapturedArea";
 import { createCanvasAction as cropCanvas } from "./cropCanvas";
 import { createCanvasAction as resizeCanvas } from "./resizeCanvas";
@@ -30,8 +31,10 @@ export const canvasActions = {
   transformShape,
   clearActiveShape,
   applyActiveShape,
+  resolveActiveShape,
   cutCapturedArea,
   cropCanvas,
   resizeCanvas,
   mergeLayerDown,
 };
+

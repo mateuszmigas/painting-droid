@@ -9,7 +9,6 @@ import type { CanvasToolResult } from "@/tools/canvasTool";
 import { restoreContextFromCompressed } from "@/utils/canvas";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import { useMemo } from "react";
-import { areRectanglesEqual } from "@/utils/geometry";
 import type { CanvasShape } from "@/canvas/canvasState";
 
 export const useCanvasToolHandlers = () => {
@@ -29,20 +28,9 @@ export const useCanvasToolHandlers = () => {
     });
   });
 
-  const applyOrClearActiveShape = useStableCallback(async () => {
-    const activeShape = getActiveShape();
-    if (!activeShape) {
-      return;
-    }
-
-    const clearShape =
-      activeShape.capturedArea &&
-      areRectanglesEqual(activeShape.boundingBox, activeShape.capturedArea.box);
-
-    if (clearShape) {
-      await canvasActionDispatcher.execute("clearActiveShape", undefined);
-    } else {
-      await canvasActionDispatcher.execute("applyActiveShape", undefined);
+  const resolveActiveShape = useStableCallback(async () => {
+    if (getActiveShape()) {
+      await canvasActionDispatcher.execute("resolveActiveShape", undefined);
     }
   });
 
@@ -106,14 +94,14 @@ export const useCanvasToolHandlers = () => {
     return {
       getActiveShape,
       transformShape,
-      applyOrClearActiveShape,
+      resolveActiveShape,
       toolCommit,
       toolDiscard,
     };
   }, [
     getActiveShape,
     transformShape,
-    applyOrClearActiveShape,
+    resolveActiveShape,
     toolCommit,
     toolDiscard,
   ]);
