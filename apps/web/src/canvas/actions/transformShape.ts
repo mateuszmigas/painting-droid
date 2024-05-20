@@ -1,5 +1,5 @@
-import { Rectangle } from "@/utils/common";
-import { CanvasShape, CanvasShapeId } from "../canvasState";
+import type { Rectangle } from "@/utils/common";
+import type { CanvasShape, CanvasShapeId } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { getTranslations } from "@/translations";
@@ -55,3 +55,4 @@ export const createCanvasAction = async (
     },
   };
 };
+

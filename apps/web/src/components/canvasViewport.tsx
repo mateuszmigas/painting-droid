@@ -60,8 +60,9 @@ export const CanvasViewport = memo(
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
     const vectorContextRef = useRef<HTMLDivElement>(null);
     const { context } = useCanvasContextStore();
-    const { layers, activeLayerIndex, shapes, activeShapeId } =
-      useWorkspacesStore(activeWorkspaceCanvasDataSelector);
+    const { layers, activeLayerIndex, shapes } = useWorkspacesStore(
+      activeWorkspaceCanvasDataSelector
+    );
 
     useSyncCanvasVectorContext(vectorContextRef, viewport);
     useSyncCanvasWithLayers(canvasStackRef, layers, activeLayerIndex);

@@ -26,6 +26,7 @@ export const MetadataPanel = () => {
           {activeShapeId}
           <div>all</div>
           {Object.entries(shapes).map((shape, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
             <div key={index}>{shape[0]}</div>
           ))}
         </div>
@@ -33,3 +34,4 @@ export const MetadataPanel = () => {
     </div>
   );
 };
+
