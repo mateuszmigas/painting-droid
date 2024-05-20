@@ -4,7 +4,7 @@ import type { Viewport } from "@/utils/manipulation";
 import { Shape, type Shape2d } from "./shapes/shape.solid";
 
 export const VectorCanvas = (props: {
-  shapes?: Record<string, Shape2d[]> | null;
+  shapes?: Record<string, Shape2d[]>;
   viewport: Viewport;
 }) => {
   return (
@@ -13,9 +13,9 @@ export const VectorCanvas = (props: {
         <Solid.For each={Object.values(props.shapes!)}>
           {(shapes) => (
             <g>
-              {shapes.map((shape) => (
-                <Shape shape={shape} viewport={props.viewport} />
-              ))}
+              <Solid.For each={shapes}>
+                {(shape) => <Shape shape={shape} viewport={props.viewport} />}
+              </Solid.For>
             </g>
           )}
         </Solid.For>

@@ -3,7 +3,7 @@ import type { Observable } from "@/utils/observable";
 import { type RefObject, useEffect, useMemo } from "react";
 import { useListener } from ".";
 import { createComponent, render } from "solid-js/web";
-import { createStore } from "solid-js/store";
+import { createStore, reconcile } from "solid-js/store";
 import { VectorCanvas } from "../components/solid/vectorCanvas.solid";
 import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 import type { Shape2d } from "@/utils/common";
@@ -16,7 +16,7 @@ export const useSyncCanvasVectorContext = (
   const [getStore, setStore] = useMemo(
     () =>
       createStore<{
-        shapes?: Record<string, Shape2d[]> | null;
+        shapes?: Record<string, Shape2d[]>;
         viewport: Viewport;
       }>({ shapes: {}, viewport: viewport.getValue() }),
     [viewport]
@@ -30,10 +30,10 @@ export const useSyncCanvasVectorContext = (
     );
     setVectorContext({
       render: (groupId: string, shapes: Shape2d[]) => {
-        setStore("shapes", groupId, shapes);
+        setStore("shapes", { ...getStore.shapes, [groupId]: shapes });
       },
       clear: (groupId: string) => {
-        setStore("shapes", groupId, undefined as never as Shape2d[]);
+        setStore("shapes", { ...getStore.shapes, [groupId]: [] });
       },
     });
     return () => {
