@@ -89,15 +89,6 @@ export const CanvasViewport = memo(
 
       context.vector.render(
         "tool",
-        // [
-        //   {
-        //     position: { x: 943, y: 417 },
-        //     type: "rectangle",
-        //     size: { width: 1, height: 1 },
-        //     fillColor: { r: 0, g: 0, b: 0, a: 0.5 },
-        //     stroke: { color: { r: 0, g: 0, b: 0, a: 1 }, width: 1 },
-        //   },
-        // ]
         Object.values(shapes).flatMap(canvasShapeToShapes2d)
       );
     }, [context.vector, shapes]);
