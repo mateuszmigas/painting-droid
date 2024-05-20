@@ -4,6 +4,7 @@ import {
   type CanvasTool,
   type CanvasToolEvent,
   createCanvasToolMetadata,
+  type CanvasToolResult,
 } from "./canvasTool";
 import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
@@ -29,7 +30,7 @@ const settingsSchema = createCanvasToolSettingsSchema({
 type EraserDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
 class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
-  private onCommitCallback: (() => void) | null = null;
+  private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
   private isDrawing = false;
 
   constructor(
@@ -51,22 +52,25 @@ class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
       this.bitmapContext.save();
       this.bitmapContext.globalCompositeOperation = "destination-out";
       this.bitmapContext.beginPath();
-      this.bitmapContext.moveTo(event.position.x, event.position.y);
-      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.moveTo(event.canvasPosition.x, event.canvasPosition.y);
+      this.bitmapContext.lineTo(event.canvasPosition.x, event.canvasPosition.y);
       this.bitmapContext.stroke();
     }
 
     if (event.type === "pointerMove") {
-      this.vectorContext.renderShapes([
+      this.vectorContext.render("tool", [
         {
           type: "selection-circle",
-          position: event.position,
+          position: event.canvasPosition,
           radius: this.bitmapContext.lineWidth / 2,
         },
       ]);
 
       if (this.isDrawing) {
-        this.bitmapContext.lineTo(event.position.x, event.position.y);
+        this.bitmapContext.lineTo(
+          event.canvasPosition.x,
+          event.canvasPosition.y
+        );
         this.bitmapContext.stroke();
       }
     }
@@ -74,20 +78,21 @@ class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
     if (event.type === "pointerUp" && this.isDrawing === true) {
       this.bitmapContext.closePath();
       this.bitmapContext.restore();
-      this.onCommitCallback?.();
+      this.onCommitCallback?.({ bitmapContextChanged: true });
       this.isDrawing = false;
     }
 
     if (event.type === "pointerLeave") {
-      this.vectorContext.renderShapes([]);
+      this.vectorContext.clear("tool");
     }
   }
 
-  onCommit(callback: () => void) {
+  onCommit(callback: (result: CanvasToolResult) => void) {
     this.onCommitCallback = callback;
   }
 
   reset() {
+    this.bitmapContext.restore();
     this.isDrawing = false;
   }
 }

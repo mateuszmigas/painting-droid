@@ -12,7 +12,6 @@ import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
 import { adjustmentsMetadata } from "@/adjustments";
 import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 import {
-  clearContext,
   restoreContextFromCompressed,
   restoreContextFromUncompressed,
 } from "@/utils/canvas";
@@ -82,11 +81,7 @@ export const AdjustmentsPopup = memo(() => {
         const activeLayer = activeWorkspaceActiveLayerSelector(
           useWorkspacesStore.getState()
         );
-        if (activeLayer.data) {
-          restoreContextFromCompressed(previewContext, activeLayer.data);
-        } else {
-          clearContext(previewContext);
-        }
+        restoreContextFromCompressed(previewContext, activeLayer.data);
       }
     };
   }, [previewContext]);

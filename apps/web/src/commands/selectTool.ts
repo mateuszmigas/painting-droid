@@ -1,7 +1,10 @@
 import type { CanvasToolId } from "@/tools";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { clearOrApplyCapturedArea } from "./utils";
+import {
+  activeShapeSelector,
+  activeWorkspaceCanvasDataSelector,
+} from "@/store/workspacesStore";
 
 export const command = createCommand({
   id: "selectTool",
@@ -13,7 +16,18 @@ export const command = createCommand({
     }
   ) => {
     const { toolId } = payload;
-    await clearOrApplyCapturedArea(context);
+
+    const canvasData = activeWorkspaceCanvasDataSelector(
+      context.stores.workspaces()
+    );
+
+    if (activeShapeSelector(canvasData)) {
+      await context.canvasActionDispatcher.execute(
+        "resolveActiveShape",
+        undefined
+      );
+    }
+
     context.stores.tool().setSelectedToolId(toolId);
   },
 });

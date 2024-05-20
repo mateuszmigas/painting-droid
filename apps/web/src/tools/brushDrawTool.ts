@@ -1,4 +1,5 @@
 import {
+  type CanvasToolResult,
   createCanvasToolMetadata,
   createCanvasToolSettingsSchema,
   type CanvasTool,
@@ -35,7 +36,7 @@ const settingsSchema = createCanvasToolSettingsSchema({
 type BrushDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
 class BrushDrawTool implements CanvasTool<BrushDrawToolSettings> {
-  private onCommitCallback: (() => void) | null = null;
+  private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
   private isDrawing = false;
 
   constructor(
@@ -56,38 +57,41 @@ class BrushDrawTool implements CanvasTool<BrushDrawToolSettings> {
     if (event.type === "pointerDown") {
       this.isDrawing = true;
       this.bitmapContext.beginPath();
-      this.bitmapContext.moveTo(event.position.x, event.position.y);
-      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.moveTo(event.canvasPosition.x, event.canvasPosition.y);
+      this.bitmapContext.lineTo(event.canvasPosition.x, event.canvasPosition.y);
       this.bitmapContext.stroke();
     }
 
     if (event.type === "pointerMove") {
-      this.vectorContext.renderShapes([
+      this.vectorContext.render("tool", [
         {
           type: "selection-circle",
-          position: event.position,
+          position: event.canvasPosition,
           radius: this.bitmapContext.lineWidth / 2,
         },
       ]);
 
       if (this.isDrawing) {
-        this.bitmapContext.lineTo(event.position.x, event.position.y);
+        this.bitmapContext.lineTo(
+          event.canvasPosition.x,
+          event.canvasPosition.y
+        );
         this.bitmapContext.stroke();
       }
     }
 
     if (event.type === "pointerUp" && this.isDrawing === true) {
       this.bitmapContext.closePath();
-      this.onCommitCallback?.();
+      this.onCommitCallback?.({ bitmapContextChanged: true });
       this.isDrawing = false;
     }
 
     if (event.type === "pointerLeave") {
-      this.vectorContext.renderShapes([]);
+      this.vectorContext.clear("tool");
     }
   }
 
-  onCommit(callback: () => void) {
+  onCommit(callback: (result: CanvasToolResult) => void) {
     this.onCommitCallback = callback;
   }
 

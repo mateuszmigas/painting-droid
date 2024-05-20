@@ -11,11 +11,11 @@ const translations = {
     addLayer: "Add Layer",
     applySelection: "Apply Selection",
     deselect: "Deselect",
-    drawCapturedArea: {
+    addCapturedArea: {
       rectangle: "Rectangle Select",
     },
-    transformCapturedArea: {
-      rectangle: "Move Rectangle",
+    transformShape: {
+      capturedRectangle: "Move Rectangle",
     },
     duplicateLayer: "Duplicate Layer",
     mergeLayerDown: "Merge Layer Down",
@@ -247,4 +247,3 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
-

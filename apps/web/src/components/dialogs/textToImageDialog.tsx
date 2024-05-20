@@ -22,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { uuid } from "@/utils/uuid";
 import { getTranslations } from "@/translations";
 import { useCanvasActionDispatcher, useTextToImageModels } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
@@ -33,6 +32,7 @@ import { StringCustomField } from "../custom-fields/stringCustomField";
 import type { TextToImageModelInfo } from "@/hooks/useTextToImageModels";
 import { OptionNumberCustomField } from "../custom-fields/optionNumberCustomField";
 import { scaleRectangleToFitParent } from "@/utils/geometry";
+import { uuid } from "@/utils/uuid";
 
 const translations = getTranslations();
 const FormSchema = z.object({
@@ -116,18 +116,18 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     await executeCommand("selectTool", { toolId: "rectangleSelect" });
     const currentSize = (form.watch("modelOptionsValues.size") ??
       defaultSize) as Size;
-    await canvasActionDispatcher.execute("drawCapturedArea", {
+    await canvasActionDispatcher.execute("addShape", {
       display: translations.models.textToImage.name,
-      capturedArea: {
+      shape: {
         id: uuid(),
-        type: "rectangle",
+        type: "captured-rectangle",
         boundingBox: {
           x: 0,
           y: 0,
           width: currentSize.width,
           height: currentSize.height,
         },
-        captured: {
+        capturedArea: {
           box: { x: 0, y: 0, width: 0, height: 0 },
           data: image,
         },
@@ -324,4 +324,3 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

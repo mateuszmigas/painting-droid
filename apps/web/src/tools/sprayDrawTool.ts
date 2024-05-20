@@ -4,6 +4,7 @@ import {
   type CanvasTool,
   type CanvasToolEvent,
   createCanvasToolMetadata,
+  type CanvasToolResult,
 } from "./canvasTool";
 import type {
   CanvasBitmapContext,
@@ -49,7 +50,7 @@ const settingsSchema = createCanvasToolSettingsSchema({
 type SprayDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
 class SprayDrawTool implements CanvasTool<SprayDrawToolSettings> {
-  private onCommitCallback: (() => void) | null = null;
+  private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
   private frameTicker: FrameTicker | null = null;
   private density = 30;
   private range = 20;
@@ -70,17 +71,17 @@ class SprayDrawTool implements CanvasTool<SprayDrawToolSettings> {
 
   processEvent(event: CanvasToolEvent): void {
     if (event.type === "pointerLeave") {
-      this.vectorContext.renderShapes([]);
+      this.vectorContext.clear("tool");
       return;
     }
 
-    this.position = event.position;
+    this.position = event.canvasPosition;
 
     if (event.type === "pointerMove") {
-      this.vectorContext.renderShapes([
+      this.vectorContext.render("tool", [
         {
           type: "selection-circle",
-          position: event.position,
+          position: event.canvasPosition,
           radius: this.range / 2,
         },
       ]);
@@ -94,11 +95,11 @@ class SprayDrawTool implements CanvasTool<SprayDrawToolSettings> {
     if (event.type === "pointerUp") {
       this.frameTicker?.stop();
       this.frameTicker = null;
-      this.onCommitCallback?.();
+      this.onCommitCallback?.({ bitmapContextChanged: true });
     }
   }
 
-  onCommit(callback: () => void) {
+  onCommit(callback: (result: CanvasToolResult) => void) {
     this.onCommitCallback = callback;
   }
 

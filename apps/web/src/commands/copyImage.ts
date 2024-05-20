@@ -2,7 +2,10 @@ import { createSystemKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { getTranslations } from "@/translations";
-import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
+import {
+  activeShapeSelector,
+  activeWorkspaceCanvasDataSelector,
+} from "@/store/workspacesStore";
 import { clipboard } from "@/utils/clipboard";
 
 const translations = getTranslations();
@@ -17,10 +20,11 @@ export const command = createCommand({
     const canvasData = activeWorkspaceCanvasDataSelector(
       context.stores.workspaces()
     );
+    const activeShape = activeShapeSelector(canvasData);
 
-    if (canvasData.capturedArea?.captured) {
+    if (activeShape?.capturedArea) {
       try {
-        await clipboard.copyImage(canvasData.capturedArea.captured.data);
+        await clipboard.copyImage(activeShape.capturedArea.data);
       } catch {
         context.notificationService.showError(
           translations.errors.copyClipboardError
@@ -29,4 +33,3 @@ export const command = createCommand({
     }
   },
 });
-

@@ -9,6 +9,9 @@ export const isPositionInRectangle = (
   position.y >= rectangle.y &&
   position.y <= rectangle.y + rectangle.height;
 
+export const distanceBetweenPoints = (point1: Position, point2: Position) =>
+  Math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2);
+
 export const areRectanglesEqual = (
   rectangle1: Rectangle,
   rectangle2: Rectangle
@@ -80,3 +83,4 @@ export const calculateScaleToFit = (child: Size, parent: Size) => {
     ? child.height / parent.height
     : child.width / parent.width;
 };
+

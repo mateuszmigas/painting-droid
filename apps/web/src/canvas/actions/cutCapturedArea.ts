@@ -3,6 +3,7 @@ import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { getTranslations } from "@/translations";
 import { ImageProcessor } from "@/utils/imageProcessor";
+import { spreadOmitKeys } from "@/utils/object";
 
 const translations = getTranslations();
 
@@ -15,25 +16,29 @@ export const createCanvasAction = async (
 ): Promise<CanvasAction> => {
   const { display, icon } = payload;
   const state = context.getState();
-  const previousCapturedArea = state.capturedArea;
+
+  if (!state.activeShapeId) {
+    throw new Error("No active shape");
+  }
 
   const layerData = state.layers[state.activeLayerIndex].data;
+  const activeShape = state.shapes[state.activeShapeId];
 
-  if (!layerData || !state.capturedArea?.captured) {
+  if (!layerData || !activeShape.capturedArea) {
     throw new Error("No layer data to cut");
   }
 
   const newLayerData = await ImageProcessor.fromCompressedData(layerData)
     .useContext(async (context) => {
-      const { x, y, width, height } = state.capturedArea!.boundingBox;
+      const { x, y, width, height } = activeShape.boundingBox;
       context.clearRect(x, y, width, height);
     })
     .toCompressedData();
 
   const capturedData = {
-    previousCapturedArea,
+    previousActiveShape: activeShape,
+    previousActiveShapeId: state.activeShapeId,
     previousLayerData: layerData,
-    newCapturedArea: null,
     newLayerData,
   };
 
@@ -49,7 +54,10 @@ export const createCanvasAction = async (
           }
           return layer;
         }),
-        capturedArea: capturedData.newCapturedArea,
+        shapes: spreadOmitKeys(state.shapes, [
+          capturedData.previousActiveShapeId,
+        ]),
+        activeShapeId: null,
       };
     },
     undo: async (state) => {
@@ -61,9 +69,13 @@ export const createCanvasAction = async (
           }
           return layer;
         }),
-        capturedArea: capturedData.previousCapturedArea,
+        shapes: {
+          ...state.shapes,
+          [capturedData.previousActiveShapeId]:
+            capturedData.previousActiveShape,
+        },
+        activeShapeId: capturedData.previousActiveShapeId,
       };
     },
   };
 };
-

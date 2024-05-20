@@ -4,9 +4,8 @@ import { canvasToolsMetadata, type CanvasToolId } from "@/tools";
 import type { CanvasTool } from "@/tools/canvasTool";
 import { subscribeToPointerEvents } from "@/utils/manipulation/pointerEvents";
 import { useStableCallback } from ".";
-import { ShapeTransformer } from "@/tools/shapeTransformer";
+import { ShapeTransformTool } from "@/tools/shapeTransformTool";
 import { useCanvasToolHandlers } from "./useCanvasToolHandlers";
-import { isPositionInRectangle } from "@/utils/geometry";
 
 export const useCanvasTool = (
   elementRef: RefObject<HTMLElement>,
@@ -36,80 +35,81 @@ export const useCanvasTool = (
     }
 
     const element = elementRef.current;
-    const shapeTransformer = new ShapeTransformer();
-    const tool: CanvasTool<unknown> = canvasToolsMetadata[toolId].create({
+    const shapeTransformTool = new ShapeTransformTool(context.vector, () =>
+      toolHandlers.getActiveShape()
+    );
+    const drawTool: CanvasTool<unknown> = canvasToolsMetadata[toolId].create({
       bitmap: context.bitmap,
       vector: context.vector,
     });
-    tool.configure(toolSettings as never);
-    tool.onCommit((result) => toolHandlers.toolCommit(toolId, result));
-    toolRef.current = tool;
-    let currentOperation: "draw" | "transform" | null = null;
+    drawTool.configure(toolSettings as never);
+    drawTool.onCommit((result) => toolHandlers.toolCommit(toolId, result));
+    toolRef.current = drawTool;
 
     const reset = () => {
-      tool.reset();
-      shapeTransformer.reset();
-      currentOperation = null;
+      drawTool.reset();
+      shapeTransformTool.reset();
     };
 
     const onPointerDown = (screenPosition: Position) => {
-      const position = screenToCanvasConverterStable(screenPosition);
-      const selectedShape = toolHandlers.getSelectedShape();
+      const canvasPosition = screenToCanvasConverterStable(screenPosition);
 
-      if (
-        selectedShape &&
-        isPositionInRectangle(position, selectedShape.boundingBox)
-      ) {
-        currentOperation = "transform";
-        shapeTransformer.setTarget(selectedShape);
-        shapeTransformer.transform(position);
+      if (shapeTransformTool.beginTransform(canvasPosition)) {
+        shapeTransformTool.stepTransform(canvasPosition);
       } else {
-        currentOperation = "draw";
-        if (selectedShape) {
-          toolHandlers.applyOrClearSelectedShape();
-        }
-        tool.processEvent({ type: "pointerDown", position });
+        toolHandlers.resolveActiveShape();
+        drawTool.processEvent({
+          type: "pointerDown",
+          canvasPosition,
+          screenPosition,
+        });
       }
     };
 
     const onPointerMove = (screenPosition: Position) => {
-      const position = screenToCanvasConverterStable(screenPosition);
+      const canvasPosition = screenToCanvasConverterStable(screenPosition);
 
-      if (currentOperation === "draw") {
-        tool.processEvent({ type: "pointerMove", position });
-      } else if (currentOperation === "transform") {
-        shapeTransformer.transform(position);
-        const result = shapeTransformer.getResult();
-        result && toolHandlers.drawSelectedShape(result);
+      if (shapeTransformTool.getIsTransforming()) {
+        shapeTransformTool.stepTransform(canvasPosition);
       } else {
-        tool.processEvent({ type: "pointerMove", position });
+        drawTool.processEvent({
+          type: "pointerMove",
+          canvasPosition,
+          screenPosition,
+        });
       }
     };
 
     const onPointerUp = (screenPosition: Position) => {
-      const position = screenToCanvasConverterStable(screenPosition);
+      const canvasPosition = screenToCanvasConverterStable(screenPosition);
 
-      if (currentOperation === "draw") {
-        tool.processEvent({ type: "pointerUp", position });
+      if (shapeTransformTool.getIsTransforming()) {
+        const result = shapeTransformTool.commitTransform();
+        if (result) {
+          toolHandlers.transformShape(result);
+        }
+      } else {
+        drawTool.processEvent({
+          type: "pointerUp",
+          canvasPosition,
+          screenPosition,
+        });
       }
-      if (currentOperation === "transform") {
-        const result = shapeTransformer.getResult();
-        result && toolHandlers.transformSelectedShape(result);
-      }
-      reset();
     };
 
     const onPointerLeave = () => {
-      tool.processEvent({ type: "pointerLeave" });
+      if (!shapeTransformTool.getIsTransforming()) {
+        drawTool.processEvent({ type: "pointerLeave" });
+      }
     };
 
     const keyDownHandler = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         reset();
-        toolHandlers.cancel();
+        toolHandlers.toolDiscard();
       }
       if (event.key === "Enter") {
-        toolHandlers.applyOrClearSelectedShape();
+        toolHandlers.resolveActiveShape();
       }
     };
 

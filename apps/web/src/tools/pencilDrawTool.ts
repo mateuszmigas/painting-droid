@@ -4,6 +4,7 @@ import {
   createCanvasToolSettingsSchema,
   type CanvasTool,
   type CanvasToolEvent,
+  type CanvasToolResult,
 } from "./canvasTool";
 import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
@@ -22,7 +23,7 @@ const settingsSchema = createCanvasToolSettingsSchema({
 type PencilDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
 class PencilDrawTool implements CanvasTool<PencilDrawToolSettings> {
-  private onCommitCallback: (() => void) | null = null;
+  private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
   private isDrawing = false;
 
   constructor(private bitmapContext: CanvasBitmapContext) {}
@@ -38,24 +39,24 @@ class PencilDrawTool implements CanvasTool<PencilDrawToolSettings> {
     if (event.type === "pointerDown") {
       this.isDrawing = true;
       this.bitmapContext.beginPath();
-      this.bitmapContext.moveTo(event.position.x, event.position.y);
-      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.moveTo(event.canvasPosition.x, event.canvasPosition.y);
+      this.bitmapContext.lineTo(event.canvasPosition.x, event.canvasPosition.y);
       this.bitmapContext.stroke();
     }
 
     if (event.type === "pointerMove" && this.isDrawing === true) {
-      this.bitmapContext.lineTo(event.position.x, event.position.y);
+      this.bitmapContext.lineTo(event.canvasPosition.x, event.canvasPosition.y);
       this.bitmapContext.stroke();
     }
 
     if (event.type === "pointerUp" && this.isDrawing === true) {
       this.bitmapContext.closePath();
-      this.onCommitCallback?.();
+      this.onCommitCallback?.({ bitmapContextChanged: true });
       this.isDrawing = false;
     }
   }
 
-  onCommit(callback: () => void) {
+  onCommit(callback: (result: CanvasToolResult) => void) {
     this.onCommitCallback = callback;
   }
 

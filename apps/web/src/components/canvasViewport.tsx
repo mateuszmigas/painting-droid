@@ -19,6 +19,7 @@ import type { Observable } from "@/utils/observable";
 import { memo, useRef, useEffect } from "react";
 import { domNames } from "@/constants";
 import { testIds } from "@/utils/testIds";
+import { canvasShapeToShapes2d } from "@/tools/utils";
 
 const alphaGridCellSize = 20;
 
@@ -59,17 +60,12 @@ export const CanvasViewport = memo(
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
     const vectorContextRef = useRef<HTMLDivElement>(null);
     const { context } = useCanvasContextStore();
-    const { layers, activeLayerIndex, capturedArea } = useWorkspacesStore(
+    const { layers, activeLayerIndex, shapes } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
 
     useSyncCanvasVectorContext(vectorContextRef, viewport);
-    useSyncCanvasWithLayers(
-      canvasStackRef,
-      layers,
-      activeLayerIndex,
-      capturedArea
-    );
+    useSyncCanvasWithLayers(canvasStackRef, layers, activeLayerIndex);
 
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
@@ -85,10 +81,17 @@ export const CanvasViewport = memo(
       }
     );
 
-    //sync shape overlay
+    //sync shapes
     useEffect(() => {
-      context.vector?.renderCapturedArea(capturedArea);
-    }, [context.vector, capturedArea]);
+      if (!context.vector) {
+        return;
+      }
+
+      context.vector.render(
+        "tool",
+        Object.values(shapes).flatMap(canvasShapeToShapes2d)
+      );
+    }, [context.vector, shapes]);
 
     useCanvasTool(
       hostElementRef,

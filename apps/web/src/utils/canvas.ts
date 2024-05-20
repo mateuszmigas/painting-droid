@@ -22,12 +22,16 @@ export const convertToBlob = (context: CanvasBitmapContext, type: string) => {
 
 export const restoreContextFromCompressed = async (
   context: CanvasBitmapContext,
-  data: ImageCompressedData
+  data: ImageCompressedData | null
 ) => {
-  const image = await createImageBitmap(data);
-  const { width, height } = image;
-  context.clearRect(0, 0, width, height);
-  context.drawImage(image, 0, 0, width, height);
+  if (data) {
+    const image = await createImageBitmap(data);
+    const { width, height } = image;
+    context.clearRect(0, 0, width, height);
+    context.drawImage(image, 0, 0, width, height);
+  } else {
+    clearContext(context);
+  }
 };
 
 export const restoreContextFromUncompressed = (

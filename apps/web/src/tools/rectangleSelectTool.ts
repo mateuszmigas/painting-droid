@@ -1,6 +1,4 @@
 import type { CanvasVectorContext, Position } from "@/utils/common";
-
-import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import { fastRound } from "@/utils/math";
 import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
@@ -10,15 +8,19 @@ import {
   type CanvasToolEvent,
   type CanvasToolResult,
 } from "./canvasTool";
-
+import type { CanvasShape } from "@/canvas/canvasState";
+import { canvasShapeToShapes2d } from "./utils";
+import { distanceBetweenPoints } from "@/utils/geometry";
 const translations = getTranslations().tools.shape.rectangleSelect;
 
-const minSize = 1;
+const minShapeSize = 1;
+const minScreenDistanceToDraw = 5;
 
 class RectangleSelectTool implements CanvasTool<never> {
-  private startPosition: Position | null = null;
+  private startCanvasPosition: Position | null = null;
+  private startScreenPosition: Position | null = null;
   private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
-  private shape: CanvasCapturedArea | null = null;
+  private shapeId = "";
 
   constructor(private vectorContext: CanvasVectorContext) {}
 
@@ -34,43 +36,54 @@ class RectangleSelectTool implements CanvasTool<never> {
     }
 
     if (event.type === "pointerDown") {
-      this.startPosition = {
-        x: fastRound(event.position.x),
-        y: fastRound(event.position.y),
+      this.startCanvasPosition = {
+        x: fastRound(event.canvasPosition.x),
+        y: fastRound(event.canvasPosition.y),
       };
-      this.shape = {
-        id: uuid(),
-        type: "rectangle",
-        boundingBox: { x: 0, y: 0, width: 0, height: 0 },
-        captured: null,
-      };
-    }
-
-    if (!this.startPosition || !this.shape) {
+      this.startScreenPosition = event.screenPosition;
+      this.shapeId = uuid();
       return;
     }
 
-    const endPosition = {
-      x: fastRound(event.position.x),
-      y: fastRound(event.position.y),
+    if (!this.startCanvasPosition) {
+      return;
+    }
+
+    const endCanvasPosition = {
+      x: fastRound(event.canvasPosition.x),
+      y: fastRound(event.canvasPosition.y),
+    };
+    const endScreenPosition = event.screenPosition;
+
+    const boundingBox = {
+      x: Math.min(this.startCanvasPosition.x, endCanvasPosition.x),
+      y: Math.min(this.startCanvasPosition.y, endCanvasPosition.y),
+      width: Math.abs(this.startCanvasPosition.x - endCanvasPosition.x),
+      height: Math.abs(this.startCanvasPosition.y - endCanvasPosition.y),
     };
 
-    const x = Math.min(this.startPosition.x, endPosition.x);
-    const y = Math.min(this.startPosition.y, endPosition.y);
-    const width = Math.max(
-      Math.abs(this.startPosition.x - endPosition.x),
-      minSize
-    );
-    const height = Math.max(
-      Math.abs(this.startPosition.y - endPosition.y),
-      minSize
-    );
-    this.shape.boundingBox = { x, y, width, height };
-    this.vectorContext.renderCapturedArea(this.shape);
+    const shape: CanvasShape = {
+      id: this.shapeId,
+      type: "captured-rectangle",
+      boundingBox,
+      capturedArea: {
+        box: boundingBox,
+        data: null as never, //data will be set when the shape is committed
+      },
+    };
+
+    const hasValidSize =
+      boundingBox.width >= minShapeSize && boundingBox.height >= minShapeSize;
+    const hasValidScreenDistance =
+      distanceBetweenPoints(this.startScreenPosition!, endScreenPosition) >
+      minScreenDistanceToDraw;
+
+    const isValid = hasValidSize && hasValidScreenDistance;
+    isValid && this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
 
     if (event.type === "pointerUp") {
-      this.onCommitCallback?.({ shape: this.shape });
-      this.startPosition = null;
+      isValid && this.onCommitCallback?.({ shape: shape });
+      this.startCanvasPosition = null;
     }
   }
 
@@ -79,7 +92,7 @@ class RectangleSelectTool implements CanvasTool<never> {
   }
 
   reset() {
-    this.startPosition = null;
+    this.startCanvasPosition = null;
   }
 }
 
