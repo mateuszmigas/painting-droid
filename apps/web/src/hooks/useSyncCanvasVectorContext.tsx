@@ -3,7 +3,7 @@ import type { Observable } from "@/utils/observable";
 import { type RefObject, useEffect, useMemo } from "react";
 import { useListener } from ".";
 import { createComponent, render } from "solid-js/web";
-import { createStore, reconcile } from "solid-js/store";
+import { createStore } from "solid-js/store";
 import { VectorCanvas } from "../components/solid/vectorCanvas.solid";
 import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 import type { Shape2d } from "@/utils/common";
