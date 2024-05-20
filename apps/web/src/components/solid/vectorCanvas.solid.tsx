@@ -10,15 +10,15 @@ export const VectorCanvas = (props: {
   return (
     <Solid.Show when={props.shapes}>
       <svg class="absolute size-full">
-        <Solid.For each={Object.values(props.shapes!)}>
+        <Solid.Index each={Object.values(props.shapes!)}>
           {(shapes) => (
             <g>
-              <Solid.For each={shapes}>
-                {(shape) => <Shape shape={shape} viewport={props.viewport} />}
-              </Solid.For>
+              <Solid.Index each={shapes()}>
+                {(shape) => <Shape shape={shape()} viewport={props.viewport} />}
+              </Solid.Index>
             </g>
           )}
-        </Solid.For>
+        </Solid.Index>
       </svg>
     </Solid.Show>
   );
