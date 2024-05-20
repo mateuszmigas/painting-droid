@@ -8,9 +8,9 @@ const translations = getTranslations();
 
 export const createCanvasAction = async (
   context: CanvasActionContext,
-  payload: { crop: Rectangle }
+  payload: { crop: Rectangle; display?: string }
 ): Promise<CanvasAction> => {
-  const { crop } = payload;
+  const { crop, display = translations.canvasActions.cropCanvas } = payload;
   const state = context.getState();
 
   const newLayersData: (Blob | null)[] = [];
@@ -33,7 +33,7 @@ export const createCanvasAction = async (
   };
 
   return {
-    display: translations.canvasActions.cropCanvas,
+    display,
     icon: "crop",
     execute: async (state) => {
       return {

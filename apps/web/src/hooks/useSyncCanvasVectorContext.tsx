@@ -1,4 +1,3 @@
-import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import type { Viewport } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
 import { type RefObject, useEffect, useMemo } from "react";
@@ -7,7 +6,7 @@ import { createComponent, render } from "solid-js/web";
 import { createStore } from "solid-js/store";
 import { VectorCanvas } from "../components/solid/vectorCanvas.solid";
 import { useCanvasContextStore } from "@/contexts/canvasContextStore";
-import type { CanvasShape } from "@/components/solid/shapes/shape.solid";
+import type { Shape2d } from "@/utils/common";
 
 export const useSyncCanvasVectorContext = (
   elementRef: RefObject<HTMLElement>,
@@ -17,10 +16,9 @@ export const useSyncCanvasVectorContext = (
   const [getStore, setStore] = useMemo(
     () =>
       createStore<{
-        capturedArea: CanvasCapturedArea | null;
-        shapes: CanvasShape[];
+        shapes?: Record<string, Shape2d[]> | null;
         viewport: Viewport;
-      }>({ capturedArea: null, shapes: [], viewport: viewport.getValue() }),
+      }>({ shapes: {}, viewport: viewport.getValue() }),
     [viewport]
   );
 
@@ -31,10 +29,11 @@ export const useSyncCanvasVectorContext = (
       elementRef.current
     );
     setVectorContext({
-      renderCapturedArea: (area: CanvasCapturedArea | null) =>
-        setStore("capturedArea", area ? { ...area } : null),
-      renderShapes: (shapes: CanvasShape[]) => {
-        setStore("shapes", shapes);
+      render: (groupId: string, shapes: Shape2d[]) => {
+        setStore("shapes", groupId, shapes);
+      },
+      clear: (groupId: string) => {
+        setStore("shapes", groupId, undefined as never as Shape2d[]);
       },
     });
     return () => {

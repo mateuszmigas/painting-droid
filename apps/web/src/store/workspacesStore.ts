@@ -213,75 +213,43 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
     ),
 });
 
+const blobKeyPrefix = "__blob__";
 const storage: PersistStorage<AppWorkspacesState> = {
   getItem: async (name) => {
     const value = localStorage.getItem(name);
     if (value) {
-      const result = JSON.parse(value) as {
+      const blobs = await blobsStorage.getBlobs();
+      const result: {
         state: AppWorkspacesState;
         version: number;
-      };
+      } = JSON.parse(value, (_, value) => {
+        if (typeof value === "string" && value.startsWith(blobKeyPrefix)) {
+          const id = value.replace(blobKeyPrefix, "");
+          return blobs.get(id) ?? null;
+        }
+        return value;
+      });
 
-      const blobs = await blobsStorage.getBlobs();
-
-      const stateWithBlobs = {
-        ...result.state,
-        workspaces: result.state.workspaces.map((workspace) => ({
-          ...workspace,
-          canvasData: {
-            ...workspace.canvasData,
-            layers: workspace.canvasData.layers.map((layer) => ({
-              ...layer,
-              data: blobs.has(layer.id) ? blobs.get(layer.id) : null,
-            })),
-          },
-        })),
-      } as AppWorkspacesState;
-
-      return {
-        state: stateWithBlobs,
-        version: result.version,
-      };
+      return result;
     }
 
     return null;
   },
   setItem: async (name, value) => {
     const { state, version } = value;
-    const blobs = state.workspaces
-      .flatMap((w) => w.canvasData.layers)
-      .filter((layer) => layer.data)
-      .map((layer) => {
-        return {
-          key: layer.id,
-          value: layer.data!,
-        };
-      });
+    const blobs: { key: string; value: Blob }[] = [];
+    const serialized = JSON.stringify({ state, version }, (_, value) => {
+      if (value instanceof Blob) {
+        const id = uuid();
+        const blobKey = `${blobKeyPrefix}${id}`;
+        blobs.push({ key: id, value });
+        return blobKey;
+      }
+      return value;
+    });
 
     await blobsStorage.setBlobs(blobs);
-
-    const stateWithoutBlobs = {
-      ...state,
-      workspaces: state.workspaces.map((workspace) => ({
-        ...workspace,
-        canvasData: {
-          ...workspace.canvasData,
-          capturedArea: null,
-          layers: workspace.canvasData.layers.map((layer) => ({
-            ...layer,
-            data: null,
-          })),
-        },
-      })),
-    };
-
-    localStorage.setItem(
-      name,
-      JSON.stringify({
-        state: stateWithoutBlobs,
-        version,
-      })
-    );
+    localStorage.setItem(name, serialized);
   },
   removeItem: (name) => {
     localStorage.removeItem(name);
@@ -290,7 +258,7 @@ const storage: PersistStorage<AppWorkspacesState> = {
 
 export const useWorkspacesStore = create<AppWorkspacesSlice>()(
   persist(workspacesStoreCreator, {
-    version: 15,
+    version: 16,
     name: "workspaces",
     storage,
   })
@@ -307,10 +275,19 @@ export const activeWorkspaceCanvasDataSelector = (
     .canvasData;
 };
 
+export const activeLayerSelector = (state: CanvasState) => {
+  const { layers, activeLayerIndex } = state;
+  return layers[activeLayerIndex];
+};
+
+export const activeShapeSelector = (state: CanvasState) => {
+  const { activeShapeId, shapes } = state;
+  return activeShapeId ? shapes[activeShapeId] : null;
+};
+
 export const activeWorkspaceActiveLayerSelector = (
   state: AppWorkspacesState
 ) => {
   const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(state);
   return layers[activeLayerIndex];
 };
-

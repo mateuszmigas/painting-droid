@@ -10,7 +10,7 @@ export type ObjectDetectionResult = {
   label: string;
   score: number;
   box: Rectangle;
-}[];
+};
 
 export type ObjectDetectionSection<TSchema extends CustomFieldsSchema> = {
   optionsSchema: TSchema;
@@ -18,7 +18,7 @@ export type ObjectDetectionSection<TSchema extends CustomFieldsSchema> = {
     image: ImageCompressed,
     onProgress: (value: number, message: string) => void,
     options: CustomFieldsSchemaAsValues<TSchema>
-  ) => Promise<ObjectDetectionResult>;
+  ) => Promise<ObjectDetectionResult[]>;
 };
 
 export const createObjectDetectionSection = <

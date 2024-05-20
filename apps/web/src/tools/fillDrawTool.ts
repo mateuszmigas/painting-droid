@@ -4,6 +4,7 @@ import {
   createCanvasToolSettingsSchema,
   type CanvasTool,
   type CanvasToolEvent,
+  type CanvasToolResult,
 } from "./canvasTool";
 import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
@@ -32,7 +33,7 @@ type FillDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
   private fillColor: RgbaColor | null = null;
   private tolerance = 0;
-  private onCommitCallback: (() => void) | null = null;
+  private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
 
   constructor(private bitmapContext: CanvasBitmapContext) {}
 
@@ -55,7 +56,7 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
 
     const filledData = floodFill(
       imageData,
-      { x: ~~event.position.x, y: ~~event.position.y },
+      { x: ~~event.canvasPosition.x, y: ~~event.canvasPosition.y },
       this.fillColor!,
       (targetColor, originColor) =>
         areColorsClose(targetColor, originColor, this.tolerance)
@@ -63,10 +64,10 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
 
     imageData.data.set(filledData.data);
     this.bitmapContext.putImageData(imageData, 0, 0);
-    this.onCommitCallback?.();
+    this.onCommitCallback?.({ bitmapContextChanged: true });
   }
 
-  onCommit(callback: () => void) {
+  onCommit(callback: (result: CanvasToolResult) => void) {
     this.onCommitCallback = callback;
   }
 

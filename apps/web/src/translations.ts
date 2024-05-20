@@ -11,11 +11,11 @@ const translations = {
     addLayer: "Add Layer",
     applySelection: "Apply Selection",
     deselect: "Deselect",
-    drawCapturedArea: {
+    addCapturedArea: {
       rectangle: "Rectangle Select",
     },
-    transformCapturedArea: {
-      rectangle: "Move Rectangle",
+    transformShape: {
+      capturedRectangle: "Move Rectangle",
     },
     duplicateLayer: "Duplicate Layer",
     mergeLayerDown: "Merge Layer Down",
@@ -37,13 +37,19 @@ const translations = {
   models: {
     name: "Models",
     prompt: "Prompt",
-    objectDetection: {
-      name: "Object Detection",
+    labelObjects: {
+      name: "Label Objects",
       result: {
         noObjects: "No objects detected",
       },
     },
     textToImage: { name: "Text to Image" },
+    smartCrop: {
+      name: "Smart Crop",
+      result: {
+        noObjects: "No objects detected",
+      },
+    },
     errors: {
       429: "Rate limit exceeded",
       401: "API key invalid",
@@ -188,6 +194,7 @@ const translations = {
     apply: "Apply",
     cancel: "Cancel",
     close: "Close",
+    color: "Color",
     download: "Download",
     generate: "Generate",
     regenerate: "Regenerate",
@@ -233,7 +240,10 @@ const translations = {
     install: "Install",
     notifyDesktop: "Try desktop app for custom AI models",
   },
+  links: {
+    reportIssue: "Report Issue",
+    viewSource: "View Source",
+  },
 };
 
 export const getTranslations = () => translations;
-

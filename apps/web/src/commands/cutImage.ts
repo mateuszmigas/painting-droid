@@ -2,7 +2,11 @@ import { createSystemKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { getTranslations } from "@/translations";
-import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
+import {
+  activeLayerSelector,
+  activeShapeSelector,
+  activeWorkspaceCanvasDataSelector,
+} from "@/store/workspacesStore";
 import { clipboard } from "@/utils/clipboard";
 
 const translations = getTranslations();
@@ -17,11 +21,13 @@ export const command = createCommand({
     const canvasData = activeWorkspaceCanvasDataSelector(
       context.stores.workspaces()
     );
+    const activeLayer = activeLayerSelector(canvasData);
+    const activeShape = activeShapeSelector(canvasData);
 
-    if (canvasData.capturedArea?.captured) {
-      await clipboard.copyImage(canvasData.capturedArea.captured.data);
+    if (activeShape?.capturedArea) {
+      await clipboard.copyImage(activeShape.capturedArea.data);
 
-      if (canvasData.layers[canvasData.activeLayerIndex].data !== null) {
+      if (activeLayer.data !== null) {
         await context.canvasActionDispatcher.execute("cutCapturedArea", {
           display: translations.commands.cutImage,
           icon: "clipboard-cut",

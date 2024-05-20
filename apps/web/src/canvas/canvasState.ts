@@ -1,4 +1,5 @@
 import { getTranslations } from "@/translations";
+import type { RgbaColor } from "@/utils/color";
 import type { Rectangle, Size } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { uuid } from "@/utils/uuid";
@@ -15,20 +16,30 @@ export type CanvasLayer = {
   data: CanvasLayerData;
 };
 
-export type CanvasCapturedArea = {
-  id: string;
-  type: "rectangle";
+export type CanvasCapturedArea = { box: Rectangle; data: ImageCompressedData };
+export type CanvasShape = {
   boundingBox: Rectangle;
-  captured: {
-    box: Rectangle;
-    data: ImageCompressedData;
-  } | null;
-};
+  capturedArea?: CanvasCapturedArea;
+} & (
+  | {
+      id: string;
+      type: "captured-rectangle";
+    }
+  | {
+      id: string;
+      type: "rectangle" | "ellipse";
+      fill: RgbaColor;
+      stroke: { color: RgbaColor; width: RgbaColor };
+    }
+);
+
+export type CanvasShapeId = string;
 
 export type CanvasState = {
   activeLayerIndex: number;
   layers: CanvasLayer[];
-  capturedArea: CanvasCapturedArea | null;
+  shapes: Record<CanvasShapeId, CanvasShape>;
+  activeShapeId: CanvasShapeId | null;
   size: Size;
 };
 
@@ -43,7 +54,8 @@ export const createDefaultLayer = (): CanvasLayer => ({
 export const createDefaultCanvasState = (size: Size): CanvasState => ({
   activeLayerIndex: 0,
   layers: [createDefaultLayer()],
-  capturedArea: null,
+  shapes: {},
+  activeShapeId: null,
   size,
 });
 

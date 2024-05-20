@@ -7,10 +7,10 @@ import { createCanvasAction as moveLayerUp } from "./moveLayerUp";
 import { createCanvasAction as moveLayerDown } from "./moveLayerDown";
 import { createCanvasAction as hideLayer } from "./hideLayer";
 import { createCanvasAction as showLayer } from "./showLayer";
-import { createCanvasAction as drawCapturedArea } from "./drawCapturedArea";
-import { createCanvasAction as transformCapturedArea } from "./transformCapturedArea";
-import { createCanvasAction as clearCapturedArea } from "./clearCapturedArea";
-import { createCanvasAction as applyCapturedArea } from "./applyCapturedArea";
+import { createCanvasAction as addShape } from "./addShape";
+import { createCanvasAction as transformShape } from "./transformShape";
+import { createCanvasAction as clearActiveShape } from "./clearActiveShape";
+import { createCanvasAction as applyActiveShape } from "./applyActiveShape";
 import { createCanvasAction as cutCapturedArea } from "./cutCapturedArea";
 import { createCanvasAction as cropCanvas } from "./cropCanvas";
 import { createCanvasAction as resizeCanvas } from "./resizeCanvas";
@@ -26,13 +26,12 @@ export const canvasActions = {
   moveLayerDown,
   hideLayer,
   showLayer,
-  drawCapturedArea,
-  transformCapturedArea,
-  clearCapturedArea,
-  applyCapturedArea,
+  addShape,
+  transformShape,
+  clearActiveShape,
+  applyActiveShape,
   cutCapturedArea,
   cropCanvas,
   resizeCanvas,
   mergeLayerDown,
 };
-

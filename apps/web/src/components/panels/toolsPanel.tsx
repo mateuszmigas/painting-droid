@@ -48,10 +48,7 @@ export const ToolsPanel = memo(() => {
         ))}
         <Separator orientation="horizontal" className="my-1" />
         <CommandIconButton size="medium" commandId="openTextToImageDialog" />
-        <CommandIconButton
-          size="medium"
-          commandId="openObjectDetectionDialog"
-        />
+        <CommandIconButton size="medium" commandId="openLabelObjectsDialog" />
       </div>
     </div>
   );

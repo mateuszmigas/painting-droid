@@ -3,132 +3,117 @@ import { useCanvasActionDispatcher } from "./useCanvasActionDispatcher";
 import { useStableCallback } from "./useStableCallback";
 import { useWorkspacesStore } from "@/store";
 import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
-import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import { canvasToolsMetadata } from "@/tools";
 import type { CanvasToolId } from "@/tools";
 import type { CanvasToolResult } from "@/tools/canvasTool";
-import { restoreContextFromCompressed, clearContext } from "@/utils/canvas";
+import { restoreContextFromCompressed } from "@/utils/canvas";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import { useMemo } from "react";
 import { areRectanglesEqual } from "@/utils/geometry";
+import type { CanvasShape } from "@/canvas/canvasState";
 
 export const useCanvasToolHandlers = () => {
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const { context } = useCanvasContextStore();
-  const { layers, activeLayerIndex, capturedArea } = useWorkspacesStore(
-    activeWorkspaceCanvasDataSelector
+  const { layers, activeLayerIndex, shapes, activeShapeId } =
+    useWorkspacesStore(activeWorkspaceCanvasDataSelector);
+
+  const getActiveShape = useStableCallback(() =>
+    activeShapeId !== null ? shapes[activeShapeId] : null
   );
 
-  const getSelectedShape = useStableCallback(() => capturedArea);
+  const transformShape = useStableCallback(async (shape: CanvasShape) => {
+    await canvasActionDispatcher.execute("transformShape", {
+      shapeId: shape.id,
+      boundingBox: shape.boundingBox,
+    });
+  });
 
-  const transformSelectedShape = useStableCallback(
-    async (shape: CanvasCapturedArea) => {
-      await canvasActionDispatcher.execute("transformCapturedArea", {
-        capturedArea: shape,
-      });
-    }
-  );
-
-  const applyOrClearSelectedShape = useStableCallback(async () => {
-    const selectedShape = getSelectedShape();
-    if (!selectedShape) {
+  const applyOrClearActiveShape = useStableCallback(async () => {
+    const activeShape = getActiveShape();
+    if (!activeShape) {
       return;
     }
 
     const clearShape =
-      selectedShape.captured &&
-      areRectanglesEqual(selectedShape.boundingBox, selectedShape.captured.box);
+      activeShape.capturedArea &&
+      areRectanglesEqual(activeShape.boundingBox, activeShape.capturedArea.box);
 
     if (clearShape) {
-      await canvasActionDispatcher.execute("clearCapturedArea", undefined);
+      await canvasActionDispatcher.execute("clearActiveShape", undefined);
     } else {
-      await canvasActionDispatcher.execute("applyCapturedArea", undefined);
+      await canvasActionDispatcher.execute("applyActiveShape", undefined);
     }
   });
 
-  const drawSelectedShape = useStableCallback(
-    async (shape: CanvasCapturedArea) => {
-      context.vector?.renderCapturedArea(shape);
-    }
-  );
-
   const toolCommit = useStableCallback(
-    async (toolId: CanvasToolId, result?: CanvasToolResult) => {
-      if (!context.bitmap) return;
-
-      if (result?.shape) {
-        const shape = result.shape;
-        const box = shape.boundingBox;
-        await canvasActionDispatcher.execute("drawCapturedArea", {
-          capturedArea: {
-            ...shape,
-            captured: {
-              box,
-              data: await ImageProcessor.fromCropContext(
-                context.bitmap,
-                box
-              ).toCompressedData(),
-            },
-          },
-        });
-        return;
+    async (toolId: CanvasToolId, result: CanvasToolResult) => {
+      if (!context.bitmap || !context.vector) {
+        throw new Error("Canvas context is not initialized");
       }
 
-      const { name, icon } = canvasToolsMetadata[toolId!];
-      const contextData = await ImageProcessor.fromContext(
-        context.bitmap
-      ).toCompressed();
+      const { shape, bitmapContextChanged } = result;
 
-      const activeLayer = layers[activeLayerIndex];
-      const data =
-        !activeLayer.visible && activeLayer.data
-          ? await ImageProcessor.fromMergedCompressed(
-              [activeLayer.data, contextData.data],
-              { width: contextData.width, height: contextData.height }
-            ).toCompressedData()
-          : contextData.data;
+      if (shape) {
+        if (shape.capturedArea) {
+          shape.capturedArea.data = await ImageProcessor.fromCropContext(
+            context.bitmap,
+            shape.boundingBox
+          ).toCompressedData();
+        }
+        await canvasActionDispatcher.execute("addShape", { shape });
+      }
 
-      canvasActionDispatcher.execute("updateLayerData", {
-        layerId: activeLayer.id,
-        display: name,
-        icon,
-        data,
-      });
+      if (bitmapContextChanged) {
+        const activeLayer = layers[activeLayerIndex];
+        const { name, icon } = canvasToolsMetadata[toolId!];
+        const { data, width, height } = await ImageProcessor.fromContext(
+          context.bitmap
+        ).toCompressed();
+
+        const layerData =
+          !activeLayer.visible && activeLayer.data
+            ? await ImageProcessor.fromMergedCompressed(
+                [activeLayer.data, data],
+                { width: width, height: height }
+              ).toCompressedData()
+            : data;
+
+        await canvasActionDispatcher.execute("updateLayerData", {
+          layerId: activeLayer.id,
+          display: name,
+          icon,
+          data: layerData,
+        });
+      }
     }
   );
+
   const toolDiscard = useStableCallback(async () => {
-    if (getSelectedShape()) {
-      await canvasActionDispatcher.execute("clearCapturedArea", undefined);
+    if (!context.bitmap || !context.vector) {
+      throw new Error("Canvas context is not initialized");
     }
 
-    if (context.vector) {
-      context.vector.renderCapturedArea(null);
+    if (getActiveShape()) {
+      await canvasActionDispatcher.execute("clearActiveShape", undefined);
     }
 
-    if (context.bitmap) {
-      const activeLayer = layers[activeLayerIndex];
-      if (activeLayer.data) {
-        restoreContextFromCompressed(context.bitmap, activeLayer.data);
-      } else {
-        clearContext(context.bitmap);
-      }
-    }
+    context.vector.clear("tool");
+    restoreContextFromCompressed(context.bitmap, layers[activeLayerIndex].data);
   });
 
   return useMemo(() => {
     return {
-      getSelectedShape,
-      transformSelectedShape,
-      applyOrClearSelectedShape,
-      drawSelectedShape,
-      toolCommit: toolCommit,
-      cancel: toolDiscard,
+      getActiveShape,
+      transformShape,
+      applyOrClearActiveShape,
+      toolCommit,
+      toolDiscard,
     };
   }, [
-    getSelectedShape,
-    drawSelectedShape,
-    transformSelectedShape,
-    applyOrClearSelectedShape,
+    getActiveShape,
+    transformShape,
+    applyOrClearActiveShape,
     toolCommit,
     toolDiscard,
   ]);

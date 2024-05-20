@@ -19,11 +19,12 @@ import { IconButton } from "../icons/iconButton";
 import { useSettingsStore } from "@/store";
 
 export const CustomColorPicker = (props: {
-  className?: string;
   value: RgbaColor;
   onChange: (color: RgbaColor) => void;
+  title: string;
+  className?: string;
 }) => {
-  const { value, onChange, className } = props;
+  const { value, onChange, title, className } = props;
   const rgbaColor = value;
   const hsvaColor = ColorProcessor.fromRgba(value).toHsva();
   const { addFavoriteColor, addRecentColor } = useSettingsStore();
@@ -39,7 +40,7 @@ export const CustomColorPicker = (props: {
 
   return (
     <Popover onOpenChange={(open) => !open && addRecentColor(rgbaColor)}>
-      <PopoverTrigger>
+      <PopoverTrigger title={title}>
         <ColorRectangle
           className={cn("w-10 h-6", className)}
           color={ColorProcessor.fromHsva(hsvaColor).toRgba()}

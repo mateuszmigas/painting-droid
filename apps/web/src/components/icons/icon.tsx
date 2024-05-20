@@ -64,6 +64,8 @@ import {
   Star,
   PaintBucket,
   SprayCan,
+  Tags,
+  Scissors,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -113,6 +115,7 @@ export type IconType =
   | "eraser"
   | "download"
   | "crop"
+  | "scissors"
   | "move-left"
   | "move-right"
   | "move-up"
@@ -137,7 +140,8 @@ export type IconType =
   | "merge"
   | "star"
   | "paint-bucket"
-  | "spray-can";
+  | "spray-can"
+  | "tags";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -244,6 +248,8 @@ const renderLucideIcon = (
       return <Download className={className} size={fontSize} />;
     case "crop":
       return <Crop className={className} size={fontSize} />;
+    case "scissors":
+      return <Scissors className={className} size={fontSize} />;
     case "move-left":
       return <MoveLeft className={className} size={fontSize} />;
     case "move-right":
@@ -315,6 +321,8 @@ const renderLucideIcon = (
       return <PaintBucket className={className} size={fontSize} />;
     case "spray-can":
       return <SprayCan className={className} size={fontSize} />;
+    case "tags":
+      return <Tags className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

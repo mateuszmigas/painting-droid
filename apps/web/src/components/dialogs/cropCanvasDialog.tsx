@@ -174,7 +174,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
               containerSize={{ width: 320, height: 320 }}
               containerScale="cover"
               src={imageDataUrl}
-              overlayNode={
+              overlayNodeRenderer={() => (
                 <div
                   style={{
                     visibility: error ? "hidden" : "visible",
@@ -185,7 +185,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
                   }}
                   className="absolute border-2 border-dashed border-primary"
                 />
-              }
+              )}
             />
             <FormMessage
               className={error ? "text-destructive" : "text-primary"}

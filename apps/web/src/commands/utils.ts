@@ -1,29 +1,35 @@
-import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
+import {
+  activeShapeSelector,
+  activeWorkspaceCanvasDataSelector,
+} from "@/store/workspacesStore";
 import type { CommandContext } from "./context";
 import { areRectanglesEqual } from "@/utils/geometry";
 
 export const clearOrApplyCapturedArea = async (context: CommandContext) => {
-  const shape = activeWorkspaceCanvasDataSelector(
+  const canvasData = activeWorkspaceCanvasDataSelector(
     context.stores.workspaces()
-  ).capturedArea;
+  );
+  const activeShape = activeShapeSelector(canvasData);
 
-  if (shape) {
+  if (activeShape) {
     const apply =
-      shape?.captured &&
-      !areRectanglesEqual(shape.boundingBox, shape.captured.box);
+      activeShape?.capturedArea &&
+      !areRectanglesEqual(
+        activeShape.boundingBox,
+        activeShape.capturedArea.box
+      );
 
     if (apply) {
       await context.canvasActionDispatcher.execute(
-        "applyCapturedArea",
+        "applyActiveShape",
         undefined
       );
     } else {
-      shape &&
+      activeShape &&
         (await context.canvasActionDispatcher.execute(
-          "clearCapturedArea",
+          "clearActiveShape",
           undefined
         ));
     }
   }
 };
-

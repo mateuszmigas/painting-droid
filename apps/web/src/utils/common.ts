@@ -1,6 +1,6 @@
-import type { CanvasCapturedArea } from "@/canvas/canvasState";
 import type { RgbaColor } from "./color";
-import type { CanvasShape } from "@/components/solid/shapes/shape.solid";
+import type { Shape2d } from "@/components/solid/shapes/shape.solid";
+export type { Shape2d };
 
 export type Position = {
   x: number;
@@ -21,8 +21,8 @@ export type CanvasBitmapContext =
   | OffscreenCanvasRenderingContext2D;
 
 export type CanvasVectorContext = {
-  renderCapturedArea: (shape: CanvasCapturedArea | null) => void;
-  renderShapes: (shapes: CanvasShape[]) => void;
+  render: (groupId: "tool", shapes: Shape2d[]) => void;
+  clear: (groupId: "tool") => void;
 };
 
 export type CanvasContext = {

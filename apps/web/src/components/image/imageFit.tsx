@@ -9,7 +9,7 @@ export const ImageFit = (props: {
   imageClassName?: string;
   imageStyle?: React.CSSProperties;
   originalImageSize?: Size;
-  overlayNode?: React.ReactNode;
+  overlayNodeRenderer?: () => React.ReactNode;
 }) => {
   const {
     containerSize,
@@ -18,7 +18,7 @@ export const ImageFit = (props: {
     imageClassName,
     imageStyle = {},
     originalImageSize,
-    overlayNode,
+    overlayNodeRenderer: overlayNode,
     containerScale: scale = "contain",
   } = props;
   return (
@@ -45,7 +45,8 @@ export const ImageFit = (props: {
         }}
         alt=""
       />
-      {overlayNode}
+      {overlayNode?.()}
     </div>
   );
 };
+

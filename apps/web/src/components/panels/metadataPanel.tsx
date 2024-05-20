@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { features } from "@/constants";
 import { appVersion, platform } from "@/utils/platform";
+import { useWorkspacesStore } from "@/store";
+import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 
 export const MetadataPanel = () => {
   const [result] = useState<string>("");
+  const { shapes, activeShapeId } = useWorkspacesStore((state) =>
+    activeWorkspaceCanvasDataSelector(state)
+  );
 
   return (
     <div className="flex flex-col gap-medium">
@@ -16,8 +21,15 @@ export const MetadataPanel = () => {
           Color picker: {features.nativeColorPicker ? "Native" : "Custom"}
         </div>
         <div className="p-small">{result}</div>
+        <div>
+          <div>active</div>
+          {activeShapeId}
+          <div>all</div>
+          {Object.entries(shapes).map((shape, index) => (
+            <div key={index}>{shape[0]}</div>
+          ))}
+        </div>
       </div>
     </div>
   );
 };
-

@@ -22,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { uuid } from "@/utils/uuid";
 import { getTranslations } from "@/translations";
 import { useCanvasActionDispatcher, useTextToImageModels } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
@@ -33,6 +32,7 @@ import { StringCustomField } from "../custom-fields/stringCustomField";
 import type { TextToImageModelInfo } from "@/hooks/useTextToImageModels";
 import { OptionNumberCustomField } from "../custom-fields/optionNumberCustomField";
 import { scaleRectangleToFitParent } from "@/utils/geometry";
+import { uuid } from "@/utils/uuid";
 
 const translations = getTranslations();
 const FormSchema = z.object({
@@ -116,18 +116,18 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     await executeCommand("selectTool", { toolId: "rectangleSelect" });
     const currentSize = (form.watch("modelOptionsValues.size") ??
       defaultSize) as Size;
-    await canvasActionDispatcher.execute("drawCapturedArea", {
+    await canvasActionDispatcher.execute("addShape", {
       display: translations.models.textToImage.name,
-      capturedArea: {
+      shape: {
         id: uuid(),
-        type: "rectangle",
+        type: "captured-rectangle",
         boundingBox: {
           x: 0,
           y: 0,
           width: currentSize.width,
           height: currentSize.height,
         },
-        captured: {
+        capturedArea: {
           box: { x: 0, y: 0, width: 0, height: 0 },
           data: image,
         },
@@ -154,6 +154,10 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
 
   const error = form.formState.errors.root?.message;
 
+  //todo: remove after release
+  const isLocked =
+    models.find((model) => model.id === modelId)?.definition?.type === "demo";
+
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
@@ -170,7 +174,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                 width: `${imageSize.width * scale}px`,
                 height: `${imageSize.height * scale}px`,
               }}
-              className=" border-primary border-2 border-dashed object-contain box-content"
+              className="border object-contain box-content"
             >
               {image && (
                 <ImageFromBlob
@@ -215,12 +219,17 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                   <FormItem>
                     <FormLabel>{translations.models.prompt}</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isLocked} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              {isLocked && (
+                <FormMessage className={"text-muted-foreground"}>
+                  {"Demo model prompt cannot be edited"}
+                </FormMessage>
+              )}
               <div className="flex flex-col gap-big">
                 {Object.entries(form.watch("modelOptionsValues"))
                   .filter(([key]) => modelOptions[key])
@@ -315,4 +324,3 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

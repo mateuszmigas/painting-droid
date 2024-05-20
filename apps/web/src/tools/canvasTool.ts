@@ -1,4 +1,4 @@
-import type { CanvasCapturedArea } from "@/canvas/canvasState";
+import type { CanvasShape } from "@/canvas/canvasState";
 import type { IconType } from "@/components/icons/icon";
 import type {
   CanvasBitmapContext,
@@ -22,20 +22,20 @@ type CanvasToolMetadata<TSchema extends CustomFieldsSchema> = {
 };
 
 export type CanvasToolEvent =
-  | { type: "pointerDown"; position: Position }
-  | { type: "pointerMove"; position: Position }
-  | { type: "pointerUp"; position: Position }
-  | { type: "pointerMove"; position: Position }
+  | { type: "pointerDown"; canvasPosition: Position; screenPosition: Position }
+  | { type: "pointerMove"; canvasPosition: Position; screenPosition: Position }
+  | { type: "pointerUp"; canvasPosition: Position; screenPosition: Position }
   | { type: "pointerLeave" };
 
 export type CanvasToolResult = {
-  shape?: CanvasCapturedArea;
+  shape?: CanvasShape;
+  bitmapContextChanged?: boolean;
 };
 
 export interface CanvasTool<T> {
   configure(settings: T): void;
   processEvent(event: CanvasToolEvent): void;
-  onCommit(callback: (result?: CanvasToolResult) => void): void;
+  onCommit(callback: (result: CanvasToolResult) => void): void;
   reset(): void;
 }
 
