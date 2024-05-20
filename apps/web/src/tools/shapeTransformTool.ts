@@ -47,6 +47,7 @@ export class ShapeTransformTool {
   }
 
   commitTransform(): CanvasShape | false {
+    this.isTransforming = false;
     if (!this.startPosition || !this.endPosition) {
       return false;
     }
@@ -57,7 +58,6 @@ export class ShapeTransformTool {
 
     const shape = this.transformShape();
     this.drawShape(shape);
-    this.isTransforming = false;
     return shape;
   }
 
