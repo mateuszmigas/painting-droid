@@ -6,7 +6,7 @@ import {
   type TransformHandle,
   canvasShapeToShapes2d,
   getTransformHandle,
-  transformBox,
+  transformBoundingBox,
 } from "../utils/shape";
 
 export class ShapeTransformTool {
@@ -85,7 +85,7 @@ export class ShapeTransformTool {
 
     return {
       ...activeShape,
-      boundingBox: transformBox(
+      boundingBox: transformBoundingBox(
         this.transformHandle!,
         activeShape.boundingBox,
         this.startPosition,
@@ -98,4 +98,3 @@ export class ShapeTransformTool {
     this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
   };
 }
-

@@ -24,7 +24,7 @@ const generateGrips = (
   ];
 };
 
-export const transformBox = (
+export const transformBoundingBox = (
   handle: TransformHandle,
   boundingBox: Rectangle,
   startPosition: Position,

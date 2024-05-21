@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { features } from "@/constants";
 import { appVersion, platform } from "@/utils/platform";
+import { features } from "@/features";
 
 export const MetadataPanel = () => {
   const [result] = useState<string>("");
@@ -20,4 +20,3 @@ export const MetadataPanel = () => {
     </div>
   );
 };
-

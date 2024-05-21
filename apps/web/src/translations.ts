@@ -15,7 +15,7 @@ const translations = {
       rectangle: "Rectangle Select",
     },
     transformShape: {
-      capturedRectangle: "Move Rectangle",
+      capturedRectangle: "Transform Rectangle",
     },
     duplicateLayer: "Duplicate Layer",
     mergeLayerDown: "Merge Layer Down",
