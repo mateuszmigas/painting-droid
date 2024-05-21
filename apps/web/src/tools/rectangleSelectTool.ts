@@ -9,7 +9,7 @@ import {
   type CanvasToolResult,
 } from "./canvasTool";
 import type { CanvasShape } from "@/canvas/canvasState";
-import { canvasShapeToShapes2d } from "./utils";
+import { canvasShapeToShapes2d } from "../utils/shape";
 import { distanceBetweenPoints } from "@/utils/geometry";
 const translations = getTranslations().tools.shape.rectangleSelect;
 

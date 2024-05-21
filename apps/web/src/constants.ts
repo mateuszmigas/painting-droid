@@ -21,6 +21,8 @@ export const features = {
 export const domNames = {
   workspaceViewport: "workspace-viewport",
   canvasBackground: "canvas-background",
+  svgHostId: "svg-host-id",
+  svgGripClass: "svg-grip",
 };
 
 export const themes = ["light", "dark", "system"] as const;
@@ -38,3 +40,4 @@ export const markerColors = [
 export const links = {
   downloadDesktop: "https://github.com/mateuszmigas/painting-droid/releases",
 };
+

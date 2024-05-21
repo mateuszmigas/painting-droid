@@ -18,7 +18,7 @@ export const SelectionRectangle = (
         height={props.rectangle.height * props.viewport.zoom}
         fill="transparent"
         stroke-width={2}
-        stroke={"black"}
+        stroke={"hsl(var(--primary))"}
       />
       <rect
         x={props.rectangle.x * props.viewport.zoom + props.viewport.position.x}
