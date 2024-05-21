@@ -8,7 +8,6 @@ const isCallback = (arg: unknown): arg is { __callbackId__: string } =>
 
 export const createProxyServer = (
   workerSelf: Window & typeof globalThis,
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   api: Record<string, (...args: any[]) => Promise<unknown>>,
   init?: () => Promise<unknown>
 ) => {

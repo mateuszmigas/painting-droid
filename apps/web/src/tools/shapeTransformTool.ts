@@ -1,40 +1,49 @@
 import type { CanvasShape } from "@/canvas/canvasState";
 import type { CanvasVectorContext, Position } from "@/utils/common";
-import { arePointsClose, isPositionInRectangle } from "@/utils/geometry";
+import { arePointsClose } from "@/utils/geometry";
 import { fastRound } from "@/utils/math";
-import { canvasShapeToShapes2d } from "./utils";
+import {
+  type TransformHandle,
+  canvasShapeToShapes2d,
+  getTransformHandle,
+  transformBoundingBox,
+} from "../utils/shape";
 
 export class ShapeTransformTool {
   private startPosition: Position | null = null;
   private endPosition: Position | null = null;
-  private isTransforming = false;
+  private transformHandle: TransformHandle | null = null;
 
   constructor(
     private vectorContext: CanvasVectorContext,
     private getActiveShape: () => CanvasShape | null
   ) {}
 
-  getIsTransforming() {
-    return this.isTransforming;
+  isTransforming() {
+    return this.transformHandle !== null;
   }
 
-  beginTransform(position: Position): boolean {
+  beginTransform(canvasPosition: Position, screenPosition: Position): boolean {
     const activeShape = this.getActiveShape();
 
     if (!activeShape) {
       return false;
     }
 
-    if (isPositionInRectangle(position, activeShape.boundingBox)) {
-      this.isTransforming = true;
+    this.transformHandle = getTransformHandle(
+      canvasPosition,
+      screenPosition,
+      activeShape.boundingBox
+    );
+
+    if (this.transformHandle) {
       this.startPosition = {
-        x: fastRound(position.x),
-        y: fastRound(position.y),
+        x: fastRound(canvasPosition.x),
+        y: fastRound(canvasPosition.y),
       };
-      return true;
     }
 
-    return false;
+    return !!this.transformHandle;
   }
 
   stepTransform(position: Position) {
@@ -47,7 +56,9 @@ export class ShapeTransformTool {
   }
 
   commitTransform(): CanvasShape | false {
-    this.isTransforming = false;
+    const shape = this.transformShape();
+    this.transformHandle = null;
+
     if (!this.startPosition || !this.endPosition) {
       return false;
     }
@@ -56,7 +67,6 @@ export class ShapeTransformTool {
       return false;
     }
 
-    const shape = this.transformShape();
     this.drawShape(shape);
     return shape;
   }
@@ -64,7 +74,7 @@ export class ShapeTransformTool {
   reset() {
     this.startPosition = null;
     this.endPosition = null;
-    this.isTransforming = false;
+    this.transformHandle = null;
   }
 
   private transformShape() {
@@ -72,18 +82,15 @@ export class ShapeTransformTool {
       throw new Error("start and end positions must be set");
     }
     const activeShape = this.getActiveShape()!;
-    const distance = {
-      x: this.endPosition.x - this.startPosition.x,
-      y: this.endPosition.y - this.startPosition.y,
-    };
 
     return {
       ...activeShape,
-      boundingBox: {
-        ...activeShape.boundingBox,
-        x: activeShape.boundingBox.x + distance.x,
-        y: activeShape.boundingBox.y + distance.y,
-      },
+      boundingBox: transformBoundingBox(
+        this.transformHandle!,
+        activeShape.boundingBox,
+        this.startPosition,
+        this.endPosition
+      ),
     };
   }
 
@@ -91,4 +98,3 @@ export class ShapeTransformTool {
     this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
   };
 }
-

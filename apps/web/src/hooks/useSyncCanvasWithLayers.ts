@@ -2,8 +2,8 @@ import type { CanvasLayer } from "@/canvas/canvasState";
 import type { CanvasBitmapContext } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
 import { clearContext } from "@/utils/canvas";
-import { features } from "@/constants";
 import { useCanvasContextStore } from "@/contexts/canvasContextStore";
+import { features } from "@/features";
 
 const restoreLayers = async (
   contextStack: CanvasBitmapContext[],

@@ -1,4 +1,4 @@
-import { isMobile, platform } from "./utils/platform";
+import { platform } from "./utils/platform";
 
 export const workspace = {
   format: "pdw",
@@ -11,16 +11,11 @@ export const workspace = {
 
 export const supportedImageFormats = ["png", "jpeg"];
 
-export const features = {
-  offscreenCanvas:
-    platform !== "e2e" && "oncontextlost" in new OffscreenCanvas(0, 0),
-  nativeMenuBar: platform === "darwin",
-  nativeColorPicker: isMobile(),
-};
-
 export const domNames = {
   workspaceViewport: "workspace-viewport",
   canvasBackground: "canvas-background",
+  svgHostId: "svg-host-id",
+  svgGripClass: "svg-grip",
 };
 
 export const themes = ["light", "dark", "system"] as const;

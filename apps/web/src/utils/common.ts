@@ -13,6 +13,7 @@ export type Size = {
 };
 
 export type Rectangle = Position & Size;
+export type BoundingBox = Rectangle;
 
 export type Color = RgbaColor;
 
@@ -29,4 +30,3 @@ export type CanvasContext = {
   bitmap: CanvasBitmapContext | null;
   vector: CanvasVectorContext | null;
 };
-

@@ -9,8 +9,8 @@ import {
   type CanvasToolResult,
 } from "./canvasTool";
 import type { CanvasShape } from "@/canvas/canvasState";
-import { canvasShapeToShapes2d } from "./utils";
-import { distanceBetweenPoints } from "@/utils/geometry";
+import { canvasShapeToShapes2d } from "../utils/shape";
+import { createRectFromPoints, distanceBetweenPoints } from "@/utils/geometry";
 const translations = getTranslations().tools.shape.rectangleSelect;
 
 const minShapeSize = 1;
@@ -55,12 +55,10 @@ class RectangleSelectTool implements CanvasTool<never> {
     };
     const endScreenPosition = event.screenPosition;
 
-    const boundingBox = {
-      x: Math.min(this.startCanvasPosition.x, endCanvasPosition.x),
-      y: Math.min(this.startCanvasPosition.y, endCanvasPosition.y),
-      width: Math.abs(this.startCanvasPosition.x - endCanvasPosition.x),
-      height: Math.abs(this.startCanvasPosition.y - endCanvasPosition.y),
-    };
+    const boundingBox = createRectFromPoints(
+      this.startCanvasPosition,
+      endCanvasPosition
+    );
 
     const shape: CanvasShape = {
       id: this.shapeId,
@@ -103,4 +101,3 @@ export const rectangleSelectToolMetadata = createCanvasToolMetadata({
   settingsSchema: {},
   create: (context) => new RectangleSelectTool(context.vector),
 });
-

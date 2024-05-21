@@ -15,8 +15,9 @@ import {
 import { IconAnchor } from "../icons/iconAnchor";
 import { Separator } from "../ui/separator";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { domNames, features } from "@/constants";
+import { domNames } from "@/constants";
 import { getTranslations } from "@/translations";
+import { features } from "@/features";
 
 const translations = getTranslations();
 
@@ -111,4 +112,3 @@ export const AppHeaderBar = memo(() => {
     </div>
   );
 });
-

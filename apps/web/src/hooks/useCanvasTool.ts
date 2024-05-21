@@ -54,7 +54,7 @@ export const useCanvasTool = (
     const onPointerDown = (screenPosition: Position) => {
       const canvasPosition = screenToCanvasConverterStable(screenPosition);
 
-      if (shapeTransformTool.beginTransform(canvasPosition)) {
+      if (shapeTransformTool.beginTransform(canvasPosition, screenPosition)) {
         shapeTransformTool.stepTransform(canvasPosition);
       } else {
         toolHandlers.resolveActiveShape();
@@ -69,7 +69,7 @@ export const useCanvasTool = (
     const onPointerMove = (screenPosition: Position) => {
       const canvasPosition = screenToCanvasConverterStable(screenPosition);
 
-      if (shapeTransformTool.getIsTransforming()) {
+      if (shapeTransformTool.isTransforming()) {
         shapeTransformTool.stepTransform(canvasPosition);
       } else {
         drawTool.processEvent({
@@ -83,7 +83,7 @@ export const useCanvasTool = (
     const onPointerUp = (screenPosition: Position) => {
       const canvasPosition = screenToCanvasConverterStable(screenPosition);
 
-      if (shapeTransformTool.getIsTransforming()) {
+      if (shapeTransformTool.isTransforming()) {
         const result = shapeTransformTool.commitTransform();
         if (result) {
           toolHandlers.transformShape(result);
@@ -98,7 +98,7 @@ export const useCanvasTool = (
     };
 
     const onPointerLeave = () => {
-      if (!shapeTransformTool.getIsTransforming()) {
+      if (!shapeTransformTool.isTransforming()) {
         drawTool.processEvent({ type: "pointerLeave" });
       }
     };

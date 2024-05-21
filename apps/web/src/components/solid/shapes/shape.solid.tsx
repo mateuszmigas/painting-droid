@@ -14,12 +14,15 @@ import {
   ImageRectangle,
   type ImageRectangleProps,
 } from "./imageRectangle.solid";
+import { SelectionGrip, type SelectionGripProps } from "./selectionGrip.solid";
+import { assertNever } from "@/utils/typeGuards";
 
 export type Shape2d =
   | ({ type: "circle" } & CircleProps)
   | ({ type: "rectangle" } & RectangleProps)
   | ({ type: "selection-circle" } & SelectionCircleProps)
   | ({ type: "selection-rectangle" } & SelectionRectangleProps)
+  | ({ type: "selection-grip" } & SelectionGripProps)
   | ({ type: "image-rectangle" } & ImageRectangleProps);
 
 export const Shape = (props: { shape: Shape2d; viewport: Viewport }) => {
@@ -32,9 +35,12 @@ export const Shape = (props: { shape: Shape2d; viewport: Viewport }) => {
       return <SelectionCircle {...props.shape} viewport={props.viewport} />;
     case "selection-rectangle":
       return <SelectionRectangle {...props.shape} viewport={props.viewport} />;
+    case "selection-grip":
+      return <SelectionGrip {...props.shape} viewport={props.viewport} />;
     case "image-rectangle":
       return <ImageRectangle {...props.shape} viewport={props.viewport} />;
     default:
-      return null;
+      return assertNever(props.shape);
   }
 };
+

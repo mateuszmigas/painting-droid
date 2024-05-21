@@ -1,7 +1,7 @@
 import type { RgbaColor } from "@/utils/color";
 import { NativeColorPicker } from "./nativeColorPicker";
 import { CustomColorPicker } from "./customColorPicker";
-import { features } from "@/constants";
+import { features } from "@/features";
 
 export const ColorPicker = (props: {
   value: RgbaColor;
@@ -25,4 +25,3 @@ export const ColorPicker = (props: {
     />
   );
 };
-
