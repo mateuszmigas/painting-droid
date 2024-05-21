@@ -22,7 +22,7 @@ export const SelectionGrip = (
       width={gripSize}
       height={gripSize}
       fill={"hsl(var(--primary))"}
-      stroke={props.gripId === "grip-top-left" ? "white" : "black"}
+      stroke={"white"}
       stroke-width={2}
     />
   );

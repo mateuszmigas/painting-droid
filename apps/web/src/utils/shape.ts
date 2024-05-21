@@ -3,7 +3,7 @@ import type { BoundingBox, Position, Rectangle, Shape2d } from "@/utils/common";
 import { isPositionInRectangle, normalizeRectangle } from "./geometry";
 import { domNames } from "@/constants";
 
-export const gripSize = 30;
+export const gripSize = 12;
 
 export type TransformGripId =
   | "grip-top-left"

@@ -87,7 +87,6 @@ export const CanvasViewport = memo(
         return;
       }
 
-      console.log("shapes", shapes);
       context.vector.render(
         "tool",
         Object.values(shapes).flatMap(canvasShapeToShapes2d)
