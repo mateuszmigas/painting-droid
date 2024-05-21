@@ -1,6 +1,6 @@
 import { getTranslations } from "@/translations";
 import type { RgbaColor } from "@/utils/color";
-import type { Rectangle, Size } from "@/utils/common";
+import type { BoundingBox, Rectangle, Size } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { uuid } from "@/utils/uuid";
 
@@ -18,7 +18,7 @@ export type CanvasLayer = {
 
 export type CanvasCapturedArea = { box: Rectangle; data: ImageCompressedData };
 export type CanvasShape = {
-  boundingBox: Rectangle;
+  boundingBox: BoundingBox;
   capturedArea?: CanvasCapturedArea;
 } & (
   | {
@@ -58,4 +58,3 @@ export const createDefaultCanvasState = (size: Size): CanvasState => ({
   activeShapeId: null,
   size,
 });
-

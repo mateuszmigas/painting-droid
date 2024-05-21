@@ -1,9 +1,9 @@
 import type { CanvasShape } from "@/canvas/canvasState";
-import type { Position, Rectangle, Shape2d } from "@/utils/common";
-import { isPositionInRectangle } from "./geometry";
+import type { BoundingBox, Position, Rectangle, Shape2d } from "@/utils/common";
+import { isPositionInRectangle, normalizeRectangle } from "./geometry";
 import { domNames } from "@/constants";
 
-export const gripSize = 10;
+export const gripSize = 30;
 
 export type TransformGripId =
   | "grip-top-left"
@@ -30,10 +30,15 @@ export const transformBox = (
   startPosition: Position,
   endPosition: Position
 ): Rectangle => {
+  const distance = {
+    x: endPosition.x - startPosition.x,
+    y: endPosition.y - startPosition.y,
+  };
+
   if (handle === "body") {
     return {
-      x: boundingBox.x + (endPosition.x - startPosition.x),
-      y: boundingBox.y + (endPosition.y - startPosition.y),
+      x: boundingBox.x + distance.x,
+      y: boundingBox.y + distance.y,
       width: boundingBox.width,
       height: boundingBox.height,
     };
@@ -47,6 +52,30 @@ export const transformBox = (
       height: boundingBox.y + boundingBox.height - endPosition.y,
     };
   }
+  if (handle === "grip-top-right") {
+    return {
+      x: boundingBox.x,
+      y: endPosition.y,
+      width: endPosition.x - boundingBox.x,
+      height: boundingBox.y + boundingBox.height - endPosition.y,
+    };
+  }
+  if (handle === "grip-bottom-left") {
+    return {
+      x: endPosition.x,
+      y: boundingBox.y,
+      width: boundingBox.x + boundingBox.width - endPosition.x,
+      height: endPosition.y - boundingBox.y,
+    };
+  }
+  if (handle === "grip-bottom-right") {
+    return {
+      x: boundingBox.x,
+      y: boundingBox.y,
+      width: endPosition.x - boundingBox.x,
+      height: endPosition.y - boundingBox.y,
+    };
+  }
 
   return boundingBox;
 };
@@ -54,7 +83,7 @@ export const transformBox = (
 export const getTransformHandle = (
   canvasPosition: Position,
   screenPosition: Position,
-  boundingBox: Rectangle
+  boundingBox: BoundingBox
 ): TransformHandle | null => {
   const svgHostBox = document
     .getElementById(domNames.svgHostId)!
@@ -74,7 +103,7 @@ export const getTransformHandle = (
     }
   }
 
-  if (isPositionInRectangle(canvasPosition, boundingBox)) {
+  if (isPositionInRectangle(canvasPosition, normalizeRectangle(boundingBox))) {
     return "body";
   }
 
@@ -111,4 +140,3 @@ export const canvasShapeToShapes2d = (shape: CanvasShape): Shape2d[] => {
 
   return result;
 };
-

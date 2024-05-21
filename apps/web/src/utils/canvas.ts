@@ -1,4 +1,4 @@
-import type { CanvasBitmapContext } from "./common";
+import type { BoundingBox, CanvasBitmapContext } from "./common";
 import type { ImageCompressedData, ImageUncompressed } from "./imageData";
 
 export const createCanvasContext = (width: number, height: number) => {
@@ -45,3 +45,27 @@ export const restoreContextFromUncompressed = (
   );
 };
 
+export const drawFlippedImage = (
+  context: CanvasBitmapContext,
+  boundingBox: BoundingBox,
+  image: CanvasImageSource
+) => {
+  const { x, y, width, height } = boundingBox;
+  const { width: canvasWidth, height: canvasHeight } = context.canvas;
+  const flipHorizontal = width < 0;
+  const flipVertical = height < 0;
+  context.save();
+  context.translate(
+    flipHorizontal ? canvasWidth : 0,
+    flipVertical ? canvasHeight : 0
+  );
+  context.scale(flipHorizontal ? -1 : 1, flipVertical ? -1 : 1);
+  context.drawImage(
+    image,
+    flipHorizontal ? canvasWidth - x : x,
+    flipVertical ? canvasHeight - y : y,
+    Math.abs(width),
+    Math.abs(height)
+  );
+  context.restore();
+};

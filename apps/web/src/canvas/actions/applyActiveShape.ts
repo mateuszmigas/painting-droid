@@ -3,6 +3,7 @@ import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import { spreadOmitKeys } from "@/utils/object";
+import { drawFlippedImage } from "@/utils/canvas";
 
 const translations = getTranslations();
 
@@ -33,8 +34,11 @@ export const createCanvasAction = async (
 
     newLayerData = await processor
       .useContext(async (context) => {
-        const { x, y, width, height } = activeShape.boundingBox;
-        context.drawImage(capturedAreaContext.canvas, x, y, width, height);
+        drawFlippedImage(
+          context,
+          activeShape.boundingBox,
+          capturedAreaContext.canvas
+        );
       })
       .toCompressedData();
   }
@@ -87,4 +91,3 @@ export const createCanvasAction = async (
     },
   };
 };
-

@@ -1,7 +1,7 @@
 /* @jsxImportSource solid-js */
 import type { Rectangle } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
-import { createSignal, createEffect, onCleanup } from "solid-js";
+import { createSignal, createEffect, onCleanup, createMemo } from "solid-js";
 
 export type ImageRectangleProps = {
   rectangle: Rectangle;
@@ -23,14 +23,26 @@ export const ImageRectangle = (
     onCleanup(() => URL.revokeObjectURL(objectUrl));
   });
 
+  const transform = createMemo(() => {
+    const isNegativeWidth = props.rectangle.width < 0;
+    const isNegativeHeight = props.rectangle.height < 0;
+
+    return `translate(${
+      (props.rectangle.x + (isNegativeWidth ? 0 : 0)) * props.viewport.zoom +
+      props.viewport.position.x
+    },${
+      (props.rectangle.y + (isNegativeHeight ? 0 : 0)) * props.viewport.zoom +
+      props.viewport.position.y
+    }) scale(${isNegativeWidth ? -1 : 1},${isNegativeHeight ? -1 : 1})`;
+  });
+
   return (
     <image
       class="pixelated-canvas"
-      x={props.rectangle.x * props.viewport.zoom + props.viewport.position.x}
-      y={props.rectangle.y * props.viewport.zoom + props.viewport.position.y}
-      width={props.rectangle.width * props.viewport.zoom}
-      height={props.rectangle.height * props.viewport.zoom}
+      width={Math.abs(props.rectangle.width) * props.viewport.zoom}
+      height={Math.abs(props.rectangle.height) * props.viewport.zoom}
       preserveAspectRatio="none"
+      transform={transform()}
       href={src()}
     />
   );

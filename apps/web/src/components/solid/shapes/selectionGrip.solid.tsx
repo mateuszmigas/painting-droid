@@ -22,9 +22,8 @@ export const SelectionGrip = (
       width={gripSize}
       height={gripSize}
       fill={"hsl(var(--primary))"}
-      stroke={"white"}
+      stroke={props.gripId === "grip-top-left" ? "white" : "black"}
       stroke-width={2}
     />
   );
 };
-

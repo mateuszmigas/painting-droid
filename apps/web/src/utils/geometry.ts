@@ -39,6 +39,23 @@ export const scaleRectangle = (
   height: rectangle.height * scale,
 });
 
+export const createRectFromPoints = (point1: Position, point2: Position) => {
+  return {
+    x: Math.min(point1.x, point2.x),
+    y: Math.min(point1.y, point2.y),
+    width: Math.abs(point1.x - point2.x),
+    height: Math.abs(point1.y - point2.y),
+  };
+};
+
+export const normalizeRectangle = (rectangle: Rectangle) => {
+  const x = rectangle.width < 0 ? rectangle.x + rectangle.width : rectangle.x;
+  const y = rectangle.height < 0 ? rectangle.y + rectangle.height : rectangle.y;
+  const width = Math.abs(rectangle.width);
+  const height = Math.abs(rectangle.height);
+  return { x, y, width, height };
+};
+
 export const scaleRectangleToFitParent = (
   rectangle: Rectangle,
   parent: Size,
@@ -83,4 +100,3 @@ export const calculateScaleToFit = (child: Size, parent: Size) => {
     ? child.height / parent.height
     : child.width / parent.width;
 };
-

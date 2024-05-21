@@ -24,4 +24,3 @@ export const VectorCanvas = (props: {
     </Solid.Show>
   );
 };
-
