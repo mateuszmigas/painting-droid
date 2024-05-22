@@ -18,6 +18,7 @@ import { useResizeObserver } from "@/hooks/useResizeObserver";
 import { domNames } from "@/constants";
 import { getTranslations } from "@/translations";
 import { features } from "@/features";
+import { Button } from "../ui/button";
 
 const translations = getTranslations();
 
@@ -93,6 +94,15 @@ export const AppHeaderBar = memo(() => {
       </div>
       <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
       <div className="flex flex-row justify-center items-center pr-small gap-small">
+        <Button
+          onClick={() => {
+            navigator.share({
+              text: "dupa",
+            });
+          }}
+        >
+          DDD
+        </Button>
         <CommandIconButton commandId="openSettingsDialog" />
         <IconAnchor
           type="bug"
@@ -112,3 +122,4 @@ export const AppHeaderBar = memo(() => {
     </div>
   );
 });
+
