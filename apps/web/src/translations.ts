@@ -229,6 +229,7 @@ const translations = {
     noImageData: "No image data",
     processingError: "Processing error",
     copyClipboardError: "Copy to clipboard error. Operation not supported.",
+    sharingNotSupported: "Sharing is not supported or allowed on this device",
   },
   updater: {
     updatedTo: (version: string) => `App updated to version ${version}`,
