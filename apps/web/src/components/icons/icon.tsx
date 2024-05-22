@@ -66,6 +66,7 @@ import {
   SprayCan,
   Tags,
   Scissors,
+  Share,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -141,7 +142,8 @@ export type IconType =
   | "star"
   | "paint-bucket"
   | "spray-can"
-  | "tags";
+  | "tags"
+  | "share";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -323,6 +325,8 @@ const renderLucideIcon = (
       return <SprayCan className={className} size={fontSize} />;
     case "tags":
       return <Tags className={className} size={fontSize} />;
+    case "share":
+      return <Share className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
