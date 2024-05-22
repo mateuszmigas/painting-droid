@@ -30,6 +30,7 @@ import { command as checkForUpdate } from "./checkForUpdate";
 import { command as openCropCanvasDialog } from "./openCropCanvasDialog";
 import { command as openResizeCanvasDialog } from "./openResizeCanvasDialog";
 import { command as openSettingsDialog } from "./openSettingsDialog";
+import { command as shareWorkspace } from "./shareWorkspace";
 
 export const commands = {
   saveAsPng,
@@ -64,6 +65,7 @@ export const commands = {
   openSettingsDialog,
   mergeLayerDown,
   openSmartCropDialog,
+  shareWorkspace,
 } as const;
 
 export type CommandId = keyof typeof commands;

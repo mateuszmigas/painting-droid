@@ -168,6 +168,7 @@ const translations = {
     saveAsJpeg: "Save As JPEG",
     saveAsPng: "Save As PNG",
     saveAsWorkspace: "Save Workspace (PDW)",
+    shareWorkspace: "Share Workspace (PNG)",
     addLayer: "Add Layer",
     removeLayer: "Remove Layer",
     moveLayerUp: "Move Layer Up",
@@ -247,3 +248,4 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
+
