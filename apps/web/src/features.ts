@@ -5,5 +5,6 @@ export const features = {
     platform !== "e2e" && "oncontextlost" in new OffscreenCanvas(0, 0),
   nativeMenuBar: platform === "darwin",
   nativeColorPicker: isMobile(),
+  shareFiles: "share" in navigator,
 };
 
