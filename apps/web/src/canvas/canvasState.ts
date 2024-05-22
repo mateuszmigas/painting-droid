@@ -29,7 +29,7 @@ export type CanvasShape = {
       id: string;
       type: "rectangle" | "ellipse";
       fill: RgbaColor;
-      stroke: { color: RgbaColor; width: RgbaColor };
+      stroke: { color: RgbaColor; width: number };
     }
 );
 
@@ -58,3 +58,4 @@ export const createDefaultCanvasState = (size: Size): CanvasState => ({
   activeShapeId: null,
   size,
 });
+

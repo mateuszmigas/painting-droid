@@ -21,7 +21,7 @@ export const ToolSettingsBar = () => {
             key={id}
             className="flex flex-row items-center gap-small text-xs"
           >
-            {customField.name}
+            <div className="whitespace-nowrap ">{customField.name}</div>
             <ToolSetting
               customField={schema[id]}
               value={

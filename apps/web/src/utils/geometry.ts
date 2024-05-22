@@ -39,7 +39,10 @@ export const scaleRectangle = (
   height: rectangle.height * scale,
 });
 
-export const createRectFromPoints = (point1: Position, point2: Position) => {
+export const createRectangleFromPoints = (
+  point1: Position,
+  point2: Position
+) => {
   return {
     x: Math.min(point1.x, point2.x),
     y: Math.min(point1.y, point2.y),
@@ -100,3 +103,4 @@ export const calculateScaleToFit = (child: Size, parent: Size) => {
     ? child.height / parent.height
     : child.width / parent.width;
 };
+

@@ -1,6 +1,10 @@
 import type { CanvasShape } from "@/canvas/canvasState";
 import type { BoundingBox, Position, Rectangle, Shape2d } from "@/utils/common";
-import { isPositionInRectangle, normalizeRectangle } from "./geometry";
+import {
+  distanceBetweenPoints,
+  isPositionInRectangle,
+  normalizeRectangle,
+} from "./geometry";
 import { domNames } from "@/constants";
 
 export const gripSize = 12;
@@ -137,6 +141,40 @@ export const canvasShapeToShapes2d = (shape: CanvasShape): Shape2d[] => {
     );
     result.push(...grips);
   }
+  if (shape.type === "rectangle") {
+    result.push({
+      type: "rectangle",
+      position: { x: shape.boundingBox.x, y: shape.boundingBox.y },
+      size: {
+        width: shape.boundingBox.width,
+        height: shape.boundingBox.height,
+      },
+      fillColor: shape.fill,
+      stroke: {
+        color: shape.stroke.color,
+        width: shape.stroke.width,
+      },
+    });
+  }
 
   return result;
 };
+
+const minShapeSize = 1;
+const minScreenDistanceToDraw = 5;
+
+export const validateShape = (
+  boundingBox: BoundingBox,
+  startScreenPosition: Position,
+  endScreenPosition: Position
+) => {
+  const hasValidSize =
+    boundingBox.width >= minShapeSize && boundingBox.height >= minShapeSize;
+
+  const hasValidScreenDistance =
+    distanceBetweenPoints(startScreenPosition, endScreenPosition) >
+    minScreenDistanceToDraw;
+
+  return hasValidSize && hasValidScreenDistance;
+};
+

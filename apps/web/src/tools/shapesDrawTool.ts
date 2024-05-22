@@ -1,33 +1,59 @@
-import type {
-  BoundingBox,
-  CanvasVectorContext,
-  Position,
-} from "@/utils/common";
-import { fastRound } from "@/utils/math";
-import { getTranslations } from "@/translations";
-import { uuid } from "@/utils/uuid";
 import {
+  type CanvasToolResult,
   createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
   type CanvasTool,
   type CanvasToolEvent,
-  type CanvasToolResult,
+  type InferToolSettings,
 } from "./canvasTool";
+import type { CanvasVectorContext, Position } from "@/utils/common";
+import { getTranslations } from "@/translations";
+import { fastRound } from "@/utils/math";
+import { uuid } from "@/utils/uuid";
 import type { CanvasShape } from "@/canvas/canvasState";
-import { canvasShapeToShapes2d, validateShape } from "../utils/shape";
 import { createRectangleFromPoints } from "@/utils/geometry";
-const translations = getTranslations().tools.shape.rectangleSelect;
+import { canvasShapeToShapes2d, validateShape } from "@/utils/shape";
+const translations = getTranslations().tools.draw.shape;
 
-class RectangleSelectTool implements CanvasTool<never> {
+const settingsSchema = createCanvasToolSettingsSchema({
+  fillColor: {
+    name: translations.settings.fillColor,
+    type: "color",
+    defaultValue: { r: 23, b: 139, g: 84, a: 1 },
+  },
+  strokeColor: {
+    name: translations.settings.strokeColor,
+    type: "color",
+    defaultValue: { r: 0, b: 0, g: 0, a: 1 },
+  },
+  strokeWidth: {
+    name: translations.settings.strokeWidth,
+    type: "option-number",
+    defaultValue: 3,
+    options: [
+      { value: 1, label: "1px" },
+      { value: 3, label: "3px" },
+      { value: 5, label: "5px" },
+    ],
+  },
+});
+
+type ShapesDrawToolSettings = InferToolSettings<typeof settingsSchema>;
+
+class ShapesDrawTool implements CanvasTool<ShapesDrawToolSettings> {
+  private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
+  private settings: ShapesDrawToolSettings | null = null;
   private startCanvasPosition: Position | null = null;
   private startScreenPosition: Position | null = null;
-  private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
   private shapeId = "";
 
   constructor(private vectorContext: CanvasVectorContext) {}
 
-  configure(_: never): void {}
+  configure(settings: ShapesDrawToolSettings): void {
+    this.settings = settings;
+  }
 
-  processEvent(event: CanvasToolEvent) {
+  processEvent(event: CanvasToolEvent): void {
     if (event.type === "pointerDown") {
       this.startCanvasPosition = {
         x: fastRound(event.canvasPosition.x),
@@ -53,13 +79,15 @@ class RectangleSelectTool implements CanvasTool<never> {
         endCanvasPosition
       );
 
+      const settings = this.settings!;
       const shape: CanvasShape = {
         id: this.shapeId,
-        type: "captured-rectangle",
+        type: "rectangle",
         boundingBox,
-        capturedArea: {
-          box: boundingBox,
-          data: null as never, //data will be set when the shape is committed
+        fill: settings.fillColor,
+        stroke: {
+          color: settings.strokeColor,
+          width: settings.strokeWidth,
         },
       };
 
@@ -88,11 +116,11 @@ class RectangleSelectTool implements CanvasTool<never> {
   }
 }
 
-export const rectangleSelectToolMetadata = createCanvasToolMetadata({
-  id: "rectangleSelect",
+export const shapesDrawToolMetadata = createCanvasToolMetadata({
+  id: "shapes",
   name: translations.name,
-  icon: "rectangle-select",
-  settingsSchema: {},
-  create: (context) => new RectangleSelectTool(context.vector),
+  icon: "shapes",
+  settingsSchema,
+  create: (context) => new ShapesDrawTool(context.vector),
 });
 

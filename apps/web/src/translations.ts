@@ -69,6 +69,14 @@ const translations = {
       },
     },
     draw: {
+      shape: {
+        name: "Shape",
+        settings: {
+          fillColor: "Fill",
+          strokeColor: "Stroke",
+          strokeWidth: "Stroke Width",
+        },
+      },
       brush: {
         name: "Brush",
         settings: {
@@ -247,3 +255,4 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
+
