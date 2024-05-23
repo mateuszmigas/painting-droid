@@ -33,12 +33,6 @@ export type CanvasShape = {
     }
   | {
       id: string;
-      type: "drawn-triangle";
-      fill: RgbaColor;
-      stroke: { color: RgbaColor; width: number };
-    }
-  | {
-      id: string;
       type: "drawn-ellipse";
       fill: RgbaColor;
       stroke: { color: RgbaColor; width: number };

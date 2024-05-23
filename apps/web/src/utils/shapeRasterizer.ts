@@ -19,25 +19,6 @@ const rasterizeRectangle = (
   context.strokeRect(x, y, width, height);
 };
 
-const rasterizeTriangle = (
-  context: CanvasBitmapContext,
-  shape: Extract<CanvasShape, { type: "drawn-triangle" }>
-) => {
-  const { x, y, width, height } = shape.boundingBox;
-  const { fill, stroke } = shape;
-  const { color, width: strokeWidth } = stroke;
-  context.fillStyle = ColorProcessor.fromRgba(fill).toRgbaString();
-  context.strokeStyle = ColorProcessor.fromRgba(color).toRgbaString();
-  context.lineWidth = strokeWidth;
-  context.beginPath();
-  context.moveTo(x + width / 2, y);
-  context.lineTo(x + width, y + height);
-  context.lineTo(x, y + height);
-  context.closePath();
-  context.fill();
-  context.stroke();
-};
-
 const rasterizeEllipse = (
   context: CanvasBitmapContext,
   shape: Extract<CanvasShape, { type: "drawn-ellipse" }>
@@ -84,9 +65,6 @@ export const rasterizeShape = async (
       break;
     case "drawn-rectangle":
       rasterizeRectangle(context, shape);
-      break;
-    case "drawn-triangle":
-      rasterizeTriangle(context, shape);
       break;
     case "drawn-ellipse":
       rasterizeEllipse(context, shape);

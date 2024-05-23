@@ -18,6 +18,18 @@ import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 const translations = getTranslations().tools.shapeDraw;
 
 const settingsSchema = createCanvasToolSettingsSchema({
+  type: {
+    name: translations.settings.type.name,
+    type: "option-string",
+    defaultValue: "rectangle",
+    options: [
+      {
+        value: "rectangle",
+        label: translations.settings.type.options.rectangle,
+      },
+      { value: "ellipse", label: translations.settings.type.options.ellipse },
+    ],
+  },
   fillColor: {
     name: translations.settings.fillColor,
     type: "color",
@@ -46,6 +58,7 @@ class ShapeDrawTool implements CanvasTool<ShapeDrawToolSettings> {
   private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
   private startCanvasPosition: Position | null = null;
   private startScreenPosition: Position | null = null;
+  private endScreenPosition: Position | null = null;
   private shapeDraft: CanvasShape = {
     id: "",
     type: "drawn-rectangle",
@@ -59,11 +72,10 @@ class ShapeDrawTool implements CanvasTool<ShapeDrawToolSettings> {
   configure(settings: ShapeDrawToolSettings): void {
     this.shapeDraft = {
       ...this.shapeDraft,
-      type: "drawn-rectangle",
+      type: `drawn-${settings.type}` as never,
       fill: settings.fillColor,
       stroke: { color: settings.strokeColor, width: settings.strokeWidth },
     };
-    this.renderDraft();
   }
 
   processEvent(event: CanvasToolEvent): void {
@@ -85,7 +97,7 @@ class ShapeDrawTool implements CanvasTool<ShapeDrawToolSettings> {
         x: fastRound(event.canvasPosition.x),
         y: fastRound(event.canvasPosition.y),
       };
-      const endScreenPosition = event.screenPosition;
+      this.endScreenPosition = event.screenPosition;
 
       const boundingBox = createRectangleFromPoints(
         this.startCanvasPosition,
@@ -93,15 +105,21 @@ class ShapeDrawTool implements CanvasTool<ShapeDrawToolSettings> {
       );
 
       this.shapeDraft = { ...this.shapeDraft, boundingBox };
-      this.renderDraft();
+
+      const isValid = validateShape(
+        boundingBox,
+        this.startScreenPosition!,
+        this.endScreenPosition!
+      );
+
+      if (isValid) {
+        this.vectorContext.render(
+          "tool",
+          canvasShapeToShapes2d(this.shapeDraft)
+        );
+      }
 
       if (event.type === "pointerUp") {
-        const isValid = validateShape(
-          boundingBox,
-          this.startScreenPosition!,
-          endScreenPosition
-        );
-
         if (isValid) {
           this.onCommitCallback?.({ shape: this.shapeDraft });
         }
@@ -117,12 +135,6 @@ class ShapeDrawTool implements CanvasTool<ShapeDrawToolSettings> {
 
   reset() {
     this.startCanvasPosition = null;
-  }
-
-  private renderDraft() {
-    if (this.shapeDraft.id) {
-      this.vectorContext.render("tool", canvasShapeToShapes2d(this.shapeDraft));
-    }
   }
 }
 

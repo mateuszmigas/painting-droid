@@ -42,6 +42,17 @@ export const canvasShapeToShapes2d = (shape: CanvasShape): Shape2d[] => {
     result.push(...createGripsShapes(shape.boundingBox));
   }
 
+  if (shape.type === "drawn-ellipse") {
+    result.push({
+      type: "ellipse",
+      rectangle: normalizeBoundingBox(shape.boundingBox),
+      fillColor: shape.fill,
+      stroke: { color: shape.stroke.color, width: shape.stroke.width },
+    });
+    result.push(createSelectionShape(shape.boundingBox));
+    result.push(...createGripsShapes(shape.boundingBox));
+  }
+
   return result;
 };
 

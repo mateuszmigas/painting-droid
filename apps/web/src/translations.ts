@@ -73,11 +73,6 @@ const translations = {
       transform: "Transform Rectangle",
       apply: "Apply Rectangle",
     },
-    "drawn-triangle": {
-      add: "Draw Triangle",
-      transform: "Transform Triangle",
-      apply: "Apply Triangle",
-    },
     "drawn-ellipse": {
       add: "Draw Ellipse",
       transform: "Transform Ellipse",
@@ -91,6 +86,13 @@ const translations = {
     shapeDraw: {
       name: "Shape",
       settings: {
+        type: {
+          name: "Shape",
+          options: {
+            rectangle: "Rectangle",
+            ellipse: "Ellipse",
+          },
+        },
         fillColor: "Fill",
         strokeColor: "Stroke",
         strokeWidth: "Stroke Width",
