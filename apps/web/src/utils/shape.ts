@@ -1,9 +1,9 @@
 import type { CanvasShape } from "@/canvas/canvasState";
-import type { BoundingBox, Position, Rectangle, Shape2d } from "@/utils/common";
+import type { BoundingBox, Position, Shape2d } from "@/utils/common";
 import {
   distanceBetweenPoints,
   isPositionInRectangle,
-  normalizeRectangle,
+  normalizeBoundingBox,
 } from "./geometry";
 import { domNames } from "@/constants";
 
@@ -17,7 +17,7 @@ export type TransformGripId =
 export type TransformHandle = TransformGripId | "body";
 
 const generateGrips = (
-  boundingBox: Rectangle
+  boundingBox: BoundingBox
 ): { gripId: TransformGripId; position: Position }[] => {
   const { x, y, width, height } = boundingBox;
   return [
@@ -30,10 +30,10 @@ const generateGrips = (
 
 export const transformBoundingBox = (
   handle: TransformHandle,
-  boundingBox: Rectangle,
+  boundingBox: BoundingBox,
   startPosition: Position,
   endPosition: Position
-): Rectangle => {
+): BoundingBox => {
   const distance = {
     x: endPosition.x - startPosition.x,
     y: endPosition.y - startPosition.y,
@@ -107,7 +107,9 @@ export const getTransformHandle = (
     }
   }
 
-  if (isPositionInRectangle(canvasPosition, normalizeRectangle(boundingBox))) {
+  if (
+    isPositionInRectangle(canvasPosition, normalizeBoundingBox(boundingBox))
+  ) {
     return "body";
   }
 
@@ -120,7 +122,7 @@ export const canvasShapeToShapes2d = (shape: CanvasShape): Shape2d[] => {
   if (shape.capturedArea) {
     result.push({
       type: "image-rectangle",
-      rectangle: shape.boundingBox,
+      boundingBox: shape.boundingBox,
       blob: shape.capturedArea.data,
     });
   }
@@ -128,33 +130,44 @@ export const canvasShapeToShapes2d = (shape: CanvasShape): Shape2d[] => {
   if (shape.type === "captured-rectangle") {
     result.push({
       type: "selection-rectangle",
-      rectangle: shape.boundingBox,
+      rectangle: normalizeBoundingBox(shape.boundingBox),
     });
 
-    const grips = generateGrips(shape.boundingBox).map(
-      (grip) =>
-        ({
-          type: "selection-grip",
-          gripId: grip.gripId,
-          position: grip.position,
-        } as const)
+    result.push(
+      ...generateGrips(shape.boundingBox).map(
+        (grip) =>
+          ({
+            type: "selection-grip",
+            gripId: grip.gripId,
+            position: grip.position,
+          } as const)
+      )
     );
-    result.push(...grips);
   }
-  if (shape.type === "rectangle") {
+  if (shape.type === "drawn-rectangle") {
     result.push({
       type: "rectangle",
-      position: { x: shape.boundingBox.x, y: shape.boundingBox.y },
-      size: {
-        width: shape.boundingBox.width,
-        height: shape.boundingBox.height,
-      },
+      rectangle: normalizeBoundingBox(shape.boundingBox),
       fillColor: shape.fill,
       stroke: {
         color: shape.stroke.color,
         width: shape.stroke.width,
       },
     });
+    result.push({
+      type: "selection-rectangle",
+      rectangle: normalizeBoundingBox(shape.boundingBox),
+    });
+    result.push(
+      ...generateGrips(shape.boundingBox).map(
+        (grip) =>
+          ({
+            type: "selection-grip",
+            gripId: grip.gripId,
+            position: grip.position,
+          } as const)
+      )
+    );
   }
 
   return result;

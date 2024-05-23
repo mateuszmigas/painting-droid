@@ -9,8 +9,8 @@ export const ToolSettingsBar = () => {
   const selectedToolId = useToolStore((state) => state.selectedToolId);
   const settings = useToolStore((state) => state.toolSettings[selectedToolId]);
   const updateToolSettings = useToolStore((state) => state.updateToolSettings);
-  const schema = canvasToolsMetadata[selectedToolId]
-    .settingsSchema as CustomFieldsSchema;
+  const schema = (canvasToolsMetadata[selectedToolId]?.settingsSchema ??
+    {}) as CustomFieldsSchema;
 
   return (
     <div className="h-10 border-b px-2 flex flex-row gap-small items-center">

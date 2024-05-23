@@ -1,4 +1,4 @@
-import type { Position, Rectangle, Size } from "./common";
+import type { BoundingBox, Position, Rectangle, Size } from "./common";
 
 export const isPositionInRectangle = (
   position: Position,
@@ -51,11 +51,13 @@ export const createRectangleFromPoints = (
   };
 };
 
-export const normalizeRectangle = (rectangle: Rectangle) => {
-  const x = rectangle.width < 0 ? rectangle.x + rectangle.width : rectangle.x;
-  const y = rectangle.height < 0 ? rectangle.y + rectangle.height : rectangle.y;
-  const width = Math.abs(rectangle.width);
-  const height = Math.abs(rectangle.height);
+export const normalizeBoundingBox = (boundingBox: BoundingBox) => {
+  const x =
+    boundingBox.width < 0 ? boundingBox.x + boundingBox.width : boundingBox.x;
+  const y =
+    boundingBox.height < 0 ? boundingBox.y + boundingBox.height : boundingBox.y;
+  const width = Math.abs(boundingBox.width);
+  const height = Math.abs(boundingBox.height);
   return { x, y, width, height };
 };
 

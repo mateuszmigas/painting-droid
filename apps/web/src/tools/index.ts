@@ -4,7 +4,7 @@ import { eraserDrawToolMetadata } from "./eraserDrawTool";
 import { fillDrawToolMetadata } from "./fillDrawTool";
 import { rectangleSelectToolMetadata } from "./rectangleSelectTool";
 import { sprayDrawToolMetadata } from "./sprayDrawTool";
-import { shapesDrawToolMetadata } from "./shapesDrawTool";
+import { shapeDrawToolMetadata } from "./shapeDrawTool";
 
 export const canvasToolsMetadata = {
   brush: brushDrawToolMetadata,
@@ -13,7 +13,7 @@ export const canvasToolsMetadata = {
   fill: fillDrawToolMetadata,
   spray: sprayDrawToolMetadata,
   rectangleSelect: rectangleSelectToolMetadata,
-  shapes: shapesDrawToolMetadata,
+  shape: shapeDrawToolMetadata,
 } as const;
 
 const getDefaultCanvasToolSettings = (toolId: CanvasToolId) => {

@@ -38,19 +38,30 @@ const settingsSchema = createCanvasToolSettingsSchema({
   },
 });
 
-type ShapesDrawToolSettings = InferToolSettings<typeof settingsSchema>;
+type ShapeDrawToolSettings = InferToolSettings<typeof settingsSchema>;
 
-class ShapesDrawTool implements CanvasTool<ShapesDrawToolSettings> {
+class ShapeDrawTool implements CanvasTool<ShapeDrawToolSettings> {
   private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
-  private settings: ShapesDrawToolSettings | null = null;
   private startCanvasPosition: Position | null = null;
   private startScreenPosition: Position | null = null;
-  private shapeId = "";
+  private shapeDraft: CanvasShape = {
+    id: "",
+    type: "drawn-rectangle",
+    fill: { r: 0, g: 0, b: 0, a: 0 },
+    stroke: { color: { r: 0, g: 0, b: 0, a: 0 }, width: 0 },
+    boundingBox: { x: 0, y: 0, width: 0, height: 0 },
+  };
 
   constructor(private vectorContext: CanvasVectorContext) {}
 
-  configure(settings: ShapesDrawToolSettings): void {
-    this.settings = settings;
+  configure(settings: ShapeDrawToolSettings): void {
+    this.shapeDraft = {
+      ...this.shapeDraft,
+      type: "drawn-rectangle",
+      fill: settings.fillColor,
+      stroke: { color: settings.strokeColor, width: settings.strokeWidth },
+    };
+    this.renderDraft();
   }
 
   processEvent(event: CanvasToolEvent): void {
@@ -60,7 +71,7 @@ class ShapesDrawTool implements CanvasTool<ShapesDrawToolSettings> {
         y: fastRound(event.canvasPosition.y),
       };
       this.startScreenPosition = event.screenPosition;
-      this.shapeId = uuid();
+      this.shapeDraft = { ...this.shapeDraft, id: uuid() };
       return;
     }
 
@@ -79,29 +90,20 @@ class ShapesDrawTool implements CanvasTool<ShapesDrawToolSettings> {
         endCanvasPosition
       );
 
-      const settings = this.settings!;
-      const shape: CanvasShape = {
-        id: this.shapeId,
-        type: "rectangle",
-        boundingBox,
-        fill: settings.fillColor,
-        stroke: {
-          color: settings.strokeColor,
-          width: settings.strokeWidth,
-        },
-      };
-
-      const isValid = validateShape(
-        boundingBox,
-        this.startScreenPosition!,
-        endScreenPosition
-      );
-
-      isValid &&
-        this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
+      this.shapeDraft = { ...this.shapeDraft, boundingBox };
+      this.renderDraft();
 
       if (event.type === "pointerUp") {
-        isValid && this.onCommitCallback?.({ shape: shape });
+        const isValid = validateShape(
+          boundingBox,
+          this.startScreenPosition!,
+          endScreenPosition
+        );
+
+        if (isValid) {
+          this.onCommitCallback?.({ shape: this.shapeDraft });
+        }
+
         this.reset();
       }
     }
@@ -114,13 +116,19 @@ class ShapesDrawTool implements CanvasTool<ShapesDrawToolSettings> {
   reset() {
     this.startCanvasPosition = null;
   }
+
+  private renderDraft() {
+    if (this.shapeDraft.id) {
+      this.vectorContext.render("tool", canvasShapeToShapes2d(this.shapeDraft));
+    }
+  }
 }
 
-export const shapesDrawToolMetadata = createCanvasToolMetadata({
+export const shapeDrawToolMetadata = createCanvasToolMetadata({
   id: "shapes",
   name: translations.name,
   icon: "shapes",
   settingsSchema,
-  create: (context) => new ShapesDrawTool(context.vector),
+  create: (context) => new ShapeDrawTool(context.vector),
 });
 

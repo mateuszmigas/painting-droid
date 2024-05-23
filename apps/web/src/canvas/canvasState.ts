@@ -27,7 +27,7 @@ export type CanvasShape = {
     }
   | {
       id: string;
-      type: "rectangle" | "ellipse";
+      type: "drawn-rectangle" | "drawn-ellipse";
       fill: RgbaColor;
       stroke: { color: RgbaColor; width: number };
     }
