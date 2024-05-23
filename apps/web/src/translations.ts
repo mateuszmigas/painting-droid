@@ -9,7 +9,7 @@ const translations = {
   canvasActions: {
     init: "New Image",
     addLayer: "Add Layer",
-    applySelection: "Apply Selection",
+    applyShape: "Apply Shape",
     deselect: "Deselect",
     addCapturedArea: {
       rectangle: "Rectangle Select",
@@ -62,46 +62,74 @@ const translations = {
       steps: "Steps",
     },
   },
+  shapesTransform: {
+    "captured-rectangle": {
+      add: "Select Rectangle",
+      transform: "Transform Selection",
+      apply: "Apply Selection",
+    },
+    "drawn-rectangle": {
+      add: "Draw Rectangle",
+      transform: "Transform Rectangle",
+      apply: "Apply Rectangle",
+    },
+    "drawn-ellipse": {
+      add: "Draw Ellipse",
+      transform: "Transform Ellipse",
+      apply: "Apply Ellipse",
+    },
+  },
   tools: {
-    shape: {
-      rectangleSelect: {
-        name: "Rectangle Select",
+    rectangleSelect: {
+      name: "Rectangle Select",
+    },
+    shapeDraw: {
+      name: "Shape",
+      settings: {
+        type: {
+          name: "Shape",
+          options: {
+            rectangle: "Rectangle",
+            ellipse: "Ellipse",
+          },
+        },
+        fillColor: "Fill",
+        strokeColor: "Stroke",
+        strokeWidth: "Stroke Width",
       },
     },
-    draw: {
-      brush: {
-        name: "Brush",
-        settings: {
-          color: "Color",
-          size: "Size",
-        },
+    brushDraw: {
+      name: "Brush",
+      settings: {
+        color: "Color",
+        size: "Size",
       },
-      pencil: {
-        name: "Pencil",
-        settings: {
-          color: "Color",
-        },
+    },
+    pencilDraw: {
+      name: "Pencil",
+      settings: {
+        color: "Color",
       },
-      eraser: {
-        name: "Eraser",
-        settings: {
-          size: "Size",
-        },
+    },
+    eraserDraw: {
+      name: "Eraser",
+      settings: {
+        size: "Size",
       },
-      fill: {
-        name: "Fill",
-        settings: {
-          color: "Color",
-          tolerance: "Tolerance",
-        },
+    },
+    fillDraw: {
+      name: "Fill",
+      settings: {
+        color: "Color",
+        tolerance: "Tolerance",
       },
-      spray: {
-        name: "Spray",
-        settings: {
-          color: "Color",
-          range: "Range",
-          density: "Density",
-        },
+    },
+    sprayDraw: {
+      name: "Spray",
+      settings: {
+        color: "Color",
+        range: "Range",
+        density: "Density",
       },
     },
   },

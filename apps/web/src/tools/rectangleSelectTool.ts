@@ -9,12 +9,11 @@ import {
   type CanvasToolResult,
 } from "./canvasTool";
 import type { CanvasShape } from "@/canvas/canvasState";
-import { canvasShapeToShapes2d } from "../utils/shape";
-import { createRectFromPoints, distanceBetweenPoints } from "@/utils/geometry";
-const translations = getTranslations().tools.shape.rectangleSelect;
+import { validateShape } from "../utils/boundingBoxTransform";
+import { createRectangleFromPoints } from "@/utils/geometry";
+import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 
-const minShapeSize = 1;
-const minScreenDistanceToDraw = 5;
+const translations = getTranslations().tools.rectangleSelect;
 
 class RectangleSelectTool implements CanvasTool<never> {
   private startCanvasPosition: Position | null = null;
@@ -27,14 +26,6 @@ class RectangleSelectTool implements CanvasTool<never> {
   configure(_: never): void {}
 
   processEvent(event: CanvasToolEvent) {
-    if (
-      event.type !== "pointerDown" &&
-      event.type !== "pointerMove" &&
-      event.type !== "pointerUp"
-    ) {
-      return;
-    }
-
     if (event.type === "pointerDown") {
       this.startCanvasPosition = {
         x: fastRound(event.canvasPosition.x),
@@ -45,43 +36,44 @@ class RectangleSelectTool implements CanvasTool<never> {
       return;
     }
 
-    if (!this.startCanvasPosition) {
-      return;
-    }
+    if (
+      (event.type === "pointerMove" || event.type === "pointerUp") &&
+      this.startCanvasPosition !== null
+    ) {
+      const endCanvasPosition = {
+        x: fastRound(event.canvasPosition.x),
+        y: fastRound(event.canvasPosition.y),
+      };
+      const endScreenPosition = event.screenPosition;
 
-    const endCanvasPosition = {
-      x: fastRound(event.canvasPosition.x),
-      y: fastRound(event.canvasPosition.y),
-    };
-    const endScreenPosition = event.screenPosition;
+      const boundingBox = createRectangleFromPoints(
+        this.startCanvasPosition,
+        endCanvasPosition
+      );
 
-    const boundingBox = createRectFromPoints(
-      this.startCanvasPosition,
-      endCanvasPosition
-    );
+      const shape: CanvasShape = {
+        id: this.shapeId,
+        type: "captured-rectangle",
+        boundingBox,
+        capturedArea: {
+          box: boundingBox,
+          data: null as never, //data will be set when the shape is committed
+        },
+      };
 
-    const shape: CanvasShape = {
-      id: this.shapeId,
-      type: "captured-rectangle",
-      boundingBox,
-      capturedArea: {
-        box: boundingBox,
-        data: null as never, //data will be set when the shape is committed
-      },
-    };
+      const isValid = validateShape(
+        boundingBox,
+        this.startScreenPosition!,
+        endScreenPosition
+      );
 
-    const hasValidSize =
-      boundingBox.width >= minShapeSize && boundingBox.height >= minShapeSize;
-    const hasValidScreenDistance =
-      distanceBetweenPoints(this.startScreenPosition!, endScreenPosition) >
-      minScreenDistanceToDraw;
+      isValid &&
+        this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
 
-    const isValid = hasValidSize && hasValidScreenDistance;
-    isValid && this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
-
-    if (event.type === "pointerUp") {
-      isValid && this.onCommitCallback?.({ shape: shape });
-      this.startCanvasPosition = null;
+      if (event.type === "pointerUp") {
+        isValid && this.onCommitCallback?.({ shape: shape });
+        this.reset();
+      }
     }
   }
 
@@ -101,3 +93,4 @@ export const rectangleSelectToolMetadata = createCanvasToolMetadata({
   settingsSchema: {},
   create: (context) => new RectangleSelectTool(context.vector),
 });
+

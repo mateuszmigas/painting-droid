@@ -1,6 +1,9 @@
-import type { CanvasShape } from "@/canvas/canvasState";
-import type { BoundingBox, Position, Rectangle, Shape2d } from "@/utils/common";
-import { isPositionInRectangle, normalizeRectangle } from "./geometry";
+import type { BoundingBox, Position } from "@/utils/common";
+import {
+  distanceBetweenPoints,
+  isPositionInRectangle,
+  normalizeBoundingBox,
+} from "./geometry";
 import { domNames } from "@/constants";
 
 export const gripSize = 12;
@@ -10,10 +13,11 @@ export type TransformGripId =
   | "grip-top-right"
   | "grip-bottom-left"
   | "grip-bottom-right";
+
 export type TransformHandle = TransformGripId | "body";
 
-const generateGrips = (
-  boundingBox: Rectangle
+export const generateGrips = (
+  boundingBox: BoundingBox
 ): { gripId: TransformGripId; position: Position }[] => {
   const { x, y, width, height } = boundingBox;
   return [
@@ -24,12 +28,12 @@ const generateGrips = (
   ];
 };
 
-export const transformBoundingBox = (
+export const transform = (
   handle: TransformHandle,
-  boundingBox: Rectangle,
+  boundingBox: BoundingBox,
   startPosition: Position,
   endPosition: Position
-): Rectangle => {
+): BoundingBox => {
   const distance = {
     x: endPosition.x - startPosition.x,
     y: endPosition.y - startPosition.y,
@@ -80,7 +84,7 @@ export const transformBoundingBox = (
   return boundingBox;
 };
 
-export const getTransformHandle = (
+export const pickHandle = (
   canvasPosition: Position,
   screenPosition: Position,
   boundingBox: BoundingBox
@@ -103,40 +107,30 @@ export const getTransformHandle = (
     }
   }
 
-  if (isPositionInRectangle(canvasPosition, normalizeRectangle(boundingBox))) {
+  if (
+    isPositionInRectangle(canvasPosition, normalizeBoundingBox(boundingBox))
+  ) {
     return "body";
   }
 
   return null;
 };
 
-export const canvasShapeToShapes2d = (shape: CanvasShape): Shape2d[] => {
-  const result: Shape2d[] = [];
+const minShapeSize = 1;
+const minScreenDistanceToDraw = 5;
 
-  if (shape.capturedArea) {
-    result.push({
-      type: "image-rectangle",
-      rectangle: shape.boundingBox,
-      blob: shape.capturedArea.data,
-    });
-  }
+export const validateShape = (
+  boundingBox: BoundingBox,
+  startScreenPosition: Position,
+  endScreenPosition: Position
+) => {
+  const hasValidSize =
+    boundingBox.width >= minShapeSize && boundingBox.height >= minShapeSize;
 
-  if (shape.type === "captured-rectangle") {
-    result.push({
-      type: "selection-rectangle",
-      rectangle: shape.boundingBox,
-    });
+  const hasValidScreenDistance =
+    distanceBetweenPoints(startScreenPosition, endScreenPosition) >
+    minScreenDistanceToDraw;
 
-    const grips = generateGrips(shape.boundingBox).map(
-      (grip) =>
-        ({
-          type: "selection-grip",
-          gripId: grip.gripId,
-          position: grip.position,
-        } as const)
-    );
-    result.push(...grips);
-  }
-
-  return result;
+  return hasValidSize && hasValidScreenDistance;
 };
+

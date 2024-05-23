@@ -10,7 +10,7 @@ import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
-const translations = getTranslations().tools.draw.pencil;
+const translations = getTranslations().tools.pencilDraw;
 
 const settingsSchema = createCanvasToolSettingsSchema({
   color: {

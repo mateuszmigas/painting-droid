@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { transformBoundingBox } from "./shape";
+import { transform } from "./boundingBoxTransform";
 
 describe("transformBoundingBox", () => {
   test("translates body of the box", () => {
@@ -8,12 +8,7 @@ describe("transformBoundingBox", () => {
     const endPosition = { x: 20, y: 30 };
     const handle = "body";
 
-    const result = transformBoundingBox(
-      handle,
-      boundingBox,
-      startPosition,
-      endPosition
-    );
+    const result = transform(handle, boundingBox, startPosition, endPosition);
 
     expect(result).toEqual({ x: 10, y: 20, width: 100, height: 100 });
   });
@@ -24,12 +19,7 @@ describe("transformBoundingBox", () => {
     const endPosition = { x: 20, y: 30 };
     const handle = "grip-top-left";
 
-    const result = transformBoundingBox(
-      handle,
-      boundingBox,
-      startPosition,
-      endPosition
-    );
+    const result = transform(handle, boundingBox, startPosition, endPosition);
 
     expect(result).toEqual({ x: 20, y: 30, width: 80, height: 70 });
   });
@@ -40,12 +30,7 @@ describe("transformBoundingBox", () => {
     const endPosition = { x: 20, y: 30 };
     const handle = "grip-top-right";
 
-    const result = transformBoundingBox(
-      handle,
-      boundingBox,
-      startPosition,
-      endPosition
-    );
+    const result = transform(handle, boundingBox, startPosition, endPosition);
 
     expect(result).toEqual({ x: 0, y: 30, width: 20, height: 70 });
   });
@@ -56,12 +41,7 @@ describe("transformBoundingBox", () => {
     const endPosition = { x: 20, y: 30 };
     const handle = "grip-bottom-left";
 
-    const result = transformBoundingBox(
-      handle,
-      boundingBox,
-      startPosition,
-      endPosition
-    );
+    const result = transform(handle, boundingBox, startPosition, endPosition);
 
     expect(result).toEqual({ x: 20, y: 0, width: 80, height: 30 });
   });
@@ -72,12 +52,7 @@ describe("transformBoundingBox", () => {
     const endPosition = { x: 20, y: 30 };
     const handle = "grip-bottom-right";
 
-    const result = transformBoundingBox(
-      handle,
-      boundingBox,
-      startPosition,
-      endPosition
-    );
+    const result = transform(handle, boundingBox, startPosition, endPosition);
 
     expect(result).toEqual({ x: 0, y: 0, width: 20, height: 30 });
   });

@@ -4,10 +4,10 @@ import { arePointsClose } from "@/utils/geometry";
 import { fastRound } from "@/utils/math";
 import {
   type TransformHandle,
-  canvasShapeToShapes2d,
-  getTransformHandle,
-  transformBoundingBox,
-} from "../utils/shape";
+  pickHandle,
+  transform,
+} from "../utils/boundingBoxTransform";
+import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 
 export class ShapeTransformTool {
   private startPosition: Position | null = null;
@@ -30,7 +30,7 @@ export class ShapeTransformTool {
       return false;
     }
 
-    this.transformHandle = getTransformHandle(
+    this.transformHandle = pickHandle(
       canvasPosition,
       screenPosition,
       activeShape.boundingBox
@@ -85,7 +85,7 @@ export class ShapeTransformTool {
 
     return {
       ...activeShape,
-      boundingBox: transformBoundingBox(
+      boundingBox: transform(
         this.transformHandle!,
         activeShape.boundingBox,
         this.startPosition,
@@ -98,3 +98,4 @@ export class ShapeTransformTool {
     this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
   };
 }
+

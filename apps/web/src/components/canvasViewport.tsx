@@ -19,7 +19,7 @@ import type { Observable } from "@/utils/observable";
 import { memo, useRef, useEffect } from "react";
 import { domNames } from "@/constants";
 import { testIds } from "@/utils/testIds";
-import { canvasShapeToShapes2d } from "@/utils/shape";
+import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 
 const alphaGridCellSize = 20;
 
@@ -168,3 +168,4 @@ export const CanvasViewport = memo(
     );
   }
 );
+

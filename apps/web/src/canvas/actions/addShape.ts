@@ -7,13 +7,6 @@ import { spreadOmitKeys } from "@/utils/object";
 
 const translations = getTranslations();
 
-const translate = (shape: CanvasShape) => {
-  if (shape?.type === "captured-rectangle") {
-    return translations.canvasActions.addCapturedArea.rectangle;
-  }
-  return translations.general.unknown;
-};
-
 export const createCanvasAction = async (
   context: CanvasActionContext,
   payload: {
@@ -33,8 +26,9 @@ export const createCanvasAction = async (
   };
 
   return {
-    display: display ?? translate(shape),
-    icon: icon ?? "rectangle-select",
+    display: display || translations.shapesTransform[shape.type].add,
+    icon:
+      icon || shape.type.startsWith("drawn-") ? "shapes" : "rectangle-select",
     execute: async (state) => {
       return {
         ...state,

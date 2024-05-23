@@ -11,7 +11,7 @@ import { getTranslations } from "@/translations";
 import { type RgbaColor, areColorsClose } from "@/utils/color";
 import { floodFill } from "@/utils/imageOperations";
 
-const translations = getTranslations().tools.draw.fill;
+const translations = getTranslations().tools.fillDraw;
 
 const settingsSchema = createCanvasToolSettingsSchema({
   color: {

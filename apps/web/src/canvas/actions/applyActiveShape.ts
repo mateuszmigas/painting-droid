@@ -3,7 +3,7 @@ import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import { spreadOmitKeys } from "@/utils/object";
-import { drawFlippedImage } from "@/utils/canvas";
+import { rasterizeShape } from "@/utils/shapeRasterizer";
 
 const translations = getTranslations();
 
@@ -18,30 +18,16 @@ export const createCanvasAction = async (
   }
 
   const activeShape = state.shapes[state.activeShapeId];
-  const capturedArea = activeShape.capturedArea ?? null;
   const layerData = state.layers[state.activeLayerIndex].data;
-  let newLayerData = layerData;
 
-  if (capturedArea) {
-    const capturedAreaContext = await ImageProcessor.fromCompressedData(
-      capturedArea.data
-    ).toContext();
+  const imageProcessor =
+    layerData === null
+      ? ImageProcessor.fromEmpty(size.width, size.height)
+      : ImageProcessor.fromCompressedData(layerData);
 
-    const processor =
-      layerData === null
-        ? ImageProcessor.fromEmpty(size.width, size.height)
-        : ImageProcessor.fromCompressedData(layerData);
-
-    newLayerData = await processor
-      .useContext(async (context) => {
-        drawFlippedImage(
-          context,
-          activeShape.boundingBox,
-          capturedAreaContext.canvas
-        );
-      })
-      .toCompressedData();
-  }
+  const newLayerData = await imageProcessor
+    .useContext((context) => rasterizeShape(context, activeShape))
+    .toCompressedData();
 
   const capturedData = {
     previousActiveShapeId: state.activeShapeId,
@@ -51,7 +37,7 @@ export const createCanvasAction = async (
   };
 
   return {
-    display: translations.canvasActions.applySelection,
+    display: translations.shapesTransform[activeShape.type].apply,
     icon: "deselect",
     execute: async (state) => {
       return {
@@ -91,3 +77,4 @@ export const createCanvasAction = async (
     },
   };
 };
+

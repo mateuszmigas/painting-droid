@@ -10,7 +10,7 @@ import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
 
-const translations = getTranslations().tools.draw.brush;
+const translations = getTranslations().tools.brushDraw;
 
 const settingsSchema = createCanvasToolSettingsSchema({
   color: {
