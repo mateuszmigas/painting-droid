@@ -108,12 +108,14 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 - [x] Use Blob instead of base64 for storing images
 - [x] Use IndexDB instead of localStorage for image data
 - [ ] More image adjustments
-- [ ] More tools: fill, erase, magic wand, text
+- [x] More tools: fill, erase
+- [ ] Magic Wand
+- [ ] Text annotation tool
 - [ ] Release notes popup
 - [ ] Change renderer to webgl/webgpu
 - [ ] Optimize image conversions with Rust
 - [x] Custom app menu for MacOS
-- [ ] Annotation tools: line, rectangle, circle
+- [x] Shape tools: rectangle, circle
 - [ ] Plugin support
 
 ### Contributions
