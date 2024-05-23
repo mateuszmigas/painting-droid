@@ -1,17 +1,10 @@
 import type { Rectangle } from "@/utils/common";
-import type { CanvasShape, CanvasShapeId } from "../canvasState";
+import type { CanvasShapeId } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
-
-const translate = (type: CanvasShape["type"]) => {
-  if (type === "captured-rectangle") {
-    return translations.canvasActions.transformShape.capturedRectangle;
-  }
-  return translations.general.unknown;
-};
 
 export const createCanvasAction = async (
   context: CanvasActionContext,
@@ -20,6 +13,11 @@ export const createCanvasAction = async (
   const { shapeId, boundingBox } = payload;
   const state = context.getState();
   const previousBoundingBox = state.shapes[shapeId].boundingBox;
+  const shape = state.shapes[shapeId];
+
+  if (!shape) {
+    throw new Error("Shape not found");
+  }
 
   const capturedData = {
     previousBoundingBox,
@@ -27,7 +25,7 @@ export const createCanvasAction = async (
   };
 
   return {
-    display: translate(state.shapes[shapeId].type),
+    display: translations.shapesTransform[shape.type].transform,
     icon: "mouse-pointer-square-dashed",
     execute: async (state) => {
       return {

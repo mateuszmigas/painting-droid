@@ -3,7 +3,7 @@ import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import { spreadOmitKeys } from "@/utils/object";
-import { drawFlippedImage } from "@/utils/canvas";
+import { rasterizeShape } from "@/utils/shapeRasterizer";
 
 const translations = getTranslations();
 
@@ -18,52 +18,16 @@ export const createCanvasAction = async (
   }
 
   const activeShape = state.shapes[state.activeShapeId];
-  const capturedArea = activeShape.capturedArea ?? null;
   const layerData = state.layers[state.activeLayerIndex].data;
-  let newLayerData = layerData;
 
-  if (capturedArea) {
-    const capturedAreaContext = await ImageProcessor.fromCompressedData(
-      capturedArea.data
-    ).toContext();
+  const imageProcessor =
+    layerData === null
+      ? ImageProcessor.fromEmpty(size.width, size.height)
+      : ImageProcessor.fromCompressedData(layerData);
 
-    const processor =
-      layerData === null
-        ? ImageProcessor.fromEmpty(size.width, size.height)
-        : ImageProcessor.fromCompressedData(layerData);
-
-    newLayerData = await processor
-      .useContext(async (context) => {
-        drawFlippedImage(
-          context,
-          activeShape.boundingBox,
-          capturedAreaContext.canvas
-        );
-      })
-      .toCompressedData();
-  }
-
-  if (activeShape.type === "drawn-rectangle") {
-    const processor =
-      layerData === null
-        ? ImageProcessor.fromEmpty(size.width, size.height)
-        : ImageProcessor.fromCompressedData(layerData);
-
-    newLayerData = await processor
-      .useContext(async (context) => {
-        const { x, y, width, height } = activeShape.boundingBox;
-        const { fill, stroke } = activeShape;
-        const { color, width: strokeWidth } = stroke;
-
-        context.fillStyle = `rgba(${fill.r}, ${fill.g}, ${fill.b}, ${fill.a})`;
-        context.strokeStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
-        context.lineWidth = strokeWidth;
-
-        context.fillRect(x, y, width, height);
-        context.strokeRect(x, y, width, height);
-      })
-      .toCompressedData();
-  }
+  const newLayerData = await imageProcessor
+    .useContext((context) => rasterizeShape(context, activeShape))
+    .toCompressedData();
 
   const capturedData = {
     previousActiveShapeId: state.activeShapeId,
@@ -73,7 +37,7 @@ export const createCanvasAction = async (
   };
 
   return {
-    display: translations.canvasActions.applySelection,
+    display: translations.shapesTransform[activeShape.type].apply,
     icon: "deselect",
     execute: async (state) => {
       return {

@@ -14,7 +14,8 @@ import type { CanvasShape } from "@/canvas/canvasState";
 import { createRectangleFromPoints } from "@/utils/geometry";
 import { validateShape } from "@/utils/boundingBoxTransform";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
-const translations = getTranslations().tools.draw.shape;
+
+const translations = getTranslations().tools.shapeDraw;
 
 const settingsSchema = createCanvasToolSettingsSchema({
   fillColor: {

@@ -9,7 +9,7 @@ import {
 import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 
-const translations = getTranslations().tools.draw.eraser;
+const translations = getTranslations().tools.eraserDraw;
 
 const settingsSchema = createCanvasToolSettingsSchema({
   size: {

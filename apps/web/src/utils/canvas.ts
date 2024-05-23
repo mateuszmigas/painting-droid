@@ -45,7 +45,7 @@ export const restoreContextFromUncompressed = (
   );
 };
 
-export const drawFlippedImage = (
+export const drawTransformedImage = (
   context: CanvasBitmapContext,
   boundingBox: BoundingBox,
   image: CanvasImageSource
@@ -69,3 +69,4 @@ export const drawFlippedImage = (
   );
   context.restore();
 };
+

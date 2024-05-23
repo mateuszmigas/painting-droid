@@ -12,7 +12,8 @@ import type { CanvasShape } from "@/canvas/canvasState";
 import { validateShape } from "../utils/boundingBoxTransform";
 import { createRectangleFromPoints } from "@/utils/geometry";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
-const translations = getTranslations().tools.shape.rectangleSelect;
+
+const translations = getTranslations().tools.rectangleSelect;
 
 class RectangleSelectTool implements CanvasTool<never> {
   private startCanvasPosition: Position | null = null;

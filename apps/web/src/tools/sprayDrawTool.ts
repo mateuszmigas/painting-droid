@@ -16,7 +16,7 @@ import { ColorProcessor } from "@/utils/colorProcessor";
 import { createFrameTicker, type FrameTicker } from "@/utils/frame";
 import { randomRange } from "@/utils/number";
 
-const translations = getTranslations().tools.draw.spray;
+const translations = getTranslations().tools.sprayDraw;
 
 const settingsSchema = createCanvasToolSettingsSchema({
   color: {
