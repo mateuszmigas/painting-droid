@@ -1,8 +1,4 @@
-import type {
-  BoundingBox,
-  CanvasVectorContext,
-  Position,
-} from "@/utils/common";
+import type { CanvasVectorContext, Position } from "@/utils/common";
 import { fastRound } from "@/utils/math";
 import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
@@ -13,8 +9,9 @@ import {
   type CanvasToolResult,
 } from "./canvasTool";
 import type { CanvasShape } from "@/canvas/canvasState";
-import { canvasShapeToShapes2d, validateShape } from "../utils/shape";
+import { validateShape } from "../utils/boundingBoxTransform";
 import { createRectangleFromPoints } from "@/utils/geometry";
+import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 const translations = getTranslations().tools.shape.rectangleSelect;
 
 class RectangleSelectTool implements CanvasTool<never> {

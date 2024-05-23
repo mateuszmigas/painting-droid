@@ -12,7 +12,8 @@ import { fastRound } from "@/utils/math";
 import { uuid } from "@/utils/uuid";
 import type { CanvasShape } from "@/canvas/canvasState";
 import { createRectangleFromPoints } from "@/utils/geometry";
-import { canvasShapeToShapes2d, validateShape } from "@/utils/shape";
+import { validateShape } from "@/utils/boundingBoxTransform";
+import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 const translations = getTranslations().tools.draw.shape;
 
 const settingsSchema = createCanvasToolSettingsSchema({

@@ -2,7 +2,7 @@
 import { domNames } from "@/constants";
 import type { Position } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
-import { TransformGripId, gripSize } from "@/utils/shape";
+import { TransformGripId, gripSize } from "@/utils/boundingBoxTransform";
 
 export type SelectionGripProps = {
   gripId: TransformGripId;
@@ -27,3 +27,4 @@ export const SelectionGrip = (
     />
   );
 };
+
