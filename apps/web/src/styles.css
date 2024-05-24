@@ -127,3 +127,12 @@
     background: linear-gradient(to bottom, var(--hsvalue-track-color), black);
   }
 }
+
+.fade-enter-active,
+.fade-exit-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-exit-to {
+  opacity: 0;
+}
