@@ -1,7 +1,12 @@
 /* @jsxImportSource solid-js */
 import type { BoundingBox } from "@/utils/common";
 import type { Viewport } from "@/utils/manipulation";
-import { createSignal, createEffect, onCleanup, createMemo } from "solid-js";
+import {
+  createSignal,
+  onCleanup,
+  createMemo,
+  createRenderEffect,
+} from "solid-js";
 
 export type ImageRectangleProps = {
   boundingBox: BoundingBox;
@@ -12,7 +17,7 @@ export const ImageRectangle = (
   props: ImageRectangleProps & { viewport: Viewport }
 ) => {
   const [src, setSrc] = createSignal("");
-  createEffect(() => {
+  createRenderEffect(() => {
     if (!props.blob) {
       setSrc("");
       return;
@@ -47,4 +52,3 @@ export const ImageRectangle = (
     />
   );
 };
-
