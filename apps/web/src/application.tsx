@@ -22,7 +22,7 @@ import {
 } from "./contexts/notificationService";
 import { windowHandle } from "./utils/window-handle";
 
-export const App = () => {
+export const Application = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
 
   const [rasterContext, setBitmapContext] =
