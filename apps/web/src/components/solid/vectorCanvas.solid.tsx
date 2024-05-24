@@ -15,7 +15,20 @@ export const VectorCanvas = (props: {
         <Solid.Index each={Object.values(props.shapes!)}>
           {(shapes) => (
             <g>
-              <TransitionGroup name="fade">
+              <TransitionGroup
+                onEnter={(el, done) => {
+                  const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+                    duration: 500,
+                  });
+                  a.finished.then(done);
+                }}
+                onExit={(el, done) => {
+                  const a = el.animate([{ opacity: 1 }, { opacity: 0 }], {
+                    duration: 500,
+                  });
+                  a.finished.then(done);
+                }}
+              >
                 <Solid.Index each={shapes()}>
                   {(shape) => (
                     <Shape shape={shape()} viewport={props.viewport} />
