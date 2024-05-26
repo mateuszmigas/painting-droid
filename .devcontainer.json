@@ -1,0 +1,5 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/javascript-node",
+  "postStartCommand": "pnpm config set store-dir ~/.local/share/pnpm/store"
+}
+
