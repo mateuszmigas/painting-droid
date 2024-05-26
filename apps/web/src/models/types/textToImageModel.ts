@@ -5,21 +5,29 @@ import type {
   CustomFieldsSchemaAsValues,
 } from "@/utils/customFieldsSchema";
 
-export type TextToImageSection<TSchema extends CustomFieldsSchema> = {
-  optionsSchema: TSchema;
+export type TextToImageSection<
+  TOptionsSchema extends CustomFieldsSchema,
+  TConfigSchema extends CustomFieldsSchema
+> = {
+  optionsSchema: TOptionsSchema;
+  configSchema: TConfigSchema;
   execute: (
     modelId: string,
     text: string,
-    options: CustomFieldsSchemaAsValues<TSchema>
+    options: CustomFieldsSchemaAsValues<TOptionsSchema>,
+    config: CustomFieldsSchemaAsValues<TConfigSchema>
   ) => Promise<ImageCompressed>;
 };
 
-export const createTextToImageSection = <TSchema extends CustomFieldsSchema>(
-  section: TextToImageSection<TSchema>
+export const createTextToImageSection = <
+  TOptionsSchema extends CustomFieldsSchema,
+  TConfigSchema extends CustomFieldsSchema
+>(
+  section: TextToImageSection<TOptionsSchema, TConfigSchema>
 ) => section;
 
 export type TextToImageModel = BaseModel & {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  textToImage: TextToImageSection<any>;
+  textToImage: TextToImageSection<any, any>;
 };
 

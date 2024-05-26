@@ -8,6 +8,7 @@ import { createApiKeyPlaceholder, handleHttpError } from "./utils";
 const translations = getTranslations().models;
 
 const textToImage = createTextToImageSection({
+  configSchema: {},
   optionsSchema: {
     size: {
       name: translations.options.size,
