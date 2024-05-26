@@ -62,6 +62,7 @@ export const rasterizeShape = async (
 
   switch (shape.type) {
     case "captured-rectangle":
+    case "generated-image":
       break;
     case "drawn-rectangle":
       rasterizeRectangle(context, shape);

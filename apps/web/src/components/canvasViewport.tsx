@@ -6,6 +6,7 @@ import {
   useStableCallback,
   useSyncCanvasWithLayers,
   useViewportManipulator,
+  useCanvasActionDispatcher,
 } from "@/hooks";
 import { useToolStore } from "@/store/toolState";
 import {
@@ -59,6 +60,7 @@ export const CanvasViewport = memo(
     const canvasBackgroundRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
     const vectorContextRef = useRef<HTMLDivElement>(null);
+    const canvasActionDispatcher = useCanvasActionDispatcher();
     const { context } = useCanvasContextStore();
     const { layers, activeLayerIndex, shapes } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
@@ -87,11 +89,18 @@ export const CanvasViewport = memo(
         return;
       }
 
+      const handlers = {
+        applyActiveShape: () =>
+          canvasActionDispatcher.execute("applyActiveShape", undefined),
+      };
+
       context.vector.render(
         "tool",
-        Object.values(shapes).flatMap(canvasShapeToShapes2d)
+        Object.values(shapes).flatMap((shape) =>
+          canvasShapeToShapes2d(shape, handlers)
+        )
       );
-    }, [context.vector, shapes]);
+    }, [context.vector, shapes, canvasActionDispatcher]);
 
     useCanvasTool(
       hostElementRef,
@@ -124,7 +133,7 @@ export const CanvasViewport = memo(
         style={{ opacity: context.bitmap !== null ? "1" : "0" }}
         className="absolute size-full overflow-hidden cursor-crosshair duration-1000 z-[0]"
       >
-        {/* show background */}
+        {/* background */}
         <div
           id={domNames.canvasBackground}
           ref={canvasBackgroundRef}
@@ -135,7 +144,7 @@ export const CanvasViewport = memo(
           }
           className="origin-top-left absolute pointer-events-none outline outline-border shadow-2xl box-content alpha-background"
         />
-        {/* show canvas layers */}
+        {/* canvas layers (CanvasBitmapContext) */}
         {layers.map((layer, index) => (
           <canvas
             data-testid={testIds.canvasLayer(index)}
@@ -156,9 +165,9 @@ export const CanvasViewport = memo(
             height={size.height}
           />
         ))}
-        {/* show overlay shape, border and handles */}
+        {/* vector overlay (CanvasVectorContext) */}
         <div
-          className="size-full origin-top-left absolute pointer-events-none left-0 top-0"
+          className="size-full origin-top-left absolute left-0 top-0"
           ref={vectorContextRef}
           style={{
             zIndex: layers.length + 1,

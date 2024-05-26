@@ -15,6 +15,13 @@ export const SelectionGrip = (
   return (
     <rect
       class={domNames.svgGripClass}
+      style={{
+        cursor:
+          props.gripId === "grip-top-left" ||
+          props.gripId === "grip-bottom-right"
+            ? "nwse-resize"
+            : "nesw-resize",
+      }}
       data-grip-id={props.gripId}
       transform={`translate(${-gripSize / 2}, ${-gripSize / 2})`}
       x={props.position.x * props.viewport.zoom + props.viewport.position.x}

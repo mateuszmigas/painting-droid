@@ -23,7 +23,13 @@ export type CanvasShape = {
 } & (
   | {
       id: string;
+      type: "generated-image";
+      capturedArea: CanvasCapturedArea;
+    }
+  | {
+      id: string;
       type: "captured-rectangle";
+      capturedArea: CanvasCapturedArea;
     }
   | {
       id: string;

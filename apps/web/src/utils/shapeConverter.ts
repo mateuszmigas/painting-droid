@@ -10,12 +10,22 @@ const createGripsShapes = (boundingBox: BoundingBox): Shape2d[] =>
     position: grip.position,
   }));
 
-const createSelectionShape = (boundingBox: BoundingBox): Shape2d => ({
+const createSelectionShape = (
+  boundingBox: BoundingBox,
+  actions?: {
+    display: string;
+    callback: () => void;
+  }[]
+): Shape2d => ({
   type: "selection-rectangle",
   rectangle: normalizeBoundingBox(boundingBox),
+  actions,
 });
 
-export const canvasShapeToShapes2d = (shape: CanvasShape): Shape2d[] => {
+export const canvasShapeToShapes2d = (
+  shape: CanvasShape,
+  actionHandlers?: { applyActiveShape: () => void }
+): Shape2d[] => {
   const result: Shape2d[] = [];
 
   if (shape.capturedArea) {
@@ -28,6 +38,18 @@ export const canvasShapeToShapes2d = (shape: CanvasShape): Shape2d[] => {
 
   if (shape.type === "captured-rectangle") {
     result.push(createSelectionShape(shape.boundingBox));
+    result.push(...createGripsShapes(shape.boundingBox));
+  }
+
+  if (shape.type === "generated-image") {
+    result.push(
+      createSelectionShape(shape.boundingBox, [
+        {
+          display: "Apply",
+          callback: () => actionHandlers!.applyActiveShape(),
+        },
+      ])
+    );
     result.push(...createGripsShapes(shape.boundingBox));
   }
 

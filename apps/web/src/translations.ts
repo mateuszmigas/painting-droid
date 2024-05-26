@@ -63,6 +63,11 @@ const translations = {
     },
   },
   shapesTransform: {
+    "generated-image": {
+      add: "Generate Image",
+      transform: "Transform Image",
+      apply: "Apply Image",
+    },
     "captured-rectangle": {
       add: "Select Rectangle",
       transform: "Transform Selection",

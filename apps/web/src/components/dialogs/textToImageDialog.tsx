@@ -120,7 +120,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
       display: translations.models.textToImage.name,
       shape: {
         id: uuid(),
-        type: "captured-rectangle",
+        type: "generated-image",
         boundingBox: {
           x: 0,
           y: 0,
@@ -324,3 +324,4 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
+
