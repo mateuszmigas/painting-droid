@@ -91,12 +91,12 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     setIsGenerating(true);
 
     const optionsValues = form.watch("modelOptionsValues");
-    const modelDefinition = models.find(
+    const { definition, config } = models.find(
       (model) => model.id === data.modelId
-    )!.definition;
+    )!;
 
-    modelDefinition.textToImage
-      .execute(modelId, data.prompt, optionsValues)
+    definition.textToImage
+      .execute(modelId, data.prompt, optionsValues, config)
       .then((img) => {
         setImage(img.data);
         setIsGenerating(false);
@@ -324,4 +324,3 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-
