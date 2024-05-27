@@ -55,7 +55,7 @@ export const SelectionRectangle = (
                   e.stopPropagation()
                 )
               }
-              class="bg-primary text-foreground shadow hover:bg-primary/90 rounded-sm px-small"
+              class="fixed -translate-x-1/2 bg-primary text-foreground shadow hover:bg-primary/90 rounded-sm px-small"
               onClick={action.callback}
             >
               {action.display}
@@ -66,4 +66,3 @@ export const SelectionRectangle = (
     </>
   );
 };
-
