@@ -12,6 +12,7 @@ const translations = getTranslations().models;
 
 const configSchema = createConfigSchema({
   server: {
+    style: { columns: 2 },
     name: translations.config.server,
     type: "string",
     defaultValue: "http://127.0.0.1:7860",

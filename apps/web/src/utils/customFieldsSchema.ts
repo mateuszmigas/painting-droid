@@ -1,6 +1,8 @@
 import type { Color, Size } from "./common";
 
-export type CustomField =
+export type CustomField = {
+  style?: { columns: number };
+} & (
   | {
       type: "string";
       name: string;
@@ -42,7 +44,8 @@ export type CustomField =
       defaultValue: number;
       min: number;
       max: number;
-    };
+    }
+);
 
 export type CustomFieldsSchema = Record<string, CustomField>;
 
@@ -57,4 +60,3 @@ export const getDefaultValues = (schema: Record<string, CustomField>) => {
     return acc;
   }, {} as Record<string, unknown>);
 };
-
