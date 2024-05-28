@@ -1,4 +1,4 @@
-import { FormControl, FormLabel } from "../ui/form";
+import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
@@ -17,16 +17,14 @@ export const OptionNumberCustomField = (props: {
   const field = customField as Extract<CustomField, { type: "option-size" }>;
   return (
     <>
-      <FormLabel>{field.name}</FormLabel>
+      <Label>{field.name}</Label>
       <Select
         onValueChange={(value) => onChange(Number(value))}
         value={value.toString()}
       >
-        <FormControl>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-        </FormControl>
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
         <SelectContent>
           {field.options.map(({ label, value }) => {
             const id = value.toString();
@@ -41,4 +39,3 @@ export const OptionNumberCustomField = (props: {
     </>
   );
 };
-

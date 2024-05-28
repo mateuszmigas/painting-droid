@@ -11,39 +11,40 @@ export const CustomFieldArray = (props: {
 }) => {
   const { onChange, schema } = props;
   const values = { ...getDefaultValues(props.schema), ...props.values };
-  console.log("values", values);
-  return (
-    <>
-      {Object.entries(values)
-        .filter(([key]) => schema[key])
-        .map(([key, value]) => {
-          const option = schema[key];
-          if (option.type === "string") {
-            <StringCustomField
-              customField={schema[key]}
-              value={value as string}
-              onChange={(value) => onChange(key, value)}
-            />;
-          }
-          if (option.type === "option-size") {
-            return (
-              <OptionSizeCustomField
-                customField={schema[key]}
-                value={value as Size}
-                onChange={(value) => onChange(key, value)}
-              />
-            );
-          }
-          if (option.type === "option-number") {
-            return (
-              <OptionNumberCustomField
-                customField={schema[key]}
-                value={value as number}
-                onChange={(value) => onChange(key, value)}
-              />
-            );
-          }
-        })}
-    </>
-  );
+  return Object.entries(values).map(([key, value]) => {
+    const option = schema[key];
+    if (option.type === "string") {
+      return (
+        <div key={key}>
+          <StringCustomField
+            customField={schema[key]}
+            value={value as string}
+            onChange={(value) => onChange(key, value)}
+          />
+        </div>
+      );
+    }
+    if (option.type === "option-size") {
+      return (
+        <div key={key}>
+          <OptionSizeCustomField
+            customField={schema[key]}
+            value={value as Size}
+            onChange={(value) => onChange(key, value)}
+          />
+        </div>
+      );
+    }
+    if (option.type === "option-number") {
+      return (
+        <div key={key}>
+          <OptionNumberCustomField
+            customField={schema[key]}
+            value={value as number}
+            onChange={(value) => onChange(key, value)}
+          />
+        </div>
+      );
+    }
+  });
 };

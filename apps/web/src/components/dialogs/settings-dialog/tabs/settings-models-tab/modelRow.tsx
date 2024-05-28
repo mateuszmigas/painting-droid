@@ -39,8 +39,6 @@ export const ModelRow = (props: {
 
   const modelConfig = userModel.config ?? {};
 
-  console.log("modelConfig", modelConfig);
-
   return (
     <div className="flex rounded-md border flex-col p-big items-start gap-medium pt-medium">
       <div className="w-full flex flex-row items-center gap-big justify-between">

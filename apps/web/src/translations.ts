@@ -61,6 +61,9 @@ const translations = {
       size: "Size",
       steps: "Steps",
     },
+    config: {
+      server: "Server",
+    },
   },
   shapesTransform: {
     "generated-image": {
@@ -282,4 +285,3 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
-
