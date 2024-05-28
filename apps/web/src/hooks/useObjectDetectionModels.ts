@@ -4,11 +4,13 @@ import {
 } from "@/models/definitions";
 import type { ObjectDetectionModel } from "@/models/types/objectDetectionModel";
 import { useSettingsStore } from "@/store";
+import { getDefaultValues } from "@/utils/customFieldsSchema";
 
 export type ObjectDetectionModelInfo = {
   id: string;
   display: string;
   definition: ObjectDetectionModel;
+  config: Record<string, unknown>;
 };
 
 export const useObjectDetectionModels = (): ObjectDetectionModelInfo[] => {
@@ -23,8 +25,11 @@ export const useObjectDetectionModels = (): ObjectDetectionModelInfo[] => {
         id: model.id,
         display: model.display.trim() ? model.display : definition.defaultName,
         definition,
+        config: {
+          ...getDefaultValues(definition.configSchema ?? {}),
+          ...(model.config ?? {}),
+        },
       };
     });
   return models;
 };
-

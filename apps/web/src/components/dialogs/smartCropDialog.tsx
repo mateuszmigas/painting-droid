@@ -73,17 +73,18 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
     setIsProcessing(true);
 
     try {
-      const modelDefinition = models.find(
+      const { definition, config } = models.find(
         (model) => model.id === selectedModelId
-      )!.definition;
+      )!;
 
-      const result = await modelDefinition.detectObjects.execute(
+      const result = await definition.detectObjects.execute(
         { data: activeLayer.data!, ...size },
         (progress, message) => {
           progress && setProgress(progress);
           progress && message && setProgressMessage(message);
         },
-        {}
+        {},
+        config
       );
 
       setResult(result);
@@ -237,4 +238,3 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

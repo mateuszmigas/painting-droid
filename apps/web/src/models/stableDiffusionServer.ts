@@ -18,7 +18,6 @@ const configSchema = createConfigSchema({
     defaultValue: "http://127.0.0.1:7860",
   },
 });
-type ConfigSchemaValues = CustomFieldsSchemaAsValues<typeof configSchema>;
 
 const textToImage = createTextToImageSection({
   optionsSchema: {
@@ -40,7 +39,9 @@ const textToImage = createTextToImageSection({
     },
   },
   execute: async (_, prompt, options, config) => {
-    const { server } = config as ConfigSchemaValues;
+    const { server } = config as CustomFieldsSchemaAsValues<
+      typeof configSchema
+    >;
     const { size } = options;
     const url = `${server}/sdapi/v1/txt2img`;
     const body = { prompt, size };
@@ -76,7 +77,7 @@ const textToImage = createTextToImageSection({
 export const model = {
   configSchema,
   type: "stable-diffusion-server",
-  defaultName: "Stable Diffusion Server",
+  defaultName: "Stable Diffusion WebUI",
   predefined: false,
   url: "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
   textToImage,
