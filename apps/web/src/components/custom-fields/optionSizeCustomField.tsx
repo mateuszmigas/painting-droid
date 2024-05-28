@@ -1,5 +1,4 @@
 import type { Size } from "@/utils/common";
-import { FormControl, FormLabel } from "../ui/form";
 import {
   Select,
   SelectContent,
@@ -8,6 +7,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import type { CustomField } from "@/utils/customFieldsSchema";
+import { Label } from "../ui/label";
 
 const sizeToId = (size: Size) => `${size.width}x${size.height}`;
 const sizeFromId = (id: string) => {
@@ -24,16 +24,14 @@ export const OptionSizeCustomField = (props: {
   const field = customField as Extract<CustomField, { type: "option-size" }>;
   return (
     <>
-      <FormLabel>{field.name}</FormLabel>
+      <Label>{field.name}</Label>
       <Select
         onValueChange={(value) => onChange(sizeFromId(value))}
         value={sizeToId(value as Size)}
       >
-        <FormControl>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-        </FormControl>
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
         <SelectContent>
           {field.options.map(({ label, value }) => {
             const id = sizeToId(value);
@@ -48,4 +46,3 @@ export const OptionSizeCustomField = (props: {
     </>
   );
 };
-

@@ -12,23 +12,27 @@ export type ObjectDetectionResult = {
   box: Rectangle;
 };
 
-export type ObjectDetectionSection<TSchema extends CustomFieldsSchema> = {
-  optionsSchema: TSchema;
+export type ObjectDetectionSection<
+  TOptionsSchema extends CustomFieldsSchema,
+  TConfigSchema extends CustomFieldsSchema
+> = {
+  optionsSchema: TOptionsSchema;
   execute: (
     image: ImageCompressed,
     onProgress: (value: number, message: string) => void,
-    options: CustomFieldsSchemaAsValues<TSchema>
+    options: CustomFieldsSchemaAsValues<TOptionsSchema>,
+    config: CustomFieldsSchemaAsValues<TConfigSchema>
   ) => Promise<ObjectDetectionResult[]>;
 };
 
 export const createObjectDetectionSection = <
-  TSchema extends CustomFieldsSchema
+  TOptionsSchema extends CustomFieldsSchema,
+  TConfigSchema extends CustomFieldsSchema
 >(
-  section: ObjectDetectionSection<TSchema>
+  section: ObjectDetectionSection<TOptionsSchema, TConfigSchema>
 ) => section;
 
 export type ObjectDetectionModel = BaseModel & {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  detectObjects: ObjectDetectionSection<any>;
+  detectObjects: ObjectDetectionSection<any, any>;
 };
-

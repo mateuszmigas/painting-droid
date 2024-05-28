@@ -27,12 +27,10 @@ import { useCanvasActionDispatcher, useTextToImageModels } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
 import { ImageFromBlob } from "../image/imageFromBlob";
 import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
-import { OptionSizeCustomField } from "../custom-fields/optionSizeCustomField";
-import { StringCustomField } from "../custom-fields/stringCustomField";
 import type { TextToImageModelInfo } from "@/hooks/useTextToImageModels";
-import { OptionNumberCustomField } from "../custom-fields/optionNumberCustomField";
 import { scaleRectangleToFitParent } from "@/utils/geometry";
 import { uuid } from "@/utils/uuid";
+import { CustomFieldArray } from "../custom-fields/customFieldArray";
 
 const translations = getTranslations();
 const FormSchema = z.object({
@@ -91,12 +89,12 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     setIsGenerating(true);
 
     const optionsValues = form.watch("modelOptionsValues");
-    const modelDefinition = models.find(
+    const { definition, config } = models.find(
       (model) => model.id === data.modelId
-    )!.definition;
+    )!;
 
-    modelDefinition.textToImage
-      .execute(modelId, data.prompt, optionsValues)
+    definition.textToImage
+      .execute(modelId, data.prompt, optionsValues, config)
       .then((img) => {
         setImage(img.data);
         setIsGenerating(false);
@@ -121,12 +119,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
       shape: {
         id: uuid(),
         type: "generated-image",
-        boundingBox: {
-          x: 0,
-          y: 0,
-          width: currentSize.width,
-          height: currentSize.height,
-        },
+        boundingBox: { ...currentSize, x: 0, y: 0 },
         capturedArea: {
           box: { x: 0, y: 0, width: 0, height: 0 },
           data: image,
@@ -231,67 +224,13 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                 </FormMessage>
               )}
               <div className="flex flex-col gap-big">
-                {Object.entries(form.watch("modelOptionsValues"))
-                  .filter(([key]) => modelOptions[key])
-                  .map(([key, value]) => {
-                    const option = modelOptions[key];
-                    if (option.type === "string") {
-                      return (
-                        <FormField
-                          key={key}
-                          control={form.control}
-                          name={`modelOptionsValues.${key}`}
-                          render={({ field }) => (
-                            <StringCustomField
-                              customField={modelOptions[key]}
-                              value={value as string}
-                              onChange={field.onChange}
-                            />
-                          )}
-                        />
-                      );
-                    }
-                    if (option.type === "option-size") {
-                      return (
-                        <FormField
-                          key={key}
-                          control={form.control}
-                          name={`modelOptionsValues.${key}`}
-                          render={({ field }) => {
-                            return (
-                              <FormItem className="">
-                                <OptionSizeCustomField
-                                  customField={modelOptions[key]}
-                                  value={value as Size}
-                                  onChange={field.onChange}
-                                />
-                              </FormItem>
-                            );
-                          }}
-                        />
-                      );
-                    }
-                    if (option.type === "option-number") {
-                      return (
-                        <FormField
-                          key={key}
-                          control={form.control}
-                          name={`modelOptionsValues.${key}`}
-                          render={({ field }) => {
-                            return (
-                              <FormItem className="">
-                                <OptionNumberCustomField
-                                  customField={modelOptions[key]}
-                                  value={value as number}
-                                  onChange={field.onChange}
-                                />
-                              </FormItem>
-                            );
-                          }}
-                        />
-                      );
-                    }
-                  })}
+                <CustomFieldArray
+                  schema={modelOptions}
+                  values={form.watch("modelOptionsValues")}
+                  onChange={(key, value) =>
+                    form.setValue(`modelOptionsValues.${key}`, value)
+                  }
+                />
               </div>
               <FormMessage className={"text-destructive"}>{error}</FormMessage>
             </div>

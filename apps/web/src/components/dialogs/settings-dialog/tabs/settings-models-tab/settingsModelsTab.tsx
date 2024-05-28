@@ -13,7 +13,7 @@ import { Icon } from "@/components/icons/icon";
 import { type ModelType, modelDefinitions } from "@/models/definitions";
 import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
-import { ModelRow } from "./modelRow";
+import { SettingsModelRow } from "./settingsModelRow";
 import { isDesktop } from "@/utils/platform";
 import { Link } from "@/components/link";
 import { links } from "@/constants";
@@ -83,7 +83,7 @@ export const SettingsModelsTab = memo(() => {
             className="relative flex flex-col gap-medium w-full"
           >
             {userModels.map((userModel, index) => (
-              <ModelRow
+              <SettingsModelRow
                 key={userModel.id}
                 shouldFocus={index === scrollTo.current}
                 userModel={userModel}
@@ -107,4 +107,3 @@ export const SettingsModelsTab = memo(() => {
     </div>
   );
 });
-

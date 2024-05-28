@@ -4,9 +4,20 @@ import {
 } from "./types/textToImageModel";
 import { base64ToBlob } from "@/utils/image";
 import { apiClient } from "@/utils/api-client";
-import { createApiKeyPlaceholder, handleHttpError } from "./utils";
 import { getTranslations } from "@/translations";
+import { handleHttpError } from "./utils";
+import { createConfigSchema } from "./types/baseModel";
+import type { CustomFieldsSchemaAsValues } from "@/utils/customFieldsSchema";
 const translations = getTranslations().models;
+
+const configSchema = createConfigSchema({
+  server: {
+    style: { columns: 2 },
+    name: translations.config.server,
+    type: "string",
+    defaultValue: "http://127.0.0.1:7860",
+  },
+});
 
 const textToImage = createTextToImageSection({
   optionsSchema: {
@@ -26,39 +37,18 @@ const textToImage = createTextToImageSection({
         { label: "896x1152", value: { width: 896, height: 1152 } },
       ],
     },
-    steps: {
-      name: translations.options.steps,
-      type: "option-number",
-      defaultValue: 30,
-      options: [
-        { label: "10", value: 10 },
-        { label: "20", value: 20 },
-        { label: "30", value: 30 },
-        { label: "40", value: 40 },
-        { label: "50", value: 50 },
-      ],
-    },
   },
-  execute: async (modelId, prompt, options) => {
-    const { size, steps } = options;
-
-    const url =
-      "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image";
-
-    const body = {
-      steps,
-      width: size.width,
-      height: size.height,
-      seed: 0,
-      cfg_scale: 5,
-      samples: 1,
-      text_prompts: [{ text: prompt, weight: 1 }],
-    };
+  execute: async (_, prompt, options, config) => {
+    const { server } = config as CustomFieldsSchemaAsValues<
+      typeof configSchema
+    >;
+    const { size } = options;
+    const url = `${server}/sdapi/v1/txt2img`;
+    const body = { prompt, size };
 
     const headers = {
       "content-type": "application/json",
       Accept: "application/json",
-      Authorization: `Bearer ${createApiKeyPlaceholder(modelId)}`,
     };
 
     const result = await apiClient.post(url, {
@@ -69,26 +59,26 @@ const textToImage = createTextToImageSection({
     handleHttpError(result.status);
 
     const data = JSON.parse(result.data) as {
-      artifacts: { base64: string }[];
+      images: string[];
     };
 
-    if (!data.artifacts.length) {
+    if (!data.images.length) {
       throw new Error("Failed to fetch image");
     }
 
     return {
       width: size.width,
       height: size.height,
-      data: await base64ToBlob(data.artifacts[0].base64),
+      data: await base64ToBlob(data.images[0]),
     };
   },
 });
 
 export const model = {
-  type: "stability-ai",
-  defaultName: "Stability AI",
+  configSchema,
+  type: "stable-diffusion-server",
+  defaultName: "Stable Diffusion WebUI",
   predefined: false,
-  url: "https://stability.ai/",
-  useApiKey: true,
+  url: "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
   textToImage,
 } as const satisfies TextToImageModel;

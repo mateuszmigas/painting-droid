@@ -76,4 +76,3 @@ export const model = {
   useApiKey: true,
   textToImage,
 } as const satisfies TextToImageModel;
-

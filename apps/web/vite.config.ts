@@ -20,7 +20,7 @@ const configureResponse = () => {
   };
 };
 
-export default defineConfig(async () => ({
+export default defineConfig(async (configEnv) => ({
   plugins: [
     react({ exclude: /\.solid\.tsx$/ }),
     solidPlugin({ include: /\.solid\.tsx$/ }),
@@ -31,6 +31,7 @@ export default defineConfig(async () => ({
     chunkSizeWarningLimit: 1024,
   },
   define: {
+    "import.meta.env.mode": JSON.stringify(configEnv.mode),
     "import.meta.env.platform": JSON.stringify(
       "TAURI_ENV_PLATFORM" in process.env
         ? process.env.TAURI_ENV_PLATFORM

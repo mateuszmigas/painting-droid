@@ -1,7 +1,8 @@
 import { Component, type ReactNode } from "react";
+import { isProduction } from "./utils/platform";
 
 type ErrorBoundaryProps = { children: ReactNode };
-type ErrorBoundaryState = { hasError: boolean };
+type ErrorBoundaryState = { error: string };
 
 export class ErrorBoundary extends Component<
   ErrorBoundaryProps,
@@ -9,21 +10,29 @@ export class ErrorBoundary extends Component<
 > {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { error: "" };
   }
 
-  static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true };
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { error: error.message };
   }
 
   componentDidCatch(): void {
-    localStorage.clear();
-    window.location.reload();
+    if (isProduction()) {
+      localStorage.clear();
+      window.location.reload();
+    }
   }
 
   render() {
-    if (this.state.hasError) {
-      return <h1 className="p-big">Something went wrong. Reloading...</h1>;
+    if (this.state.error) {
+      return isProduction() ? (
+        <h1 className="p-big">"Something went wrong. Reloading..."</h1>
+      ) : (
+        <h1 className="p-big text-destructive">
+          App crashed: {this.state.error}
+        </h1>
+      );
     }
 
     return this.props.children;

@@ -15,6 +15,7 @@ export type AppUserModelState = {
   type: ModelType;
   display: string;
   secureKeySet?: boolean;
+  config?: Record<string, unknown>;
 };
 
 type AppSettingsState = {
@@ -86,4 +87,3 @@ export const useSettingsStore = create<AppSettingsSlice>()(
     createSyncStorage({ version: 5, name: "settings" })
   )
 );
-

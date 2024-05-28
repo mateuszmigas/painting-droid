@@ -9,14 +9,15 @@ import type { AppUserModelState } from "@/store/settingsStore";
 import { IconAnchor } from "@/components/icons/iconAnchor";
 import type { BaseModel } from "@/models/types/baseModel";
 import { safeStorage } from "@/utils/safe-storage";
-import { ModelBadges } from "./modelBadges";
+import { SettingsModelBadges } from "./settingsModelBadges";
 import { defaultSecureKeyPlaceholder } from "./settingsModelsTab";
 import { useScrollAndFocus } from "@/hooks";
 import { getTranslations } from "@/translations";
+import { CustomFieldArray } from "@/components/custom-fields/customFieldArray";
 
 const translations = getTranslations();
 
-export const ModelRow = (props: {
+export const SettingsModelRow = (props: {
   userModel: AppUserModelState;
   onRemove: (id: string) => void;
   shouldFocus: boolean;
@@ -35,6 +36,8 @@ export const ModelRow = (props: {
     userModel.secureKeySet ? defaultSecureKeyPlaceholder : ""
   );
   useScrollAndFocus(shouldFocus, inputRef);
+
+  const modelConfig = userModel.config ?? {};
 
   return (
     <div className="flex rounded-md border flex-col p-big items-start gap-medium pt-medium">
@@ -93,8 +96,20 @@ export const ModelRow = (props: {
           )}
         </div>
       )}
+      <div className="gap-big grid-cols-2 grid w-full">
+        <CustomFieldArray
+          columns={2}
+          schema={modelDefinition.configSchema ?? {}}
+          values={modelConfig}
+          onChange={(key, value) =>
+            updateModel(userModel.id, {
+              config: { ...modelConfig, [key]: value },
+            })
+          }
+        />
+      </div>
       <div className="flex items-center justify-between w-full">
-        <ModelBadges baseModel={modelDefinition} />
+        <SettingsModelBadges baseModel={modelDefinition} />
         {!modelDefinition?.predefined && (
           <IconButton
             type="trash"
@@ -106,4 +121,3 @@ export const ModelRow = (props: {
     </div>
   );
 };
-
