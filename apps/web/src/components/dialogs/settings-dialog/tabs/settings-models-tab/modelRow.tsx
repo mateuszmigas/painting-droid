@@ -13,6 +13,7 @@ import { ModelBadges } from "./modelBadges";
 import { defaultSecureKeyPlaceholder } from "./settingsModelsTab";
 import { useScrollAndFocus } from "@/hooks";
 import { getTranslations } from "@/translations";
+import { CustomFieldArray } from "@/components/custom-fields/customFieldArray";
 
 const translations = getTranslations();
 
@@ -93,6 +94,15 @@ export const ModelRow = (props: {
           )}
         </div>
       )}
+      <div className="flex flex-col gap-big">
+        {/* <CustomFieldArray
+          schema={modelOptions}
+          values={form.watch("modelOptionsValues")}
+          onChange={(key, value) =>
+            form.setValue(`modelOptionsValues.${key}`, value)
+          }
+        /> */}
+      </div>
       <div className="flex items-center justify-between w-full">
         <ModelBadges baseModel={modelDefinition} />
         {!modelDefinition?.predefined && (
