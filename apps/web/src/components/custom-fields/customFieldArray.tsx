@@ -45,11 +45,23 @@ export const CustomFieldArray = (props: {
       return null;
     };
 
+    const calculateColSpan = () => {
+      const span = Math.min(field?.style?.columns ?? 1, columns);
+
+      switch (span) {
+        case 1:
+          return "col-span-1";
+        case 2:
+          return "col-span-2";
+        case 3:
+          return "col-span-3";
+        default:
+          throw new Error(`Invalid column span: ${span}`);
+      }
+    };
+
     return (
-      <div
-        key={key}
-        className={`col-span-${Math.min(field?.style?.columns ?? 1, columns)}`}
-      >
+      <div key={key} className={calculateColSpan()}>
         {getField()}
       </div>
     );
