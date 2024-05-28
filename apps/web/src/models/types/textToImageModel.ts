@@ -10,7 +10,6 @@ export type TextToImageSection<
   TConfigSchema extends CustomFieldsSchema
 > = {
   optionsSchema: TOptionsSchema;
-  configSchema: TConfigSchema;
   execute: (
     modelId: string,
     text: string,
@@ -30,4 +29,3 @@ export type TextToImageModel = BaseModel & {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   textToImage: TextToImageSection<any, any>;
 };
-

@@ -29,7 +29,7 @@ export const useTextToImageModels = (): TextToImageModelInfo[] => {
             : definition.defaultName,
           definition,
           config: {
-            ...getDefaultValues(definition.textToImage.configSchema),
+            ...getDefaultValues(definition.configSchema ?? {}),
             ...(model.config ?? {}),
           },
         };

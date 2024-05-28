@@ -37,6 +37,10 @@ export const ModelRow = (props: {
   );
   useScrollAndFocus(shouldFocus, inputRef);
 
+  const modelConfig = userModel.config ?? {};
+
+  console.log("modelConfig", modelConfig);
+
   return (
     <div className="flex rounded-md border flex-col p-big items-start gap-medium pt-medium">
       <div className="w-full flex flex-row items-center gap-big justify-between">
@@ -95,13 +99,15 @@ export const ModelRow = (props: {
         </div>
       )}
       <div className="flex flex-col gap-big">
-        {/* <CustomFieldArray
-          schema={modelOptions}
-          values={form.watch("modelOptionsValues")}
+        <CustomFieldArray
+          schema={modelDefinition.configSchema ?? {}}
+          values={modelConfig}
           onChange={(key, value) =>
-            form.setValue(`modelOptionsValues.${key}`, value)
+            updateModel(userModel.id, {
+              config: { ...modelConfig, [key]: value },
+            })
           }
-        /> */}
+        />
       </div>
       <div className="flex items-center justify-between w-full">
         <ModelBadges baseModel={modelDefinition} />
@@ -116,4 +122,3 @@ export const ModelRow = (props: {
     </div>
   );
 };
-

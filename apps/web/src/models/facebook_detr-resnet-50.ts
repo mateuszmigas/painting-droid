@@ -32,4 +32,3 @@ export const model = {
   url: "https://huggingface.co/facebook/detr-resnet-50",
   detectObjects,
 } as const satisfies ObjectDetectionModel;
-

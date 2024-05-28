@@ -2,14 +2,16 @@ import type { Size } from "@/utils/common";
 import { OptionNumberCustomField } from "./optionNumberCustomField";
 import { OptionSizeCustomField } from "./optionSizeCustomField";
 import { StringCustomField } from "./stringCustomField";
-import type { CustomField } from "@/utils/customFieldsSchema";
+import { getDefaultValues, type CustomField } from "@/utils/customFieldsSchema";
 
 export const CustomFieldArray = (props: {
   schema: Record<string, CustomField>;
   values: Record<string, unknown>;
   onChange: (key: string, value: unknown) => void;
 }) => {
-  const { values, onChange, schema } = props;
+  const { onChange, schema } = props;
+  const values = { ...getDefaultValues(props.schema), ...props.values };
+  console.log("values", values);
   return (
     <>
       {Object.entries(values)
@@ -45,4 +47,3 @@ export const CustomFieldArray = (props: {
     </>
   );
 };
-

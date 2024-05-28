@@ -6,16 +6,20 @@ import { base64ToBlob } from "@/utils/image";
 import { apiClient } from "@/utils/api-client";
 import { getTranslations } from "@/translations";
 import { handleHttpError } from "./utils";
+import { createConfigSchema } from "./types/baseModel";
+import type { CustomFieldsSchemaAsValues } from "@/utils/customFieldsSchema";
 const translations = getTranslations().models;
 
-const textToImage = createTextToImageSection({
-  configSchema: {
-    server: {
-      name: "server",
-      type: "string",
-      defaultValue: "http://127.0.0.1:7860",
-    },
+const configSchema = createConfigSchema({
+  server: {
+    name: "server",
+    type: "string",
+    defaultValue: "http://127.0.0.1:7860",
   },
+});
+type ConfigSchemaValues = CustomFieldsSchemaAsValues<typeof configSchema>;
+
+const textToImage = createTextToImageSection({
   optionsSchema: {
     size: {
       name: translations.options.size,
@@ -35,7 +39,7 @@ const textToImage = createTextToImageSection({
     },
   },
   execute: async (_, prompt, options, config) => {
-    const { server } = config;
+    const { server } = config as ConfigSchemaValues;
     const { size } = options;
     const url = `${server}/sdapi/v1/txt2img`;
     const body = { prompt, size };
@@ -69,10 +73,10 @@ const textToImage = createTextToImageSection({
 });
 
 export const model = {
+  configSchema,
   type: "stable-diffusion-server",
   defaultName: "Stable Diffusion Server",
   predefined: false,
   url: "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
   textToImage,
 } as const satisfies TextToImageModel;
-
