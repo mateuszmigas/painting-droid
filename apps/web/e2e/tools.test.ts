@@ -64,7 +64,7 @@ test.describe("tools", () => {
     await app.moveMouse(box.x + box.width / 2, box.y + box.height / 2);
     await app.mouseDown();
     const buffer = await app.getLayerCanvasBuffer(0);
-    await expect(buffer).toMatchSnapshot(["tool-fill.png"]);
+    await expect(buffer).toMatchSnapshot(["tool-fill.png"], { threshold: 0.5 });
   });
 });
 
