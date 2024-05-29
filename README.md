@@ -98,9 +98,9 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 
 ### AI features (Desktop only)
 
-- [ ] Stable Diffusion Docker image for local server
-- [x] Integration with DALL-E
-- [x] Integration with Stability.ai
+- [x] Integration with Stable Diffusion local server
+- [x] Integration with DALL-E api
+- [x] Integration with Stability.ai api
 
 ### Post MVP
 
