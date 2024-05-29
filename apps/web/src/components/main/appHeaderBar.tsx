@@ -94,7 +94,12 @@ export const AppHeaderBar = memo(() => {
       <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
       <div className="flex flex-row justify-center items-center pr-small gap-small">
         <CommandIconButton commandId="shareWorkspace" />
-        <CommandIconButton commandId="openSettingsDialog" />
+        <IconAnchor
+          type="help"
+          size="small"
+          href="https://mateusz-migas.gitbook.io/painting-droid-docs"
+          title={translations.links.help}
+        />
         <IconAnchor
           type="bug"
           size="small"
@@ -109,6 +114,7 @@ export const AppHeaderBar = memo(() => {
         />
         <CommandIconButton commandId="openCommandPalette" />
         <ModeToggle />
+        <CommandIconButton commandId="openSettingsDialog" />
       </div>
     </div>
   );

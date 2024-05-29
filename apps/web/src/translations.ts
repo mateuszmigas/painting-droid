@@ -279,9 +279,11 @@ const translations = {
     notifyDesktop: "Try desktop app for custom AI models",
   },
   links: {
+    help: "Help",
     reportIssue: "Report Issue",
     viewSource: "View Source",
   },
 };
 
 export const getTranslations = () => translations;
+

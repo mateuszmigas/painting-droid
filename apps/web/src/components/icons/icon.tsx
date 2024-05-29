@@ -67,6 +67,7 @@ import {
   Tags,
   Scissors,
   Share,
+  HelpCircle,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -143,7 +144,8 @@ export type IconType =
   | "paint-bucket"
   | "spray-can"
   | "tags"
-  | "share";
+  | "share"
+  | "help";
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
@@ -327,6 +329,8 @@ const renderLucideIcon = (
       return <Tags className={className} size={fontSize} />;
     case "share":
       return <Share className={className} size={fontSize} />;
+    case "help":
+      return <HelpCircle className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }
