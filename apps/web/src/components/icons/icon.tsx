@@ -71,8 +71,10 @@ import {
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
+import { AiLabel } from "../aiLabel";
+import { cn } from "@/utils/css";
 
-export type IconType =
+type BaseIconType =
   | "pen"
   | "pencil"
   | "moon"
@@ -147,22 +149,15 @@ export type IconType =
   | "share"
   | "help";
 
+export type IconType = BaseIconType | `${BaseIconType}_ai`;
+
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
 const renderLucideIcon = (
-  icon: IconType,
-  size: IconSize,
+  icon: BaseIconType,
+  fontSize: number,
   className?: string
 ) => {
-  const fontSize =
-    typeof size === "number"
-      ? size
-      : size === "medium"
-      ? 24
-      : size === "small-medium"
-      ? 20
-      : 16;
-
   switch (icon) {
     case "pen":
       return <Pen className={className} size={fontSize} />;
@@ -336,12 +331,41 @@ const renderLucideIcon = (
   }
 };
 
+const calculateFontSize = (size: IconSize) => {
+  const fontSize =
+    typeof size === "number"
+      ? size
+      : size === "medium"
+      ? 24
+      : size === "small-medium"
+      ? 20
+      : 16;
+  return fontSize;
+};
+
 export const Icon = (props: {
   type: IconType;
   size: IconSize;
   className?: string;
 }) => {
   const { type, size, className } = props;
-  return renderLucideIcon(type, size, className);
+  const fontSize = calculateFontSize(size);
+
+  if (type.endsWith("_ai")) {
+    const baseType = type.slice(0, -3) as BaseIconType;
+    return (
+      <div
+        style={{ width: fontSize, height: fontSize }}
+        className={cn("relative", className)}
+      >
+        {renderLucideIcon(baseType, fontSize, className)}
+        <AiLabel
+          size={fontSize / 2}
+          className="absolute -right-0.5 -bottom-0.5"
+        />
+      </div>
+    );
+  }
+  return renderLucideIcon(type as BaseIconType, fontSize, className);
 };
 

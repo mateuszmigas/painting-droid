@@ -6,7 +6,7 @@ import { getTranslations } from "@/translations";
 const translations = getTranslations();
 
 export const command = createCommand({
-  icon: "tags",
+  icon: "tags_ai",
   id: "openLabelObjectsDialog",
   display: translations.models.labelObjects.name,
   settings: { showInPalette: true },

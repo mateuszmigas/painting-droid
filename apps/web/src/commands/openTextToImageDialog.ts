@@ -6,7 +6,7 @@ import { getTranslations } from "@/translations";
 const translations = getTranslations();
 
 export const command = createCommand({
-  icon: "image",
+  icon: "image_ai",
   id: "openTextToImageDialog",
   display: translations.models.textToImage.name,
   settings: { showInPalette: true },
@@ -14,3 +14,4 @@ export const command = createCommand({
     context.dialogService.openDialog(TextToImageDialog, {});
   },
 });
+
