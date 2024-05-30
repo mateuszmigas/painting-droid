@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import type { Size } from "@/utils/common";
 import { Input } from "../ui/input";
 import { Icon } from "../icons/icon";
@@ -137,14 +137,6 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     1
   );
 
-  // update default model options when model changes
-  useEffect(() => {
-    form.setValue(
-      "modelOptionsValues",
-      getDefaultModelOptionsValues(models, modelId)
-    );
-  }, [modelId, form, models]);
-
   const error = form.formState.errors.root?.message;
 
   //todo: remove after release
@@ -186,7 +178,16 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{translations.models.name}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={(value) => {
+                        form.setValue("modelId", value);
+                        form.setValue(
+                          "modelOptionsValues",
+                          getDefaultModelOptionsValues(models, value)
+                        );
+                      }}
+                      value={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue />

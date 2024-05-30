@@ -60,6 +60,11 @@ const translations = {
     options: {
       size: "Size",
       steps: "Steps",
+      quality: {
+        name: "Quality",
+        standard: "Standard",
+        high: "High",
+      },
     },
     config: {
       server: "Server",

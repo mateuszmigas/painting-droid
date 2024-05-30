@@ -3,6 +3,7 @@ import { OptionNumberCustomField } from "./optionNumberCustomField";
 import { OptionSizeCustomField } from "./optionSizeCustomField";
 import { StringCustomField } from "./stringCustomField";
 import { getDefaultValues, type CustomField } from "@/utils/customFieldsSchema";
+import { OptionStringCustomField } from "./optionStringCustomField";
 
 export const CustomFieldArray = (props: {
   schema: Record<string, CustomField>;
@@ -42,7 +43,16 @@ export const CustomFieldArray = (props: {
           />
         );
       }
-      return null;
+      if (field.type === "option-string") {
+        return (
+          <OptionStringCustomField
+            customField={schema[key]}
+            value={value as string}
+            onChange={(value) => onChange(key, value)}
+          />
+        );
+      }
+      throw new Error(`Invalid field type: ${field.type}`);
     };
 
     const calculateColSpan = () => {
@@ -67,3 +77,4 @@ export const CustomFieldArray = (props: {
     );
   });
 };
+
