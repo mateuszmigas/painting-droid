@@ -9,7 +9,7 @@ export const command = createCommand({
   icon: "scissors",
   id: "openSmartCropDialog",
   display: translations.models.smartCrop.name,
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     context.dialogService.openDialog(SmartCropDialog, {});
   },

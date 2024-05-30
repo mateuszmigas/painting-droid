@@ -8,10 +8,11 @@ export const command = createCommand({
   id: "closeActiveWorkspace",
   display: translations.commands.closeActiveWorkspace,
   icon: "x",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     context.stores
       .workspaces()
       .closeWorkspace(context.stores.workspaces().activeWorkspaceId);
   },
 });
+

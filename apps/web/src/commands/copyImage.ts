@@ -15,7 +15,7 @@ export const command = createCommand({
   display: translations.commands.copyImage,
   icon: "clipboard-copy",
   defaultKeyGesture: createSystemKeyGesture({ key: "C", ctrlOrCmd: true }),
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const canvasData = activeWorkspaceCanvasDataSelector(
       context.stores.workspaces()
@@ -33,3 +33,4 @@ export const command = createCommand({
     }
   },
 });
+

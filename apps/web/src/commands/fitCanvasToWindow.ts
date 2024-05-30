@@ -11,7 +11,7 @@ export const command = createCommand({
   id: "fitCanvasToWindow",
   display: translations.commands.fitCanvasToWindow,
   icon: "fullscreen",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const { size } = activeWorkspaceCanvasDataSelector(
       context.stores.workspaces()

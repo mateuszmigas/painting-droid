@@ -11,7 +11,7 @@ export const command = createCommand({
   id: "checkForUpdate",
   display: translations.commands.checkForUpdate,
   icon: "download",
-  settings: { showInPalette: isDesktop() },
+  config: { showInPalette: isDesktop() },
   execute: async (_: CommandContext) => {
     const update = await checkForUpdates();
 

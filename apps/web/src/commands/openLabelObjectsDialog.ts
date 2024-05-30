@@ -9,7 +9,7 @@ export const command = createCommand({
   icon: "tags_ai",
   id: "openLabelObjectsDialog",
   display: translations.models.labelObjects.name,
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     context.dialogService.openDialog(LabelObjectsDialog, {});
   },

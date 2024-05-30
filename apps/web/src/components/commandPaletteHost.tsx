@@ -75,9 +75,7 @@ export const CommandPaletteHost = memo(
     }, [setCommandService, commandService]);
 
     const sortedCommands = sortBySelector(
-      Object.values(commands).filter(
-        (command) => command.settings.showInPalette
-      ),
+      Object.values(commands).filter((command) => command.config.showInPalette),
       (command) => command.display,
       true
     );

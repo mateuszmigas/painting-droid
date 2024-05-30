@@ -16,7 +16,7 @@ export const command = createCommand({
   display: translations.commands.pasteImage,
   icon: "clipboard-paste",
   defaultKeyGesture: createSystemKeyGesture({ key: "V", ctrlOrCmd: true }),
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const data = await clipboard.pasteImage();
 
@@ -49,3 +49,4 @@ export const command = createCommand({
     });
   },
 });
+

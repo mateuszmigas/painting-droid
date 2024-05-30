@@ -10,7 +10,7 @@ export const command = createCommand({
   display: translations.commands.undoCanvasAction,
   icon: "undo",
   defaultKeyGesture: createSystemKeyGesture({ key: "Z", ctrlOrCmd: true }),
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) =>
     context.canvasActionDispatcher.undo(),
 });

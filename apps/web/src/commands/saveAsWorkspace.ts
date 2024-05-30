@@ -12,7 +12,7 @@ export const command = createCommand({
   id: "saveAsWorkspace",
   display: translations.commands.saveAsWorkspace,
   icon: "save",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const { canvasData, name } = activeWorkspaceSelector(
       context.stores.workspaces()
