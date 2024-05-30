@@ -11,7 +11,6 @@ import {
 import type { MenuItem } from "@/utils/menuItem";
 import { keyGestureToAccelerator } from "@/utils/keyGesture";
 import { handleMenuItemAction } from "@/utils/menuItemAction";
-import { setIgnoredCommands } from "@/hooks/useGlobalKeyboardHandler";
 
 const getAllMenuItemsIds = (items: MenuItem[]): string[] => {
   return items.flatMap((item) => {
@@ -57,10 +56,6 @@ export const NativeMenuBarProxy = memo(() => {
   const menuItems = createMenuBarDefinition({ workspaces }, executeCommand);
 
   useEffect(() => {
-    //hack, there is no way to find out if command was invoked with keyboard shortcut
-    //or by clicking on menu item, so we need to ignore them in global keyboard handler
-    setIgnoredCommands(getAllMenuItemsIds(menuItems));
-
     const createMenuBar = async () => {
       const defaultMenu = await NativeMenu.default();
       const systemSubmenu = (await defaultMenu.items())[0];
