@@ -34,15 +34,20 @@ Painting Droid is an AI-powered cross-platform painting app inspired by the lege
 
 ### Web app
 
-If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required for Github Codespaces).
+#### ☁️ Github Codespaces
 
-#### Locally
-
-1. Clone the repository
+1. [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mateuszmigas/painting-droid)
 2. Install the dependencies using `pnpm install`
 3. Run the app using `pnpm dev:web`
+   
+#### 🖥️ Local Machine 
 
-#### Using Dev Container
+1. Install [pnpm](https://pnpm.io/installation) 
+2. Clone the repository
+3. Install the dependencies using `pnpm install`
+4. Run the app using `pnpm dev:web`
+
+#### 🐳 Dev Container 
 
 1. Clone the repository
 2. Make sure you have Docker, Visual Studio Code and [Dev Container](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension installed
@@ -51,12 +56,6 @@ If you don't have it, install [pnpm](https://pnpm.io/installation) (Not required
 5. Change pnpm store dir `pnpm config set store-dir ~/.local/share/pnpm/store`
 6. Install the dependencies using `pnpm install`
 8. Run the app using `pnpm dev:web`
-
-#### Using Github Codespaces
-
-1. [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mateuszmigas/painting-droid)
-2. Install the dependencies using `pnpm install`
-3. Run the app using `pnpm dev:web`
 
 ### Desktop app
 
