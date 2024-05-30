@@ -44,6 +44,7 @@ const translations = {
       },
     },
     textToImage: { name: "Text to Image" },
+    imageToImage: { name: "Image to Image" },
     smartCrop: {
       name: "Smart Crop",
       result: {

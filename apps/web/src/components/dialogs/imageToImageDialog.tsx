@@ -23,11 +23,11 @@ import {
   SelectValue,
 } from "../ui/select";
 import { getTranslations } from "@/translations";
-import { useCanvasActionDispatcher, useTextToImageModels } from "@/hooks";
+import { useCanvasActionDispatcher, useImageToImageModels } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
 import { ImageFromBlob } from "../image/imageFromBlob";
 import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
-import type { TextToImageModelInfo } from "@/hooks/useTextToImageModels";
+import type { ImageToImageModelInfo } from "@/hooks/useImageToImageModels";
 import { scaleRectangleToFitParent } from "@/utils/geometry";
 import { uuid } from "@/utils/uuid";
 import { CustomFieldArray } from "../custom-fields/customFieldArray";
@@ -42,18 +42,18 @@ const FormSchema = z.object({
 });
 
 const getDefaultModelOptions = (
-  models: TextToImageModelInfo[],
+  models: ImageToImageModelInfo[],
   modelId: string
 ) => {
   const model = models.find((model) => model.id === modelId);
-  return (model?.definition.textToImage.optionsSchema || {}) as Record<
+  return (model?.definition.imageToImage.optionsSchema || {}) as Record<
     string,
     CustomField
   >;
 };
 
 const getDefaultModelOptionsValues = (
-  models: TextToImageModelInfo[],
+  models: ImageToImageModelInfo[],
   modelId: string
 ) =>
   getDefaultValues(getDefaultModelOptions(models, modelId)) as Record<
@@ -63,11 +63,11 @@ const getDefaultModelOptionsValues = (
 
 const defaultSize = { width: 320, height: 320 };
 
-export const TextToImageDialog = memo((props: { close: () => void }) => {
+export const ImageToImageDialog = memo((props: { close: () => void }) => {
   const { close } = props;
   const { executeCommand } = useCommandService();
   const canvasActionDispatcher = useCanvasActionDispatcher();
-  const models = useTextToImageModels();
+  const models = useImageToImageModels();
 
   const defaultModelId = models[0]?.id;
 
@@ -92,7 +92,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
       (model) => model.id === data.modelId
     )!;
 
-    definition.textToImage
+    definition.imageToImage
       .execute(modelId, data.prompt, optionsValues, config)
       .then((img) => {
         setImage(img.data);
@@ -114,7 +114,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     const currentSize = (form.watch("modelOptionsValues.size") ??
       defaultSize) as Size;
     await canvasActionDispatcher.execute("addShape", {
-      display: translations.models.textToImage.name,
+      display: translations.models.imageToImage.name,
       shape: {
         id: uuid(),
         type: "generated-image",
@@ -145,7 +145,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
-        <DialogTitle>{translations.models.textToImage.name}</DialogTitle>
+        <DialogTitle>{translations.models.imageToImage.name}</DialogTitle>
       </DialogHeader>
       <Form {...form}>
         <form

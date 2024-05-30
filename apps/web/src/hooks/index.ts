@@ -16,6 +16,7 @@ export { useBlobUrl } from "./useBlobUrl";
 export { useHasStoreHydrated } from "./useHasStoreHydrated";
 export { useScrollAndFocus } from "./useScrollAndFocus";
 export { useTextToImageModels } from "./useTextToImageModels";
+export { useImageToImageModels } from "./useImageToImageModels";
 export { useObjectDetectionModels } from "./useObjectDetectionModels";
 export { useCanvasToolHandlers } from "./useCanvasToolHandlers";
 

@@ -6,7 +6,25 @@ import { base64ToBlob } from "@/utils/image";
 import { apiClient } from "@/utils/api-client";
 import { createApiKeyPlaceholder, handleHttpError } from "./utils";
 import { getTranslations } from "@/translations";
+import {
+  type ImageToImageModel,
+  createImageToImageSection,
+} from "./types/imageToImageModel";
 const translations = getTranslations().models;
+
+const imageToImage = createImageToImageSection({
+  optionsSchema: {
+    engineId: {
+      name: "Engine ID",
+      type: "string",
+      defaultValue: "dupa",
+    },
+  },
+  execute: async (modelId, prompt, options) => {
+    console.log("dupa");
+    return "" as any;
+  },
+});
 
 const textToImage = createTextToImageSection({
   optionsSchema: {
@@ -86,9 +104,11 @@ const textToImage = createTextToImageSection({
 
 export const model = {
   type: "stability-ai",
-  defaultName: "Stability AI",
+  defaultName: "Stability AI V1",
   predefined: false,
   url: "https://stability.ai/",
   useApiKey: true,
   textToImage,
-} as const satisfies TextToImageModel;
+  imageToImage,
+} as const satisfies TextToImageModel & ImageToImageModel;
+
