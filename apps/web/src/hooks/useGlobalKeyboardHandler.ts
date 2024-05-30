@@ -2,6 +2,14 @@ import { type CommandId, commands, type ExecuteCommand } from "@/commands";
 import { eventToKeyGesture, keyGestureToString } from "@/utils/keyGesture";
 import { useEffect, useMemo } from "react";
 
+const ignoredCommandsIds = new Set<string>();
+
+export const setIgnoredCommands = (commandIds: string[]) => {
+  commandIds.forEach((commandId) => {
+    ignoredCommandsIds.add(commandId);
+  });
+};
+
 export const useGlobalKeyboardHandler = (executeCommand: ExecuteCommand) => {
   const commandByKeyGesture = useMemo(() => {
     return Object.values(commands).reduce((map, command) => {
@@ -17,7 +25,7 @@ export const useGlobalKeyboardHandler = (executeCommand: ExecuteCommand) => {
       const keyGestureString = keyGestureToString(eventToKeyGesture(e));
       const commandId = commandByKeyGesture.get(keyGestureString);
 
-      if (commandId) {
+      if (commandId && !ignoredCommandsIds.has(commandId)) {
         executeCommand(commandId as never);
         e.stopPropagation();
       }

@@ -17,6 +17,7 @@ const itemFromCommand = (
 ): MenuItem => {
   const command = commands[commandId];
   return {
+    id: commandId,
     type: "leaf",
     icon: command.icon,
     label: name ?? command.display ?? translations.general.unknown,
@@ -50,16 +51,19 @@ export const createMenuBarDefinition = (
           label: "Save As...",
           items: [
             {
+              id: "saveAsWorkspace",
               type: "leaf",
               label: "PDW Workspace",
               action: { onClick: () => executeCommand("saveAsWorkspace") },
             },
             {
+              id: "saveAsJpeg",
               type: "leaf",
               label: "JPEG Picture",
               action: { onClick: () => executeCommand("saveAsJpeg") },
             },
             {
+              id: "saveAsPng",
               type: "leaf",
               label: "PNG Picture",
               action: { onClick: () => executeCommand("saveAsPng") },
