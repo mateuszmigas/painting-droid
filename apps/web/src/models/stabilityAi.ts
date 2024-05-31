@@ -46,7 +46,7 @@ const imageToImage = createImageToImageSection({
       "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image";
 
     const formData = new FormData();
-    formData.append("init_image", image);
+    formData.append("init_image", image.data);
     formData.append("init_image_mode", "IMAGE_STRENGTH");
     formData.append("image_strength", imageStrength.toString());
     formData.append("text_prompts[0][text]", prompt);
@@ -73,8 +73,8 @@ const imageToImage = createImageToImageSection({
     }
 
     return {
-      width: 0,
-      height: 0,
+      width: image.width,
+      height: image.height,
       data: await base64ToBlob(data.artifacts[0].base64),
     };
   },
@@ -162,4 +162,3 @@ export const model = {
   textToImage,
   imageToImage,
 } as const satisfies TextToImageModel & ImageToImageModel;
-
