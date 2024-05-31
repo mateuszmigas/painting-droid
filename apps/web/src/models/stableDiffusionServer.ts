@@ -2,12 +2,16 @@ import {
   createTextToImageSection,
   type TextToImageModel,
 } from "./types/textToImageModel";
-import { base64ToBlob } from "@/utils/image";
+import { base64ToBlob, blobToDataUrl } from "@/utils/image";
 import { apiClient } from "@/utils/api-client";
 import { getTranslations } from "@/translations";
 import { handleHttpError } from "./utils";
 import { createConfigSchema } from "./types/baseModel";
 import type { CustomFieldsSchemaAsValues } from "@/utils/customFieldsSchema";
+import {
+  type ImageToImageModel,
+  createImageToImageSection,
+} from "./types/imageToImageModel";
 const translations = getTranslations().models;
 
 const configSchema = createConfigSchema({
@@ -16,6 +20,77 @@ const configSchema = createConfigSchema({
     name: translations.config.server,
     type: "string",
     defaultValue: "http://127.0.0.1:7860",
+  },
+});
+
+const imageToImage = createImageToImageSection({
+  optionsSchema: {
+    imageStrength: {
+      name: translations.options.imageStrength,
+      type: "option-number",
+      defaultValue: 0.5,
+      options: [
+        { label: "0%", value: 0 },
+        { label: "25%", value: 0.25 },
+        { label: "50%", value: 0.75 },
+        { label: "75%", value: 0.5 },
+        { label: "100%", value: 1 },
+      ],
+    },
+    steps: {
+      name: translations.options.steps,
+      type: "option-number",
+      defaultValue: 30,
+      options: [
+        { label: "10", value: 10 },
+        { label: "20", value: 20 },
+        { label: "30", value: 30 },
+        { label: "40", value: 40 },
+        { label: "50", value: 50 },
+      ],
+    },
+  },
+  execute: async (_, prompt, image, options, config) => {
+    const { server } = config as CustomFieldsSchemaAsValues<
+      typeof configSchema
+    >;
+    const { steps, imageStrength } = options;
+
+    const url = `${server}/sdapi/v1/img2img`;
+    const body = {
+      prompt,
+      steps,
+      width: image.width,
+      height: image.height,
+      denoising_strength: 1 - imageStrength,
+      init_images: [await blobToDataUrl(image.data)],
+    };
+
+    const headers = {
+      "content-type": "application/json",
+      Accept: "application/json",
+    };
+
+    const result = await apiClient.post(url, {
+      body: JSON.stringify(body),
+      headers,
+    });
+
+    handleHttpError(result.status);
+
+    const data = JSON.parse(result.data) as {
+      images: string[];
+    };
+
+    if (!data.images.length) {
+      throw new Error("Failed to fetch image");
+    }
+
+    return {
+      width: image.width,
+      height: image.height,
+      data: await base64ToBlob(data.images[0]),
+    };
   },
 });
 
@@ -93,5 +168,5 @@ export const model = {
   predefined: false,
   url: "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
   textToImage,
-} as const satisfies TextToImageModel;
-
+  imageToImage,
+} as const satisfies TextToImageModel & ImageToImageModel;

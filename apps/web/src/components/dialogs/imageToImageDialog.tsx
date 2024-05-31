@@ -105,7 +105,13 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
     )!;
 
     definition.imageToImage
-      .execute(modelId, data.prompt, baseImageData!, optionsValues, config)
+      .execute(
+        modelId,
+        data.prompt,
+        { ...canvasData.size, data: baseImageData! },
+        optionsValues,
+        config
+      )
       .then((img) => {
         setGeneratedImageData(img.data);
         setIsGenerating(false);
@@ -266,4 +272,3 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

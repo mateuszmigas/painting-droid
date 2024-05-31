@@ -1,4 +1,4 @@
-import type { ImageCompressed, ImageCompressedData } from "@/utils/imageData";
+import type { ImageCompressed } from "@/utils/imageData";
 import type { BaseModel } from "./baseModel";
 import type {
   CustomFieldsSchema,
@@ -13,7 +13,7 @@ export type ImageToImageSection<
   execute: (
     modelId: string,
     text: string,
-    image: ImageCompressedData,
+    image: ImageCompressed,
     options: CustomFieldsSchemaAsValues<TOptionsSchema>,
     config: CustomFieldsSchemaAsValues<TConfigSchema>
   ) => Promise<ImageCompressed>;
@@ -30,4 +30,3 @@ export type ImageToImageModel = BaseModel & {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   imageToImage: ImageToImageSection<any, any>;
 };
-
