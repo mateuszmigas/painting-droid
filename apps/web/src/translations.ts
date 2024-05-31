@@ -141,6 +141,19 @@ const translations = {
       },
     },
   },
+  alerts: {
+    clearData: {
+      title: "Clear Data",
+      message: `Are you sure you want to clear all stored data? This will delete:
+      
+•	workspaces and images
+•	settings
+•	API keys
+      
+This action cannot be undone.`,
+      confirm: "Clear",
+    },
+  },
   dialogs: {
     settings: {
       title: "Settings",
@@ -231,6 +244,7 @@ const translations = {
     apply: "Apply",
     cancel: "Cancel",
     close: "Close",
+    continue: "Continue",
     color: "Color",
     download: "Download",
     generate: "Generate",
@@ -286,4 +300,3 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
-

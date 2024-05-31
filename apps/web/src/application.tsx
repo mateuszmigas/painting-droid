@@ -21,6 +21,8 @@ import {
   notificationService,
 } from "./contexts/notificationService";
 import { windowHandle } from "./utils/window-handle";
+import { AlertServiceContext } from "./contexts/alertService";
+import { AlertHost, type AlertService } from "./components/alertHost";
 
 export const Application = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
@@ -33,6 +35,7 @@ export const Application = () => {
   const [dialogService, setDialogService] = useState<DialogService | null>(
     null
   );
+  const [alertService, setAlertService] = useState<AlertService | null>(null);
   const [commandService, setCommandService] = useState<CommandService | null>(
     null
   );
@@ -56,24 +59,26 @@ export const Application = () => {
           setVectorContext,
         }}
       >
-        <NotificationServiceContext.Provider value={notificationService}>
-          <DialogServiceContext.Provider value={dialogService!}>
-            <CommandServiceContext.Provider value={commandService!}>
-              <DialogHost setDialogService={setDialogService} />
-              <CommandPaletteHost setCommandService={setCommandService} />
-              {commandService && dialogService && (
-                <>
-                  <AppHeaderBar />
-                  <AppContent />
-                  <AppStatusBar />
-                  <Toaster closeButton />
-                </>
-              )}
-            </CommandServiceContext.Provider>
-          </DialogServiceContext.Provider>
-        </NotificationServiceContext.Provider>
+        <AlertServiceContext.Provider value={alertService!}>
+          <NotificationServiceContext.Provider value={notificationService}>
+            <DialogServiceContext.Provider value={dialogService!}>
+              <CommandServiceContext.Provider value={commandService!}>
+                <DialogHost setDialogService={setDialogService} />
+                <AlertHost setAlertService={setAlertService} />
+                <CommandPaletteHost setCommandService={setCommandService} />
+                {commandService && dialogService && (
+                  <>
+                    <AppHeaderBar />
+                    <AppContent />
+                    <AppStatusBar />
+                    <Toaster closeButton />
+                  </>
+                )}
+              </CommandServiceContext.Provider>
+            </DialogServiceContext.Provider>
+          </NotificationServiceContext.Provider>
+        </AlertServiceContext.Provider>
       </CanvasPreviewContextStoreContext.Provider>
     </div>
   );
 };
-
