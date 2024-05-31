@@ -47,5 +47,7 @@ export const blobsStorage = {
       console.error(e);
     }
   },
+  clearAllBlobs: async () => {
+    await blobsDb.deleteAll("blobs");
+  },
 };
-
