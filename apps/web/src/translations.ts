@@ -189,6 +189,12 @@ const translations = {
         tooSmall: "Canvas size too small",
       },
     },
+    imageToImage: {
+      title: "Image to Image",
+      errors: {
+        layerIsEmpty: "Layer is empty",
+      },
+    },
   },
   themes: {
     light: "Light",

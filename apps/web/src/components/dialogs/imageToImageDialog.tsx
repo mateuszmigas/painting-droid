@@ -1,8 +1,6 @@
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { memo, useState } from "react";
-import type { Size } from "@/utils/common";
-import { Input } from "../ui/input";
 import { Icon } from "../icons/icon";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,15 +29,21 @@ import {
 import { useCommandService } from "@/contexts/commandService";
 import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
 import type { ImageToImageModelInfo } from "@/hooks/useImageToImageModels";
-import { scaleRectangleToFitParent } from "@/utils/geometry";
 import { uuid } from "@/utils/uuid";
 import { CustomFieldArray } from "../custom-fields/customFieldArray";
 import { useWorkspacesStore } from "@/store";
-import { activeWorkspaceActiveLayerSelector } from "@/store/workspacesStore";
+import {
+  activeLayerSelector,
+  activeWorkspaceCanvasDataSelector,
+} from "@/store/workspacesStore";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { ImageFit } from "../image/imageFit";
+import { Input } from "../ui/input";
+import { IconButton } from "../icons/iconButton";
 
 const translations = getTranslations();
+const dialogTranslations = translations.dialogs.imageToImage;
+
 const FormSchema = z.object({
   prompt: z
     .string()
@@ -68,22 +72,15 @@ const getDefaultModelOptionsValues = (
     unknown
   >;
 
-const defaultSize = { width: 320, height: 320 };
-
-//empty image -> disable apply and generate
-//nothing generated -> disable apply
-//is processing -> disable apply and generate
-//add discard -> visible when some image is generated, restore previous image
-//selected size -> invalid size
-
 export const ImageToImageDialog = memo((props: { close: () => void }) => {
   const { close } = props;
   const { executeCommand } = useCommandService();
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const models = useImageToImageModels();
-  const activeLayer = useWorkspacesStore((state) =>
-    activeWorkspaceActiveLayerSelector(state)
+  const canvasData = useWorkspacesStore((state) =>
+    activeWorkspaceCanvasDataSelector(state)
   );
+  const activeLayer = activeLayerSelector(canvasData);
   const defaultModelId = models[0]?.id;
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -94,12 +91,10 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
       modelOptionsValues: getDefaultModelOptionsValues(models, defaultModelId),
     },
   });
-  const imageSize = (form.watch("modelOptionsValues.size") ??
-    defaultSize) as Size;
   const [isGenerating, setIsGenerating] = useState(false);
-  const [imageData, setImageData] = useState<ImageCompressedData | null>(
-    activeLayer.data
-  );
+  const baseImageData = activeLayer.data;
+  const [generatedImageData, setGeneratedImageData] =
+    useState<ImageCompressedData | null>(null);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);
@@ -110,9 +105,9 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
     )!;
 
     definition.imageToImage
-      .execute(modelId, data.prompt, imageData!, optionsValues, config)
+      .execute(modelId, data.prompt, baseImageData!, optionsValues, config)
       .then((img) => {
-        setImageData(img.data);
+        setGeneratedImageData(img.data);
         setIsGenerating(false);
       })
       .catch((err) => {
@@ -123,17 +118,15 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
 
   const apply = async () => {
     await executeCommand("selectTool", { toolId: "rectangleSelect" });
-    const currentSize = (form.watch("modelOptionsValues.size") ??
-      defaultSize) as Size;
     await canvasActionDispatcher.execute("addShape", {
       display: translations.models.imageToImage.name,
       shape: {
         id: uuid(),
         type: "generated-image",
-        boundingBox: { ...currentSize, x: 0, y: 0 },
+        boundingBox: { ...canvasData.size, x: 0, y: 0 },
         capturedArea: {
           box: { x: 0, y: 0, width: 0, height: 0 },
-          data: imageData!,
+          data: baseImageData!,
         },
       },
     });
@@ -142,31 +135,43 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
 
   const modelId = form.watch("modelId");
   const modelOptions = getDefaultModelOptions(models, modelId);
-  const { scale } = scaleRectangleToFitParent(
-    { x: 0, y: 0, ...imageSize },
-    defaultSize,
-    1
-  );
-
   const error = form.formState.errors.root?.message;
-  const imageDataUrl = useBlobUrl(imageData);
+  const baseImageDataUrl = useBlobUrl(baseImageData);
+  const generatedImageDataUrl = useBlobUrl(generatedImageData);
 
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
-        <DialogTitle>{translations.models.imageToImage.name}</DialogTitle>
+        <DialogTitle>{dialogTranslations.title}</DialogTitle>
       </DialogHeader>
       <Form {...form}>
         <form
           className="flex flex-col gap-big sm:flex-row"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <ImageFit
-            containerClassName="border box-content self-center"
-            imageClassName="alpha-background"
-            containerSize={{ width: 320, height: 320 }}
-            src={imageDataUrl}
-          />
+          <div>
+            <ImageFit
+              containerClassName="relative border box-content self-center"
+              imageClassName="alpha-background"
+              containerSize={{ width: 320, height: 320 }}
+              src={generatedImageDataUrl || baseImageDataUrl}
+              overlayNodeRenderer={() => {
+                return generatedImageData ? (
+                  <IconButton
+                    className="absolute right-1 top-1 bg-destructive hover:bg-destructive/90"
+                    type="x"
+                    size="small"
+                    onClick={() => setGeneratedImageData(null)}
+                  />
+                ) : null;
+              }}
+            />
+            {!baseImageData && (
+              <FormMessage className={"text-destructive"}>
+                {dialogTranslations.errors.layerIsEmpty}
+              </FormMessage>
+            )}
+          </div>
           <div className="flex flex-grow justify-between flex-col gap-big min-w-64">
             <div className="flex flex-col gap-big">
               <FormField
@@ -231,7 +236,11 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
               <FormMessage className={"text-destructive"}>{error}</FormMessage>
             </div>
             <div className="gap-medium flex flex-row justify-end">
-              <Button type="submit" variant="secondary" disabled={isGenerating}>
+              <Button
+                type="submit"
+                variant="secondary"
+                disabled={isGenerating || !baseImageData}
+              >
                 {translations.general.generate}
                 {isGenerating ? (
                   <Icon
@@ -243,7 +252,11 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
                   <Icon className="ml-2" type={"check"} size="small" />
                 )}
               </Button>
-              <Button type="button" onClick={apply} disabled={isGenerating}>
+              <Button
+                type="button"
+                onClick={apply}
+                disabled={isGenerating || !baseImageData || !generatedImageData}
+              >
                 {translations.general.apply}
               </Button>
             </div>

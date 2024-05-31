@@ -3,7 +3,6 @@ import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { getTranslations } from "@/translations";
 import type { CanvasShape } from "../canvasState";
-import { spreadOmitKeys } from "@/utils/object";
 
 const translations = getTranslations();
 

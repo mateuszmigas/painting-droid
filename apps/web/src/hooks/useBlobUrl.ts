@@ -9,7 +9,9 @@ export const useBlobUrl = (blob: Blob | null | undefined) => {
       setSrc(objectUrl);
       return () => URL.revokeObjectURL(objectUrl);
     }
+    setSrc("");
   }, [blob]);
 
   return src;
 };
+
