@@ -126,7 +126,7 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
         boundingBox: { ...canvasData.size, x: 0, y: 0 },
         capturedArea: {
           box: { x: 0, y: 0, width: 0, height: 0 },
-          data: baseImageData!,
+          data: generatedImageData!,
         },
       },
     });
