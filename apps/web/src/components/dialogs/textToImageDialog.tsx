@@ -31,6 +31,7 @@ import type { TextToImageModelInfo } from "@/hooks/useTextToImageModels";
 import { scaleRectangleToFitParent } from "@/utils/geometry";
 import { uuid } from "@/utils/uuid";
 import { CustomFieldArray } from "../custom-fields/customFieldArray";
+import type { ImageCompressedData } from "@/utils/imageData";
 
 const translations = getTranslations();
 const FormSchema = z.object({
@@ -82,7 +83,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
   const imageSize = (form.watch("modelOptionsValues.size") ??
     defaultSize) as Size;
   const [isGenerating, setIsGenerating] = useState(false);
-  const [image, setImage] = useState<Blob | null>(null);
+  const [image, setImage] = useState<ImageCompressedData | null>(null);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);

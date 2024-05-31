@@ -10,19 +10,66 @@ import {
   type ImageToImageModel,
   createImageToImageSection,
 } from "./types/imageToImageModel";
+import { ImageProcessor } from "@/utils/imageProcessor";
 const translations = getTranslations().models;
 
 const imageToImage = createImageToImageSection({
   optionsSchema: {
-    engineId: {
-      name: "Engine ID",
-      type: "string",
-      defaultValue: "dupa",
+    steps: {
+      name: translations.options.steps,
+      type: "option-number",
+      defaultValue: 30,
+      options: [
+        { label: "10", value: 10 },
+        { label: "20", value: 20 },
+        { label: "30", value: 30 },
+        { label: "40", value: 40 },
+        { label: "50", value: 50 },
+      ],
     },
   },
-  execute: async (modelId, prompt, options) => {
-    console.log("dupa");
-    return "" as any;
+  execute: async (modelId, prompt, image, options) => {
+    const { steps } = options;
+
+    const url =
+      "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image";
+
+    const formData = new FormData();
+    formData.append("init_image", image);
+    formData.append("init_image_mode", "IMAGE_STRENGTH");
+    formData.append("image_strength", "0.35");
+    formData.append("text_prompts[0][text]", prompt);
+    formData.append("cfg_scale", "7");
+    formData.append("samples", "1");
+    formData.append("steps", steps.toString());
+
+    const headers = {
+      Accept: "application/json",
+      Authorization: `Bearer ${createApiKeyPlaceholder(modelId)}`,
+    };
+
+    const result = await apiClient.post(url, {
+      body: formData,
+      headers,
+    });
+
+    console.log(result);
+
+    handleHttpError(result.status);
+
+    const data = JSON.parse(result.data) as {
+      artifacts: { base64: string }[];
+    };
+
+    if (!data.artifacts.length) {
+      throw new Error("Failed to fetch image");
+    }
+
+    return {
+      width: 0,
+      height: 0,
+      data: await base64ToBlob(data.artifacts[0].base64),
+    };
   },
 });
 

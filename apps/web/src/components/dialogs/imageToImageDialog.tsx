@@ -23,7 +23,11 @@ import {
   SelectValue,
 } from "../ui/select";
 import { getTranslations } from "@/translations";
-import { useCanvasActionDispatcher, useImageToImageModels } from "@/hooks";
+import {
+  useBlobUrl,
+  useCanvasActionDispatcher,
+  useImageToImageModels,
+} from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
 import { ImageFromBlob } from "../image/imageFromBlob";
 import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
@@ -31,6 +35,10 @@ import type { ImageToImageModelInfo } from "@/hooks/useImageToImageModels";
 import { scaleRectangleToFitParent } from "@/utils/geometry";
 import { uuid } from "@/utils/uuid";
 import { CustomFieldArray } from "../custom-fields/customFieldArray";
+import { useWorkspacesStore } from "@/store";
+import { activeWorkspaceActiveLayerSelector } from "@/store/workspacesStore";
+import type { ImageCompressedData } from "@/utils/imageData";
+import { ImageFit } from "../image/imageFit";
 
 const translations = getTranslations();
 const FormSchema = z.object({
@@ -68,7 +76,9 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
   const { executeCommand } = useCommandService();
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const models = useImageToImageModels();
-
+  const activeLayer = useWorkspacesStore((state) =>
+    activeWorkspaceActiveLayerSelector(state)
+  );
   const defaultModelId = models[0]?.id;
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -82,7 +92,9 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
   const imageSize = (form.watch("modelOptionsValues.size") ??
     defaultSize) as Size;
   const [isGenerating, setIsGenerating] = useState(false);
-  const [image, setImage] = useState<Blob | null>(null);
+  const [imageData, setImageData] = useState<ImageCompressedData | null>(
+    activeLayer.data
+  );
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsGenerating(true);
@@ -93,9 +105,9 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
     )!;
 
     definition.imageToImage
-      .execute(modelId, data.prompt, optionsValues, config)
+      .execute(modelId, data.prompt, imageData!, optionsValues, config)
       .then((img) => {
-        setImage(img.data);
+        setImageData(img.data);
         setIsGenerating(false);
       })
       .catch((err) => {
@@ -142,6 +154,8 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
   const isLocked =
     models.find((model) => model.id === modelId)?.definition?.type === "demo";
 
+  const imageDataUrl = useBlobUrl(imageData);
+
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
@@ -152,23 +166,12 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
           className="flex flex-col gap-big sm:flex-row"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="flex basis-0 flex-col items-center justify-center gap-big size-full">
-            <div
-              style={{
-                width: `${imageSize.width * scale}px`,
-                height: `${imageSize.height * scale}px`,
-              }}
-              className="border object-contain box-content"
-            >
-              {image && (
-                <ImageFromBlob
-                  className="size-full object-contain"
-                  blob={image}
-                  alt=""
-                />
-              )}
-            </div>
-          </div>
+          <ImageFit
+            containerClassName="border box-content self-center"
+            imageClassName="alpha-background"
+            containerSize={{ width: 320, height: 320 }}
+            src={imageDataUrl}
+          />
           <div className="flex flex-grow justify-between flex-col gap-big min-w-64">
             <div className="flex flex-col gap-big">
               <FormField
@@ -236,9 +239,7 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
             </div>
             <div className="gap-medium flex flex-row justify-end">
               <Button type="submit" variant="secondary" disabled={isGenerating}>
-                {image
-                  ? translations.general.regenerate
-                  : translations.general.generate}
+                {translations.general.generate}
                 {isGenerating ? (
                   <Icon
                     className="ml-2 animate-spin"
@@ -246,16 +247,12 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
                     size="small"
                   />
                 ) : (
-                  <Icon
-                    className="ml-2"
-                    type={image ? "check" : "brain"}
-                    size="small"
-                  />
+                  <Icon className="ml-2" type={"check"} size="small" />
                 )}
               </Button>
-              <Button type="button" onClick={apply} disabled={!image}>
+              {/* <Button type="button" onClick={apply} disabled={!image}>
                 {translations.general.apply}
-              </Button>
+              </Button> */}
             </div>
           </div>
         </form>

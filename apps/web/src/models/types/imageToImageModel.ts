@@ -1,4 +1,4 @@
-import type { ImageCompressed } from "@/utils/imageData";
+import type { ImageCompressed, ImageCompressedData } from "@/utils/imageData";
 import type { BaseModel } from "./baseModel";
 import type {
   CustomFieldsSchema,
@@ -13,6 +13,7 @@ export type ImageToImageSection<
   execute: (
     modelId: string,
     text: string,
+    image: ImageCompressedData,
     options: CustomFieldsSchemaAsValues<TOptionsSchema>,
     config: CustomFieldsSchemaAsValues<TConfigSchema>
   ) => Promise<ImageCompressed>;

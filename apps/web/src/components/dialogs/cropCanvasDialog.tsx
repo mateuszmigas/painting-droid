@@ -23,6 +23,7 @@ import type { Rectangle, Size } from "@/utils/common";
 import { ImageAnchor, type ImageAnchorType } from "../image/imageAnchor";
 import { ImageOffset } from "../image/imageOffset";
 import { NumberInput } from "../input/numberInput";
+import type { ImageCompressedData } from "@/utils/imageData";
 
 const dialogTranslations = getTranslations().dialogs.cropCanvas;
 const translations = getTranslations();
@@ -120,7 +121,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
   const canvasData = useWorkspacesStore((state) =>
     activeWorkspaceCanvasDataSelector(state)
   );
-  const [imageData, setImageData] = useState<Blob | null>(null);
+  const [imageData, setImageData] = useState<ImageCompressedData | null>(null);
   const imageDataUrl = useBlobUrl(imageData);
   const [isApplying, setIsApplying] = useState(false);
 

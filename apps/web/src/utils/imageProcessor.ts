@@ -4,7 +4,7 @@ import {
   convertToBlob,
 } from "./canvas";
 import type { CanvasBitmapContext, Rectangle, Size } from "./common";
-import { dataUrlToImage } from "./image";
+import { blobToArrayBuffer, blobToDataUrl, dataUrlToImage } from "./image";
 import type { ImageCompressedData, ImageUncompressed } from "./imageData";
 
 export class ImageProcessor {
@@ -155,6 +155,12 @@ export class ImageProcessor {
       this.context.canvas.width,
       this.context.canvas.height
     );
+  }
+
+  async toBuffer() {
+    await this.runTasks();
+    const blob = await convertToBlob(this.context, "image/png");
+    return await blob!.arrayBuffer();
   }
 
   async toBlob(format: "jpeg" | "png") {
