@@ -86,7 +86,7 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      prompt: "a cat with a nice hat",
+      prompt: dialogTranslations.defaultPrompt,
       modelId: defaultModelId,
       modelOptionsValues: getDefaultModelOptionsValues(models, defaultModelId),
     },

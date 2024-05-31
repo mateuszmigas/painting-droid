@@ -191,9 +191,14 @@ const translations = {
     },
     imageToImage: {
       title: "Image to Image",
+      defaultPrompt: "A beautiful landscape with a sunset behind",
       errors: {
         layerIsEmpty: "Layer is empty",
       },
+    },
+    textToImage: {
+      title: "Text to Image",
+      defaultPrompt: "A cat in a hat",
     },
   },
   themes: {

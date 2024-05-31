@@ -34,6 +34,7 @@ import { CustomFieldArray } from "../custom-fields/customFieldArray";
 import type { ImageCompressedData } from "@/utils/imageData";
 
 const translations = getTranslations();
+const dialogTranslations = translations.dialogs.textToImage;
 const FormSchema = z.object({
   prompt: z
     .string()
@@ -75,7 +76,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      prompt: "a cat with a nice hat",
+      prompt: dialogTranslations.defaultPrompt,
       modelId: defaultModelId,
       modelOptionsValues: getDefaultModelOptionsValues(models, defaultModelId),
     },
@@ -146,7 +147,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
       <DialogHeader>
-        <DialogTitle>{translations.models.textToImage.name}</DialogTitle>
+        <DialogTitle>{dialogTranslations.title}</DialogTitle>
       </DialogHeader>
       <Form {...form}>
         <form
