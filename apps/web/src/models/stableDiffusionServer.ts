@@ -37,14 +37,26 @@ const textToImage = createTextToImageSection({
         { label: "896x1152", value: { width: 896, height: 1152 } },
       ],
     },
+    steps: {
+      name: translations.options.steps,
+      type: "option-number",
+      defaultValue: 30,
+      options: [
+        { label: "10", value: 10 },
+        { label: "20", value: 20 },
+        { label: "30", value: 30 },
+        { label: "40", value: 40 },
+        { label: "50", value: 50 },
+      ],
+    },
   },
   execute: async (_, prompt, options, config) => {
     const { server } = config as CustomFieldsSchemaAsValues<
       typeof configSchema
     >;
-    const { size } = options;
+    const { size, steps } = options;
     const url = `${server}/sdapi/v1/txt2img`;
-    const body = { prompt, size };
+    const body = { prompt, steps, size };
 
     const headers = {
       "content-type": "application/json",
@@ -82,3 +94,4 @@ export const model = {
   url: "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
   textToImage,
 } as const satisfies TextToImageModel;
+
