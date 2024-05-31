@@ -70,6 +70,12 @@ const getDefaultModelOptionsValues = (
 
 const defaultSize = { width: 320, height: 320 };
 
+//empty image -> disable apply and generate
+//nothing generated -> disable apply
+//is processing -> disable apply and generate
+//add discard -> visible when some image is generated, restore previous image
+//selected size -> invalid size
+
 export const ImageToImageDialog = memo((props: { close: () => void }) => {
   const { close } = props;
   const { executeCommand } = useCommandService();
@@ -247,3 +253,4 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
+

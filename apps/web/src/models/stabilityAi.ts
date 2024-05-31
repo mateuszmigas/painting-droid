@@ -14,6 +14,18 @@ const translations = getTranslations().models;
 
 const imageToImage = createImageToImageSection({
   optionsSchema: {
+    imageStrength: {
+      name: translations.options.imageStrength,
+      type: "option-number",
+      defaultValue: 0.5,
+      options: [
+        { label: "0%", value: 0 },
+        { label: "25%", value: 0.25 },
+        { label: "50%", value: 0.75 },
+        { label: "75%", value: 0.5 },
+        { label: "100%", value: 1 },
+      ],
+    },
     steps: {
       name: translations.options.steps,
       type: "option-number",
@@ -28,7 +40,7 @@ const imageToImage = createImageToImageSection({
     },
   },
   execute: async (modelId, prompt, image, options) => {
-    const { steps } = options;
+    const { steps, imageStrength } = options;
 
     const url =
       "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image";
@@ -36,10 +48,8 @@ const imageToImage = createImageToImageSection({
     const formData = new FormData();
     formData.append("init_image", image);
     formData.append("init_image_mode", "IMAGE_STRENGTH");
-    formData.append("image_strength", "0.35");
+    formData.append("image_strength", imageStrength.toString());
     formData.append("text_prompts[0][text]", prompt);
-    formData.append("cfg_scale", "7");
-    formData.append("samples", "1");
     formData.append("steps", steps.toString());
 
     const headers = {
@@ -111,9 +121,6 @@ const textToImage = createTextToImageSection({
       steps,
       width: size.width,
       height: size.height,
-      seed: 0,
-      cfg_scale: 5,
-      samples: 1,
       text_prompts: [{ text: prompt, weight: 1 }],
     };
 
@@ -148,10 +155,11 @@ const textToImage = createTextToImageSection({
 
 export const model = {
   type: "stability-ai",
-  defaultName: "Stability AI V1",
+  defaultName: "Stability AI SDXL 1.0",
   predefined: false,
   url: "https://stability.ai/",
   useApiKey: true,
   textToImage,
   imageToImage,
 } as const satisfies TextToImageModel & ImageToImageModel;
+

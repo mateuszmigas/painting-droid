@@ -61,6 +61,7 @@ const translations = {
     options: {
       size: "Size",
       steps: "Steps",
+      imageStrength: "Image Strength",
       quality: {
         name: "Quality",
         standard: "Standard",
@@ -295,3 +296,4 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
+

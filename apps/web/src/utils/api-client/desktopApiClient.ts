@@ -11,7 +11,6 @@ const createBodyObject = async (formData: FormData) => {
         content: value,
       };
     } else {
-      console.log("shouldbeblob", value);
       const arrayBuffer = await blobToArrayBuffer(value);
       const content = Array.from(new Uint8Array(arrayBuffer as ArrayBuffer));
       body[key] = {
