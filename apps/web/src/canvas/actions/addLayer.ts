@@ -15,9 +15,13 @@ export const createCanvasAction = async (
   const state = context.getState();
 
   const capturedData = {
-    id: uuid(),
-    name: translations.layers.defaultNewName(state.layers.length + 1),
-    activeLayerIndex: state.activeLayerIndex,
+    newLayer: {
+      ...createDefaultLayer(),
+      id: uuid(),
+      name: translations.layers.defaultNewName(state.layers.length + 1),
+      data: data || null,
+    },
+    previousLayerIndex: state.activeLayerIndex,
   };
 
   return {
@@ -26,25 +30,18 @@ export const createCanvasAction = async (
     execute: async (state) => {
       return {
         ...state,
-        layers: [
-          ...state.layers,
-          {
-            ...createDefaultLayer(),
-            id: capturedData.id,
-            name: capturedData.name,
-            data: data || null,
-          },
-        ],
+        layers: [...state.layers, capturedData.newLayer],
         activeLayerIndex: state.layers.length,
       };
     },
     undo: async (state) => {
       return {
         ...state,
-        layers: state.layers.filter((layer) => layer.id !== capturedData.id),
-        activeLayerIndex: capturedData.activeLayerIndex,
+        layers: state.layers.filter(
+          (layer) => layer.id !== capturedData.newLayer.id
+        ),
+        activeLayerIndex: capturedData.previousLayerIndex,
       };
     },
   };
 };
-

@@ -7,13 +7,15 @@ import { getTranslations } from "@/translations";
 const translations = getTranslations();
 
 export const createCanvasAction = async (
-  _: CanvasActionContext,
+  context: CanvasActionContext,
   payload: { layerId: CanvasLayerId }
 ): Promise<CanvasAction> => {
   const { layerId } = payload;
+  const state = context.getState();
   const capturedData = {
     sourceLayerId: layerId,
     targetLayerId: uuid(),
+    previousActiveLayerIndex: state.activeLayerIndex,
   };
 
   return {
@@ -43,8 +45,8 @@ export const createCanvasAction = async (
         layers: state.layers.filter(
           (layer) => layer.id !== capturedData.targetLayerId
         ),
+        activeLayerIndex: capturedData.previousActiveLayerIndex,
       };
     },
   };
 };
-
