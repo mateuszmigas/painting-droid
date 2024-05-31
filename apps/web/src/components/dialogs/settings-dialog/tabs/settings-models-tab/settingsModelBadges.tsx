@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   isTextToImageModel,
   isObjectDetectionModel,
+  isImageToImageModel,
 } from "@/models/definitions";
 import { markerColors } from "@/constants";
 import type { BaseModel } from "@/models/types/baseModel";
@@ -23,10 +24,19 @@ export const SettingsModelBadges = memo((props: { baseModel: BaseModel }) => {
           {translations.models.textToImage.name}
         </Badge>
       )}
-      {isObjectDetectionModel(baseModel as never) && (
+      {isImageToImageModel(baseModel as never) && (
         <Badge
           className="text-primary-foreground"
           style={{ backgroundColor: markerColors[1] }}
+          variant="outline"
+        >
+          {translations.models.textToImage.name}
+        </Badge>
+      )}
+      {isObjectDetectionModel(baseModel as never) && (
+        <Badge
+          className="text-primary-foreground"
+          style={{ backgroundColor: markerColors[2] }}
           variant="outline"
         >
           {translations.models.labelObjects.name}

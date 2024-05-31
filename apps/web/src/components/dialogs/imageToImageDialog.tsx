@@ -29,7 +29,6 @@ import {
   useImageToImageModels,
 } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
-import { ImageFromBlob } from "../image/imageFromBlob";
 import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
 import type { ImageToImageModelInfo } from "@/hooks/useImageToImageModels";
 import { scaleRectangleToFitParent } from "@/utils/geometry";
@@ -45,7 +44,7 @@ const FormSchema = z.object({
   prompt: z
     .string()
     .min(10, { message: "Prompt must be at least 10 characters." }),
-  modelId: z.string(),
+  modelId: z.string().min(1, { message: "Model must be selected." }),
   modelOptionsValues: z.record(z.string(), z.unknown()),
 });
 
@@ -117,11 +116,6 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
   };
 
   const apply = async () => {
-    if (image === null) {
-      close();
-      return;
-    }
-
     await executeCommand("selectTool", { toolId: "rectangleSelect" });
     const currentSize = (form.watch("modelOptionsValues.size") ??
       defaultSize) as Size;
@@ -133,7 +127,7 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
         boundingBox: { ...currentSize, x: 0, y: 0 },
         capturedArea: {
           box: { x: 0, y: 0, width: 0, height: 0 },
-          data: image,
+          data: imageData!,
         },
       },
     });
@@ -149,11 +143,6 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
   );
 
   const error = form.formState.errors.root?.message;
-
-  //todo: remove after release
-  const isLocked =
-    models.find((model) => model.id === modelId)?.definition?.type === "demo";
-
   const imageDataUrl = useBlobUrl(imageData);
 
   return (
@@ -192,7 +181,9 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue />
+                          <SelectValue
+                            placeholder={translations.info.noModels}
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -205,6 +196,7 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -215,17 +207,12 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
                   <FormItem>
                     <FormLabel>{translations.models.prompt}</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled={isLocked} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              {isLocked && (
-                <FormMessage className={"text-muted-foreground"}>
-                  {"Demo model prompt cannot be edited"}
-                </FormMessage>
-              )}
               <div className="flex flex-col gap-big">
                 <CustomFieldArray
                   schema={modelOptions}
@@ -250,9 +237,9 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
                   <Icon className="ml-2" type={"check"} size="small" />
                 )}
               </Button>
-              {/* <Button type="button" onClick={apply} disabled={!image}>
+              <Button type="button" onClick={apply} disabled={isGenerating}>
                 {translations.general.apply}
-              </Button> */}
+              </Button>
             </div>
           </div>
         </form>
@@ -260,4 +247,3 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

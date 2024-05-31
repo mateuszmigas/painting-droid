@@ -267,6 +267,9 @@ const translations = {
       a: "Alpha",
     },
   },
+  info: {
+    noModels: "No models configured",
+  },
   errors: {
     noImageData: "No image data",
     processingError: "Processing error",
@@ -292,4 +295,3 @@ const translations = {
 };
 
 export const getTranslations = () => translations;
-

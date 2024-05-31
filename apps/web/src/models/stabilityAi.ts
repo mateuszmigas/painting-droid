@@ -10,7 +10,6 @@ import {
   type ImageToImageModel,
   createImageToImageSection,
 } from "./types/imageToImageModel";
-import { ImageProcessor } from "@/utils/imageProcessor";
 const translations = getTranslations().models;
 
 const imageToImage = createImageToImageSection({
@@ -52,8 +51,6 @@ const imageToImage = createImageToImageSection({
       body: formData,
       headers,
     });
-
-    console.log(result);
 
     handleHttpError(result.status);
 
@@ -158,4 +155,3 @@ export const model = {
   textToImage,
   imageToImage,
 } as const satisfies TextToImageModel & ImageToImageModel;
-
