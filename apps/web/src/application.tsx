@@ -21,11 +21,8 @@ import {
   notificationService,
 } from "./contexts/notificationService";
 import { windowHandle } from "./utils/window-handle";
-import {
-  type AlertService,
-  AlertServiceContext,
-} from "./contexts/alertService";
-import { AlertHost } from "./components/alertHost";
+import { AlertServiceContext } from "./contexts/alertService";
+import { AlertHost, type AlertService } from "./components/alertHost";
 
 export const Application = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
