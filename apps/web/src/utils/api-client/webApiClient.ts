@@ -4,7 +4,7 @@ export const webApiClient: ApiClient = {
   post: async (
     url: string,
     options: {
-      body: string;
+      body: string | FormData;
       headers: Record<string, string>;
     }
   ) => {
@@ -32,3 +32,4 @@ export const webApiClient: ApiClient = {
     return { status: result.status, data: new ArrayBuffer(0) };
   },
 };
+

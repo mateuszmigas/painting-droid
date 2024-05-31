@@ -14,7 +14,7 @@ export const command = createCommand({
     shift: true,
     ctrlOrCmd: true,
   }),
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) =>
     context.canvasActionDispatcher.redo(),
 });

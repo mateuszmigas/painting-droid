@@ -8,7 +8,7 @@ import {
 
 export const command = createCommand({
   id: "selectTool",
-  settings: { showInPalette: false },
+  config: { showInPalette: false },
   execute: async (
     context: CommandContext,
     payload: {

@@ -10,6 +10,7 @@ export type MenuItem =
       icon?: IconType;
     }
   | {
+      id?: string;
       type: "leaf";
       action: MenuItemAction;
       label: string;
@@ -20,3 +21,4 @@ export type MenuItem =
   | {
       type: "separator";
     };
+

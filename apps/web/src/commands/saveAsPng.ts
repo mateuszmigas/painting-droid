@@ -10,7 +10,7 @@ export const command = createCommand({
   id: "saveAsPng",
   display: translations.commands.saveAsPng,
   icon: "save",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const format = "png";
     const { name, blob } = await selectLayersAsBlob(

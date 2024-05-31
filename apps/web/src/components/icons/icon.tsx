@@ -68,6 +68,8 @@ import {
   Scissors,
   Share,
   HelpCircle,
+  ImagePlus,
+  Images,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -147,7 +149,9 @@ type BaseIconType =
   | "spray-can"
   | "tags"
   | "share"
-  | "help";
+  | "help"
+  | "image-add"
+  | "image-copy";
 
 export type IconType = BaseIconType | `${BaseIconType}_ai`;
 
@@ -326,6 +330,10 @@ const renderLucideIcon = (
       return <Share className={className} size={fontSize} />;
     case "help":
       return <HelpCircle className={className} size={fontSize} />;
+    case "image-add":
+      return <ImagePlus className={className} size={fontSize} />;
+    case "image-copy":
+      return <Images className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

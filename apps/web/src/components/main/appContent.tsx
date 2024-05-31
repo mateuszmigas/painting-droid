@@ -44,7 +44,7 @@ export const AppContent = memo(() => {
 
   return (
     <div className="relative flex flex-row size-full">
-      <div className="border-r w-[40px]">
+      <div className="border-r w-[40px] overflow-auto">
         <ToolsPanel />
       </div>
       <ResizablePanelGroup className="flex-1" direction="horizontal">
@@ -74,3 +74,4 @@ export const AppContent = memo(() => {
     </div>
   );
 });
+

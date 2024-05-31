@@ -44,6 +44,7 @@ const translations = {
       },
     },
     textToImage: { name: "Text to Image" },
+    imageToImage: { name: "Image to Image" },
     smartCrop: {
       name: "Smart Crop",
       result: {
@@ -60,6 +61,12 @@ const translations = {
     options: {
       size: "Size",
       steps: "Steps",
+      imageStrength: "Image Strength",
+      quality: {
+        name: "Quality",
+        standard: "Standard",
+        high: "High",
+      },
     },
     config: {
       server: "Server",
@@ -195,6 +202,17 @@ This action cannot be undone.`,
         tooSmall: "Canvas size too small",
       },
     },
+    imageToImage: {
+      title: "Image to Image",
+      defaultPrompt: "A beautiful landscape with a sunset behind",
+      errors: {
+        layerIsEmpty: "Layer is empty",
+      },
+    },
+    textToImage: {
+      title: "Text to Image",
+      defaultPrompt: "A cat in a hat",
+    },
   },
   themes: {
     light: "Light",
@@ -274,6 +292,9 @@ This action cannot be undone.`,
       b: "Blue",
       a: "Alpha",
     },
+  },
+  info: {
+    noModels: "No models configured",
   },
   errors: {
     noImageData: "No image data",

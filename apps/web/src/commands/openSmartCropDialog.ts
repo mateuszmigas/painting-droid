@@ -6,10 +6,10 @@ import { SmartCropDialog } from "@/components/dialogs/smartCropDialog";
 const translations = getTranslations();
 
 export const command = createCommand({
-  icon: "scissors",
+  icon: "scissors_ai",
   id: "openSmartCropDialog",
   display: translations.models.smartCrop.name,
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     context.dialogService.openDialog(SmartCropDialog, {});
   },

@@ -8,8 +8,9 @@ export const command = createCommand({
   id: "addLayer",
   display: translations.commands.addLayer,
   icon: "plus",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     context.canvasActionDispatcher.execute("addLayer", {});
   },
 });
+

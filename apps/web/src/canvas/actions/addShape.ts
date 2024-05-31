@@ -3,7 +3,6 @@ import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 import { getTranslations } from "@/translations";
 import type { CanvasShape } from "../canvasState";
-import { spreadOmitKeys } from "@/utils/object";
 
 const translations = getTranslations();
 
@@ -21,8 +20,9 @@ export const createCanvasAction = async (
 
   const capturedData = {
     previousActiveShapeId,
+    previousShapes: state.shapes,
     nextActiveShapeId: shape.id,
-    shape,
+    newShapes: { [shape.id]: shape },
   };
 
   return {
@@ -32,17 +32,14 @@ export const createCanvasAction = async (
     execute: async (state) => {
       return {
         ...state,
-        shapes: {
-          ...state.shapes,
-          [capturedData.nextActiveShapeId]: capturedData.shape,
-        },
+        shapes: capturedData.newShapes,
         activeShapeId: capturedData.nextActiveShapeId,
       };
     },
     undo: async (state) => {
       return {
         ...state,
-        shapes: spreadOmitKeys(state.shapes, [capturedData.nextActiveShapeId]),
+        shapes: capturedData.previousShapes,
         activeShapeId: capturedData.previousActiveShapeId,
       };
     },

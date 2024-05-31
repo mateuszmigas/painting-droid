@@ -18,11 +18,18 @@ export type ModelType = (typeof modelDefinitions)[number]["type"];
 export const isTextToImageModel = (model: { type: string }) =>
   "textToImage" in model;
 
+export const isImageToImageModel = (model: { type: string }) =>
+  "imageToImage" in model;
+
 export const isObjectDetectionModel = (model: { type: string }) =>
   "detectObjects" in model;
 
 export const textToImageModelTypes = modelDefinitions
   .filter(isTextToImageModel)
+  .map((model) => model.type);
+
+export const imageToImageModelTypes = modelDefinitions
+  .filter(isImageToImageModel)
   .map((model) => model.type);
 
 export const objectDetectionModelTypes = modelDefinitions

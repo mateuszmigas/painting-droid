@@ -9,8 +9,9 @@ export const command = createCommand({
   id: "openCropCanvasDialog",
   display: translations.commands.openCropCanvasDialog,
   icon: "crop",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     await context.dialogService.openDialog(CropCanvasDialog, {});
   },
 });
+

@@ -9,7 +9,7 @@ export const command = createCommand({
   id: "removeLayer",
   display: translations.commands.removeLayer,
   icon: "x",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const activeLayerId = activeWorkspaceActiveLayerSelector(
       context.stores.workspaces()
@@ -20,3 +20,4 @@ export const command = createCommand({
     });
   },
 });
+

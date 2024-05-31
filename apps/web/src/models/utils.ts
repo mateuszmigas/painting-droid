@@ -13,7 +13,7 @@ export const handleHttpError = (status: number) => {
 
 /*
   this placeholder will be replaced with the actual API key
-  safe storage when the request is made
+  from safe storage when the request is made
 */
 export const createApiKeyPlaceholder = (modelId: string) => {
   return `APIKEY(${modelId})`;

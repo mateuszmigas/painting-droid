@@ -13,7 +13,7 @@ export const command = createCommand({
   id: "openFile",
   display: translations.commands.openFile,
   icon: "folder-open",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     fileSystem
       .openFile({

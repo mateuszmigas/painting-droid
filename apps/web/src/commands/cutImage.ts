@@ -16,7 +16,7 @@ export const command = createCommand({
   display: translations.commands.cutImage,
   icon: "clipboard-cut",
   defaultKeyGesture: createSystemKeyGesture({ key: "X", ctrlOrCmd: true }),
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const canvasData = activeWorkspaceCanvasDataSelector(
       context.stores.workspaces()

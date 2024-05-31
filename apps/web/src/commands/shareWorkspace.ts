@@ -10,7 +10,7 @@ export const command = createCommand({
   id: "shareWorkspace",
   display: translations.commands.shareWorkspace,
   icon: "share",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     if (!features.shareFiles) {
       context.notificationService.showError(

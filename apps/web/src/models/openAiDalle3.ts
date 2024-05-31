@@ -19,6 +19,15 @@ const textToImage = createTextToImageSection({
         { label: "1792x1024", value: { width: 1792, height: 1024 } },
       ],
     },
+    quality: {
+      name: translations.options.quality.name,
+      type: "option-string",
+      defaultValue: "standard",
+      options: [
+        { label: translations.options.quality.standard, value: "standard" },
+        { label: translations.options.quality.high, value: "hd" },
+      ],
+    },
   },
   execute: async (modelId, prompt, options) => {
     const { size } = options;
@@ -29,6 +38,7 @@ const textToImage = createTextToImageSection({
       model: "dall-e-3",
       prompt,
       n: 1,
+      quality: options.quality,
       size: `${size.width}x${size.height}`,
     };
 
@@ -76,3 +86,4 @@ export const model = {
   useApiKey: true,
   textToImage,
 } as const satisfies TextToImageModel;
+

@@ -9,7 +9,7 @@ export const command = createCommand({
   id: "mergeLayerDown",
   display: translations.commands.mergeLayerDown,
   icon: "merge",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const activeLayerId = activeWorkspaceActiveLayerSelector(
       context.stores.workspaces()

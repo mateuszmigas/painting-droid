@@ -9,8 +9,9 @@ export const command = createCommand({
   id: "openSettingsDialog",
   display: translations.commands.openSettingsDialog,
   icon: "settings",
-  settings: { showInPalette: true },
+  config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     await context.dialogService.openDialog(SettingsDialog, {});
   },
 });
+

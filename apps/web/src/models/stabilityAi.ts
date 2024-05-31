@@ -6,7 +6,79 @@ import { base64ToBlob } from "@/utils/image";
 import { apiClient } from "@/utils/api-client";
 import { createApiKeyPlaceholder, handleHttpError } from "./utils";
 import { getTranslations } from "@/translations";
+import {
+  type ImageToImageModel,
+  createImageToImageSection,
+} from "./types/imageToImageModel";
 const translations = getTranslations().models;
+
+const imageToImage = createImageToImageSection({
+  optionsSchema: {
+    imageStrength: {
+      name: translations.options.imageStrength,
+      type: "option-number",
+      defaultValue: 0.5,
+      options: [
+        { label: "0%", value: 0 },
+        { label: "25%", value: 0.25 },
+        { label: "50%", value: 0.75 },
+        { label: "75%", value: 0.5 },
+        { label: "100%", value: 1 },
+      ],
+    },
+    steps: {
+      name: translations.options.steps,
+      type: "option-number",
+      defaultValue: 30,
+      options: [
+        { label: "10", value: 10 },
+        { label: "20", value: 20 },
+        { label: "30", value: 30 },
+        { label: "40", value: 40 },
+        { label: "50", value: 50 },
+      ],
+    },
+  },
+  execute: async (modelId, prompt, image, options) => {
+    const { steps, imageStrength } = options;
+
+    const url =
+      "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image";
+
+    const formData = new FormData();
+    formData.append("init_image", image);
+    formData.append("init_image_mode", "IMAGE_STRENGTH");
+    formData.append("image_strength", imageStrength.toString());
+    formData.append("text_prompts[0][text]", prompt);
+    formData.append("steps", steps.toString());
+
+    const headers = {
+      Accept: "application/json",
+      Authorization: `Bearer ${createApiKeyPlaceholder(modelId)}`,
+    };
+
+    const result = await apiClient.post(url, {
+      body: formData,
+      headers,
+    });
+
+    handleHttpError(result.status);
+
+    const data = JSON.parse(result.data) as {
+      artifacts: { base64: string }[];
+    };
+
+    if (!data.artifacts.length) {
+      throw new Error("Failed to fetch image");
+    }
+
+    return {
+      width: 0,
+      height: 0,
+      data: await base64ToBlob(data.artifacts[0].base64),
+    };
+  },
+});
 
 const textToImage = createTextToImageSection({
   optionsSchema: {
@@ -49,9 +121,6 @@ const textToImage = createTextToImageSection({
       steps,
       width: size.width,
       height: size.height,
-      seed: 0,
-      cfg_scale: 5,
-      samples: 1,
       text_prompts: [{ text: prompt, weight: 1 }],
     };
 
@@ -86,9 +155,11 @@ const textToImage = createTextToImageSection({
 
 export const model = {
   type: "stability-ai",
-  defaultName: "Stability AI",
+  defaultName: "Stability AI SDXL 1.0",
   predefined: false,
   url: "https://stability.ai/",
   useApiKey: true,
   textToImage,
-} as const satisfies TextToImageModel;
+  imageToImage,
+} as const satisfies TextToImageModel & ImageToImageModel;
+

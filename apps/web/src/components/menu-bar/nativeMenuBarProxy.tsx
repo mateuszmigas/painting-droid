@@ -12,6 +12,18 @@ import type { MenuItem } from "@/utils/menuItem";
 import { keyGestureToAccelerator } from "@/utils/keyGesture";
 import { handleMenuItemAction } from "@/utils/menuItemAction";
 
+const getAllMenuItemsIds = (items: MenuItem[]): string[] => {
+  return items.flatMap((item) => {
+    if (item.type === "leaf") {
+      return item.id ? [item.id] : [];
+    }
+    if ("items" in item) {
+      return getAllMenuItemsIds(item.items);
+    }
+    return [];
+  });
+};
+
 const mapMenuItemToNative = async (item: MenuItem) => {
   switch (item.type) {
     case "parent": {
