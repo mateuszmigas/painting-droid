@@ -6,6 +6,10 @@
 
 ---
 
+https://github.com/mateuszmigas/painting-droid/assets/54471371/6cda0fc3-1363-4a5d-a46e-6be5113b1cba
+
+---
+
 <div align="center">
 
   <img src="assets/logo_big.webp" width="200" height="200">
