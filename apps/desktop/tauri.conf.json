@@ -35,10 +35,11 @@
     },
     "windows": [
       {
-        "title": "Painting Droid (Alpha)",
+        "title": "Painting Droid",
         "width": 1280,
         "height": 800,
-        "visible": false
+        "visible": false,
+        "zoomHotkeysEnabled": true
       }
     ]
   }
