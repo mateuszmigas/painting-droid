@@ -19,7 +19,8 @@
     "menu:allow-items",
     "clipboard-manager:allow-read-image",
     "clipboard-manager:allow-write-image",
-    "image:allow-rgba"
+    "image:allow-rgba",
+    "webview:allow-set-webview-zoom"
   ]
 }
 
