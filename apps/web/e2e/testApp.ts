@@ -3,6 +3,7 @@ import { testIds } from "../src/utils/testIds";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const mouseSleep = 10;
+const keyboardSleep = 10;
 
 export class TestApp {
   public static async from(page: Page) {
@@ -68,5 +69,12 @@ export class TestApp {
     await this.page.mouse.up();
     await sleep(mouseSleep);
   }
+
+  async pressKey(key: string) {
+    await this.page.keyboard.press(key);
+    await sleep(keyboardSleep);
+  }
+
+  waitForCanvas;
 }
 
