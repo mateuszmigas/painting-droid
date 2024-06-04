@@ -6,9 +6,12 @@ import {
 } from "../utils";
 
 test.describe("rectangle select", () => {
-  test.skip(({ browserName }) => browserName === 'webkit', 'This test is disabled for WebKit');
-  
-  test("copies dragged image", async ({ page }) => {
+  test.skip(
+    ({ browserName }) => browserName === "webkit",
+    "This test is disabled for WebKit"
+  );
+
+  test("makes a copy of the selected area", async ({ page }) => {
     const app = await TestApp.from(page);
     const box = await app.getLayerCanvasBoundingBox(0);
     await app.selectTool("brush");
@@ -27,10 +30,8 @@ test.describe("rectangle select", () => {
       { x: box.x + box.width / 4, y: box.y + box.height / 4 },
       { x: box.x + (box.width * 3) / 4, y: box.y + (box.height * 3) / 4 },
     ]);
-    await app.pressKey("Enter");
-    await app.waitForCanvasApply();
-    const buffer = await app.getLayerCanvasBuffer(0);
+    await app.applySelectedShape();
+    const buffer = await app.getLayerCanvasBuffer();
     await expect(buffer).toMatchSnapshot(["tool-rectangle-select.png"]);
   });
 });
-

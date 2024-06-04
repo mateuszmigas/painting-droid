@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { TestApp } from "../testApp";
 import { mouseActionBetweenRectangleCorners } from "../utils";
 
-test.describe("brush", () => {
+test.describe("brush draw", () => {
   test("draws blue rectangle with brush", async ({ page }) => {
     const app = await TestApp.from(page);
     const box = await app.getLayerCanvasBoundingBox(0);
@@ -15,8 +15,7 @@ test.describe("brush", () => {
       width: box.width - 100,
       height: box.height - 100,
     });
-    const buffer = await app.getLayerCanvasBuffer(0);
+    const buffer = await app.getLayerCanvasBuffer();
     await expect(buffer).toMatchSnapshot(["tool-brush.png"]);
   });
 });
-

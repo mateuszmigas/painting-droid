@@ -17,25 +17,30 @@ export const ToolSettingsBar = () => {
       {Object.entries(schema).map(([id, customField]) => {
         return (
           <div
-            data-testid={testIds.toolSetting(id)}
             key={id}
             className="flex flex-row items-center gap-small text-xs"
           >
             <div className="whitespace-nowrap ">{customField.name}</div>
-            <ToolSetting
-              customField={schema[id]}
-              value={
-                settings[id] !== undefined
-                  ? settings[id]
-                  : customField.defaultValue
-              }
-              onChange={(newValue) => {
-                updateToolSettings(selectedToolId, {
-                  ...settings,
-                  [id]: newValue,
-                });
-              }}
-            />
+            <div
+              className="flex"
+              data-testid={testIds.toolSetting(id)}
+              data-type={customField.type}
+            >
+              <ToolSetting
+                customField={schema[id]}
+                value={
+                  settings[id] !== undefined
+                    ? settings[id]
+                    : customField.defaultValue
+                }
+                onChange={(newValue) => {
+                  updateToolSettings(selectedToolId, {
+                    ...settings,
+                    [id]: newValue,
+                  });
+                }}
+              />
+            </div>
             <Separator
               orientation="vertical"
               className="h-6 w-px bg-border mx-1"
@@ -46,4 +51,3 @@ export const ToolSettingsBar = () => {
     </div>
   );
 };
-

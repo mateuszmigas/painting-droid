@@ -145,4 +145,3 @@ export const shapeDrawToolMetadata = createCanvasToolMetadata({
   settingsSchema,
   create: (context) => new ShapeDrawTool(context.vector),
 });
-
