@@ -14,7 +14,7 @@ export class TestApp {
 
   constructor(private page: Page) {}
 
-  async getLayerCanvasBuffer(index: number) {
+  async getLayerCanvasBuffer(index: number = 0) {
     const canvas = await this.page
       .getByTestId(testIds.canvasLayer(index))
       .elementHandle()!;
@@ -39,16 +39,16 @@ export class TestApp {
     const setting = await this.page.getByTestId(
       testIds.toolSetting(settingKey)
     );
+    const type = await setting.getAttribute("data-type");
 
-    if (settingKey === "color") {
+    if (type === "color") {
       await setting.click();
       const input = await this.page.getByTestId(testIds.colorPickerHexInput);
       await input.fill(value);
       await setting.click();
       await this.page.getByRole("dialog").waitFor({ state: "detached" });
     }
-
-    if (settingKey === "size") {
+    if (type?.startsWith("option")) {
       await setting.click();
       const select = await this.page.getByTestId(testIds.selectContent);
       await select.getByLabel(value).click();
@@ -70,12 +70,9 @@ export class TestApp {
     await sleep(mouseSleep);
   }
 
-  async pressKey(key: string) {
-    await this.page.keyboard.press(key);
-  }
-
-  async waitForCanvasApply() {
-    await sleep(500);
+  async applySelectedShape() {
+    await this.page.getByTestId(testIds.canvasLayer(0)).focus();
+    await this.page.keyboard.press("Enter");
+    await sleep(100);
   }
 }
-

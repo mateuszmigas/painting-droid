@@ -5,7 +5,7 @@ import {
   mouseActionBetweenRectangleCorners,
 } from "../utils";
 
-test.describe("erase", () => {
+test.describe("erase draw", () => {
   test("draw rectangle and erase part of it", async ({ page }) => {
     const app = await TestApp.from(page);
     const box = await app.getLayerCanvasBoundingBox(0);
@@ -24,8 +24,7 @@ test.describe("erase", () => {
       { x: box.x + 50, y: box.y + box.height - 50 },
       { x: box.x + box.width / 2, y: box.y + 50 },
     ]);
-    const buffer = await app.getLayerCanvasBuffer(0);
+    const buffer = await app.getLayerCanvasBuffer();
     await expect(buffer).toMatchSnapshot(["tool-eraser.png"]);
   });
 });
-
