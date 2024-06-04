@@ -11,13 +11,13 @@ type AdjustmentMetadata = {
 
 const grayscale: AdjustmentMetadata = {
   name: translations.grayscale.name,
-  icon: "brush",
+  icon: "image",
   settings: {},
 };
 
 const sepia: AdjustmentMetadata = {
   name: translations.sepia.name,
-  icon: "brush",
+  icon: "image",
   settings: {},
 };
 
