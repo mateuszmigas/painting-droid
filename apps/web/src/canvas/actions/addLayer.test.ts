@@ -13,17 +13,27 @@ describe("add layer", () => {
   const data = new Blob([], { type: "image/png" });
 
   test("should create new default layer and set provided data", async () => {
-    const action = await createCanvasAction(context, { data });
+    const action = await createCanvasAction(context, { id: "1", data });
     const newState = await action.execute(state);
-    expect(newState.layers[newState.layers.length - 1]);
+    expect(newState.layers[newState.layers.length - 1]).toStrictEqual({
+      id: "1",
+      name: "Layer 2",
+      data,
+      locked: false,
+      visible: true,
+    });
   });
 
   test("should set new layer as active", async () => {
-    const action = await createCanvasAction(context, { data });
+    const action = await createCanvasAction(context, { id: "2", data });
     const newState = await action.execute(state);
     expect(newState.activeLayerIndex).toBe(state.layers.length);
   });
 
-  test("should undo adding layer", () => {});
+  test("should undo adding layer", async () => {
+    const action = await createCanvasAction(context, { id: "3", data });
+    const newState = await action.execute(state);
+    const undoState = await action.undo(newState);
+    expect(undoState).toStrictEqual(state);
+  });
 });
-
