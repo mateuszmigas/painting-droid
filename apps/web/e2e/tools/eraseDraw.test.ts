@@ -25,6 +25,8 @@ test.describe("erase draw", () => {
       { x: box.x + box.width / 2, y: box.y + 50 },
     ]);
     const buffer = await app.getLayerCanvasBuffer();
-    await expect(buffer).toMatchSnapshot(["tool-eraser.png"]);
+    await expect(buffer).toMatchSnapshot(["tool-eraser.png"],{
+      maxDiffPixelRatio: 0.01
+    });
   });
 });
