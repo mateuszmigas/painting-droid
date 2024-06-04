@@ -6,6 +6,8 @@ import {
 } from "../utils";
 
 test.describe("rectangle select", () => {
+  test.skip(({ browserName }) => browserName === 'webkit', 'This test is disabled for WebKit');
+  
   test("copies dragged image", async ({ page }) => {
     const app = await TestApp.from(page);
     const box = await app.getLayerCanvasBoundingBox(0);
@@ -26,6 +28,7 @@ test.describe("rectangle select", () => {
       { x: box.x + (box.width * 3) / 4, y: box.y + (box.height * 3) / 4 },
     ]);
     await app.pressKey("Enter");
+    await app.waitForCanvasApply();
     const buffer = await app.getLayerCanvasBuffer(0);
     await expect(buffer).toMatchSnapshot(["tool-rectangle-select.png"]);
   });

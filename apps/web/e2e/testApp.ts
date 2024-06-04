@@ -72,9 +72,10 @@ export class TestApp {
 
   async pressKey(key: string) {
     await this.page.keyboard.press(key);
-    await sleep(keyboardSleep);
   }
 
-  waitForCanvas;
+  async waitForCanvasApply() {
+    await sleep(500);
+  }
 }
 
