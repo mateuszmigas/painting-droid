@@ -1,7 +1,6 @@
 import { createDefaultLayer } from "./../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
-import { uuid } from "@/utils/uuid";
 import type { CanvasLayerData, CanvasLayerId } from "../canvasState";
 import { getTranslations } from "@/translations";
 
@@ -45,3 +44,4 @@ export const createCanvasAction = async (
     },
   };
 };
+
