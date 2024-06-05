@@ -12,7 +12,7 @@ describe("add layer", () => {
   const context: CanvasActionContext = { getState: () => state };
   const data = new Blob([], { type: "image/png" });
 
-  test("should create new default layer and set provided data", async () => {
+  test("should add new default layer and set provided data", async () => {
     const action = await createCanvasAction(context, { id: "1", data });
     const newState = await action.execute(state);
     expect(newState.layers[newState.layers.length - 1]).toStrictEqual({
@@ -24,7 +24,7 @@ describe("add layer", () => {
     });
   });
 
-  test("should set new layer as active", async () => {
+  test("should set added layer as active", async () => {
     const action = await createCanvasAction(context, { id: "2", data });
     const newState = await action.execute(state);
     expect(newState.activeLayerIndex).toBe(state.layers.length);
@@ -37,3 +37,4 @@ describe("add layer", () => {
     expect(undoState).toStrictEqual(state);
   });
 });
+
