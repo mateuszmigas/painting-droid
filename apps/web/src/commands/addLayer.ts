@@ -1,3 +1,4 @@
+import { uuid } from "@/utils/uuid";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { getTranslations } from "@/translations";
@@ -10,7 +11,6 @@ export const command = createCommand({
   icon: "plus",
   config: { showInPalette: true },
   execute: async (context: CommandContext) => {
-    context.canvasActionDispatcher.execute("addLayer", {});
+    context.canvasActionDispatcher.execute("addLayer", { id: uuid() });
   },
 });
-

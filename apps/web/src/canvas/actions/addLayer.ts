@@ -1,23 +1,22 @@
 import { createDefaultLayer } from "./../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
-import { uuid } from "@/utils/uuid";
-import type { CanvasLayerData } from "../canvasState";
+import type { CanvasLayerData, CanvasLayerId } from "../canvasState";
 import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
 export const createCanvasAction = async (
   context: CanvasActionContext,
-  payload: { data?: CanvasLayerData }
+  payload: { id: CanvasLayerId; data?: CanvasLayerData }
 ): Promise<CanvasAction> => {
-  const { data } = payload;
+  const { id, data } = payload;
   const state = context.getState();
 
   const capturedData = {
     newLayer: {
       ...createDefaultLayer(),
-      id: uuid(),
+      id,
       name: translations.layers.defaultNewName(state.layers.length + 1),
       data: data || null,
     },
@@ -45,3 +44,4 @@ export const createCanvasAction = async (
     },
   };
 };
+
