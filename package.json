@@ -2,10 +2,12 @@
   "name": "painting-droid",
   "version": "0.2.17",
   "description": "",
+  "packageManager": "pnpm@9.2.0",
   "scripts": {
     "dev:web": "pnpm --filter @painting-droid/web run dev",
     "dev:desktop": "pnpm --filter @painting-droid/desktop run dev",
     "build:web": "pnpm --filter @painting-droid/web run build",
+    "build:web:docker": "docker build -t mateuszmigas/painting-droid .",
     "build:desktop": "pnpm --filter @painting-droid/desktop run build",
     "build:core": "pnpm --filter @painting-droid/core run build",
     "validate": "pnpm -r validate"
@@ -17,3 +19,4 @@
     "pnpm": ">=3"
   }
 }
+
