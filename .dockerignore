@@ -1,0 +1,14 @@
+node_modules
+.git
+.gitignore
+.github
+docs
+dist
+e2e
+playwright-report
+test-results
+*.md
+apps/desktop
+core
+assets
+.vscode
