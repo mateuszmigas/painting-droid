@@ -24,7 +24,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9.2.0
 
       - name: Install packages
         run: pnpm install --prefer-offline
@@ -79,7 +79,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9.2.0
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
