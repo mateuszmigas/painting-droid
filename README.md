@@ -30,6 +30,15 @@ Painting Droid is an AI-powered cross-platform painting app inspired by the lege
 - Plugin support.
 - Cross-platform compatibility.
 
+## Platform support
+
+| Platform | Details | Link |
+| -------- | ------------------------- | -- |
+| Dekstop  | Windows/MacOS | [Github Releases](https://github.com/mateuszmigas/painting-droid/releases) |
+| Browser (Desktop)  | Chrome/Safari/Firefox  | [Web](https://painting-droid-web.vercel.app/) |
+| Browser (Mobile)  | Not tested | [Web](https://painting-droid-web.vercel.app/) |
+| Container | Docker/Kubernetes | [Docker Hub](https://hub.docker.com/r/mateuszmigas/painting-droid) |
+
 ## Overview
 
 ![Architecture](assets/arch.svg)
@@ -68,14 +77,6 @@ Painting Droid is an AI-powered cross-platform painting app inspired by the lege
 3. Install the dependencies using `pnpm install`
 4. Run the app using `pnpm dev:desktop`
 
-## Platform support
-
-| Platform | Supported                 |
-| -------- | ------------------------- |
-| Browser  | yes (limited AI features) |
-| Windows  | yes                       |
-| MacOS    | yes                       |
-| Linux    | yes (not tested)          |
 
 ## Roadmap
 
