@@ -1,7 +1,3 @@
----
-description: Painting Droid works on most platforms, here is how to run it
----
-
 # Installation
 
 ## Browser
