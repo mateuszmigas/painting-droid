@@ -70,8 +70,6 @@ export const createComputePipeline = async (
       throw Error("No source buffer found.");
     }
 
-    console.log(resultBuffer.size, sourceBufferBinding.buffer.size);
-
     encoder.copyBufferToBuffer(
       sourceBufferBinding.buffer,
       0,
