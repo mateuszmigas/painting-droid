@@ -2,6 +2,8 @@ import { useState } from "react";
 import { appVersion, platform } from "@/utils/platform";
 import { features } from "@/features";
 
+const boolToString = (value: boolean) => (value ? "On" : "Off");
+
 export const MetadataPanel = () => {
   const [result] = useState<string>("");
 
@@ -10,7 +12,9 @@ export const MetadataPanel = () => {
       <div className="p-small text-xs">
         <div>App Version: {appVersion()}</div>
         <div>Platform: {platform}</div>
-        <div>Offscreen canvas: {features.offscreenCanvas.toString()}</div>
+        <h1 className="font-bold mt-small">Features</h1>
+        <div>Offscreen canvas: {boolToString(features.offscreenCanvas)}</div>
+        <div>Compute shaders: {boolToString(features.computeShaders)}</div>
         <div>Menu bar: {features.nativeMenuBar ? "Native" : "Custom"}</div>
         <div>
           Color picker: {features.nativeColorPicker ? "Native" : "Custom"}

@@ -6,5 +6,5 @@ export const features = {
   nativeMenuBar: false, //waiting for tauri fix, platform === "darwin",
   nativeColorPicker: isMobile(),
   shareFiles: "share" in navigator,
+  computeShaders: "gpu" in navigator,
 };
-
