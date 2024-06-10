@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { appVersion, platform } from "@/utils/platform";
 import { features } from "@/features";
+import { useDialogService } from "@/contexts/dialogService";
+import { WelcomeDialog } from "../dialogs/welcome-dialog/welcomeDialog";
 
 const boolToString = (value: boolean) => (value ? "On" : "Off");
 
 export const MetadataPanel = () => {
   const [result] = useState<string>("");
+  const ds = useDialogService();
+
+  useEffect(() => {
+    ds.openDialog(WelcomeDialog, {});
+  }, []);
 
   return (
     <div className="flex flex-col gap-medium">
@@ -24,3 +31,4 @@ export const MetadataPanel = () => {
     </div>
   );
 };
+

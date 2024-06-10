@@ -176,6 +176,9 @@ This action cannot be undone.`,
         },
       },
     },
+    welcome: {
+      title: "Welcome to Painting Droid",
+    },
     cropCanvas: {
       title: "Crop Canvas",
       types: {
@@ -321,3 +324,4 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
+
