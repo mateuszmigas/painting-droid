@@ -177,7 +177,7 @@ This action cannot be undone.`,
       },
     },
     welcome: {
-      title: "Welcome to Painting Droid",
+      title: "Welcome",
     },
     cropCanvas: {
       title: "Crop Canvas",

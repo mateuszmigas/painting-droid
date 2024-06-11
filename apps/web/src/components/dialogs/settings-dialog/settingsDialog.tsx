@@ -2,7 +2,7 @@ import { getTranslations } from "@/translations";
 import { memo, useState } from "react";
 import { DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
-import { SettingsModelsTab } from "./tabs/settings-models-tab/settingsModelsTab";
+import { SettingsModelsTab } from "./tabs/settingsModelsTab";
 import { SettingsGeneralTab } from "./tabs/settingsGeneralTab";
 
 const dialogTranslations = getTranslations().dialogs.settings;

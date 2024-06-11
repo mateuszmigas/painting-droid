@@ -126,4 +126,27 @@
     --hsvalue-track-color: 10px;
     background: linear-gradient(to bottom, var(--hsvalue-track-color), black);
   }
+
+  @keyframes glow-animation {
+    0% {
+      stroke: red;
+      stroke-width: 2;
+      filter: drop-shadow(0 0 5px red);
+    }
+    50% {
+      stroke: hsl(var(--foreground));
+      stroke-width: 4;
+      filter: drop-shadow(0 0 20px hsl(var(--foreground)));
+    }
+    100% {
+      stroke: red;
+      stroke-width: 2;
+      filter: drop-shadow(0 0 5px red);
+    }
+  }
+
+  .glowing-eye {
+    animation: glow-animation 1.5s infinite alternate;
+  }
 }
+

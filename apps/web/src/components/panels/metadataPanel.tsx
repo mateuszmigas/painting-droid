@@ -3,6 +3,7 @@ import { appVersion, platform } from "@/utils/platform";
 import { features } from "@/features";
 import { useDialogService } from "@/contexts/dialogService";
 import { WelcomeDialog } from "../dialogs/welcome-dialog/welcomeDialog";
+import { Droid } from "../droid";
 
 const boolToString = (value: boolean) => (value ? "On" : "Off");
 
@@ -27,6 +28,9 @@ export const MetadataPanel = () => {
           Color picker: {features.nativeColorPicker ? "Native" : "Custom"}
         </div>
         <div className="p-small">{result}</div>
+      </div>
+      <div className="w-24 h-24">
+        <Droid></Droid>
       </div>
     </div>
   );

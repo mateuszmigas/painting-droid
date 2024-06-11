@@ -9,15 +9,15 @@ import type { AppUserModelState } from "@/store/settingsStore";
 import { IconAnchor } from "@/components/icons/iconAnchor";
 import type { BaseModel } from "@/models/types/baseModel";
 import { safeStorage } from "@/utils/safe-storage";
-import { SettingsModelBadges } from "./settingsModelBadges";
-import { defaultSecureKeyPlaceholder } from "./settingsModelsTab";
+import { ConfigureModelBadges } from "./configureModelBadges";
 import { useScrollAndFocus } from "@/hooks";
 import { getTranslations } from "@/translations";
 import { CustomFieldArray } from "@/components/custom-fields/customFieldArray";
+import { defaultSecureKeyPlaceholder } from "./configureModels";
 
 const translations = getTranslations();
 
-export const SettingsModelRow = (props: {
+export const ConfigureModelRow = (props: {
   userModel: AppUserModelState;
   onRemove: (id: string) => void;
   shouldFocus: boolean;
@@ -109,7 +109,7 @@ export const SettingsModelRow = (props: {
         />
       </div>
       <div className="flex items-center justify-between w-full">
-        <SettingsModelBadges baseModel={modelDefinition} />
+        <ConfigureModelBadges baseModel={modelDefinition} />
         {!modelDefinition?.predefined && (
           <IconButton
             type="trash"
@@ -121,3 +121,4 @@ export const SettingsModelRow = (props: {
     </div>
   );
 };
+

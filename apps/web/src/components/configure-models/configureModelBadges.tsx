@@ -11,7 +11,7 @@ import { memo } from "react";
 
 const translations = getTranslations();
 
-export const SettingsModelBadges = memo((props: { baseModel: BaseModel }) => {
+export const ConfigureModelBadges = memo((props: { baseModel: BaseModel }) => {
   const { baseModel } = props;
   return (
     <div className="flex flex-row gap-medium items-end">
@@ -45,3 +45,4 @@ export const SettingsModelBadges = memo((props: { baseModel: BaseModel }) => {
     </div>
   );
 });
+
