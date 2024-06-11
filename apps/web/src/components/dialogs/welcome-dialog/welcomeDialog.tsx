@@ -2,7 +2,7 @@ import { getTranslations } from "@/translations";
 import { memo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { WelcomePage } from "./pages/welcomePage";
-import { ThemesPage } from "./pages/themesPage";
+import { ThemesPage } from "./pages/themes-page/themesPage";
 import { ModelsPage } from "./pages/modelsPage";
 import {
   DialogContent,
@@ -16,7 +16,7 @@ const dialogTranslations = translations.dialogs.welcome;
 const pages = ["welcome", "theme", "models"] as const;
 
 export const WelcomeDialog = memo((props: { close: () => void }) => {
-  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [pageIndex, setPageIndex] = useState<number>(1);
   const page = pages[pageIndex];
 
   return (

@@ -2,20 +2,36 @@ import { Droid } from "@/components/droid";
 import { Typewriter } from "@/components/typewriter";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { themes } from "@/constants";
 import { useTypewriter } from "@/hooks";
+import { useSettingsStore } from "@/store";
 import { getTranslations } from "@/translations";
-const translations = getTranslations();
+import light_theme from "./assets/light_theme.png";
+import dark_theme from "./assets/dark_theme.png";
+import system_theme from "./assets/system_theme.png";
 
+const getAsset = (theme: string) => {
+  switch (theme) {
+    case "light":
+      return light_theme;
+    case "dark":
+      return dark_theme;
+    case "system":
+      return system_theme;
+  }
+};
+
+const translations = getTranslations();
 const message = translations.dialogs.welcome.pages.theme.message;
 
 export const ThemesPage = () => {
-  const themes = ["system", "light", "dark"];
   const typewriter = useTypewriter(message);
+  const settingsStore = useSettingsStore((state) => state);
   return (
     <div className="flex flex-col gap-big">
       <RadioGroup
-        value={"system"}
-        // onValueChange={setSelectedSize}
+        value={settingsStore.theme}
+        onValueChange={settingsStore.setTheme}
         className="grid grid-cols-3 gap-big"
       >
         {themes.map((theme) => (
@@ -25,8 +41,8 @@ export const ThemesPage = () => {
               htmlFor={theme}
               className="flex flex-col gap-small items-center justify-between rounded-md border-2 border-muted bg-popover p-medium hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
-              <div className="bg-blue-200 w-24 h-24"></div>
-              <div>{theme}</div>
+              <img src={getAsset(theme)} alt={theme} />
+              <div>{translations.themes[theme]}</div>
             </Label>
           </div>
         ))}

@@ -5,8 +5,9 @@ import { modelDefinitions, type ModelType } from "@/models/definitions";
 import { uuid } from "@/utils/uuid";
 import { areColorsEqual, type RgbaColor } from "@/utils/color";
 import { takeFirst } from "@/utils/array";
+import { themes } from "@/constants";
 
-type ThemeType = "light" | "dark" | "system";
+type ThemeType = (typeof themes)[number];
 const maxRecentColors = 6;
 const maxFavoriteColors = 6;
 
