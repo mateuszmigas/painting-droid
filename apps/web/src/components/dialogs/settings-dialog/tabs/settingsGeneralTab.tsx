@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -12,7 +13,6 @@ import { useSettingsStore } from "@/store";
 import { blobsStorage } from "@/store/blobsStorage";
 import { getTranslations } from "@/translations";
 import { safeStorage } from "@/utils/safe-storage";
-import { Label } from "@radix-ui/react-dropdown-menu";
 import { memo } from "react";
 
 const translations = getTranslations();

@@ -19,4 +19,5 @@ export { useTextToImageModels } from "./useTextToImageModels";
 export { useImageToImageModels } from "./useImageToImageModels";
 export { useObjectDetectionModels } from "./useObjectDetectionModels";
 export { useCanvasToolHandlers } from "./useCanvasToolHandlers";
+export { useTypewriter } from "./useTypewriter";
 

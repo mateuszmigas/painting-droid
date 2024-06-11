@@ -1,9 +1,9 @@
 import { useToolStore } from "@/store/toolState";
 import { canvasToolsMetadata } from "@/tools";
 import { ToolSetting } from "./tool-settings/toolSetting";
-import { Separator } from "@radix-ui/react-separator";
 import { testIds } from "@/utils/testIds";
 import type { CustomFieldsSchema } from "@/utils/customFieldsSchema";
+import { Separator } from "./ui/separator";
 
 export const ToolSettingsBar = () => {
   const selectedToolId = useToolStore((state) => state.selectedToolId);

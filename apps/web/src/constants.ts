@@ -18,7 +18,7 @@ export const domNames = {
   svgGripClass: "svg-grip",
 };
 
-export const themes = ["light", "dark", "system"] as const;
+export const themes = ["system", "light", "dark"] as const;
 
 export const markerColors = [
   "#6895D2",
