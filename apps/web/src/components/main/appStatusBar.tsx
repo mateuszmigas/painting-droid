@@ -15,7 +15,7 @@ import { domNames } from "@/constants";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";
 import { Button } from "../ui/button";
 import { type Update, checkForUpdates } from "@/utils/updater";
-import { appVersion, isDesktop } from "@/utils/platform";
+import { appVersion, isDesktop, platform } from "@/utils/platform";
 import { getTranslations } from "@/translations";
 import { useStartupStore } from "@/store/startupStore";
 import { notificationService } from "@/contexts/notificationService";
@@ -69,7 +69,7 @@ export const AppStatusBar = memo(() => {
       startupStore.setCurrentVersion(appVersion());
     }
 
-    if (!startupStore.welcomeDialogShown) {
+    if (platform !== "e2e" && !startupStore.welcomeDialogShown) {
       openDialog(WelcomeDialog, {});
       startupStore.setWelcomeDialogShown(true);
     }
