@@ -70,8 +70,8 @@ export const AppStatusBar = memo(() => {
     }
 
     if (platform !== "e2e" && !startupStore.welcomeDialogShown) {
-      openDialog(WelcomeDialog, {});
       startupStore.setWelcomeDialogShown(true);
+      openDialog(WelcomeDialog, {});
     }
   });
 
