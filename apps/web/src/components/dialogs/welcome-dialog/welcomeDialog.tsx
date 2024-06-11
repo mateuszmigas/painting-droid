@@ -1,12 +1,17 @@
 import { getTranslations } from "@/translations";
 import { memo, useState } from "react";
-import { DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { Button } from "@/components/ui/button";
 import { WelcomePage } from "./pages/welcomePage";
 import { ThemesPage } from "./pages/themesPage";
 import { ModelsPage } from "./pages/modelsPage";
+import {
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
-const dialogTranslations = getTranslations().dialogs.welcome;
+const translations = getTranslations();
+const dialogTranslations = translations.dialogs.welcome;
 
 const pages = ["welcome", "theme", "models"] as const;
 
@@ -33,7 +38,7 @@ export const WelcomeDialog = memo((props: { close: () => void }) => {
             variant="secondary"
             onClick={() => setPageIndex(pageIndex - 1)}
           >
-            Previous
+            {translations.general.previous}
           </Button>
         )}
         {pageIndex < pages.length - 1 ? (
@@ -42,11 +47,11 @@ export const WelcomeDialog = memo((props: { close: () => void }) => {
             type="button"
             onClick={() => setPageIndex(pageIndex + 1)}
           >
-            Next
+            {translations.general.next}
           </Button>
         ) : (
           <Button type="button" onClick={props.close}>
-            Close
+            {translations.general.close}
           </Button>
         )}
       </div>
