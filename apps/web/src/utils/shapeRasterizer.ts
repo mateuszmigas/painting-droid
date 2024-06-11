@@ -4,12 +4,13 @@ import { drawTransformedImage } from "./canvas";
 import { ImageProcessor } from "./imageProcessor";
 import { assertNever } from "./typeGuards";
 import { ColorProcessor } from "./colorProcessor";
+import { normalizeBoundingBox } from "./geometry";
 
 const rasterizeRectangle = (
   context: CanvasBitmapContext,
   shape: Extract<CanvasShape, { type: "drawn-rectangle" }>
 ) => {
-  const { x, y, width, height } = shape.boundingBox;
+  const { x, y, width, height } = normalizeBoundingBox(shape.boundingBox);
   const { fill, stroke } = shape;
   const { color, width: strokeWidth } = stroke;
   context.fillStyle = ColorProcessor.fromRgba(fill).toRgbaString();
@@ -23,7 +24,7 @@ const rasterizeEllipse = (
   context: CanvasBitmapContext,
   shape: Extract<CanvasShape, { type: "drawn-ellipse" }>
 ) => {
-  const { x, y, width, height } = shape.boundingBox;
+  const { x, y, width, height } = normalizeBoundingBox(shape.boundingBox);
   const { fill, stroke } = shape;
   const { color, width: strokeWidth } = stroke;
   context.fillStyle = ColorProcessor.fromRgba(fill).toRgbaString();
@@ -74,4 +75,3 @@ export const rasterizeShape = async (
       assertNever(shape);
   }
 };
-
