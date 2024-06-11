@@ -11,7 +11,7 @@ import { memo, useEffect, useRef, useState } from "react";
 import { screenToViewportPosition } from "@/utils/manipulation";
 import { fastRound } from "@/utils/math";
 import { CommandIconButton } from "../commandIconButton";
-import { domNames, links } from "@/constants";
+import { domNames } from "@/constants";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";
 import { Button } from "../ui/button";
 import { type Update, checkForUpdates } from "@/utils/updater";
@@ -19,7 +19,8 @@ import { appVersion, isDesktop } from "@/utils/platform";
 import { getTranslations } from "@/translations";
 import { useStartupStore } from "@/store/startupStore";
 import { notificationService } from "@/contexts/notificationService";
-import { openLink } from "@/utils/link";
+import { useDialogService } from "@/contexts/dialogService";
+import { WelcomeDialog } from "../dialogs/welcome-dialog/welcomeDialog";
 
 const translations = getTranslations();
 
@@ -41,6 +42,7 @@ export const AppStatusBar = memo(() => {
   const viewport = useWorkspacesStore(
     (state) => activeWorkspaceSelector(state).viewport
   );
+  const { openDialog } = useDialogService();
 
   useResizeObserver(domNames.workspaceViewport, ({ x, y }) => {
     workspaceElementPositionRef.current = { x, y };
@@ -67,16 +69,9 @@ export const AppStatusBar = memo(() => {
       startupStore.setCurrentVersion(appVersion());
     }
 
-    if (!isDesktop()) {
-      if (!startupStore.desktopVersionAvailableNotified) {
-        notificationService.showInfo(translations.updater.notifyDesktop, {
-          action: {
-            label: translations.general.download,
-            onClick: () => openLink(links.downloadDesktop),
-          },
-        });
-        startupStore.setDesktopVersionAvailableNotified(true);
-      }
+    if (!startupStore.welcomeDialogShown) {
+      openDialog(WelcomeDialog, {});
+      startupStore.setWelcomeDialogShown(true);
     }
   });
 
@@ -138,4 +133,3 @@ export const AppStatusBar = memo(() => {
     </div>
   );
 });
-

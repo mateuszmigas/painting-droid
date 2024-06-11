@@ -16,7 +16,7 @@ const dialogTranslations = translations.dialogs.welcome;
 const pages = ["welcome", "theme", "models"] as const;
 
 export const WelcomeDialog = memo((props: { close: () => void }) => {
-  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [pageIndex, setPageIndex] = useState<number>(0);
   const page = pages[pageIndex];
 
   return (
@@ -24,9 +24,9 @@ export const WelcomeDialog = memo((props: { close: () => void }) => {
       <DialogHeader>
         <DialogTitle>{dialogTranslations.pages[page].title}</DialogTitle>
       </DialogHeader>
-      {pages[pageIndex] === "welcome" && <WelcomePage></WelcomePage>}
-      {pages[pageIndex] === "theme" && <ThemesPage></ThemesPage>}
-      {pages[pageIndex] === "models" && <ModelsPage></ModelsPage>}
+      {pages[pageIndex] === "welcome" && <WelcomePage />}
+      {pages[pageIndex] === "theme" && <ThemesPage />}
+      {pages[pageIndex] === "models" && <ModelsPage />}
       <div
         className={`gap-medium flex flex-row ${
           pageIndex === 0 ? "justify-end" : "justify-between"

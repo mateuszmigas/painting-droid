@@ -16,15 +16,13 @@ export const ModelsPage = () => {
       </div>
       <div className="flex flex-row gap-big items-center">
         <div className="max-w-12 min-w-12">
-          <Droid
-            typingDurationSeconds={typewriter.typingDurationSeconds}
-          ></Droid>
+          <Droid typingDurationSeconds={typewriter.typingDurationSeconds} />
         </div>
         <Typewriter
           className="font-mono text-sm"
           text={message}
           typingDurationSeconds={typewriter.typingDurationSeconds}
-        ></Typewriter>
+        />
       </div>
     </div>
   );

@@ -11,13 +11,13 @@ export const WelcomePage = () => {
   return (
     <div className="flex flex-col gap-big sm:flex-row relative sm:items-start items-center min-w-0 text-center sm:text-start">
       <div className="min-w-32">
-        <Droid typingDurationSeconds={typeWriter.typingDurationSeconds}></Droid>
+        <Droid typingDurationSeconds={typeWriter.typingDurationSeconds} />
       </div>
       <Typewriter
         className="font-mono"
         text={message}
         typingDurationSeconds={typeWriter.typingDurationSeconds}
-      ></Typewriter>
+      />
     </div>
   );
 };

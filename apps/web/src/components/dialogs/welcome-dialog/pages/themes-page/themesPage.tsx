@@ -42,22 +42,20 @@ export const ThemesPage = () => {
               className="flex flex-col gap-small items-center justify-between rounded-md border-2 border-muted bg-popover p-medium hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
               <img src={getAsset(theme)} alt={theme} />
-              <div>{translations.themes[theme]}</div>
+              <div className="font-bold">{translations.themes[theme]}</div>
             </Label>
           </div>
         ))}
       </RadioGroup>
       <div className="flex flex-row gap-big items-center">
         <div className="max-w-12 min-w-12">
-          <Droid
-            typingDurationSeconds={typewriter.typingDurationSeconds}
-          ></Droid>
+          <Droid typingDurationSeconds={typewriter.typingDurationSeconds} />
         </div>
         <Typewriter
           className="font-mono text-sm"
           text={message}
           typingDurationSeconds={typewriter.typingDurationSeconds}
-        ></Typewriter>
+        />
       </div>
     </div>
   );
