@@ -41,7 +41,7 @@ export const ThemesPage = () => {
               htmlFor={theme}
               className="flex flex-col gap-small items-center justify-between rounded-md border-2 border-muted bg-popover p-medium hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
             >
-              <img src={getAsset(theme)} alt={theme} />
+              <img width={200} height={150} src={getAsset(theme)} alt={theme} />
               <div className="font-bold">{translations.themes[theme]}</div>
             </Label>
           </div>
@@ -60,3 +60,4 @@ export const ThemesPage = () => {
     </div>
   );
 };
+
