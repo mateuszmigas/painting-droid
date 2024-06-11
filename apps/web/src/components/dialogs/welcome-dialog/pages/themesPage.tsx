@@ -3,8 +3,10 @@ import { Typewriter } from "@/components/typewriter";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTypewriter } from "@/hooks";
-const message =
-  "Set your preferred theme. I can adapt to the system theme, or you can choose light or dark.";
+import { getTranslations } from "@/translations";
+const translations = getTranslations();
+
+const message = translations.dialogs.welcome.pages.theme.message;
 
 export const ThemesPage = () => {
   const themes = ["system", "light", "dark"];
@@ -44,4 +46,3 @@ export const ThemesPage = () => {
     </div>
   );
 };
-

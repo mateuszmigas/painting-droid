@@ -1,14 +1,6 @@
 import { getTranslations } from "@/translations";
 import { memo, useState } from "react";
-import {
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../../ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
-import { Droid } from "../../droid";
-import { Typewriter } from "../../typewriter";
+import { DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { Button } from "@/components/ui/button";
 import { WelcomePage } from "./pages/welcomePage";
 import { ThemesPage } from "./pages/themesPage";
@@ -19,12 +11,13 @@ const dialogTranslations = getTranslations().dialogs.welcome;
 const pages = ["welcome", "theme", "models"] as const;
 
 export const WelcomeDialog = memo((props: { close: () => void }) => {
-  const [pageIndex, setPageIndex] = useState<number>(2);
+  const [pageIndex, setPageIndex] = useState<number>(0);
+  const page = pages[pageIndex];
 
   return (
     <DialogContent style={{ minWidth: "350px", maxWidth: "600px" }}>
       <DialogHeader>
-        <DialogTitle>{dialogTranslations.title}</DialogTitle>
+        <DialogTitle>{dialogTranslations.pages[page].title}</DialogTitle>
       </DialogHeader>
       {pages[pageIndex] === "welcome" && <WelcomePage></WelcomePage>}
       {pages[pageIndex] === "theme" && <ThemesPage></ThemesPage>}
@@ -60,4 +53,3 @@ export const WelcomeDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

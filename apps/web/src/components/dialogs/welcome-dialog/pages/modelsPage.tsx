@@ -2,15 +2,16 @@ import { ConfigureModels } from "@/components/configure-models/configureModels";
 import { Droid } from "@/components/droid";
 import { Typewriter } from "@/components/typewriter";
 import { useTypewriter } from "@/hooks";
+import { getTranslations } from "@/translations";
+const translations = getTranslations();
 
-const message =
-  "I can use various AI models to assist you. This is the default list, but you can add your own. API key models are desktop-only. Check the documentation for self-hosting.";
+const message = translations.dialogs.welcome.pages.models.message;
 
 export const ModelsPage = () => {
   const typewriter = useTypewriter(message);
   return (
     <div className="flex flex-col gap-big">
-      <div className="max-h-[400px]">
+      <div className="max-h-96">
         <ConfigureModels showDesktopVersionInfo={false} />
       </div>
       <div className="flex flex-row gap-big items-center">
@@ -28,4 +29,3 @@ export const ModelsPage = () => {
     </div>
   );
 };
-

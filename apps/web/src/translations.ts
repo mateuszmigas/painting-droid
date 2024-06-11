@@ -1,3 +1,4 @@
+import { title } from "process";
 import type { Rectangle, Size } from "./utils/common";
 
 const translations = {
@@ -177,7 +178,20 @@ This action cannot be undone.`,
       },
     },
     welcome: {
-      title: "Welcome",
+      pages: {
+        welcome: {
+          title: "Welcome",
+          message: `Hello! Welcome to Painting Droid. Let’s configure a few settings to get you started on your creative journey.`,
+        },
+        theme: {
+          title: "Theme",
+          message: `Set your preferred theme. I can adapt to the system theme, or you can choose light or dark.`,
+        },
+        models: {
+          title: "Models",
+          message: `I can use various AI models to assist you. This is the default list, but you can add your own. API key models are desktop-only. Check the documentation for self-hosting.`,
+        },
+      },
     },
     cropCanvas: {
       title: "Crop Canvas",
@@ -324,4 +338,3 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
-
