@@ -3,9 +3,7 @@
 To add models, go to app settings and click on the Models tab. Simply select the model from the dropdown, add it, and configure the necessary fields. More model providers will be added in the future. Feel free to request one on [https://github.com/mateuszmigas/painting-droid/discussions/56.](https://github.com/mateuszmigas/painting-droid/discussions/56)
 
 {% hint style="info" %}
-```
 Models using API keys need a desktop version for secure storage
-```
 {% endhint %}
 
 ## Cloud
