@@ -32,7 +32,8 @@ module.exports = {
       },
       height: {
         'panel-header': '32px',
-        'input-thin': '24px'
+        'input-thin': '24px',
+        'input-thick': '36px',
       },
       gap: space,
       margin: space,

@@ -12,6 +12,7 @@ import type { AdjustmentId } from "@/adjustments";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { blobsStorage } from "./blobsStorage";
 import { workspace } from "@/constants";
+import type { RgbaColor } from "@/utils/color";
 
 const translations = getTranslations();
 
@@ -56,7 +57,11 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   closeWorkspace: (workspaceId: WorkspaceId) => void;
   clearWorkspace: (workspaceId: WorkspaceId) => void;
   setWorkspaceViewport: (viewport: Viewport) => void;
-  addNewActiveWorkspace: (size: Size) => void;
+  addNewActiveWorkspace: (
+    size: Size,
+    name: string,
+    baseColor: RgbaColor
+  ) => void;
   createWorkspaceFromCanvasData: (
     name: string,
     canvasData: CanvasState
@@ -130,7 +135,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
         viewport,
       }))
     ),
-  addNewActiveWorkspace: (size: Size) => {
+  addNewActiveWorkspace: (size: Size, name: string, baseColor: RgbaColor) => {
     const newId = uuid();
     return set((state) => ({
       ...state,
@@ -139,7 +144,8 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
         {
           ...createDefaultWorkspace(size),
           id: newId,
-          name: `Untitled ${state.workspaces.length + 1}`,
+          name: name || translations.general.untitled,
+          canvasData: createDefaultCanvasState(size, baseColor),
         },
       ],
       activeWorkspaceId: newId,
@@ -291,3 +297,4 @@ export const activeWorkspaceActiveLayerSelector = (
   const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(state);
   return layers[activeLayerIndex];
 };
+

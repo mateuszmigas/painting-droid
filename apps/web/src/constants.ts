@@ -1,3 +1,4 @@
+import type { RgbaColor } from "./utils/color";
 import { platform } from "./utils/platform";
 
 export const workspace = {
@@ -8,6 +9,8 @@ export const workspace = {
       ? { width: 100, height: 100 }
       : { width: 1024, height: 1024 },
 };
+
+export const defaultCanvasColor: RgbaColor = { r: 255, g: 255, b: 255, a: 1 };
 
 export const supportedImageFormats = ["png", "jpeg"];
 
@@ -33,3 +36,4 @@ export const markerColors = [
 export const links = {
   downloadDesktop: "https://github.com/mateuszmigas/painting-droid/releases",
 };
+

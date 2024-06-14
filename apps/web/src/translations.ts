@@ -195,6 +195,17 @@ This action cannot be undone.`,
         },
       },
     },
+    createWorkspace: {
+      title: "New Workspace",
+      fields: {
+        name: "Name",
+        size: "Size",
+        color: {
+          name: "Color",
+          title: "Background Color",
+        },
+      },
+    },
     cropCanvas: {
       title: "Crop Canvas",
       types: {
@@ -281,6 +292,7 @@ This action cannot be undone.`,
     apply: "Apply",
     cancel: "Cancel",
     close: "Close",
+    create: "Create",
     color: "Color",
     continue: "Continue",
     download: "Download",
@@ -302,6 +314,7 @@ This action cannot be undone.`,
     secret: "Secret (API Key)",
     theme: "Theme",
     unknown: "Unknown",
+    untitled: "Untitled",
     width: "Width",
     widthPercentage: "Width (%)",
   },
@@ -342,3 +355,4 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
+

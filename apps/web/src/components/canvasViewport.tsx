@@ -62,12 +62,17 @@ export const CanvasViewport = memo(
     const vectorContextRef = useRef<HTMLDivElement>(null);
     const canvasActionDispatcher = useCanvasActionDispatcher();
     const { context } = useCanvasContextStore();
-    const { layers, activeLayerIndex, shapes } = useWorkspacesStore(
+    const { layers, activeLayerIndex, shapes, baseColor } = useWorkspacesStore(
       activeWorkspaceCanvasDataSelector
     );
 
     useSyncCanvasVectorContext(vectorContextRef, viewport);
-    useSyncCanvasWithLayers(canvasStackRef, layers, activeLayerIndex);
+    useSyncCanvasWithLayers(
+      canvasStackRef,
+      layers,
+      activeLayerIndex,
+      baseColor
+    );
 
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
