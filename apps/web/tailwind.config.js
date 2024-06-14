@@ -5,6 +5,7 @@ const space = {
   small: "0.25rem",
   medium: "0.5rem",
   big: "0.75rem",
+  "form-field": "0.25rem"
 };
 
 
@@ -36,6 +37,7 @@ module.exports = {
       gap: space,
       margin: space,
       padding: space,
+      space: space,
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
