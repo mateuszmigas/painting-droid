@@ -1,5 +1,5 @@
 import type { RgbaColor } from "@/utils/color";
-import { ColorRectangle } from "../colorRectangle";
+import { ColorButton } from "../colorButton";
 import { Fragment } from "react/jsx-runtime";
 import { memo } from "react";
 
@@ -13,7 +13,7 @@ export const ColorGrid = memo(
             // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
             <Fragment key={i}>
               {colors[i] ? (
-                <ColorRectangle
+                <ColorButton
                   onClick={() => onSelected(colors[i])}
                   className="w-5 h-5 rounded-md border"
                   color={colors[i]}
@@ -28,4 +28,3 @@ export const ColorGrid = memo(
     );
   }
 );
-

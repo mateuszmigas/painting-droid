@@ -8,7 +8,7 @@ import {
   calculateTextColor,
 } from "@/utils/color";
 import { useStableCallback } from "@/hooks";
-import { ColorRectangle } from "./colorRectangle";
+import { ColorButton } from "./colorButton";
 import { ColorProcessor } from "@/utils/colorProcessor";
 import { ColorInputs } from "./colorInputs";
 import { cn } from "@/utils/css";
@@ -40,8 +40,8 @@ export const CustomColorPicker = (props: {
 
   return (
     <Popover onOpenChange={(open) => !open && addRecentColor(rgbaColor)}>
-      <PopoverTrigger title={title}>
-        <ColorRectangle
+      <PopoverTrigger asChild title={title}>
+        <ColorButton
           className={cn("w-10 h-6", className)}
           color={ColorProcessor.fromHsva(hsvaColor).toRgba()}
         />
@@ -74,10 +74,7 @@ export const CustomColorPicker = (props: {
           </div>
           <div className="flex flex-row gap-big h-[70px] w-full">
             <div className="relative flex-1">
-              <ColorRectangle
-                className="absolute size-full"
-                color={rgbaColor}
-              />
+              <ColorButton className="absolute size-full" color={rgbaColor} />
               <div
                 style={{ color: calculateTextColor(rgbaColor) }}
                 className="absolute size-full flex items-end justify-end p-small"
@@ -98,4 +95,3 @@ export const CustomColorPicker = (props: {
     </Popover>
   );
 };
-
