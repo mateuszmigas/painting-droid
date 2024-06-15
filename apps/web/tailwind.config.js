@@ -8,6 +8,11 @@ const space = {
   "form-field": "0.25rem"
 };
 
+const size = {
+  'panel-header': '32px',
+  'input-thin': '24px',
+  'input-thick': '36px',
+};
 
 module.exports = {
   darkMode: ["class"],
@@ -30,11 +35,8 @@ module.exports = {
       transitionDuration: {
         standard: '250ms',
       },
-      height: {
-        'panel-header': '32px',
-        'input-thin': '24px',
-        'input-thick': '36px',
-      },
+      height: size,
+      width: size,
       gap: space,
       margin: space,
       padding: space,

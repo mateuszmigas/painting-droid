@@ -60,7 +60,7 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   addNewActiveWorkspace: (
     size: Size,
     name: string,
-    baseColor: RgbaColor
+    baseColor: RgbaColor | null
   ) => void;
   createWorkspaceFromCanvasData: (
     name: string,
@@ -135,7 +135,11 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
         viewport,
       }))
     ),
-  addNewActiveWorkspace: (size: Size, name: string, baseColor: RgbaColor) => {
+  addNewActiveWorkspace: (
+    size: Size,
+    name: string,
+    baseColor: RgbaColor | null
+  ) => {
     const newId = uuid();
     return set((state) => ({
       ...state,
@@ -297,4 +301,3 @@ export const activeWorkspaceActiveLayerSelector = (
   const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(state);
   return layers[activeLayerIndex];
 };
-

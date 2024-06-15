@@ -15,6 +15,7 @@ import { ColorPicker } from "../color/colorPicker";
 import { defaultCanvasColor } from "@/constants";
 import { Input } from "../ui/input";
 import { getTranslations } from "@/translations";
+import { ColorButton } from "../color/colorButton";
 
 const translations = getTranslations();
 const dialogTranslations = translations.dialogs.createWorkspace;
@@ -75,12 +76,15 @@ const sizes = [
 
 export const CreateWorkspaceDialog = memo(
   (props: {
-    close: (result: { size: Size; name: string; color: Color }) => void;
+    close: (result: { size: Size; name: string; color: Color | null }) => void;
   }) => {
     const { close } = props;
     const [sizeKey, setSizeKey] = useState(sizes[0].key);
-    const [color, setColor] = useState<Color>(defaultCanvasColor);
     const [name, setName] = useState("");
+    const [color, setColor] = useState<Color>(defaultCanvasColor);
+    const [backgroundType, setBackgroundType] = useState<"none" | "solid">(
+      "solid"
+    );
 
     return (
       <DialogContent>
@@ -91,8 +95,9 @@ export const CreateWorkspaceDialog = memo(
           className="flex flex-col gap-big"
           onSubmit={(e) => {
             e.preventDefault();
-            const size = sizes.find((s) => s.key === sizeKey)!;
-            close({ size, name, color });
+            const selectedSize = sizes.find((s) => s.key === sizeKey)!;
+            const selectedColor = backgroundType === "solid" ? color : null;
+            close({ size: selectedSize, name, color: selectedColor });
           }}
         >
           <div className="flex flex-row gap-big">
@@ -105,13 +110,42 @@ export const CreateWorkspaceDialog = memo(
               />
             </div>
             <div className="flex flex-col gap-form-field">
-              <Label>{dialogTranslations.fields.color.name}</Label>
-              <ColorPicker
-                value={color}
-                onChange={setColor}
-                title={dialogTranslations.fields.color.title}
-                className={"h-input-thick w-16"}
-              />
+              <Label>{dialogTranslations.fields.background.name}</Label>
+              <div className="flex flex-row gap-medium">
+                <RadioGroup
+                  value={backgroundType}
+                  onValueChange={(value) => setBackgroundType(value as never)}
+                  className="h-input-thick flex gap-big"
+                >
+                  <div className="flex items-center gap-small">
+                    <RadioGroupItem value="none" id="radio-none" />
+                    <Label htmlFor="radio-none">
+                      {dialogTranslations.fields.background.options.none}
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-small">
+                    <RadioGroupItem value="solid" id="radio-solid-color" />
+                    <Label htmlFor="radio-solid-color">
+                      {dialogTranslations.fields.background.options.solid}
+                    </Label>
+                  </div>
+                </RadioGroup>
+                {backgroundType === "solid" ? (
+                  <ColorPicker
+                    value={color}
+                    onChange={setColor}
+                    title={dialogTranslations.fields.background.title}
+                    className="h-input-thick w-input-thick"
+                  />
+                ) : (
+                  <ColorButton
+                    disabled
+                    className="h-input-thick w-input-thick disabled:opacity-100"
+                    color={{ r: 0, g: 0, b: 0, a: 0 }}
+                    variant="ghost"
+                  />
+                )}
+              </div>
             </div>
           </div>
           <RadioGroup
@@ -155,4 +189,3 @@ export const CreateWorkspaceDialog = memo(
     );
   }
 );
-

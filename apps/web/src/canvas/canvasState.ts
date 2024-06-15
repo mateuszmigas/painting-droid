@@ -54,7 +54,7 @@ export type CanvasState = {
   shapes: Record<CanvasShapeId, CanvasShape>;
   activeShapeId: CanvasShapeId | null;
   size: Size;
-  baseColor: RgbaColor;
+  baseColor: RgbaColor | null;
 };
 
 export const createDefaultLayer = (): CanvasLayer => ({
@@ -67,13 +67,12 @@ export const createDefaultLayer = (): CanvasLayer => ({
 
 export const createDefaultCanvasState = (
   size: Size,
-  baseColor?: RgbaColor
+  baseColor?: RgbaColor | null
 ): CanvasState => ({
   activeLayerIndex: 0,
   layers: [createDefaultLayer()],
   shapes: {},
   activeShapeId: null,
   size,
-  baseColor: baseColor ?? defaultCanvasColor,
+  baseColor: baseColor !== undefined ? baseColor : defaultCanvasColor,
 });
-

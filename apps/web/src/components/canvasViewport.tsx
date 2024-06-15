@@ -21,6 +21,8 @@ import { memo, useRef, useEffect } from "react";
 import { domNames } from "@/constants";
 import { testIds } from "@/utils/testIds";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
+import { cn } from "@/utils/css";
+import { rgbaToRgbaString } from "@/utils/color";
 
 const alphaGridCellSize = 20;
 
@@ -67,12 +69,7 @@ export const CanvasViewport = memo(
     );
 
     useSyncCanvasVectorContext(vectorContextRef, viewport);
-    useSyncCanvasWithLayers(
-      canvasStackRef,
-      layers,
-      activeLayerIndex,
-      baseColor
-    );
+    useSyncCanvasWithLayers(canvasStackRef, layers, activeLayerIndex);
 
     const toolId = useToolStore((state) => state.selectedToolId);
     const toolSettings = useToolStore((state) => state.toolSettings[toolId]);
@@ -143,11 +140,16 @@ export const CanvasViewport = memo(
           id={domNames.canvasBackground}
           ref={canvasBackgroundRef}
           style={
-            {
-              "--alpha-background-size": `${alphaGridCellSize}px`,
-            } as never
+            baseColor !== null
+              ? { backgroundColor: rgbaToRgbaString(baseColor) }
+              : ({
+                  "--alpha-background-size": `${alphaGridCellSize}px`,
+                } as never)
           }
-          className="origin-top-left absolute pointer-events-none outline outline-border shadow-2xl box-content alpha-background"
+          className={cn(
+            "origin-top-left absolute pointer-events-none outline outline-border shadow-2xl box-content",
+            { "alpha-background": baseColor === null }
+          )}
         />
         {/* canvas layers (CanvasBitmapContext) */}
         {layers.map((layer, index) => (
@@ -182,4 +184,3 @@ export const CanvasViewport = memo(
     );
   }
 );
-

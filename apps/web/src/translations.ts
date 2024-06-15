@@ -200,9 +200,13 @@ This action cannot be undone.`,
       fields: {
         name: "Name",
         size: "Size",
-        color: {
-          name: "Color",
+        background: {
+          name: "Background",
           title: "Background Color",
+          options: {
+            none: "None",
+            solid: "Solid",
+          },
         },
       },
     },
@@ -355,4 +359,3 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
-
