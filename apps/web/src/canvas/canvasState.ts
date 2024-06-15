@@ -1,3 +1,4 @@
+import { defaultCanvasColor } from "@/constants";
 import { getTranslations } from "@/translations";
 import type { RgbaColor } from "@/utils/color";
 import type { BoundingBox, Rectangle, Size } from "@/utils/common";
@@ -53,6 +54,7 @@ export type CanvasState = {
   shapes: Record<CanvasShapeId, CanvasShape>;
   activeShapeId: CanvasShapeId | null;
   size: Size;
+  baseColor: RgbaColor | null;
 };
 
 export const createDefaultLayer = (): CanvasLayer => ({
@@ -63,11 +65,14 @@ export const createDefaultLayer = (): CanvasLayer => ({
   data: null,
 });
 
-export const createDefaultCanvasState = (size: Size): CanvasState => ({
+export const createDefaultCanvasState = (
+  size: Size,
+  baseColor?: RgbaColor | null
+): CanvasState => ({
   activeLayerIndex: 0,
   layers: [createDefaultLayer()],
   shapes: {},
   activeShapeId: null,
   size,
+  baseColor: baseColor !== undefined ? baseColor : defaultCanvasColor,
 });
-

@@ -3,6 +3,7 @@ import {
   createCanvasContext,
   convertToBlob,
 } from "./canvas";
+import { type RgbaColor, rgbaToRgbaString } from "./color";
 import type { CanvasBitmapContext, Rectangle, Size } from "./common";
 import { dataUrlToImage } from "./image";
 import type { ImageCompressedData, ImageUncompressed } from "./imageData";
@@ -20,6 +21,15 @@ export class ImageProcessor {
 
   public static fromContext(context: CanvasBitmapContext) {
     return new ImageProcessor(() => Promise.resolve(context));
+  }
+
+  public static fromColor(color: RgbaColor, size: Size) {
+    return new ImageProcessor(async () => {
+      const context = createCanvasContext(size.width, size.height);
+      context.fillStyle = rgbaToRgbaString(color);
+      context.fillRect(0, 0, size.width, size.height);
+      return context;
+    });
   }
 
   public static fromCompressedData(imageData: ImageCompressedData) {
@@ -157,7 +167,7 @@ export class ImageProcessor {
     );
   }
 
-  async toBlob(format: "jpeg" | "png") {
+  async toBlob(format: "jpeg" | "png" = "png") {
     await this.runTasks();
     return convertToBlob(this.context, `image/${format}`);
   }
@@ -168,4 +178,3 @@ export class ImageProcessor {
     }
   }
 }
-

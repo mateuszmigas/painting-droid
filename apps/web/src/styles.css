@@ -148,5 +148,11 @@
   .glowing-eye {
     animation: glow-animation 1.5s infinite alternate;
   }
-}
 
+  .pile {
+    display: grid;
+    > * {
+      grid-area: 1/1;
+    }
+  }
+}

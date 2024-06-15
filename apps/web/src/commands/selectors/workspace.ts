@@ -4,19 +4,31 @@ import {
 } from "@/store/workspacesStore";
 import { ImageProcessor } from "@/utils/imageProcessor";
 
-export const selectLayersAsBlob = async (
+export const selectWorkspaceAsImage = async (
   workspace: AppWorkspacesState,
   format: "png" | "jpeg"
 ) => {
   const { canvasData, name } = activeWorkspaceSelector(workspace);
-  const layersData = canvasData.layers
-    .filter((layer) => layer.data)
-    .map((layer) => layer.data!);
+
+  const blobs: Blob[] = [];
+  if (canvasData.baseColor !== null) {
+    blobs.push(
+      await ImageProcessor.fromColor(
+        canvasData.baseColor,
+        canvasData.size
+      ).toBlob()
+    );
+  }
+
+  blobs.push(
+    ...canvasData.layers
+      .filter((layer) => layer.data)
+      .map((layer) => layer.data!)
+  );
 
   const blob = await ImageProcessor.fromMergedCompressed(
-    layersData,
+    blobs,
     canvasData.size
   ).toBlob(format);
   return { blob, name };
 };
-

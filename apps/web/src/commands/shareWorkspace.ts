@@ -1,7 +1,7 @@
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { getTranslations } from "@/translations";
-import { selectLayersAsBlob } from "./selectors/workspace";
+import { selectWorkspaceAsImage } from "./selectors/workspace";
 import { features } from "@/features";
 
 const translations = getTranslations();
@@ -19,7 +19,7 @@ export const command = createCommand({
       return;
     }
     const format = "jpeg";
-    const { name, blob } = await selectLayersAsBlob(
+    const { name, blob } = await selectWorkspaceAsImage(
       context.stores.workspaces(),
       format
     );
@@ -29,4 +29,3 @@ export const command = createCommand({
     navigator.share({ files: [file] });
   },
 });
-

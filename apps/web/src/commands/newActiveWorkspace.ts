@@ -16,7 +16,9 @@ export const command = createCommand({
       {}
     );
     if (result) {
-      context.stores.workspaces().addNewActiveWorkspace(result);
+      context.stores
+        .workspaces()
+        .addNewActiveWorkspace(result.size, result.name.trim(), result.color);
     }
   },
 });

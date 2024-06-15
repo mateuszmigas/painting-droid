@@ -71,7 +71,7 @@ export const CustomFieldArray = (props: {
     };
 
     return (
-      <div key={key} className={calculateColSpan()}>
+      <div key={key} className={`${calculateColSpan()} space-y-form-field`}>
         {getField()}
       </div>
     );
