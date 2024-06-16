@@ -23,6 +23,7 @@ import {
 import { windowHandle } from "./utils/window-handle";
 import { AlertServiceContext } from "./contexts/alertService";
 import { AlertHost, type AlertService } from "./components/alertHost";
+import { DropAndDropFilesContext } from "./contexts/dragAndDropFilesContext";
 
 export const Application = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
@@ -39,6 +40,7 @@ export const Application = () => {
   const [commandService, setCommandService] = useState<CommandService | null>(
     null
   );
+  const [isDragging, setIsDragging] = useState(false);
 
   useSyncTheme();
   useIdleCallback(() => {
@@ -51,34 +53,46 @@ export const Application = () => {
   }
 
   return (
-    <div className="size-full flex flex-col select-none">
-      <CanvasPreviewContextStoreContext.Provider
-        value={{
-          context: { bitmap: rasterContext, vector: vectorContext },
-          setBitmapContext,
-          setVectorContext,
-        }}
-      >
-        <AlertServiceContext.Provider value={alertService!}>
-          <NotificationServiceContext.Provider value={notificationService}>
-            <DialogServiceContext.Provider value={dialogService!}>
-              <CommandServiceContext.Provider value={commandService!}>
-                <DialogHost setDialogService={setDialogService} />
-                <AlertHost setAlertService={setAlertService} />
-                <CommandPaletteHost setCommandService={setCommandService} />
-                {commandService && dialogService && (
-                  <>
-                    <AppHeaderBar />
-                    <AppContent />
-                    <AppStatusBar />
-                    <Toaster closeButton />
-                  </>
-                )}
-              </CommandServiceContext.Provider>
-            </DialogServiceContext.Provider>
-          </NotificationServiceContext.Provider>
-        </AlertServiceContext.Provider>
-      </CanvasPreviewContextStoreContext.Provider>
+    <div
+      onDragOver={(e) => {
+        e.preventDefault();
+        setIsDragging(true);
+      }}
+      onDragLeave={(e) => {
+        e.preventDefault();
+        setIsDragging(false);
+      }}
+      className="size-full flex flex-col select-none"
+    >
+      <DropAndDropFilesContext.Provider value={{ isDragging, setIsDragging }}>
+        <CanvasPreviewContextStoreContext.Provider
+          value={{
+            context: { bitmap: rasterContext, vector: vectorContext },
+            setBitmapContext,
+            setVectorContext,
+          }}
+        >
+          <AlertServiceContext.Provider value={alertService!}>
+            <NotificationServiceContext.Provider value={notificationService}>
+              <DialogServiceContext.Provider value={dialogService!}>
+                <CommandServiceContext.Provider value={commandService!}>
+                  <DialogHost setDialogService={setDialogService} />
+                  <AlertHost setAlertService={setAlertService} />
+                  <CommandPaletteHost setCommandService={setCommandService} />
+                  {commandService && dialogService && (
+                    <>
+                      <AppHeaderBar />
+                      <AppContent />
+                      <AppStatusBar />
+                      <Toaster closeButton />
+                    </>
+                  )}
+                </CommandServiceContext.Provider>
+              </DialogServiceContext.Provider>
+            </NotificationServiceContext.Provider>
+          </AlertServiceContext.Provider>
+        </CanvasPreviewContextStoreContext.Provider>
+      </DropAndDropFilesContext.Provider>
     </div>
   );
 };

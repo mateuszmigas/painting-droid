@@ -23,6 +23,8 @@ import { testIds } from "@/utils/testIds";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 import { cn } from "@/utils/css";
 import { rgbaToRgbaString } from "@/utils/color";
+import { useDragAndDropFilesContext } from "@/contexts/dragAndDropFilesContext";
+import { DropFileZone } from "./dropFileZone";
 
 const alphaGridCellSize = 20;
 
@@ -128,6 +130,7 @@ export const CanvasViewport = memo(
     }, [applyTransforms, size, viewport]);
 
     const { position, zoom } = viewport.getValue();
+    const { isDragging } = useDragAndDropFilesContext();
 
     return (
       <div
@@ -180,6 +183,16 @@ export const CanvasViewport = memo(
             zIndex: layers.length + 1,
           }}
         />
+        {/* drop zone */}
+        {isDragging && (
+          <div
+            style={{ zIndex: layers.length + 2 }}
+            className="left-5 p-small gap-small absolute top-5 bottom-10 w-[calc(100%-20px)] h-[calc(100%-20px)] flex flex-col"
+          >
+            <DropFileZone display="Create New Layer" onDrop={() => {}} />
+            <DropFileZone display="Add to Current Layer" onDrop={() => {}} />
+          </div>
+        )}
       </div>
     );
   }

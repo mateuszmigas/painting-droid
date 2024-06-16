@@ -49,10 +49,10 @@ export const AppContent = memo(() => {
       </div>
       <ResizablePanelGroup className="flex-1" direction="horizontal">
         <AppColumn {...createColumnProps("middle")}>
-          <>
+          <div className="relative size-full flex flex-col">
             <ToolSettingsBar />
             <WorkspaceViewport />
-          </>
+          </div>
         </AppColumn>
         <ResizableHandle />
         <AppColumn {...createColumnProps("right")}>
@@ -74,4 +74,3 @@ export const AppContent = memo(() => {
     </div>
   );
 });
-
