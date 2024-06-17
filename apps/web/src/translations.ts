@@ -78,6 +78,11 @@ const translations = {
       transform: "Transform Image",
       apply: "Apply Image",
     },
+    "dropped-image": {
+      add: "Drop Image",
+      transform: "Transform Image",
+      apply: "Apply Image",
+    },
     "captured-rectangle": {
       add: "Select Rectangle",
       transform: "Transform Selection",
@@ -364,4 +369,3 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
-

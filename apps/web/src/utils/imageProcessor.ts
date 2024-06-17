@@ -98,6 +98,18 @@ export class ImageProcessor {
     });
   }
 
+  public static fromFile(file: File) {
+    return new ImageProcessor(async () => {
+      const imageBitmap = await createImageBitmap(file);
+      const context = createCanvasContext(
+        imageBitmap.width,
+        imageBitmap.height
+      );
+      context.drawImage(imageBitmap, 0, 0);
+      return context;
+    });
+  }
+
   public static fromBlob(blob: Blob) {
     return new ImageProcessor(async () => {
       const imageBitmap = await createImageBitmap(blob);

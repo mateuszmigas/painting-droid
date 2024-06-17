@@ -14,6 +14,11 @@ export const dataUrlToBlob = async (dataUrl: string) => {
   return response.blob();
 };
 
+export const fileToBlob = async (file: File) => {
+  const arrayBuffer = await file.arrayBuffer();
+  return new Blob([arrayBuffer], { type: file.type });
+};
+
 export const base64ToBlob = async (
   base64: string,
   format: "image/jpeg" | "image/png" = "image/png"

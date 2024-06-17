@@ -29,7 +29,7 @@ export const DropFileContainer = memo((props: { className?: string }) => {
       />
       <DropFileZone
         icon="plus"
-        display={translations.createNewWorkspace}
+        display={translations.addNewLayer}
         supportedExtensions={supportedDropFileExtensions}
         onDrop={(files) =>
           executeCommand("dropFiles", {
