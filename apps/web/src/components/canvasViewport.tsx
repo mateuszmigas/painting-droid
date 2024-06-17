@@ -143,7 +143,7 @@ export const CanvasViewport = memo(
           id={domNames.canvasBackground}
           ref={canvasBackgroundRef}
           style={
-            baseColor !== null
+            baseColor
               ? { backgroundColor: rgbaToRgbaString(baseColor) }
               : ({
                   "--alpha-background-size": `${alphaGridCellSize}px`,
