@@ -32,6 +32,7 @@ import { command as openResizeCanvasDialog } from "./openResizeCanvasDialog";
 import { command as openSettingsDialog } from "./openSettingsDialog";
 import { command as shareWorkspace } from "./shareWorkspace";
 import { command as openImageToImageDialog } from "./openImageToImageDialog";
+import { command as dropFiles } from "./dropFiles";
 
 export const commands = {
   saveAsPng,
@@ -68,6 +69,7 @@ export const commands = {
   openSmartCropDialog,
   shareWorkspace,
   openImageToImageDialog,
+  dropFiles,
 } as const;
 
 export type CommandId = keyof typeof commands;

@@ -282,6 +282,11 @@ This action cannot be undone.`,
     copyImage: "Copy Image",
     cutImage: "Cut Image",
     checkForUpdate: "Check for Update",
+    dropFiles: {
+      createNewWorkspace: "Create New Workspace",
+      addNewLayer: "Add as New Layer",
+      pasteOntoActiveLayer: "Paste onto Active Layer",
+    },
   },
   layers: {
     defaultBaseName: "Background",
@@ -359,3 +364,4 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
+
