@@ -20,4 +20,4 @@ export { useImageToImageModels } from "./useImageToImageModels";
 export { useObjectDetectionModels } from "./useObjectDetectionModels";
 export { useCanvasToolHandlers } from "./useCanvasToolHandlers";
 export { useTypewriter } from "./useTypewriter";
-
+export { useDragWatcher } from "./useDragWatcher";

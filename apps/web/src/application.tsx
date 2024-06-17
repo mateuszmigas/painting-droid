@@ -7,7 +7,7 @@ import {
   type CommandService,
 } from "./components/commandPaletteHost";
 import { DialogHost, type DialogService } from "./components/dialogHost";
-import { useHasStoreHydrated, useIdleCallback } from "./hooks";
+import { useDragWatcher, useHasStoreHydrated, useIdleCallback } from "./hooks";
 import { coreClient } from "./wasm/core/coreClient";
 import { CanvasPreviewContextStoreContext } from "./contexts/canvasContextStore";
 import type { CanvasBitmapContext, CanvasVectorContext } from "./utils/common";
@@ -23,8 +23,7 @@ import {
 import { windowHandle } from "./utils/window-handle";
 import { AlertServiceContext } from "./contexts/alertService";
 import { AlertHost, type AlertService } from "./components/alertHost";
-import { DropAndDropFilesContext } from "./contexts/dragAndDropFilesContext";
-import { createDragWatcherProps } from "./utils/dragAndDrop";
+import { DropFileContainer } from "./components/drop-file/dropFileContainer";
 
 export const Application = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
@@ -41,7 +40,7 @@ export const Application = () => {
   const [commandService, setCommandService] = useState<CommandService | null>(
     null
   );
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging, dragHandlers] = useDragWatcher();
 
   useSyncTheme();
   useIdleCallback(() => {
@@ -54,40 +53,37 @@ export const Application = () => {
   }
 
   return (
-    <div
-      {...createDragWatcherProps(setIsDragging)}
-      className="size-full flex flex-col select-none"
-    >
-      <DropAndDropFilesContext.Provider value={{ isDragging, setIsDragging }}>
-        <CanvasPreviewContextStoreContext.Provider
-          value={{
-            context: { bitmap: rasterContext, vector: vectorContext },
-            setBitmapContext,
-            setVectorContext,
-          }}
-        >
-          <AlertServiceContext.Provider value={alertService!}>
-            <NotificationServiceContext.Provider value={notificationService}>
-              <DialogServiceContext.Provider value={dialogService!}>
-                <CommandServiceContext.Provider value={commandService!}>
-                  <DialogHost setDialogService={setDialogService} />
-                  <AlertHost setAlertService={setAlertService} />
-                  <CommandPaletteHost setCommandService={setCommandService} />
-                  {commandService && dialogService && (
-                    <>
-                      <AppHeaderBar />
-                      <AppContent />
-                      <AppStatusBar />
-                      <Toaster closeButton />
-                    </>
-                  )}
-                </CommandServiceContext.Provider>
-              </DialogServiceContext.Provider>
-            </NotificationServiceContext.Provider>
-          </AlertServiceContext.Provider>
-        </CanvasPreviewContextStoreContext.Provider>
-      </DropAndDropFilesContext.Provider>
+    <div {...dragHandlers} className="size-full flex flex-col select-none">
+      <CanvasPreviewContextStoreContext.Provider
+        value={{
+          context: { bitmap: rasterContext, vector: vectorContext },
+          setBitmapContext,
+          setVectorContext,
+        }}
+      >
+        <AlertServiceContext.Provider value={alertService!}>
+          <NotificationServiceContext.Provider value={notificationService}>
+            <DialogServiceContext.Provider value={dialogService!}>
+              <CommandServiceContext.Provider value={commandService!}>
+                <DialogHost setDialogService={setDialogService} />
+                <AlertHost setAlertService={setAlertService} />
+                <CommandPaletteHost setCommandService={setCommandService} />
+                {commandService && dialogService && (
+                  <>
+                    <AppHeaderBar />
+                    <AppContent />
+                    <AppStatusBar />
+                    {isDragging && (
+                      <DropFileContainer className="absolute size-full z-10" />
+                    )}
+                    <Toaster closeButton />
+                  </>
+                )}
+              </CommandServiceContext.Provider>
+            </DialogServiceContext.Provider>
+          </NotificationServiceContext.Provider>
+        </AlertServiceContext.Provider>
+      </CanvasPreviewContextStoreContext.Provider>
     </div>
   );
 };
-

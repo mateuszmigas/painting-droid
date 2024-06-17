@@ -1,8 +1,8 @@
 import { cn } from "@/utils/css";
 import { useState } from "react";
-import { Icon, type IconType } from "./icons/icon";
 import { splitNameAndExtension } from "@/utils/path";
 import type { FileInfo } from "@/utils/file";
+import { Icon, type IconType } from "../icons/icon";
 
 const getFilesFromEvent = (event: React.DragEvent<HTMLDivElement>) => {
   if (event.dataTransfer.items) {
@@ -47,7 +47,7 @@ export const DropFileZone = (props: {
         supportedFiles.length > 0 && onDrop(supportedFiles);
       }}
       className={cn(
-        "bg-popover/90 gap-medium flex-col font-bold text-popover-foreground transition-colors duration-300 rounded-md border-2 border-muted flex-1 border-dashed flex justify-center items-center",
+        "gap-medium flex-col font-bold text-popover-foreground transition-colors duration-300 rounded-md border-2 border-muted flex-1 border-dashed flex justify-center items-center",
         { "bg-accent/90 text-accent-foreground border-primary": isDragOver },
         className
       )}
@@ -57,4 +57,3 @@ export const DropFileZone = (props: {
     </div>
   );
 };
-
