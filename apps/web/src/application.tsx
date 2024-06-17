@@ -24,6 +24,7 @@ import { windowHandle } from "./utils/window-handle";
 import { AlertServiceContext } from "./contexts/alertService";
 import { AlertHost, type AlertService } from "./components/alertHost";
 import { DropAndDropFilesContext } from "./contexts/dragAndDropFilesContext";
+import { createDragWatcherProps } from "./utils/dragAndDrop";
 
 export const Application = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
@@ -54,18 +55,7 @@ export const Application = () => {
 
   return (
     <div
-      onDragOver={(e) => {
-        e.preventDefault();
-        setIsDragging(true);
-      }}
-      onDragLeave={(e) => {
-        e.preventDefault();
-        setIsDragging(false);
-      }}
-      onDrop={(e) => {
-        e.preventDefault();
-        setIsDragging(false);
-      }}
+      {...createDragWatcherProps(setIsDragging)}
       className="size-full flex flex-col select-none"
     >
       <DropAndDropFilesContext.Provider value={{ isDragging, setIsDragging }}>
@@ -100,3 +90,4 @@ export const Application = () => {
     </div>
   );
 };
+

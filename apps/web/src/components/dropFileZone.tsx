@@ -1,4 +1,3 @@
-import { useDragAndDropFilesContext } from "@/contexts/dragAndDropFilesContext";
 import { cn } from "@/utils/css";
 import { useState } from "react";
 import { Icon, type IconType } from "./icons/icon";
@@ -21,7 +20,6 @@ export const DropFileZone = (props: {
   supportedExtensions: string[];
   className?: string;
 }) => {
-  const { setIsDragging } = useDragAndDropFilesContext();
   const [isDragOver, setDragOver] = useState(false);
   const { icon, display, onDrop, className } = props;
 
@@ -33,16 +31,13 @@ export const DropFileZone = (props: {
       onDragEnter={(e) => {
         e.stopPropagation();
         setDragOver(true);
-        setIsDragging(true);
       }}
       onDragLeave={(e) => {
         e.stopPropagation();
         setDragOver(false);
-        setIsDragging(false);
       }}
       onDrop={(e) => {
         e.preventDefault();
-        setIsDragging(false);
         const files = getFilesFromEvent(e);
         const namesWithExtensions = files.map((file) => ({
           blob: file,
