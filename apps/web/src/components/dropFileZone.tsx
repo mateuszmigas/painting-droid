@@ -28,14 +28,8 @@ export const DropFileZone = (props: {
       onDragOver={(e) => {
         e.preventDefault();
       }}
-      onDragEnter={(e) => {
-        e.stopPropagation();
-        setDragOver(true);
-      }}
-      onDragLeave={(e) => {
-        e.stopPropagation();
-        setDragOver(false);
-      }}
+      onDragEnter={() => setDragOver(true)}
+      onDragLeave={() => setDragOver(false)}
       onDrop={(e) => {
         e.preventDefault();
         const files = getFilesFromEvent(e);
