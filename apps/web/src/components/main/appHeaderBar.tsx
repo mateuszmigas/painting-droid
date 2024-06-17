@@ -18,8 +18,6 @@ import { useResizeObserver } from "@/hooks/useResizeObserver";
 import { domNames } from "@/constants";
 import { getTranslations } from "@/translations";
 import { features } from "@/features";
-import { DropFileZone } from "../dropFileZone";
-import { useDragAndDropFilesContext } from "@/contexts/dragAndDropFilesContext";
 
 const translations = getTranslations();
 
@@ -40,8 +38,6 @@ export const AppHeaderBar = memo(() => {
   useResizeObserver(containerRef, ({ width }) => {
     setCompactMenuBar(width < compactThreshold);
   });
-
-  const { isDragging } = useDragAndDropFilesContext();
 
   return (
     <div
@@ -96,15 +92,6 @@ export const AppHeaderBar = memo(() => {
             size="small-medium"
           />
         </div>
-        {isDragging && (
-          <div style={{ zIndex: 1 }}>
-            <DropFileZone
-              className="size-full"
-              display="New Workspace"
-              onDrop={() => {}}
-            />
-          </div>
-        )}
       </div>
       <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
       <div className="flex flex-row justify-center items-center pr-small gap-small">

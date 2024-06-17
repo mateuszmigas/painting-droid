@@ -18,7 +18,7 @@ import type { Size } from "@/utils/common";
 import { type Viewport, screenToViewportPosition } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
 import { memo, useRef, useEffect } from "react";
-import { domNames } from "@/constants";
+import { domNames, supportedDropFileExtensions } from "@/constants";
 import { testIds } from "@/utils/testIds";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 import { cn } from "@/utils/css";
@@ -189,8 +189,26 @@ export const CanvasViewport = memo(
             style={{ zIndex: layers.length + 2 }}
             className="left-5 p-small gap-small absolute top-5 bottom-10 w-[calc(100%-20px)] h-[calc(100%-20px)] flex flex-col"
           >
-            <DropFileZone display="Create New Layer" onDrop={() => {}} />
-            <DropFileZone display="Add to Current Layer" onDrop={() => {}} />
+            <DropFileZone
+              icon="add-file"
+              display="Create New Workspace"
+              supportedExtensions={supportedDropFileExtensions}
+              onDrop={(files) => {
+                console.log(files);
+              }}
+            />
+            <DropFileZone
+              icon="plus"
+              display="Add as New Layer"
+              supportedExtensions={supportedDropFileExtensions}
+              onDrop={() => {}}
+            />
+            <DropFileZone
+              icon="clipboard-paste"
+              display="Paste onto Active Layer"
+              supportedExtensions={supportedDropFileExtensions}
+              onDrop={() => {}}
+            />
           </div>
         )}
       </div>

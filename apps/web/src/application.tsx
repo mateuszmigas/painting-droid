@@ -62,6 +62,10 @@ export const Application = () => {
         e.preventDefault();
         setIsDragging(false);
       }}
+      onDrop={(e) => {
+        e.preventDefault();
+        setIsDragging(false);
+      }}
       className="size-full flex flex-col select-none"
     >
       <DropAndDropFilesContext.Provider value={{ isDragging, setIsDragging }}>
