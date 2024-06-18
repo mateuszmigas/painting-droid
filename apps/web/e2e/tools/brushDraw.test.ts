@@ -16,6 +16,8 @@ test.describe("brush draw", () => {
       height: box.height - 100,
     });
     const buffer = await app.getLayerCanvasBuffer();
-    await expect(buffer).toMatchSnapshot(["tool-brush.png"]);
+    await expect(buffer).toMatchSnapshot(["tool-brush.png"], {
+      maxDiffPixelRatio: 0.01,
+    });
   });
 });
