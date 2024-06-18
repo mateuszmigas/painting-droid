@@ -78,6 +78,11 @@ const translations = {
       transform: "Transform Image",
       apply: "Apply Image",
     },
+    "dropped-image": {
+      add: "Drop Image",
+      transform: "Transform Image",
+      apply: "Apply Image",
+    },
     "captured-rectangle": {
       add: "Select Rectangle",
       transform: "Transform Selection",
@@ -282,6 +287,11 @@ This action cannot be undone.`,
     copyImage: "Copy Image",
     cutImage: "Cut Image",
     checkForUpdate: "Check for Update",
+    dropFiles: {
+      createNewWorkspace: "Create New Workspace",
+      addNewLayer: "Paste onto New Layer",
+      pasteOntoActiveLayer: "Paste onto Active Layer",
+    },
   },
   layers: {
     defaultBaseName: "Background",
@@ -335,6 +345,7 @@ This action cannot be undone.`,
     noModels: "No models configured",
   },
   errors: {
+    noFilesDropped: "No files dropped. The file type is not supported.",
     noImageData: "No image data",
     processingError: "Processing error",
     copyClipboardError: "Copy to clipboard error. Operation not supported.",

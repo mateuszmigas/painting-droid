@@ -13,6 +13,10 @@ export const workspace = {
 export const defaultCanvasColor: RgbaColor = { r: 255, g: 255, b: 255, a: 1 };
 
 export const supportedImageFormats = ["png", "jpeg"];
+export const supportedDropFileExtensions = [
+  ...supportedImageFormats,
+  workspace.format,
+];
 
 export const domNames = {
   workspaceViewport: "workspace-viewport",
@@ -36,4 +40,3 @@ export const markerColors = [
 export const links = {
   downloadDesktop: "https://github.com/mateuszmigas/painting-droid/releases",
 };
-

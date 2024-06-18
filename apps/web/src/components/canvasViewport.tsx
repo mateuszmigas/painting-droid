@@ -59,6 +59,7 @@ export const CanvasViewport = memo(
   }) => {
     const { viewport, size, isLocked } = props;
     const hostElementRef = useRef<HTMLDivElement>(null);
+
     const canvasBackgroundRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
     const vectorContextRef = useRef<HTMLDivElement>(null);

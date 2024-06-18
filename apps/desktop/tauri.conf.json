@@ -39,9 +39,9 @@
         "width": 1280,
         "height": 800,
         "visible": false,
-        "zoomHotkeysEnabled": true
+        "zoomHotkeysEnabled": true,
+        "dragDropEnabled": false
       }
     ]
   }
 }
-

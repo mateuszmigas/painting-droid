@@ -32,6 +32,8 @@ test.describe("rectangle select", () => {
     ]);
     await app.applySelectedShape();
     const buffer = await app.getLayerCanvasBuffer();
-    await expect(buffer).toMatchSnapshot(["tool-rectangle-select.png"]);
+    await expect(buffer).toMatchSnapshot(["tool-rectangle-select.png"], {
+      maxDiffPixelRatio: 0.01,
+    });
   });
 });

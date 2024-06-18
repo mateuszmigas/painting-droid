@@ -7,7 +7,7 @@ import {
   type CommandService,
 } from "./components/commandPaletteHost";
 import { DialogHost, type DialogService } from "./components/dialogHost";
-import { useHasStoreHydrated, useIdleCallback } from "./hooks";
+import { useDragWatcher, useHasStoreHydrated, useIdleCallback } from "./hooks";
 import { coreClient } from "./wasm/core/coreClient";
 import { CanvasPreviewContextStoreContext } from "./contexts/canvasContextStore";
 import type { CanvasBitmapContext, CanvasVectorContext } from "./utils/common";
@@ -23,6 +23,7 @@ import {
 import { windowHandle } from "./utils/window-handle";
 import { AlertServiceContext } from "./contexts/alertService";
 import { AlertHost, type AlertService } from "./components/alertHost";
+import { DropFileContainer } from "./components/drop-file/dropFileContainer";
 
 export const Application = () => {
   const hasStoreHydrated = useHasStoreHydrated(useWorkspacesStore);
@@ -39,6 +40,7 @@ export const Application = () => {
   const [commandService, setCommandService] = useState<CommandService | null>(
     null
   );
+  const [isDragging, dragHandlers] = useDragWatcher();
 
   useSyncTheme();
   useIdleCallback(() => {
@@ -51,7 +53,7 @@ export const Application = () => {
   }
 
   return (
-    <div className="size-full flex flex-col select-none">
+    <div {...dragHandlers} className="size-full flex flex-col select-none">
       <CanvasPreviewContextStoreContext.Provider
         value={{
           context: { bitmap: rasterContext, vector: vectorContext },
@@ -71,6 +73,9 @@ export const Application = () => {
                     <AppHeaderBar />
                     <AppContent />
                     <AppStatusBar />
+                    {isDragging && (
+                      <DropFileContainer className="absolute size-full z-10" />
+                    )}
                     <Toaster closeButton />
                   </>
                 )}

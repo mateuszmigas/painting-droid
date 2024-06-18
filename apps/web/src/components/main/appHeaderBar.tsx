@@ -56,40 +56,42 @@ export const AppHeaderBar = memo(() => {
         </>
       )}
 
-      <div className="ml-medium flex-1 flex flex-row justify-start overflow-auto items-center gap-small">
-        <ScrollArea className="whitespace-nowrap">
-          <Tabs value={activeWorkspaceId} onValueChange={selectWorkspace}>
-            <TabsList className="bg-transparent p-0">
-              {workspaces.map((tab) => (
-                <ContextMenu key={tab.id}>
-                  <ContextMenuTrigger>
-                    <TabsTrigger
-                      aria-controls={domNames.workspaceViewport}
-                      value={tab.id}
-                      onMouseDown={(e) =>
-                        e.button === 1 && closeWorkspace(tab.id)
-                      }
-                      className="rounded-none border-b-4 border-b-transparent px-big pb-1 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
-                    >
-                      {tab.name}
-                    </TabsTrigger>
-                  </ContextMenuTrigger>
-                  <ContextMenuContent>
-                    <ContextMenuItem onSelect={() => closeWorkspace(tab.id)}>
-                      {translations.general.close}
-                    </ContextMenuItem>
-                  </ContextMenuContent>
-                </ContextMenu>
-              ))}
-            </TabsList>
-          </Tabs>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
-        <CommandIconButton
-          commandId="newActiveWorkspace"
-          icon="plus"
-          size="small-medium"
-        />
+      <div className="ml-medium flex-1 overflow-auto pile">
+        <div className="flex flex-row items-center gap-small justify-start">
+          <ScrollArea className="whitespace-nowrap">
+            <Tabs value={activeWorkspaceId} onValueChange={selectWorkspace}>
+              <TabsList className="bg-transparent p-0">
+                {workspaces.map((tab) => (
+                  <ContextMenu key={tab.id}>
+                    <ContextMenuTrigger>
+                      <TabsTrigger
+                        aria-controls={domNames.workspaceViewport}
+                        value={tab.id}
+                        onMouseDown={(e) =>
+                          e.button === 1 && closeWorkspace(tab.id)
+                        }
+                        className="rounded-none border-b-4 border-b-transparent px-big pb-1 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                      >
+                        {tab.name}
+                      </TabsTrigger>
+                    </ContextMenuTrigger>
+                    <ContextMenuContent>
+                      <ContextMenuItem onSelect={() => closeWorkspace(tab.id)}>
+                        {translations.general.close}
+                      </ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
+                ))}
+              </TabsList>
+            </Tabs>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+          <CommandIconButton
+            commandId="newActiveWorkspace"
+            icon="plus"
+            size="small-medium"
+          />
+        </div>
       </div>
       <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
       <div className="flex flex-row justify-center items-center pr-small gap-small">
@@ -119,4 +121,3 @@ export const AppHeaderBar = memo(() => {
     </div>
   );
 });
-

@@ -61,7 +61,7 @@ export const WorkspaceViewport = memo(() => {
   );
 
   return (
-    <div className="flex flex-col relative size-full">
+    <div className="flex flex-col relative flex-1">
       <div
         id={domNames.workspaceViewport}
         ref={rootElementRef}
@@ -85,4 +85,3 @@ export const WorkspaceViewport = memo(() => {
     </div>
   );
 });
-

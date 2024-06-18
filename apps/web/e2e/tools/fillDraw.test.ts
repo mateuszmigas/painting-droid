@@ -19,6 +19,8 @@ test.describe("fill draw", () => {
     await app.moveMouse(box.x + box.width / 2, box.y + box.height / 2);
     await app.mouseDown();
     const buffer = await app.getLayerCanvasBuffer();
-    await expect(buffer).toMatchSnapshot(["tool-fill.png"], { threshold: 0.5 });
+    await expect(buffer).toMatchSnapshot(["tool-fill.png"], {
+      maxDiffPixelRatio: 0.01,
+    });
   });
 });

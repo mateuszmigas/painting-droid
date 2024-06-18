@@ -41,7 +41,7 @@ export const canvasShapeToShapes2d = (
     result.push(...createGripsShapes(shape.boundingBox));
   }
 
-  if (shape.type === "generated-image") {
+  if (shape.type === "generated-image" || shape.type === "dropped-image") {
     result.push(
       createSelectionShape(shape.boundingBox, [
         {
@@ -77,4 +77,3 @@ export const canvasShapeToShapes2d = (
 
   return result;
 };
-

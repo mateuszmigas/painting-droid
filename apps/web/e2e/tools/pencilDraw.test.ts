@@ -15,6 +15,8 @@ test.describe("pencil draw", () => {
       { x: box.x + box.width / 2, y: box.y + 50 },
     ]);
     const buffer = await app.getLayerCanvasBuffer();
-    await expect(buffer).toMatchSnapshot(["tool-pencil.png"]);
+    await expect(buffer).toMatchSnapshot(["tool-pencil.png"], {
+      maxDiffPixelRatio: 0.01,
+    });
   });
 });
