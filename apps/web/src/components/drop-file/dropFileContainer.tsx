@@ -4,11 +4,36 @@ import { supportedDropFileExtensions } from "@/constants";
 import { useCommandService } from "@/contexts/commandService";
 import { getTranslations } from "@/translations";
 import { cn } from "@/utils/css";
-const translations = getTranslations().commands.dropFiles;
+import type { FileInfo } from "@/utils/file";
+import { useNotificationService } from "@/contexts/notificationService";
+const translations = getTranslations();
 
 export const DropFileContainer = memo((props: { className?: string }) => {
   const { className } = props;
   const { executeCommand } = useCommandService();
+  const { showError } = useNotificationService();
+  const dropFiles = async (
+    files: FileInfo[],
+    operation:
+      | "create-new-workspace"
+      | "add-new-layer"
+      | "paste-onto-active-layer"
+  ) => {
+    const supportedFiles = files.filter(({ extension }) => {
+      if (!extension) return false;
+      return supportedDropFileExtensions.some((ext) => extension.endsWith(ext));
+    });
+
+    if (supportedFiles.length === 0) {
+      showError(translations.errors.noFilesDropped);
+      return;
+    }
+
+    executeCommand("dropFile", {
+      file: supportedFiles[0],
+      operation,
+    });
+  };
   return (
     <div
       className={cn(
@@ -18,36 +43,18 @@ export const DropFileContainer = memo((props: { className?: string }) => {
     >
       <DropFileZone
         icon="add-file"
-        display={translations.createNewWorkspace}
-        supportedExtensions={supportedDropFileExtensions}
-        onDrop={(files) =>
-          executeCommand("dropFiles", {
-            files,
-            operation: "create-new-workspace",
-          })
-        }
+        display={translations.commands.dropFiles.createNewWorkspace}
+        onDrop={(files) => dropFiles(files, "create-new-workspace")}
       />
       <DropFileZone
         icon="plus"
-        display={translations.addNewLayer}
-        supportedExtensions={supportedDropFileExtensions}
-        onDrop={(files) =>
-          executeCommand("dropFiles", {
-            files,
-            operation: "add-new-layer",
-          })
-        }
+        display={translations.commands.dropFiles.addNewLayer}
+        onDrop={(files) => dropFiles(files, "add-new-layer")}
       />
       <DropFileZone
         icon="clipboard-paste"
-        display={translations.pasteOntoActiveLayer}
-        supportedExtensions={supportedDropFileExtensions}
-        onDrop={(files) =>
-          executeCommand("dropFiles", {
-            files,
-            operation: "paste-onto-active-layer",
-          })
-        }
+        display={translations.commands.dropFiles.pasteOntoActiveLayer}
+        onDrop={(files) => dropFiles(files, "paste-onto-active-layer")}
       />
     </div>
   );

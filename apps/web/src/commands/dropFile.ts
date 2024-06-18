@@ -3,37 +3,31 @@ import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import { uuid } from "@/utils/uuid";
-import { getTranslations } from "@/translations";
-import { fileToBlob } from "@/utils/image";
-const translations = getTranslations();
+import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 
 export const command = createCommand({
-  id: "dropFiles",
+  id: "dropFile",
   config: { showInPalette: false },
   execute: async (
     context: CommandContext,
     payload: {
-      files: FileInfo[];
+      file: FileInfo;
       operation:
         | "create-new-workspace"
         | "add-new-layer"
         | "paste-onto-active-layer";
     }
   ) => {
-    const { files, operation } = payload;
-
-    if (files.length === 0) {
-      return;
-    }
+    const { file, operation } = payload;
+    const imageProcessor = ImageProcessor.fromFile(file.blob);
+    const canvasData = activeWorkspaceCanvasDataSelector(
+      context.stores.workspaces()
+    );
 
     if (operation === "paste-onto-active-layer") {
-      const file = files[0];
-      const { width, height } = await ImageProcessor.fromFile(
-        file.blob
-      ).toCompressed();
-      const data = await fileToBlob(file.blob);
+      const { width, height, data } = await imageProcessor.toCompressed();
+
       await context.canvasActionDispatcher.execute("addShape", {
-        display: translations.commands.pasteImage,
         icon: "clipboard-paste",
         shape: {
           id: uuid(),
@@ -42,20 +36,30 @@ export const command = createCommand({
           capturedArea: { box: { x: 0, y: 0, width: 0, height: 0 }, data },
         },
       });
+
       return;
     }
 
     if (operation === "create-new-workspace") {
+      const { width, height, data } = await imageProcessor.toCompressed();
+
+      await context.stores
+        .workspaces()
+        .createWorkspaceFromImage(file.fileName, { width, height }, data);
+
+      return;
     }
 
     if (operation === "add-new-layer") {
-      const images = await Promise.all(
-        files.map((file) => ImageProcessor.fromFile(file.blob).toCompressed())
-      );
+      const data = await imageProcessor
+        .resize(canvasData.size)
+        .toCompressedData();
 
-      // context.stores.workspaces().add
-
-      console.log(images);
+      await context.canvasActionDispatcher.execute("addLayer", {
+        id: uuid(),
+        name: file.fileName,
+        data,
+      });
     }
   },
 });

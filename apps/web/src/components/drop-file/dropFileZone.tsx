@@ -17,7 +17,6 @@ export const DropFileZone = (props: {
   icon: IconType;
   display: string;
   onDrop: (files: FileInfo[]) => void;
-  supportedExtensions: string[];
   className?: string;
 }) => {
   const [isDragOver, setDragOver] = useState(false);
@@ -33,18 +32,12 @@ export const DropFileZone = (props: {
       onDrop={(e) => {
         e.preventDefault();
         const files = getFilesFromEvent(e);
-        const namesWithExtensions = files.map((file) => ({
+        const fileInfos = files.map((file) => ({
           blob: file,
           ...splitNameAndExtension(file.name),
         }));
 
-        const { supportedExtensions } = props;
-        const supportedFiles = namesWithExtensions.filter(({ extension }) => {
-          if (!extension) return false;
-          return supportedExtensions.some((ext) => extension.endsWith(ext));
-        });
-
-        supportedFiles.length > 0 && onDrop(supportedFiles);
+        fileInfos.length > 0 && onDrop(fileInfos);
       }}
       className={cn(
         "gap-medium flex-col font-bold text-popover-foreground transition-colors duration-300 rounded-md border-2 border-muted flex-1 border-dashed flex justify-center items-center",

@@ -8,16 +8,16 @@ const translations = getTranslations();
 
 export const createCanvasAction = async (
   context: CanvasActionContext,
-  payload: { id: CanvasLayerId; data?: CanvasLayerData }
+  payload: { id: CanvasLayerId; data?: CanvasLayerData; name?: string }
 ): Promise<CanvasAction> => {
-  const { id, data } = payload;
+  const { id, data, name } = payload;
   const state = context.getState();
 
   const capturedData = {
     newLayer: {
       ...createDefaultLayer(),
       id,
-      name: translations.layers.defaultNewName(state.layers.length + 1),
+      name: name || translations.layers.defaultNewName(state.layers.length + 1),
       data: data || null,
     },
     previousLayerIndex: state.activeLayerIndex,
@@ -44,4 +44,3 @@ export const createCanvasAction = async (
     },
   };
 };
-
