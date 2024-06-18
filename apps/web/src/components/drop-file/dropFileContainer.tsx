@@ -51,11 +51,11 @@ export const DropFileContainer = memo((props: { className?: string }) => {
         display={translations.commands.dropFiles.addNewLayer}
         onDrop={(files) => dropFiles(files, "add-new-layer")}
       />
-      <DropFileZone
+      {/* <DropFileZone
         icon="clipboard-paste"
         display={translations.commands.dropFiles.pasteOntoActiveLayer}
         onDrop={(files) => dropFiles(files, "paste-onto-active-layer")}
-      />
+      /> */}
     </div>
   );
 });
