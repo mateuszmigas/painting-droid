@@ -2,6 +2,8 @@ import type { CanvasShape } from "@/canvas/canvasState";
 import type { BoundingBox, Shape2d } from "./common";
 import { generateGrips } from "./boundingBoxTransform";
 import { normalizeBoundingBox } from "./geometry";
+import { getTranslations } from "@/translations";
+const translations = getTranslations();
 
 const createGripsShapes = (boundingBox: BoundingBox): Shape2d[] =>
   generateGrips(boundingBox).map((grip) => ({
@@ -45,7 +47,7 @@ export const canvasShapeToShapes2d = (
     result.push(
       createSelectionShape(shape.boundingBox, [
         {
-          display: "Apply",
+          display: translations.general.apply,
           callback: () => actionHandlers!.applyActiveShape(),
         },
       ])
