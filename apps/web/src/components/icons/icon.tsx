@@ -70,6 +70,8 @@ import {
   HelpCircle,
   ImagePlus,
   Images,
+  FileCog,
+  Settings2,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -151,7 +153,9 @@ type BaseIconType =
   | "share"
   | "help"
   | "image-add"
-  | "image-copy";
+  | "image-copy"
+  | "file-cog"
+  | "settings2";
 
 export type IconType = BaseIconType | `${BaseIconType}_ai`;
 
@@ -334,6 +338,10 @@ const renderLucideIcon = (
       return <ImagePlus className={className} size={fontSize} />;
     case "image-copy":
       return <Images className={className} size={fontSize} />;
+    case "file-cog":
+      return <FileCog className={className} size={fontSize} />;
+    case "settings2":
+      return <Settings2 className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

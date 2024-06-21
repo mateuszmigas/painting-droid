@@ -49,7 +49,7 @@ export const SettingsGeneralTab = memo(() => {
 
   return (
     <div className="flex gap-big flex-col justify-between h-full">
-      <div className="flex flex-col gap-medium w-48">
+      <div className="flex flex-col space-y-form-field-big w-48">
         <Label>{translations.general.theme}</Label>
         <Select
           value={settingsStore.theme}
@@ -75,3 +75,4 @@ export const SettingsGeneralTab = memo(() => {
     </div>
   );
 });
+

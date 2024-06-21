@@ -62,6 +62,11 @@ type AppWorkspacesSlice = AppWorkspacesState & {
     name: string,
     baseColor: RgbaColor | null
   ) => void;
+  editWorkspace: (
+    id: WorkspaceId,
+    name: string,
+    baseColor: RgbaColor | null
+  ) => void;
   createWorkspaceFromCanvasData: (
     name: string,
     canvasData: CanvasState
@@ -153,6 +158,27 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
         },
       ],
       activeWorkspaceId: newId,
+    }));
+  },
+  editWorkspace: (
+    id: WorkspaceId,
+    name: string,
+    baseColor: RgbaColor | null
+  ) => {
+    return set((state) => ({
+      ...state,
+      workspaces: state.workspaces.map((workspace) =>
+        workspace.id === id
+          ? {
+              ...workspace,
+              name: name || translations.general.untitled,
+              canvasData: {
+                ...workspace.canvasData,
+                baseColor,
+              },
+            }
+          : workspace
+      ),
     }));
   },
   createWorkspaceFromCanvasData: (name, canvasData) => {
@@ -301,3 +327,4 @@ export const activeWorkspaceActiveLayerSelector = (
   const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(state);
   return layers[activeLayerIndex];
 };
+

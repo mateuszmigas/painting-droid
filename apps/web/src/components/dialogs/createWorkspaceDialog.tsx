@@ -101,7 +101,7 @@ export const CreateWorkspaceDialog = memo(
           }}
         >
           <div className="flex flex-row gap-big">
-            <div className="flex flex-col gap-form-field flex-1">
+            <div className="flex flex-col gap-form-field-big flex-1">
               <Label>{dialogTranslations.fields.name}</Label>
               <Input
                 autoFocus
@@ -109,7 +109,7 @@ export const CreateWorkspaceDialog = memo(
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <div className="flex flex-col gap-form-field">
+            <div className="flex flex-col gap-form-field-big">
               <Label>{dialogTranslations.fields.background.name}</Label>
               <div className="flex flex-row gap-medium">
                 <RadioGroup
@@ -189,3 +189,4 @@ export const CreateWorkspaceDialog = memo(
     );
   }
 );
+

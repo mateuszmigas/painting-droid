@@ -42,7 +42,8 @@ export const createMenuBarDefinition = (
       label: "File",
       items: [
         itemFromCommand("openFile", executeCommand),
-        itemFromCommand("newActiveWorkspace", executeCommand),
+        itemFromCommand("createActiveWorkspace", executeCommand),
+        itemFromCommand("editWorkspace", executeCommand),
         itemFromCommand("closeActiveWorkspace", executeCommand),
         { type: "separator" },
         {
