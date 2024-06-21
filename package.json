@@ -1,6 +1,6 @@
 {
   "name": "painting-droid",
-  "version": "0.2.19",
+  "version": "0.2.18",
   "description": "",
   "packageManager": "pnpm@9.2.0",
   "scripts": {
