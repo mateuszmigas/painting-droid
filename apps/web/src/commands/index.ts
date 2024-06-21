@@ -2,7 +2,7 @@ import { command as saveAsPng } from "./saveAsPng";
 import { command as saveAsJpeg } from "./saveAsJpeg";
 import { command as saveAsWorkspace } from "./saveAsWorkspace";
 import { command as openFile } from "./openFile";
-import { command as newActiveWorkspace } from "./newActiveWorkspace";
+import { command as createActiveWorkspace } from "./createActiveWorkspace";
 import { command as openCommandPalette } from "./openCommandPalette";
 import { command as resetLayout } from "./resetLayout";
 import { command as closeActiveWorkspace } from "./closeActiveWorkspace";
@@ -33,13 +33,14 @@ import { command as openSettingsDialog } from "./openSettingsDialog";
 import { command as shareWorkspace } from "./shareWorkspace";
 import { command as openImageToImageDialog } from "./openImageToImageDialog";
 import { command as dropFile } from "./dropFile";
+import { command as editWorkspace } from "./editWorkspace";
 
 export const commands = {
   saveAsPng,
   saveAsJpeg,
   saveAsWorkspace,
   openFile,
-  newActiveWorkspace,
+  createActiveWorkspace,
   openCommandPalette,
   resetLayout,
   closeActiveWorkspace,
@@ -70,6 +71,7 @@ export const commands = {
   shareWorkspace,
   openImageToImageDialog,
   dropFile,
+  editWorkspace,
 } as const;
 
 export type CommandId = keyof typeof commands;
@@ -86,3 +88,4 @@ export type ExecuteCommand = (
 ) => Promise<void>;
 
 export type ExecuteCommandWithDefaults = (id: CommandId) => Promise<void>;
+

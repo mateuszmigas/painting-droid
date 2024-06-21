@@ -18,6 +18,7 @@ import { useResizeObserver } from "@/hooks/useResizeObserver";
 import { domNames } from "@/constants";
 import { getTranslations } from "@/translations";
 import { features } from "@/features";
+import { useCommandService } from "@/contexts/commandService";
 
 const translations = getTranslations();
 
@@ -28,6 +29,7 @@ export const AppHeaderBar = memo(() => {
   const [compactMenuBar, setCompactMenuBar] = useState<boolean>(false);
   const { workspaces, activeWorkspaceId, selectWorkspace, closeWorkspace } =
     useWorkspacesStore((state) => state);
+  const { executeCommand } = useCommandService();
 
   useLayoutEffect(() => {
     if (containerRef.current) {
@@ -76,9 +78,22 @@ export const AppHeaderBar = memo(() => {
                       </TabsTrigger>
                     </ContextMenuTrigger>
                     <ContextMenuContent>
-                      <ContextMenuItem onSelect={() => closeWorkspace(tab.id)}>
-                        {translations.general.close}
+                      <ContextMenuItem
+                        onSelect={() =>
+                          executeCommand("editWorkspace", {
+                            workspaceId: tab.id,
+                          })
+                        }
+                      >
+                        {translations.general.edit}
                       </ContextMenuItem>
+                      {workspaces.length > 1 && (
+                        <ContextMenuItem
+                          onSelect={() => closeWorkspace(tab.id)}
+                        >
+                          {translations.general.close}
+                        </ContextMenuItem>
+                      )}
                     </ContextMenuContent>
                   </ContextMenu>
                 ))}
@@ -87,7 +102,7 @@ export const AppHeaderBar = memo(() => {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
           <CommandIconButton
-            commandId="newActiveWorkspace"
+            commandId="createActiveWorkspace"
             icon="plus"
             size="small-medium"
           />
@@ -121,3 +136,4 @@ export const AppHeaderBar = memo(() => {
     </div>
   );
 });
+

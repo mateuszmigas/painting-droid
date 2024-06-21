@@ -5,7 +5,8 @@ const space = {
   small: "0.25rem",
   medium: "0.5rem",
   big: "0.75rem",
-  "form-field": "0.25rem"
+  "form-field": "0.25rem",
+  "form-field-big": "0.5rem",
 };
 
 const size = {
