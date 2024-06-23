@@ -21,4 +21,13 @@ body:
         - Firefox
     validations:
       required: true
-  
+  - type: textarea
+    attributes:
+      label: 'Bug Description'
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 'Expected Behavior'
+      description: A clear and concise description of what you expected to happen.
