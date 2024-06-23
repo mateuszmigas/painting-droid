@@ -5,20 +5,14 @@ labels: 'bug'
 body: 
   - type: dropdown
     attributes:
-      label: 'Operating System'
+      label: 'Platform'
       options:
-        - Windows
-        - macOS
-        - Linux
-    validations:
-      required: true
-  - type: dropdown
-    attributes:
-      label: 'Browser'
-      options:
-        - Chrome
-        - Safari
-        - Firefox
+        - Desktop - Windows
+        - Desktop - macOS
+        - Desktop - Linux
+        - Web - Chrome
+        - Web - Safari
+        - Web - Firefox
     validations:
       required: true
   - type: textarea
@@ -31,34 +25,3 @@ body:
     attributes:
       label: 'Expected Behavior'
       description: A clear and concise description of what you expected to happen.
-  - type: dropdown
-    id: module
-    attributes:
-      label: Module
-      description: Select the affected module
-      options:
-        - Module A
-        - Module B
-        - Module C
-
-  - type: dropdown
-    id: submodule
-    attributes:
-      label: Submodule
-      description: Select the submodule based on the module
-      options:
-        - id: module-a
-          label: Module A
-          options:
-            - Submodule A1
-            - Submodule A2
-        - id: module-b
-          label: Module B
-          options:
-            - Submodule B1
-            - Submodule B2
-        - id: module-c
-          label: Module C
-          options:
-            - Submodule C1
-            - Submodule C2
