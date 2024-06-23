@@ -1,0 +1,15 @@
+name: 'Technical improvement'
+description: 'Suggest a technical improvement for this project'
+title: '[Tech] '
+labels: 'technical improvement'
+body: 
+  - type: textarea
+    attributes:
+      label: 'Improvement Description'
+      description: A clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 'Additional Information'
+      description: Add any other context or screenshots about the request here.
