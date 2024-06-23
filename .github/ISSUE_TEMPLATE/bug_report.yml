@@ -31,7 +31,7 @@ body:
     attributes:
       label: 'Expected Behavior'
       description: A clear and concise description of what you expected to happen.
-        - type: dropdown
+  - type: dropdown
     id: module
     attributes:
       label: Module
