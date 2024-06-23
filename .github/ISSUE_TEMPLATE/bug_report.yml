@@ -1,0 +1,24 @@
+name: 'Bug Report'
+description: 'Create a report to help us improve'
+title: '[Bug] '
+labels: 'bug'
+body: 
+  - type: dropdown
+    attributes:
+      label: 'Operating System'
+      options:
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: 'Browser'
+      options:
+        - Chrome
+        - Safari
+        - Firefox
+    validations:
+      required: true
+  
