@@ -126,6 +126,14 @@ export class ImageProcessor {
     return new ImageProcessor(async () => createCanvasContext(width, height));
   }
 
+  public static fromImageData(imageData: ImageData) {
+    return new ImageProcessor(async () => {
+      const context = createCanvasContext(imageData.width, imageData.height);
+      context.putImageData(imageData, 0, 0);
+      return context;
+    });
+  }
+
   useContext(callback: (context: CanvasBitmapContext) => Promise<void>) {
     this.tasks.push(() => callback(this.context!));
     return this;
@@ -190,3 +198,4 @@ export class ImageProcessor {
     }
   }
 }
+
