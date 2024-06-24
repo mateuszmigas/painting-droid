@@ -43,6 +43,9 @@ const translations = {
         noObjects: "No objects detected",
       },
     },
+    removeBackground: {
+      name: "Remove Background",
+    },
     textToImage: { name: "Text to Image" },
     imageToImage: { name: "Image to Image" },
     smartCrop: {

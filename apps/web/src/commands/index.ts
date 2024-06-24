@@ -34,6 +34,7 @@ import { command as shareWorkspace } from "./shareWorkspace";
 import { command as openImageToImageDialog } from "./openImageToImageDialog";
 import { command as dropFile } from "./dropFile";
 import { command as editWorkspace } from "./editWorkspace";
+import { command as openRemoveBackgroundDialog } from "./openRemoveBackgroundDialog";
 
 export const commands = {
   saveAsPng,
@@ -72,6 +73,7 @@ export const commands = {
   openImageToImageDialog,
   dropFile,
   editWorkspace,
+  openRemoveBackgroundDialog,
 } as const;
 
 export type CommandId = keyof typeof commands;
