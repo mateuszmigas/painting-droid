@@ -1,3 +1,4 @@
+import { RemoveBackgroundDialog } from "@/components/dialogs/removeBackgroundDialog";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
 import { getTranslations } from "@/translations";
@@ -10,7 +11,7 @@ export const command = createCommand({
   display: translations.models.removeBackground.name,
   config: { showInPalette: true },
   execute: async (context: CommandContext) => {
-    // context.dialogService.openDialog(LabelObjectsDialog, {});
+    context.dialogService.openDialog(RemoveBackgroundDialog, {});
   },
 });
 

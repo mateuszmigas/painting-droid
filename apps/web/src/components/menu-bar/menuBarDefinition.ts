@@ -135,6 +135,8 @@ export const createMenuBarDefinition = (
       items: [
         itemFromCommand("openLabelObjectsDialog", executeCommand),
         itemFromCommand("openTextToImageDialog", executeCommand),
+        itemFromCommand("openImageToImageDialog", executeCommand),
+        itemFromCommand("openRemoveBackgroundDialog", executeCommand),
       ],
     },
   ];
