@@ -30,7 +30,6 @@ import { useCommandService } from "@/contexts/commandService";
 import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
 import type { ImageToImageModelInfo } from "@/hooks/useImageToImageModels";
 import { uuid } from "@/utils/uuid";
-import { CustomFieldArray } from "../custom-fields/customFieldArray";
 import { useWorkspacesStore } from "@/store";
 import {
   activeLayerSelector,
@@ -38,11 +37,10 @@ import {
 } from "@/store/workspacesStore";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { ImageFit } from "../image/imageFit";
-import { Input } from "../ui/input";
 import { IconButton } from "../icons/iconButton";
 
 const translations = getTranslations();
-const dialogTranslations = translations.dialogs.imageToImage;
+const dialogTranslations = translations.dialogs.removeBackground;
 
 const FormSchema = z.object({
   prompt: z
@@ -86,7 +84,7 @@ export const RemoveBackgroundDialog = memo((props: { close: () => void }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      prompt: dialogTranslations.defaultPrompt,
+      prompt: "",
       modelId: defaultModelId,
       modelOptionsValues: getDefaultModelOptionsValues(models, defaultModelId),
     },
@@ -155,117 +153,46 @@ export const RemoveBackgroundDialog = memo((props: { close: () => void }) => {
           className="flex flex-col gap-big sm:flex-row"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div>
-            <ImageFit
-              containerClassName="relative border box-content self-center"
-              imageClassName="alpha-background"
-              containerSize={{ width: 320, height: 320 }}
-              src={generatedImageDataUrl || baseImageDataUrl}
-              overlayNodeRenderer={() => {
-                return generatedImageData ? (
-                  <IconButton
-                    className="absolute right-1 top-1 bg-destructive hover:bg-destructive/90"
-                    type="x"
-                    size="small"
-                    onClick={() => setGeneratedImageData(null)}
-                  />
-                ) : null;
-              }}
-            />
-            {!baseImageData && (
-              <FormMessage className={"text-destructive"}>
-                {dialogTranslations.errors.layerIsEmpty}
-              </FormMessage>
-            )}
-          </div>
-          <div className="flex flex-grow justify-between flex-col gap-big min-w-64">
-            <div className="flex flex-col gap-big">
-              <FormField
-                control={form.control}
-                name="modelId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{translations.models.name}</FormLabel>
-                    <Select
-                      onValueChange={(value) => {
-                        form.setValue("modelId", value);
-                        form.setValue(
-                          "modelOptionsValues",
-                          getDefaultModelOptionsValues(models, value)
-                        );
-                      }}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={translations.info.noModels}
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {models.map((model) => (
-                          <SelectItem key={model.id} value={model.id}>
-                            <div className="truncate max-w-[300px]">
-                              {model.display}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="prompt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{translations.models.prompt}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex flex-col gap-big">
-                <CustomFieldArray
-                  schema={modelOptions}
-                  values={form.watch("modelOptionsValues")}
-                  onChange={(key, value) =>
-                    form.setValue(`modelOptionsValues.${key}`, value)
-                  }
+          <ImageFit
+            containerClassName="relative border box-content self-center"
+            imageClassName="alpha-background"
+            containerSize={{ width: 320, height: 320 }}
+            src={generatedImageDataUrl || baseImageDataUrl}
+            overlayNodeRenderer={() => {
+              return generatedImageData ? (
+                <IconButton
+                  className="absolute right-1 top-1 bg-destructive hover:bg-destructive/90"
+                  type="x"
+                  size="small"
+                  onClick={() => setGeneratedImageData(null)}
                 />
-              </div>
-              <FormMessage className={"text-destructive"}>{error}</FormMessage>
-            </div>
-            <div className="gap-medium flex flex-row justify-end">
-              <Button
-                type="submit"
-                variant="secondary"
-                disabled={isGenerating || !baseImageData}
-              >
-                {translations.general.generate}
-                {isGenerating ? (
-                  <Icon
-                    className="ml-2 animate-spin"
-                    type="loader"
-                    size="small"
-                  />
-                ) : (
-                  <Icon className="ml-2" type={"check"} size="small" />
-                )}
-              </Button>
-              <Button
-                type="button"
-                onClick={apply}
-                disabled={isGenerating || !baseImageData || !generatedImageData}
-              >
-                {translations.general.apply}
-              </Button>
-            </div>
+              ) : null;
+            }}
+          />
+          <div className="gap-medium flex flex-row justify-end items-end">
+            <Button
+              type="submit"
+              variant="secondary"
+              disabled={isGenerating || !baseImageData}
+            >
+              {translations.general.generate}
+              {isGenerating ? (
+                <Icon
+                  className="ml-2 animate-spin"
+                  type="loader"
+                  size="small"
+                />
+              ) : (
+                <Icon className="ml-2" type={"check"} size="small" />
+              )}
+            </Button>
+            <Button
+              type="button"
+              onClick={apply}
+              disabled={isGenerating || !baseImageData || !generatedImageData}
+            >
+              {translations.general.apply}
+            </Button>
           </div>
         </form>
       </Form>

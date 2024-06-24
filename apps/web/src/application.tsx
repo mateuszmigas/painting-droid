@@ -11,7 +11,7 @@ import { useDragWatcher, useHasStoreHydrated, useIdleCallback } from "./hooks";
 import { coreClient } from "./wasm/core/coreClient";
 import { CanvasPreviewContextStoreContext } from "./contexts/canvasContextStore";
 import type { CanvasBitmapContext, CanvasVectorContext } from "./utils/common";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DialogServiceContext } from "./contexts/dialogService";
 import { CommandServiceContext } from "./contexts/commandService";
 import { useWorkspacesStore } from "./store";
@@ -47,6 +47,11 @@ export const Application = () => {
     coreClient.init();
     windowHandle.showWindow();
   });
+
+  useEffect(() => {
+    commandService &&
+      commandService.executeCommand("openRemoveBackgroundDialog");
+  }, [commandService]);
 
   if (!hasStoreHydrated) {
     return null;
@@ -87,3 +92,4 @@ export const Application = () => {
     </div>
   );
 };
+

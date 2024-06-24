@@ -266,6 +266,9 @@ This action cannot be undone.`,
         layerIsEmpty: "Layer is empty",
       },
     },
+    removeBackground: {
+      title: "Remove Background",
+    },
     textToImage: {
       title: "Text to Image",
       defaultPrompt: "A cat in a hat",
