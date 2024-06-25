@@ -13,6 +13,7 @@ import { useDebounceListener } from "@/hooks/useDebounceListener";
 import { CanvasViewport } from "./canvasViewport";
 import { WorkspacePopup } from "./workspace-popup/workspacePopup";
 import { domNames } from "@/constants";
+import { Assistant } from "./assistant";
 
 export const WorkspaceViewport = memo(() => {
   const rootElementRef = useRef<HTMLDivElement>(null);
@@ -81,7 +82,9 @@ export const WorkspaceViewport = memo(() => {
           </>
         )}
         <WorkspacePopup />
+        <Assistant className="right-5 bottom-5 absolute" />
       </div>
     </div>
   );
 });
+
