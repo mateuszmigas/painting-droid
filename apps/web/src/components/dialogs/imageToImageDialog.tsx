@@ -91,13 +91,13 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
       modelOptionsValues: getDefaultModelOptionsValues(models, defaultModelId),
     },
   });
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const baseImageData = activeLayer.data;
   const [generatedImageData, setGeneratedImageData] =
     useState<ImageCompressedData | null>(null);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    setIsGenerating(true);
+    setIsProcessing(true);
 
     const optionsValues = form.watch("modelOptionsValues");
     const { definition, config } = models.find(
@@ -114,11 +114,11 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
       )
       .then((img) => {
         setGeneratedImageData(img.data);
-        setIsGenerating(false);
+        setIsProcessing(false);
       })
       .catch((err) => {
         form.setError("root", { message: err.toString() });
-        setIsGenerating(false);
+        setIsProcessing(false);
       });
   };
 
@@ -245,10 +245,10 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
               <Button
                 type="submit"
                 variant="secondary"
-                disabled={isGenerating || !baseImageData}
+                disabled={isProcessing || !baseImageData}
               >
                 {translations.general.generate}
-                {isGenerating ? (
+                {isProcessing ? (
                   <Icon
                     className="ml-2 animate-spin"
                     type="loader"
@@ -261,7 +261,7 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
               <Button
                 type="button"
                 onClick={apply}
-                disabled={isGenerating || !baseImageData || !generatedImageData}
+                disabled={isProcessing || !baseImageData || !generatedImageData}
               >
                 {translations.general.apply}
               </Button>
@@ -272,3 +272,4 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
+

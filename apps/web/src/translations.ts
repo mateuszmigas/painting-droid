@@ -268,6 +268,9 @@ This action cannot be undone.`,
     },
     removeBackground: {
       title: "Remove Background",
+      errors: {
+        layerIsEmpty: "Layer is empty",
+      },
     },
     textToImage: {
       title: "Text to Image",
@@ -325,6 +328,7 @@ This action cannot be undone.`,
     defaultName: "Untitled",
   },
   general: {
+    remove: "Remove",
     anchor: "Anchor",
     apply: "Apply",
     cancel: "Cancel",
