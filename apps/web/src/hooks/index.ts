@@ -21,3 +21,5 @@ export { useObjectDetectionModels } from "./useObjectDetectionModels";
 export { useCanvasToolHandlers } from "./useCanvasToolHandlers";
 export { useTypewriter } from "./useTypewriter";
 export { useDragWatcher } from "./useDragWatcher";
+export { useChatModels } from "./useChatModels";
+

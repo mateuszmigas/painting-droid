@@ -52,3 +52,9 @@ export const blobToDataUrl = (blob: Blob) => {
     reader.readAsDataURL(blob);
   });
 };
+
+export const blobToBase64 = async (blob: Blob) => {
+  const dataUrl = await blobToDataUrl(blob);
+  return dataUrl.split(",")[1];
+};
+

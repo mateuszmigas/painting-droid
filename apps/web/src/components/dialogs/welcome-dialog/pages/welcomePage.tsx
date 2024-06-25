@@ -21,3 +21,4 @@ export const WelcomePage = () => {
     </div>
   );
 };
+
