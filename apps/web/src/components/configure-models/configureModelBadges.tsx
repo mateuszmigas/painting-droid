@@ -3,6 +3,7 @@ import {
   isTextToImageModel,
   isObjectDetectionModel,
   isImageToImageModel,
+  isRemoveBackgroundModel,
 } from "@/models/definitions";
 import { markerColors } from "@/constants";
 import type { BaseModel } from "@/models/types/baseModel";
@@ -40,6 +41,15 @@ export const ConfigureModelBadges = memo((props: { baseModel: BaseModel }) => {
           variant="outline"
         >
           {translations.models.labelObjects.name}
+        </Badge>
+      )}
+      {isRemoveBackgroundModel(baseModel as never) && (
+        <Badge
+          className="text-primary-foreground"
+          style={{ backgroundColor: markerColors[3] }}
+          variant="outline"
+        >
+          {translations.models.removeBackground.name}
         </Badge>
       )}
     </div>
