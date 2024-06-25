@@ -35,7 +35,7 @@ const translations = {
     sepia: { name: "Sepia" },
   },
   models: {
-    name: "Models",
+    name: "Model",
     prompt: "Prompt",
     labelObjects: {
       name: "Label Objects",
@@ -45,6 +45,9 @@ const translations = {
     },
     removeBackground: {
       name: "Remove Background",
+    },
+    chat: {
+      name: "Chat",
     },
     textToImage: { name: "Text to Image" },
     imageToImage: { name: "Image to Image" },
@@ -167,6 +170,12 @@ const translations = {
       
 This action cannot be undone.`,
       confirm: "Clear",
+    },
+  },
+  chat: {
+    welcomeMessage: "Hello! How can I help you?",
+    errors: {
+      noModels: "No chat models available. Go to settings to add some.",
     },
   },
   dialogs: {
@@ -329,6 +338,7 @@ This action cannot be undone.`,
     defaultName: "Untitled",
   },
   general: {
+    models: "Models",
     remove: "Remove",
     anchor: "Anchor",
     apply: "Apply",

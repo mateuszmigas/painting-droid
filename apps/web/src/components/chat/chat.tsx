@@ -4,37 +4,46 @@ import { cn } from "@/utils/css";
 import { Button } from "../ui/button";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Droid } from "../droid";
-import { sendMessageToAssistant } from "./api";
 import { useWorkspacesStore } from "@/store";
 import {
   activeWorkspaceCanvasDataSelector,
   activeLayerSelector,
 } from "@/store/workspacesStore";
-import { blobToBase64 } from "@/utils/image";
+import { useChatModels } from "@/hooks";
+import { getTranslations } from "@/translations";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { readStream } from "@/utils/stream";
 
-type ChatMessage = {
-  type: "user" | "assistant";
-  text: string;
-  attachments?: string[];
-};
+const chatTranslations = getTranslations().chat;
+
+type ChatMessage =
+  | {
+      type: "user";
+      text: string;
+    }
+  | ({ type: "assistant" } & ({ text: string } | { error: string }));
 
 export const Chat = memo(() => {
+  const models = useChatModels();
   const canvasData = useWorkspacesStore((state) =>
     activeWorkspaceCanvasDataSelector(state)
   );
   const activeLayer = activeLayerSelector(canvasData);
-
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const scrollTargetRef = useRef<HTMLDivElement>(null);
+  const [modelId, setModelId] = useState<string>(models[0]?.id);
   const [prompt, setPrompt] = useState<string>("");
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { type: "assistant", text: "Hello! How can I help you?" },
+    { type: "assistant", text: chatTranslations.welcomeMessage },
   ]);
 
-  const sendMessage = async (prompt: string) => {
-    //todo
-    if (!activeLayer) return;
-    const base64 = await blobToBase64(activeLayer.data!);
+  const sendMessage = async () => {
     setMessages((prevMessages) => [
       ...prevMessages,
       { type: "user", text: prompt },
@@ -44,18 +53,42 @@ export const Chat = memo(() => {
       ...prevMessages,
       { type: "assistant", text: "..." },
     ]);
-    sendMessageToAssistant(prompt, [base64], (message, done) => {
-      if (done) return;
 
-      //update last message
-      setMessages((prevMessages) => {
-        const lastMessage = prevMessages[prevMessages.length - 1];
-        return [
-          ...prevMessages.slice(0, prevMessages.length - 1),
-          { ...lastMessage, text: message },
-        ];
+    const { definition, config } = models.find(
+      (model) => model.id === modelId
+    )!;
+
+    definition.chat
+      .execute(
+        modelId,
+        prompt,
+        activeLayer.data
+          ? { ...canvasData.size, data: activeLayer.data }
+          : null,
+        {},
+        config
+      )
+      .then((img) => {
+        readStream(img, (chunk) => {
+          setMessages((prevMessages) => {
+            const lastMessage = prevMessages[prevMessages.length - 1];
+            const lastText = "text" in lastMessage ? lastMessage.text : "";
+            return [
+              ...prevMessages.slice(0, prevMessages.length - 1),
+              { ...lastMessage, text: lastText + chunk },
+            ];
+          });
+        });
+      })
+      .catch((error) => {
+        setMessages((prevMessages) => {
+          const lastMessage = prevMessages[prevMessages.length - 1];
+          return [
+            ...prevMessages.slice(0, prevMessages.length - 1),
+            { ...lastMessage, error: error.message },
+          ];
+        });
       });
-    });
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -63,14 +96,30 @@ export const Chat = memo(() => {
     scrollTargetRef.current?.scrollIntoView({ behavior: "instant" });
   }, [messages]);
 
+  if (models.length === 0) {
+    return <div>{chatTranslations.errors.noModels}</div>;
+  }
+
   return (
     <form
       className="h-full flex flex-col gap-medium"
       onSubmit={(e) => {
         e.preventDefault();
-        sendMessage(prompt);
+        sendMessage();
       }}
     >
+      <Select onValueChange={setModelId} value={modelId}>
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {models.map((model) => (
+            <SelectItem key={model.id} value={model.id}>
+              <div className="truncate max-w-[300px]">{model.display}</div>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <ScrollArea ref={scrollAreaRef} className="flex-1">
         <div className="flex flex-col gap-medium">
           {messages.map((message, index) => (
@@ -81,9 +130,10 @@ export const Chat = memo(() => {
                 "bg-primary text-input-foreground self-end":
                   message.type === "user",
                 "self-start": message.type === "assistant",
+                "text-destructive": "error" in message,
               })}
             >
-              {message.text}
+              {"error" in message ? message.error : message.text}
             </div>
           ))}
         </div>
@@ -91,7 +141,11 @@ export const Chat = memo(() => {
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
       <div className="flex flex-row gap-medium">
-        <Input value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+        <Input
+          autoFocus
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+        />
         <Button
           disabled={prompt.length === 0}
           variant="outline"

@@ -131,7 +131,7 @@ export const createMenuBarDefinition = (
     },
     {
       type: "parent",
-      label: translations.models.name,
+      label: translations.general.models,
       items: [
         itemFromCommand("openLabelObjectsDialog", executeCommand),
         itemFromCommand("openTextToImageDialog", executeCommand),

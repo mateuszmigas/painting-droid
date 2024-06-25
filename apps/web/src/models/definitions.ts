@@ -5,6 +5,7 @@ import { model as openAiDalle2 } from "./openAiDalle2";
 import { model as openAiDalle3 } from "./openAiDalle3";
 import { model as stableDiffusionServer } from "./stableDiffusionServer";
 import { model as briaaiRMBG14 } from "./briaai_RMBG-1.4";
+import { model as ollamaLlava } from "./ollamaLlava";
 
 export const modelDefinitions = [
   stabilityAi,
@@ -14,6 +15,7 @@ export const modelDefinitions = [
   facebookDetrResnet50,
   stableDiffusionServer,
   briaaiRMBG14,
+  ollamaLlava,
 ] as const;
 export type ModelType = (typeof modelDefinitions)[number]["type"];
 
@@ -29,6 +31,8 @@ export const isObjectDetectionModel = (model: { type: string }) =>
 export const isRemoveBackgroundModel = (model: { type: string }) =>
   "removeBackground" in model;
 
+export const isChatModel = (model: { type: string }) => "chat" in model;
+
 export const textToImageModelTypes = modelDefinitions
   .filter(isTextToImageModel)
   .map((model) => model.type);
@@ -43,5 +47,9 @@ export const objectDetectionModelTypes = modelDefinitions
 
 export const removeBackgroundModelTypes = modelDefinitions
   .filter(isRemoveBackgroundModel)
+  .map((model) => model.type);
+
+export const chatModelTypes = modelDefinitions
+  .filter(isChatModel)
   .map((model) => model.type);
 

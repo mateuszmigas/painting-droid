@@ -4,6 +4,7 @@ import {
   isObjectDetectionModel,
   isImageToImageModel,
   isRemoveBackgroundModel,
+  isChatModel,
 } from "@/models/definitions";
 import { markerColors } from "@/constants";
 import type { BaseModel } from "@/models/types/baseModel";
@@ -50,6 +51,15 @@ export const ConfigureModelBadges = memo((props: { baseModel: BaseModel }) => {
           variant="outline"
         >
           {translations.models.removeBackground.name}
+        </Badge>
+      )}
+      {isChatModel(baseModel as never) && (
+        <Badge
+          className="text-secondary-foreground"
+          style={{ backgroundColor: markerColors[4] }}
+          variant="outline"
+        >
+          {translations.models.chat.name}
         </Badge>
       )}
     </div>
