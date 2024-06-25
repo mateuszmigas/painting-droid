@@ -3,7 +3,10 @@ import { Chat } from "../chat/chat";
 
 export const ChatPopup = memo(() => {
   return (
-    <div className="w-[400px] h-[400px]">
+    <div
+      style={{ maxHeight: "calc(var(--radix-popper-available-height) - 60px)" }}
+      className="w-[400px] h-[400px]"
+    >
       <Chat />
     </div>
   );

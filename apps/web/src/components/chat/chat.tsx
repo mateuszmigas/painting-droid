@@ -78,10 +78,9 @@ export const Chat = memo(() => {
               // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               key={index}
               className={cn("rounded-lg py-small px-medium", {
-                "bg-primary text-primary-foreground self-end":
+                "bg-primary text-input-foreground self-end":
                   message.type === "user",
-                "bg-secondary text-secondary-foreground self-start":
-                  message.type === "assistant",
+                "self-start": message.type === "assistant",
               })}
             >
               {message.text}
