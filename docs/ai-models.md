@@ -22,6 +22,10 @@ Navigate to [https://platform.stability.ai](https://platform.stability.ai/) to g
 
 Navigate to [https://github.com/AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui?tab=readme-ov-file#installation-and-running) and follow the installation guide. When starting the server, make sure to enable the `--api` flag so it also creates a web API which the app can connect to. The defaults should work, if not adjust server address in app.
 
+### Ollama LLaVa
+
+Navigate to [https://ollama.com/](https://ollama.com/) and install Ollama. Follow the instructions and download [https://ollama.com/library/llava](https://ollama.com/library/llava) model.&#x20;
+
 ## On-Device
 
 Currently, it is not possible to configure on-device models as they are enabled by default.
