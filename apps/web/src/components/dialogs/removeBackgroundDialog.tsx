@@ -21,16 +21,8 @@ import {
   SelectValue,
 } from "../ui/select";
 import { getTranslations } from "@/translations";
-import {
-  useBlobUrl,
-  useCanvasActionDispatcher,
-  useImageToImageModels,
-} from "@/hooks";
-import { useCommandService } from "@/contexts/commandService";
+import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
 import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
-import type { ImageToImageModelInfo } from "@/hooks/useImageToImageModels";
-import { uuid } from "@/utils/uuid";
-import { CustomFieldArray } from "../custom-fields/customFieldArray";
 import { useWorkspacesStore } from "@/store";
 import {
   activeLayerSelector,
@@ -38,33 +30,34 @@ import {
 } from "@/store/workspacesStore";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { ImageFit } from "../image/imageFit";
-import { Input } from "../ui/input";
 import { IconButton } from "../icons/iconButton";
+import {
+  type RemoveBackgroundModelInfo,
+  useRemoveBackgroundModels,
+} from "@/hooks/useRemoveBackgroundModel";
+import { CustomFieldArray } from "../custom-fields/customFieldArray";
 
 const translations = getTranslations();
-const dialogTranslations = translations.dialogs.imageToImage;
+const dialogTranslations = translations.dialogs.removeBackground;
 
 const FormSchema = z.object({
-  prompt: z
-    .string()
-    .min(10, { message: "Prompt must be at least 10 characters." }),
   modelId: z.string().min(1, { message: "Model must be selected." }),
   modelOptionsValues: z.record(z.string(), z.unknown()),
 });
 
 const getDefaultModelOptions = (
-  models: ImageToImageModelInfo[],
+  models: RemoveBackgroundModelInfo[],
   modelId: string
 ) => {
   const model = models.find((model) => model.id === modelId);
-  return (model?.definition.imageToImage.optionsSchema || {}) as Record<
+  return (model?.definition.removeBackground.optionsSchema || {}) as Record<
     string,
     CustomField
   >;
 };
 
 const getDefaultModelOptionsValues = (
-  models: ImageToImageModelInfo[],
+  models: RemoveBackgroundModelInfo[],
   modelId: string
 ) =>
   getDefaultValues(getDefaultModelOptions(models, modelId)) as Record<
@@ -72,11 +65,10 @@ const getDefaultModelOptionsValues = (
     unknown
   >;
 
-export const ImageToImageDialog = memo((props: { close: () => void }) => {
+export const RemoveBackgroundDialog = memo((props: { close: () => void }) => {
   const { close } = props;
-  const { executeCommand } = useCommandService();
   const canvasActionDispatcher = useCanvasActionDispatcher();
-  const models = useImageToImageModels();
+  const models = useRemoveBackgroundModels();
   const canvasData = useWorkspacesStore((state) =>
     activeWorkspaceCanvasDataSelector(state)
   );
@@ -86,7 +78,6 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      prompt: dialogTranslations.defaultPrompt,
       modelId: defaultModelId,
       modelOptionsValues: getDefaultModelOptionsValues(models, defaultModelId),
     },
@@ -104,10 +95,9 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
       (model) => model.id === data.modelId
     )!;
 
-    definition.imageToImage
+    definition.removeBackground
       .execute(
         modelId,
-        data.prompt,
         { ...canvasData.size, data: baseImageData! },
         optionsValues,
         config
@@ -123,18 +113,11 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
   };
 
   const apply = async () => {
-    await executeCommand("selectTool", { toolId: "rectangleSelect" });
-    await canvasActionDispatcher.execute("addShape", {
-      display: translations.models.imageToImage.name,
-      shape: {
-        id: uuid(),
-        type: "generated-image",
-        boundingBox: { ...canvasData.size, x: 0, y: 0 },
-        capturedArea: {
-          box: { x: 0, y: 0, width: 0, height: 0 },
-          data: generatedImageData!,
-        },
-      },
+    await canvasActionDispatcher.execute("updateLayerData", {
+      display: translations.models.removeBackground.name,
+      icon: "image-minus",
+      data: generatedImageData,
+      layerId: activeLayer.id,
     });
     close();
   };
@@ -217,19 +200,6 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="prompt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{translations.models.prompt}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <div className="flex flex-col gap-big">
                 <CustomFieldArray
                   schema={modelOptions}
@@ -247,7 +217,7 @@ export const ImageToImageDialog = memo((props: { close: () => void }) => {
                 variant="secondary"
                 disabled={isProcessing || !baseImageData}
               >
-                {translations.general.generate}
+                {translations.general.remove}
                 {isProcessing ? (
                   <Icon
                     className="ml-2 animate-spin"

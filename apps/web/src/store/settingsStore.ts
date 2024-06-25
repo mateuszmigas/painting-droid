@@ -85,6 +85,7 @@ export const settingsStoreCreator: StateCreator<AppSettingsSlice> = (set) => ({
 export const useSettingsStore = create<AppSettingsSlice>()(
   persist(
     settingsStoreCreator,
-    createSyncStorage({ version: 5, name: "settings" })
+    createSyncStorage({ version: 6, name: "settings" })
   )
 );
+

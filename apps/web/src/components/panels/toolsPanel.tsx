@@ -50,6 +50,10 @@ export const ToolsPanel = memo(() => {
         <CommandIconButton size="medium" commandId="openTextToImageDialog" />
         <CommandIconButton size="medium" commandId="openImageToImageDialog" />
         <CommandIconButton size="medium" commandId="openLabelObjectsDialog" />
+        <CommandIconButton
+          size="medium"
+          commandId="openRemoveBackgroundDialog"
+        />
       </div>
     </div>
   );

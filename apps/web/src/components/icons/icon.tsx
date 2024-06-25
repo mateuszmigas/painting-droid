@@ -72,6 +72,7 @@ import {
   Images,
   FileCog,
   Settings2,
+  ImageMinus,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -155,7 +156,8 @@ type BaseIconType =
   | "image-add"
   | "image-copy"
   | "file-cog"
-  | "settings2";
+  | "settings2"
+  | "image-minus";
 
 export type IconType = BaseIconType | `${BaseIconType}_ai`;
 
@@ -342,6 +344,8 @@ const renderLucideIcon = (
       return <FileCog className={className} size={fontSize} />;
     case "settings2":
       return <Settings2 className={className} size={fontSize} />;
+    case "image-minus":
+      return <ImageMinus className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

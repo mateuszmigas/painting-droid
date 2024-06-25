@@ -43,6 +43,9 @@ const translations = {
         noObjects: "No objects detected",
       },
     },
+    removeBackground: {
+      name: "Remove Background",
+    },
     textToImage: { name: "Text to Image" },
     imageToImage: { name: "Image to Image" },
     smartCrop: {
@@ -263,6 +266,12 @@ This action cannot be undone.`,
         layerIsEmpty: "Layer is empty",
       },
     },
+    removeBackground: {
+      title: "Remove Background",
+      errors: {
+        layerIsEmpty: "Layer is empty",
+      },
+    },
     textToImage: {
       title: "Text to Image",
       defaultPrompt: "A cat in a hat",
@@ -319,6 +328,7 @@ This action cannot be undone.`,
     defaultName: "Untitled",
   },
   general: {
+    remove: "Remove",
     anchor: "Anchor",
     apply: "Apply",
     cancel: "Cancel",
