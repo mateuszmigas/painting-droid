@@ -137,6 +137,7 @@ export const createMenuBarDefinition = (
         itemFromCommand("openTextToImageDialog", executeCommand),
         itemFromCommand("openImageToImageDialog", executeCommand),
         itemFromCommand("openRemoveBackgroundDialog", executeCommand),
+        itemFromCommand("openChatPopup", executeCommand),
       ],
     },
   ];

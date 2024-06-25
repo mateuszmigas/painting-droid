@@ -16,11 +16,13 @@ import type { RgbaColor } from "@/utils/color";
 
 const translations = getTranslations();
 
-export type WorkspacePopup = {
-  type: "adjustments";
-  adjustmentId: AdjustmentId;
-  settings: Record<string, unknown>;
-};
+export type WorkspacePopup =
+  | {
+      type: "adjustments";
+      adjustmentId: AdjustmentId;
+      settings: Record<string, unknown>;
+    }
+  | { type: "chat" };
 
 export type WorkspaceId = string;
 export type Workspace = {
@@ -77,8 +79,8 @@ type AppWorkspacesSlice = AppWorkspacesState & {
     data: ImageCompressedData
   ) => void;
   setCanvasData: (canvasData: CanvasState) => void;
-  openApplyPopup: (type: WorkspacePopup) => void;
-  closeApplyPopup: () => void;
+  openPopup: (type: WorkspacePopup) => void;
+  closePopup: () => void;
   updatePopupSettings: (settings: Record<string, unknown>) => void;
 };
 
@@ -224,14 +226,14 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
         canvasData,
       }))
     ),
-  openApplyPopup: (type: WorkspacePopup) =>
+  openPopup: (type: WorkspacePopup) =>
     set((state) =>
       mapActiveWorkspace(state, (workspace) => ({
         ...workspace,
         popup: type,
       }))
     ),
-  closeApplyPopup: () =>
+  closePopup: () =>
     set((state) =>
       mapActiveWorkspace(state, (workspace) => ({
         ...workspace,

@@ -73,6 +73,8 @@ import {
   FileCog,
   Settings2,
   ImageMinus,
+  Bot,
+  BotMessageSquare,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -157,7 +159,9 @@ type BaseIconType =
   | "image-copy"
   | "file-cog"
   | "settings2"
-  | "image-minus";
+  | "image-minus"
+  | "bot"
+  | "bot-message-square";
 
 export type IconType = BaseIconType | `${BaseIconType}_ai`;
 
@@ -346,6 +350,10 @@ const renderLucideIcon = (
       return <Settings2 className={className} size={fontSize} />;
     case "image-minus":
       return <ImageMinus className={className} size={fontSize} />;
+    case "bot":
+      return <Bot className={className} size={fontSize} />;
+    case "bot-message-square":
+      return <BotMessageSquare className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

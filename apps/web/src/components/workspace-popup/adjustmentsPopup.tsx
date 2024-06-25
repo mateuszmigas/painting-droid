@@ -2,6 +2,7 @@ import { memo, useEffect } from "react";
 import { Button } from "../ui/button";
 import { useWorkspacesStore } from "@/store";
 import {
+  type WorkspacePopup,
   activeWorkspaceActiveLayerSelector,
   activeWorkspaceCanvasDataSelector,
   activeWorkspaceSelector,
@@ -22,12 +23,12 @@ const translations = getTranslations();
 export const AdjustmentsPopup = memo(() => {
   const popup = useWorkspacesStore(
     (store) => activeWorkspaceSelector(store).popup!
-  );
+  ) as Extract<WorkspacePopup, { type: "adjustments" }>;
   const { layers, activeLayerIndex } = useWorkspacesStore((s) =>
     activeWorkspaceCanvasDataSelector(s)
   );
   const canvasDispatcher = useCanvasActionDispatcher();
-  const closePopup = useWorkspacesStore((store) => store.closeApplyPopup);
+  const closePopup = useWorkspacesStore((store) => store.closePopup);
   const adjustment = adjustmentsMetadata[popup.adjustmentId];
   const activeLayer = layers[activeLayerIndex];
   const {

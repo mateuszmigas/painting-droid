@@ -13,7 +13,7 @@ export const command = createCommand({
     context: CommandContext,
     payload: { adjustmentId: AdjustmentId }
   ) => {
-    context.stores.workspaces().openApplyPopup({
+    context.stores.workspaces().openPopup({
       type: "adjustments",
       adjustmentId: payload.adjustmentId,
       settings: getDefaultAdjustmentsSettings(payload.adjustmentId),
