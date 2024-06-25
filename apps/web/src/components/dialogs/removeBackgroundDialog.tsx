@@ -22,9 +22,7 @@ import {
 } from "../ui/select";
 import { getTranslations } from "@/translations";
 import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
-import { useCommandService } from "@/contexts/commandService";
 import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
-import { uuid } from "@/utils/uuid";
 import { useWorkspacesStore } from "@/store";
 import {
   activeLayerSelector,
@@ -69,7 +67,6 @@ const getDefaultModelOptionsValues = (
 
 export const RemoveBackgroundDialog = memo((props: { close: () => void }) => {
   const { close } = props;
-  const { executeCommand } = useCommandService();
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const models = useRemoveBackgroundModels();
   const canvasData = useWorkspacesStore((state) =>
