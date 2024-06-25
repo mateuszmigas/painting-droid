@@ -16,6 +16,7 @@ import { AppColumn } from "./appColumn";
 import { useCommandService } from "@/contexts/commandService";
 import { useGlobalKeyboardHandler } from "@/hooks";
 import { memo } from "react";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 const translations = getTranslations();
 
@@ -43,9 +44,12 @@ export const AppContent = memo(() => {
   };
 
   return (
-    <div className="relative flex flex-row size-full">
-      <div className="border-r w-[40px] overflow-auto">
-        <ToolsPanel />
+    <div className="relative flex flex-row size-full min-h-0">
+      <div className="border-r w-[40px] h-full">
+        <ScrollArea className="h-full">
+          <ToolsPanel />
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
       </div>
       <ResizablePanelGroup className="flex-1" direction="horizontal">
         <AppColumn {...createColumnProps("middle")}>
@@ -74,3 +78,4 @@ export const AppContent = memo(() => {
     </div>
   );
 });
+
