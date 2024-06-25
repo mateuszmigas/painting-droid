@@ -116,18 +116,11 @@ export const RemoveBackgroundDialog = memo((props: { close: () => void }) => {
   };
 
   const apply = async () => {
-    await executeCommand("selectTool", { toolId: "rectangleSelect" });
-    await canvasActionDispatcher.execute("addShape", {
+    await canvasActionDispatcher.execute("updateLayerData", {
       display: translations.models.removeBackground.name,
-      shape: {
-        id: uuid(),
-        type: "generated-image",
-        boundingBox: { ...canvasData.size, x: 0, y: 0 },
-        capturedArea: {
-          box: { x: 0, y: 0, width: 0, height: 0 },
-          data: generatedImageData!,
-        },
-      },
+      icon: "image-minus",
+      data: generatedImageData,
+      layerId: activeLayer.id,
     });
     close();
   };
