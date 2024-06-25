@@ -42,8 +42,10 @@ export const Chat = memo(() => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     { type: "assistant", text: chatTranslations.welcomeMessage },
   ]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const sendMessage = async () => {
+    setIsProcessing(true);
     setMessages((prevMessages) => [
       ...prevMessages,
       { type: "user", text: prompt },
@@ -58,6 +60,14 @@ export const Chat = memo(() => {
       (model) => model.id === modelId
     )!;
 
+    const updateLastMessage = (
+      updater: (message: ChatMessage) => ChatMessage
+    ) =>
+      setMessages((prevMessages) => [
+        ...prevMessages.slice(0, prevMessages.length - 1),
+        updater(prevMessages[prevMessages.length - 1]),
+      ]);
+
     definition.chat
       .execute(
         modelId,
@@ -69,25 +79,23 @@ export const Chat = memo(() => {
         config
       )
       .then((img) => {
+        updateLastMessage(() => ({ type: "assistant", text: "" }));
         readStream(img, (chunk) => {
-          setMessages((prevMessages) => {
-            const lastMessage = prevMessages[prevMessages.length - 1];
-            const lastText = "text" in lastMessage ? lastMessage.text : "";
-            return [
-              ...prevMessages.slice(0, prevMessages.length - 1),
-              { ...lastMessage, text: lastText + chunk },
-            ];
-          });
+          updateLastMessage((lastMessage) =>
+            "text" in lastMessage
+              ? { ...lastMessage, text: lastMessage.text + chunk }
+              : lastMessage
+          );
         });
       })
       .catch((error) => {
-        setMessages((prevMessages) => {
-          const lastMessage = prevMessages[prevMessages.length - 1];
-          return [
-            ...prevMessages.slice(0, prevMessages.length - 1),
-            { ...lastMessage, error: error.message },
-          ];
-        });
+        updateLastMessage(() => ({
+          type: "assistant",
+          error: error.message,
+        }));
+      })
+      .finally(() => {
+        setIsProcessing(false);
       });
   };
 
@@ -105,6 +113,9 @@ export const Chat = memo(() => {
       className="h-full flex flex-col gap-medium"
       onSubmit={(e) => {
         e.preventDefault();
+        if (prompt.length === 0 && isProcessing) {
+          return;
+        }
         sendMessage();
       }}
     >
@@ -147,7 +158,7 @@ export const Chat = memo(() => {
           onChange={(e) => setPrompt(e.target.value)}
         />
         <Button
-          disabled={prompt.length === 0}
+          disabled={prompt.length === 0 || isProcessing}
           variant="outline"
           type="submit"
           className="px-medium"
