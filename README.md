@@ -110,6 +110,7 @@ Painting Droid is an AI-powered cross-platform painting app inspired by the lege
 
 - [x] Use Blob instead of base64 for storing images
 - [x] Use IndexDB instead of localStorage for image data
+- [x] Chat with LLM about current layer
 - [ ] More image adjustments
 - [x] More tools: fill, erase
 - [ ] Magic Wand
