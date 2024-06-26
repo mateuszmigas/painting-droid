@@ -57,10 +57,9 @@ export const AppHeaderBar = memo(() => {
           />
         </>
       )}
-
-      <div className="ml-medium flex-1 overflow-auto pile">
-        <div className="flex flex-row items-center gap-small justify-start">
-          <ScrollArea className="whitespace-nowrap">
+      <div className="ml-medium flex-1 overflow-auto">
+        <ScrollArea className="whitespace-nowrap">
+          <div className="flex flex-row">
             <Tabs value={activeWorkspaceId} onValueChange={selectWorkspace}>
               <TabsList className="bg-transparent p-0">
                 {workspaces.map((tab) => (
@@ -99,14 +98,14 @@ export const AppHeaderBar = memo(() => {
                 ))}
               </TabsList>
             </Tabs>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-          <CommandIconButton
-            commandId="createActiveWorkspace"
-            icon="plus"
-            size="small-medium"
-          />
-        </div>
+            <CommandIconButton
+              commandId="createActiveWorkspace"
+              icon="plus"
+              size="small-medium"
+            />
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </div>
       <Separator orientation="vertical" className="h-6 w-px bg-border mx-1" />
       <div className="flex flex-row justify-center items-center pr-small gap-small">
@@ -136,4 +135,3 @@ export const AppHeaderBar = memo(() => {
     </div>
   );
 });
-
