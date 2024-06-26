@@ -33,7 +33,7 @@ const chat = createChatSection({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "llava",
-        prompt: `Prefer short and concise messages. ${prompt}`,
+        prompt,
         images: image ? [await blobToBase64(image.data)] : [],
       }),
     });
@@ -65,4 +65,3 @@ export const model = {
   configSchema,
   chat,
 } as const satisfies ChatModel;
-

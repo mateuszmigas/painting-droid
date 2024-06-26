@@ -178,6 +178,11 @@ This action cannot be undone.`,
     errors: {
       noModels: "No chat models available. Go to settings to add some.",
     },
+    suggestions: [
+      "What objects are in this image?",
+      "Suggest a filter for this image.",
+      "Identify the main color palette.",
+    ],
   },
   dialogs: {
     settings: {

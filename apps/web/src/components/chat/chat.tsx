@@ -43,8 +43,10 @@ export const Chat = memo(() => {
     { type: "assistant", text: chatTranslations.welcomeMessage },
   ]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showSuggestions, setShotSuggestions] = useState(true);
 
-  const sendMessage = async () => {
+  const sendMessage = async (prompt: string) => {
+    setShotSuggestions(false);
     setIsProcessing(true);
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -116,7 +118,7 @@ export const Chat = memo(() => {
         if (prompt.length === 0 && isProcessing) {
           return;
         }
-        sendMessage();
+        sendMessage(prompt);
       }}
     >
       <Select onValueChange={setModelId} value={modelId}>
@@ -151,6 +153,20 @@ export const Chat = memo(() => {
         <div ref={scrollTargetRef} />
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
+      {showSuggestions && (
+        <div className="flex flex-col gap-small">
+          {chatTranslations.suggestions.map((suggestion) => (
+            <button
+              onClick={() => sendMessage(suggestion)}
+              type="button"
+              key={suggestion}
+              className="rounded-lg text-sm py-small px-medium border-primary border self-end"
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="flex flex-row gap-medium">
         <Input
           autoFocus
@@ -171,4 +187,3 @@ export const Chat = memo(() => {
     </form>
   );
 });
-
