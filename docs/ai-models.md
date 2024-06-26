@@ -20,11 +20,18 @@ Navigate to [https://platform.stability.ai](https://platform.stability.ai/) to g
 
 ### Stable Diffusion WebUI
 
-Navigate to [https://github.com/AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui?tab=readme-ov-file#installation-and-running) and follow the installation guide. When starting the server, make sure to enable the `--api` flag so it also creates a web API which the app can connect to. The defaults should work, if not adjust server address in app.
+1. Navigate to [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) and follow the installation guide.&#x20;
+2. When starting the app, make sure to enable the `--api` flag so it also creates a web API which the app can connect to. Check this [link](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/API#api-guide-by-kilvoctu) for details.
+3. The defaults should work, if not adjust server address in model settings.
 
 ### Ollama LLaVa
 
-Navigate to [https://ollama.com/](https://ollama.com/) and install Ollama. Follow the instructions and download [https://ollama.com/library/llava](https://ollama.com/library/llava) model. If you run hosted web version of app make sure to add it to Ollama CORS [https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama](https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama)
+1. Navigate to [https://ollama.com/](https://ollama.com/) and install Ollama.&#x20;
+2. Download llava model and run `ollama pull llava` to pull [ollava](https://ollama.com/library/llava) model.
+3. If you run hosted web version (from [https://www.paintingdroid.com/](https://www.paintingdroid.com/)) of app make sure to add it to Ollama CORS. For example on macOS:\
+   `launchctl setenv OLLAMA_ORIGINS "https://www.paintingdroid.com"`\
+   Check [link](https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama) for details.
+4. The defaults should work, if not adjust server address in model settings.
 
 ## On-Device
 
