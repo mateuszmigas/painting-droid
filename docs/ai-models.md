@@ -24,7 +24,7 @@ Navigate to [https://github.com/AUTOMATIC1111/stable-diffusion-webui](https://gi
 
 ### Ollama LLaVa
 
-Navigate to [https://ollama.com/](https://ollama.com/) and install Ollama. Follow the instructions and download [https://ollama.com/library/llava](https://ollama.com/library/llava) model.&#x20;
+Navigate to [https://ollama.com/](https://ollama.com/) and install Ollama. Follow the instructions and download [https://ollama.com/library/llava](https://ollama.com/library/llava) model. If you run hosted web version of app make sure to add it to Ollama CORS [https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama](https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama)
 
 ## On-Device
 
