@@ -160,7 +160,7 @@ export const Chat = memo(() => {
               onClick={() => sendMessage(suggestion)}
               type="button"
               key={suggestion}
-              className="rounded-lg text-sm py-small px-medium border-primary border self-end"
+              className="rounded-lg text-sm py-small px-medium border self-end"
             >
               {suggestion}
             </button>
