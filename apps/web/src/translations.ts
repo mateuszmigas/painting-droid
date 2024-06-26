@@ -173,7 +173,8 @@ This action cannot be undone.`,
     },
   },
   chat: {
-    welcomeMessage: "Hello! How can I help you?",
+    welcomeMessage:
+      "Hello! I am your creative assistant. How can I assist you with your image?",
     errors: {
       noModels: "No chat models available. Go to settings to add some.",
     },
@@ -410,4 +411,3 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
-
