@@ -10,11 +10,13 @@ Models using API keys need a desktop version for secure storage
 
 ### OpenAI DALL-E 2/3
 
-Navigate to [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys) to generate API Key and add provider with key in app.
+1. Navigate to [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys) to generate API Key.
+2. Add OpenAI provider with this API Key in app settings.
 
 ### Stability.ai
 
-Navigate to [https://platform.stability.ai](https://platform.stability.ai/) to generate API Key and add model with key in app.
+1. Navigate to [https://platform.stability.ai](https://platform.stability.ai/) to generate API Key.
+2. Add Stability.ai provider with this API Key in app settings.
 
 ## Self-Hosted
 
