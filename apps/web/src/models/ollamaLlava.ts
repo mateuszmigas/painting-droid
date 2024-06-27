@@ -4,12 +4,21 @@ import { type ChatModel, createChatSection } from "./types/chatModel";
 import type { CustomFieldsSchemaAsValues } from "@/utils/customFieldsSchema";
 import { blobToBase64 } from "@/utils/image";
 import { handleHttpError } from "./utils";
-import {
-  createToolsSchemaFromCommands,
-  serializeToolsSchema,
-} from "@/utils/chatFunctionCalling";
 import { makeDeferred } from "@/utils/promise";
 const translations = getTranslations().models;
+
+const imageModelSystemPrompt = `You are an assistant for a graphic program.`;
+export const createActionsSystemPrompt = (
+  commands: string[]
+) => `You are an assistant for a graphic program. 
+Your task is to determine the necessary image improvements included in a prompt as actions, but only from the provided list. 
+Respond with the required actions as an array in JSON format. Example: ['${commands
+  .slice(0, 3)
+  .join("','")}']
+
+Available actions:
+${commands.join("\n")}
+`;
 
 const configSchema = createConfigSchema({
   server: {
@@ -33,16 +42,13 @@ const chat = createChatSection({
     const { server } = config as CustomFieldsSchemaAsValues<
       typeof configSchema
     >;
-    const toolsSchema = createToolsSchemaFromCommands();
-    const serializedSchema = serializeToolsSchema(toolsSchema);
-    const newLocal = `
-    Suggest image improvements from this list [applySepia,removeBackground,applyGrayscale] and answer the following question: ${prompt}`;
     const response = await fetch(server, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "llava",
-        prompt: newLocal,
+        system: imageModelSystemPrompt,
+        prompt: prompt,
         images: image ? [await blobToBase64(image.data)] : [],
       }),
     });
@@ -57,13 +63,54 @@ const chat = createChatSection({
 
     const deferredPromise = makeDeferred<string[]>();
 
+    const getActions = async () => {
+      const response = await fetch(server, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "llama3",
+          prompt: accumulatedResponse,
+          system: `
+You are an assistant for a graphic program. 
+Your task is to determine the necessary image improvements included in a prompt as actions, but only from the provided list. 
+Respond with the required actions as an array in JSON format. Example: ['RemoveBackground', 'Sepia', 'Grayscale']
+
+Available actions:
+RemoveBackground
+Sepia
+Grayscale
+Contrast
+Brightness
+Saturation
+Vignette
+Noise
+Blur
+Sharpen
+Resize
+Rotate
+Crop
+          `,
+          format: "json",
+          stream: false,
+        }),
+      });
+
+      if (!response.body) {
+        throw new Error("Failed to send message to assistant.");
+      }
+
+      const body = await response.json();
+      console.log(JSON.parse(body.response));
+    };
+
     const transformStream = new TransformStream({
       transform(chunk, controller) {
         const parsed = JSON.parse(chunk) as ChatResponseChunk;
         controller.enqueue(parsed.response);
         accumulatedResponse += parsed.response;
-        parsed.done &&
-          deferredPromise.resolve(["applySepia", "removeBackground"]);
+        if (parsed.done) {
+          getActions();
+        }
       },
     });
 

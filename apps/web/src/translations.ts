@@ -181,7 +181,7 @@ This action cannot be undone.`,
     suggestions: [
       "What objects are in this image?",
       "Suggest a filter for this image.",
-      "Identify the main color palette.",
+      "Suggest image enhancements.",
     ],
   },
   dialogs: {
@@ -416,3 +416,4 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
+
