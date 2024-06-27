@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { readStream } from "@/utils/stream";
+import { commands } from "@/commands";
 
 const chatTranslations = getTranslations().chat;
 
@@ -77,6 +78,7 @@ export const Chat = memo(() => {
         activeLayer.data
           ? { ...canvasData.size, data: activeLayer.data }
           : null,
+        Object.keys(commands),
         {},
         config
       )
@@ -190,4 +192,3 @@ export const Chat = memo(() => {
     </form>
   );
 });
-

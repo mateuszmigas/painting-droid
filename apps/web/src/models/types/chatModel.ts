@@ -14,6 +14,7 @@ export type ChatSection<
     modelId: string,
     prompt: string,
     image: ImageCompressed | null,
+    actions: string[],
     options: CustomFieldsSchemaAsValues<TOptionsSchema>,
     config: CustomFieldsSchemaAsValues<TConfigSchema>
   ) => Promise<{ stream: ReadableStream; actions: Promise<string[]> }>;
@@ -30,4 +31,3 @@ export type ChatModel = BaseModel & {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   chat: ChatSection<any, any>;
 };
-
