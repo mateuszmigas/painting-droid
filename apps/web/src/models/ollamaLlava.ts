@@ -36,8 +36,7 @@ const chat = createChatSection({
     const toolsSchema = createToolsSchemaFromCommands();
     const serializedSchema = serializeToolsSchema(toolsSchema);
     const newLocal = `
-    Assistant: Only provide information about attached image and optionally list the actions user can perform. Here is list of actions you can use: [applySepia,removeBackground]
-    User: ${prompt}`;
+    Suggest image improvements from this list [applySepia,removeBackground,applyGrayscale] and answer the following question: ${prompt}`;
     const response = await fetch(server, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
