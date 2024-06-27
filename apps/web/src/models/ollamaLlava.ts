@@ -4,6 +4,10 @@ import { type ChatModel, createChatSection } from "./types/chatModel";
 import type { CustomFieldsSchemaAsValues } from "@/utils/customFieldsSchema";
 import { blobToBase64 } from "@/utils/image";
 import { handleHttpError } from "./utils";
+import {
+  createToolsSchemaFromCommands,
+  serializeToolsSchema,
+} from "@/utils/chatFunctionCalling";
 const translations = getTranslations().models;
 
 const configSchema = createConfigSchema({
@@ -28,12 +32,32 @@ const chat = createChatSection({
     const { server } = config as CustomFieldsSchemaAsValues<
       typeof configSchema
     >;
+    const toolsSchema = createToolsSchemaFromCommands();
+    const serializedSchema = serializeToolsSchema(toolsSchema);
+    const newLocal = `
+    Assistant: Only provide infromation about attached image and optionally list the actions user can perform. Here is list of actions you can use:
+    actions: ${serializedSchema}
+
+    return functions in format from available tools:
+    ACTIONS: [
+      {
+        id: "applySepia",
+        params: { amount: 0.3 },
+      },
+      {
+        id: "removeBackground",
+        params: {},
+      }
+    ]
+    
+    User: ${prompt}`;
+    console.log(newLocal);
     const response = await fetch(server, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "llava",
-        prompt: `Prefer short and concise messages. ${prompt}`,
+        prompt: newLocal,
         images: image ? [await blobToBase64(image.data)] : [],
       }),
     });
