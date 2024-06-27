@@ -16,7 +16,7 @@ export type ChatSection<
     image: ImageCompressed | null,
     options: CustomFieldsSchemaAsValues<TOptionsSchema>,
     config: CustomFieldsSchemaAsValues<TConfigSchema>
-  ) => Promise<ReadableStream>;
+  ) => Promise<{ stream: ReadableStream; actions: Promise<string[]> }>;
 };
 
 export const createChatSection = <

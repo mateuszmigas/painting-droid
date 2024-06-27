@@ -78,9 +78,12 @@ export const Chat = memo(() => {
         {},
         config
       )
-      .then((img) => {
+      .then(({ stream, actions }) => {
+        actions.then((actions) => {
+          console.log(actions);
+        });
         updateLastMessage(() => ({ type: "assistant", text: "" }));
-        readStream(img, (chunk) => {
+        readStream(stream, (chunk) => {
           updateLastMessage((lastMessage) =>
             "text" in lastMessage
               ? { ...lastMessage, text: lastMessage.text + chunk }

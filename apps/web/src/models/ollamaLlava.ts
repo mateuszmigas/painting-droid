@@ -8,6 +8,7 @@ import {
   createToolsSchemaFromCommands,
   serializeToolsSchema,
 } from "@/utils/chatFunctionCalling";
+import { makeDeferred } from "@/utils/promise";
 const translations = getTranslations().models;
 
 const configSchema = createConfigSchema({
@@ -35,23 +36,8 @@ const chat = createChatSection({
     const toolsSchema = createToolsSchemaFromCommands();
     const serializedSchema = serializeToolsSchema(toolsSchema);
     const newLocal = `
-    Assistant: Only provide infromation about attached image and optionally list the actions user can perform. Here is list of actions you can use:
-    actions: ${serializedSchema}
-
-    return functions in format from available tools:
-    ACTIONS: [
-      {
-        id: "applySepia",
-        params: { amount: 0.3 },
-      },
-      {
-        id: "removeBackground",
-        params: {},
-      }
-    ]
-    
+    Assistant: Only provide information about attached image and optionally list the actions user can perform. Here is list of actions you can use: [applySepia,removeBackground]
     User: ${prompt}`;
-    console.log(newLocal);
     const response = await fetch(server, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -68,16 +54,25 @@ const chat = createChatSection({
       throw new Error("Failed to send message to assistant.");
     }
 
+    let accumulatedResponse = "";
+
+    const deferredPromise = makeDeferred<string[]>();
+
     const transformStream = new TransformStream({
       transform(chunk, controller) {
         const parsed = JSON.parse(chunk) as ChatResponseChunk;
         controller.enqueue(parsed.response);
+        accumulatedResponse += parsed.response;
+        parsed.done &&
+          deferredPromise.resolve(["applySepia", "removeBackground"]);
       },
     });
 
-    return response.body
+    const stream = response.body
       .pipeThrough(new TextDecoderStream())
       .pipeThrough(transformStream);
+
+    return { stream, actions: deferredPromise.promise };
   },
 });
 
