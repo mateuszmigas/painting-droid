@@ -2,7 +2,6 @@
   "name": "painting-droid",
   "version": "0.2.18",
   "description": "",
-  "packageManager": "pnpm@9.2.0",
   "scripts": {
     "dev:web": "pnpm --filter @painting-droid/web run dev",
     "dev:desktop": "pnpm --filter @painting-droid/desktop run dev",
