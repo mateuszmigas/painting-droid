@@ -298,7 +298,6 @@ This action cannot be undone.`,
     system: "System",
   },
   commands: {
-    applyLayerAdjustment: "Apply Layer Adjustment",
     clearActiveWorkspace: "Clear Workspace",
     closeActiveWorkspace: "Close Workspace",
     createActiveWorkspace: "New Workspace",

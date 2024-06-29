@@ -19,9 +19,16 @@ import {
   SelectValue,
 } from "../ui/select";
 import { readStream } from "@/utils/stream";
-import { commands } from "@/commands";
+import { adjustmentsMetadata } from "@/adjustments";
+import type { ChatAction } from "@/models/types/chatModel";
 
 const chatTranslations = getTranslations().chat;
+
+const actions: ChatAction[] = Object.entries(adjustmentsMetadata).map(
+  ([key, value]) => {
+    return { key, description: value.name };
+  }
+);
 
 type ChatMessage =
   | {
@@ -71,39 +78,38 @@ export const Chat = memo(() => {
         updater(prevMessages[prevMessages.length - 1]),
       ]);
 
-    definition.chat
-      .execute(
+    const image = activeLayer.data
+      ? { ...canvasData.size, data: activeLayer.data }
+      : null;
+
+    try {
+      const { stream, getActions } = await definition.chat.execute(
         modelId,
         prompt,
-        activeLayer.data
-          ? { ...canvasData.size, data: activeLayer.data }
-          : null,
-        Object.keys(commands),
+        image,
+        actions,
         {},
         config
-      )
-      .then(({ stream, actions }) => {
-        actions.then((actions) => {
-          console.log(actions);
-        });
-        updateLastMessage(() => ({ type: "assistant", text: "" }));
-        readStream(stream, (chunk) => {
-          updateLastMessage((lastMessage) =>
-            "text" in lastMessage
-              ? { ...lastMessage, text: lastMessage.text + chunk }
-              : lastMessage
-          );
-        });
-      })
-      .catch((error) => {
-        updateLastMessage(() => ({
-          type: "assistant",
-          error: error.message,
-        }));
-      })
-      .finally(() => {
-        setIsProcessing(false);
-      });
+      );
+
+      updateLastMessage(() => ({ type: "assistant", text: "" }));
+      await readStream(stream, (chunk) =>
+        updateLastMessage((lastMessage) =>
+          "text" in lastMessage
+            ? { ...lastMessage, text: lastMessage.text + chunk }
+            : lastMessage
+        )
+      );
+      const selectedActions = await getActions();
+      console.log("selectedActions", selectedActions);
+    } catch {
+      updateLastMessage(() => ({
+        type: "assistant",
+        error: "Error",
+      }));
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

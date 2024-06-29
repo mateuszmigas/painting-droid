@@ -36,7 +36,6 @@ import { command as dropFile } from "./dropFile";
 import { command as editWorkspace } from "./editWorkspace";
 import { command as openRemoveBackgroundDialog } from "./openRemoveBackgroundDialog";
 import { command as openChatPopup } from "./openChatPopup";
-import { command as applyLayerAdjustment } from "./applyLayerAdjustment";
 
 export const commands = {
   saveAsPng,
@@ -77,7 +76,6 @@ export const commands = {
   editWorkspace,
   openRemoveBackgroundDialog,
   openChatPopup,
-  applyLayerAdjustment,
 } as const;
 
 export type CommandId = keyof typeof commands;
