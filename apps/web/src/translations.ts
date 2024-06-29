@@ -298,6 +298,7 @@ This action cannot be undone.`,
     system: "System",
   },
   commands: {
+    applyLayerAdjustment: "Apply Layer Adjustment",
     clearActiveWorkspace: "Clear Workspace",
     closeActiveWorkspace: "Close Workspace",
     createActiveWorkspace: "New Workspace",
@@ -416,4 +417,3 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
-
