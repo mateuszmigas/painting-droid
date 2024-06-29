@@ -21,6 +21,8 @@ import {
 import { readStream } from "@/utils/stream";
 import { adjustmentsMetadata } from "@/adjustments";
 import type { ChatAction } from "@/models/types/chatModel";
+import ReactMarkdown from "react-markdown";
+import { Icon } from "../icons/icon";
 
 const chatTranslations = getTranslations().chat;
 
@@ -35,7 +37,10 @@ type ChatMessage =
       type: "user";
       text: string;
     }
-  | ({ type: "assistant" } & ({ text: string } | { error: string }));
+  | ({ type: "assistant" } & (
+      | { text: string; isFetchingActions?: boolean }
+      | { error: string }
+    ));
 
 export const Chat = memo(() => {
   const models = useChatModels();
@@ -100,7 +105,12 @@ export const Chat = memo(() => {
             : lastMessage
         )
       );
+      updateLastMessage((message) => ({ ...message, isFetchingActions: true }));
       const selectedActions = await getActions();
+      updateLastMessage((message) => ({
+        ...message,
+        isFetchingActions: false,
+      }));
       console.log("selectedActions", selectedActions);
     } catch {
       updateLastMessage(() => ({
@@ -157,7 +167,23 @@ export const Chat = memo(() => {
                 "text-destructive": "error" in message,
               })}
             >
-              {"error" in message ? message.error : message.text}
+              {message.type === "assistant" ? (
+                <ReactMarkdown>
+                  {"error" in message ? message.error : message.text}
+                </ReactMarkdown>
+              ) : (
+                message.text
+              )}
+              {"isFetchingActions" in message && message.isFetchingActions && (
+                <div className="flex flex-row items-center gap-big text-muted-foreground mt-2">
+                  <Icon
+                    className="ml-2 animate-spin"
+                    type="loader"
+                    size="small"
+                  />
+                  <span>Fetching actions...</span>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -198,3 +224,4 @@ export const Chat = memo(() => {
     </form>
   );
 });
+

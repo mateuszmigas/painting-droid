@@ -17,15 +17,16 @@ const imageModelSystemPrompt = "You are an assistant for a graphic program.";
 const createActionsSystemPrompt = (
   actions: ChatAction[]
 ) => `You are an assistant for a graphic program. 
-Your task is to determine the necessary image improvements included in a prompt as actions, but only from the provided list. 
-The action format is: { key: action_key, description: action_description }
-Respond with the required action names as an array in JSON format. Example: ['${actions
+Your task is to determine the necessary image improvements included in a prompt as actions, but only from the provided list of available actions.
+Respond with the required action names as an array in JSON format. 
+
+Example: ['${actions
   .slice(0, 3)
   .map((a) => a.key)
   .join("','")}']
 
 Available actions:
-${actions.map((a) => `key: ${a.key}, description: ${a.description}`).join("\n")}
+${actions.map((a) => `${a.key}`).join("\n")}
 `;
 
 const fetchPromptResponse = async (
@@ -50,6 +51,7 @@ const fetchActionsResponse = (
   prompt: string,
   actions: ChatAction[]
 ) => {
+  console.log("hehe", createActionsSystemPrompt(actions));
   return fetch(server, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -92,26 +94,20 @@ const chat = createChatSection({
       throw new Error("Failed to send message to assistant.");
     }
 
+    const deferred = makeDeferred<string[]>();
+
     const getActions = async (prompt: string) => {
-      console.log("fetching", prompt);
       try {
         const response = await fetchActionsResponse(server, prompt, actions);
-
-        handleHttpError(response.status);
-
-        if (!response.body) {
-          throw new Error("Failed to send message to assistant.");
-        }
-
         const body = await response.json();
-        const result = JSON.parse(body);
-        deferred.resolve(result.response);
-      } catch (error) {
-        deferred.reject(error);
+        const result = JSON.parse(body.response);
+        deferred.resolve(result);
+      } catch {
+        // there is high probability that model returns random stuff but we don't care much,
+        // it's just some extra suggestions that are not necessary
+        deferred.resolve([]);
       }
     };
-
-    const deferred = makeDeferred<string[]>();
 
     let promptResponse = "";
     const transformStream = new TransformStream({
@@ -139,3 +135,4 @@ export const model = {
   configSchema,
   chat,
 } as const satisfies ChatModel;
+
