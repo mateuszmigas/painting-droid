@@ -23,6 +23,10 @@ import type { ChatAction, ChatActionKey } from "@/models/types/chatModel";
 import { ChatSuggestion } from "./chatSuggestion";
 import { ChatMessageRow } from "./chatMessageRow";
 import type { ChatMessage } from "./types";
+import {
+  PromiseCancellationTokenSource,
+  makeCancellableWithToken,
+} from "@/utils/promise";
 
 const chatTranslations = getTranslations().chat;
 
@@ -57,6 +61,7 @@ export const Chat = memo(() => {
   ]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuggestions, setShotSuggestions] = useState(true);
+  const fetchActionsTokenSource = useRef<PromiseCancellationTokenSource>();
 
   const sendMessage = async (prompt: string) => {
     setShotSuggestions(false);
@@ -108,11 +113,17 @@ export const Chat = memo(() => {
       );
 
       updateLastMessage((message) => ({ ...message, actions: [] }));
-      const actionKeys = await getActions();
-      updateLastMessage((message) => ({
-        ...message,
-        actions: filterValidActions(actionKeys),
-      }));
+
+      fetchActionsTokenSource.current = new PromiseCancellationTokenSource();
+      makeCancellableWithToken(
+        getActions(),
+        fetchActionsTokenSource.current.getToken()
+      ).then((actionKeys) => {
+        updateLastMessage((message) => ({
+          ...message,
+          actions: filterValidActions(actionKeys),
+        }));
+      });
     } catch {
       updateLastMessage(() => ({
         type: "assistant",
@@ -121,6 +132,16 @@ export const Chat = memo(() => {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const retry = async () => {
+    fetchActionsTokenSource.current?.cancel();
+    const userMessage = messages[messages.length - 2];
+    if (userMessage.type !== "user") {
+      return;
+    }
+    setMessages((prevMessages) => prevMessages.slice(0, -2));
+    await sendMessage(userMessage.text);
   };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Need to trigger scrollIntoView on messages change
@@ -159,7 +180,7 @@ export const Chat = memo(() => {
         <div className="flex flex-col gap-medium">
           {messages.map((message, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: it's fine to use index as key here
-            <ChatMessageRow key={index} message={message} />
+            <ChatMessageRow key={index} message={message} onRetry={retry} />
           ))}
         </div>
         <div ref={scrollTargetRef} />

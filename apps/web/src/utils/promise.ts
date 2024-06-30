@@ -39,3 +39,28 @@ export const makeDeferred = <T>() => {
   return { promise, resolve, reject };
 };
 
+export type PromiseCancellationToken = {
+  isCancellationRequested: () => boolean;
+};
+
+export class PromiseCancellationTokenSource {
+  private isCanceled = false;
+  cancel() {
+    this.isCanceled = true;
+  }
+  getToken(): PromiseCancellationToken {
+    return { isCancellationRequested: () => this.isCanceled };
+  }
+}
+
+export const makeCancellableWithToken = <T>(
+  promise: Promise<T>,
+  token: PromiseCancellationToken
+) =>
+  new Promise<T>((resolve, reject) => {
+    promise.then(
+      (result) => !token.isCancellationRequested() && resolve(result),
+      (error) => !token.isCancellationRequested() && reject(error)
+    );
+  });
+
