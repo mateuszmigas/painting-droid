@@ -5,8 +5,9 @@ import type {
   CustomFieldsSchemaAsValues,
 } from "@/utils/customFieldsSchema";
 
+export type ChatActionKey = string;
 export type ChatAction = {
-  key: string;
+  key: ChatActionKey;
   description: string;
 };
 
@@ -22,7 +23,10 @@ export type ChatSection<
     actions: ChatAction[],
     options: CustomFieldsSchemaAsValues<TOptionsSchema>,
     config: CustomFieldsSchemaAsValues<TConfigSchema>
-  ) => Promise<{ stream: ReadableStream; getActions: () => Promise<string[]> }>;
+  ) => Promise<{
+    stream: ReadableStream;
+    getActions: () => Promise<ChatActionKey[]>;
+  }>;
 };
 
 export const createChatSection = <
@@ -36,3 +40,4 @@ export type ChatModel = BaseModel & {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   chat: ChatSection<any, any>;
 };
+

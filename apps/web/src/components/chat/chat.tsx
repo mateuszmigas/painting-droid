@@ -1,6 +1,5 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
-import { cn } from "@/utils/css";
 import { Button } from "../ui/button";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Droid } from "../droid";
@@ -20,9 +19,10 @@ import {
 } from "../ui/select";
 import { readStream } from "@/utils/stream";
 import { adjustmentsMetadata } from "@/adjustments";
-import type { ChatAction } from "@/models/types/chatModel";
-import ReactMarkdown from "react-markdown";
-import { Icon } from "../icons/icon";
+import type { ChatAction, ChatActionKey } from "@/models/types/chatModel";
+import { ChatSuggestion } from "./chatSuggestion";
+import { ChatMessageRow } from "./chatMessageRow";
+import type { ChatMessage } from "./types";
 
 const chatTranslations = getTranslations().chat;
 
@@ -32,15 +32,15 @@ const actions: ChatAction[] = Object.entries(adjustmentsMetadata).map(
   }
 );
 
-type ChatMessage =
-  | {
-      type: "user";
-      text: string;
-    }
-  | ({ type: "assistant" } & (
-      | { text: string; isFetchingActions?: boolean }
-      | { error: string }
-    ));
+const filterValidActions = (actions: ChatActionKey[]) => {
+  console.log("filtering", actions);
+  if (!Array.isArray(actions)) {
+    return [];
+  }
+  return actions.filter(
+    (action) => typeof action === "string" && action in adjustmentsMetadata
+  );
+};
 
 export const Chat = memo(() => {
   const models = useChatModels();
@@ -98,6 +98,7 @@ export const Chat = memo(() => {
       );
 
       updateLastMessage(() => ({ type: "assistant", text: "" }));
+
       await readStream(stream, (chunk) =>
         updateLastMessage((lastMessage) =>
           "text" in lastMessage
@@ -105,13 +106,13 @@ export const Chat = memo(() => {
             : lastMessage
         )
       );
-      updateLastMessage((message) => ({ ...message, isFetchingActions: true }));
-      const selectedActions = await getActions();
+
+      updateLastMessage((message) => ({ ...message, actions: [] }));
+      const actionKeys = await getActions();
       updateLastMessage((message) => ({
         ...message,
-        isFetchingActions: false,
+        actions: filterValidActions(actionKeys),
       }));
-      console.log("selectedActions", selectedActions);
     } catch {
       updateLastMessage(() => ({
         type: "assistant",
@@ -122,7 +123,7 @@ export const Chat = memo(() => {
     }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Need to trigger scrollIntoView on messages change
   useEffect(() => {
     scrollTargetRef.current?.scrollIntoView({ behavior: "instant" });
   }, [messages]);
@@ -157,34 +158,8 @@ export const Chat = memo(() => {
       <ScrollArea ref={scrollAreaRef} className="flex-1">
         <div className="flex flex-col gap-medium">
           {messages.map((message, index) => (
-            <div
-              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-              key={index}
-              className={cn("rounded-lg py-small px-medium", {
-                "bg-primary text-input-foreground self-end":
-                  message.type === "user",
-                "self-start": message.type === "assistant",
-                "text-destructive": "error" in message,
-              })}
-            >
-              {message.type === "assistant" ? (
-                <ReactMarkdown>
-                  {"error" in message ? message.error : message.text}
-                </ReactMarkdown>
-              ) : (
-                message.text
-              )}
-              {"isFetchingActions" in message && message.isFetchingActions && (
-                <div className="flex flex-row items-center gap-big text-muted-foreground mt-2">
-                  <Icon
-                    className="ml-2 animate-spin"
-                    type="loader"
-                    size="small"
-                  />
-                  <span>Fetching actions...</span>
-                </div>
-              )}
-            </div>
+            // biome-ignore lint/suspicious/noArrayIndexKey: it's fine to use index as key here
+            <ChatMessageRow key={index} message={message} />
           ))}
         </div>
         <div ref={scrollTargetRef} />
@@ -192,15 +167,13 @@ export const Chat = memo(() => {
       </ScrollArea>
       {showSuggestions && (
         <div className="flex flex-col gap-small">
-          {chatTranslations.suggestions.map((suggestion) => (
-            <button
+          {chatTranslations.suggestions.map((suggestion, index) => (
+            <ChatSuggestion
+              // biome-ignore lint/suspicious/noArrayIndexKey: it's fine to use index as key here
+              key={index}
+              suggestion={suggestion}
               onClick={() => sendMessage(suggestion)}
-              type="button"
-              key={suggestion}
-              className="rounded-lg text-sm py-small px-medium border self-end"
-            >
-              {suggestion}
-            </button>
+            />
           ))}
         </div>
       )}

@@ -4,6 +4,7 @@ import {
   type ChatModel,
   createChatSection,
   type ChatAction,
+  type ChatActionKey,
 } from "./types/chatModel";
 import type { CustomFieldsSchemaAsValues } from "@/utils/customFieldsSchema";
 import { blobToBase64 } from "@/utils/image";
@@ -17,10 +18,12 @@ const imageModelSystemPrompt = "You are an assistant for a graphic program.";
 const createActionsSystemPrompt = (
   actions: ChatAction[]
 ) => `You are an assistant for a graphic program.
-Your task is to determine the image actions in a prompt and return them as an array in JSON format.
+Your task is to determine the image action in a prompt and return action keys as an array in JSON format.
+Example response: 
+{ "actions": ["${actions[0].key}", "${actions[1].key}"] }
 
 Return action keys from this list, nothing else:
-${actions.map((a) => `${a.key}`).join("\n")}
+${actions.map((a) => `key: ${a.key}, description: ${a.description}`).join("\n")}
 `;
 
 const fetchPromptResponse = async (
@@ -45,7 +48,6 @@ const fetchActionsResponse = (
   prompt: string,
   actions: ChatAction[]
 ) => {
-  console.log("hehe", createActionsSystemPrompt(actions));
   return fetch(server, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -88,14 +90,19 @@ const chat = createChatSection({
       throw new Error("Failed to send message to assistant.");
     }
 
-    const deferred = makeDeferred<string[]>();
+    const deferred = makeDeferred<ChatActionKey[]>();
 
     const getActions = async (prompt: string) => {
       try {
         const response = await fetchActionsResponse(server, prompt, actions);
         const body = await response.json();
         const result = JSON.parse(body.response);
-        deferred.resolve(result);
+        const sanitizedResult = Array.isArray(result)
+          ? result
+          : "actions" in result
+          ? result.actions
+          : [];
+        deferred.resolve(sanitizedResult);
       } catch {
         // there is high probability that model returns random stuff but we don't care much,
         // it's just some extra suggestions that are not necessary
