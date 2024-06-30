@@ -16,16 +16,10 @@ const imageModelSystemPrompt = "You are an assistant for a graphic program.";
 
 const createActionsSystemPrompt = (
   actions: ChatAction[]
-) => `You are an assistant for a graphic program. 
-Your task is to determine the necessary image improvements included in a prompt as actions, but only from the provided list of available actions.
-Respond with the required action names as an array in JSON format. 
+) => `You are an assistant for a graphic program.
+Your task is to determine the image actions in a prompt and return them as an array in JSON format.
 
-Example: ['${actions
-  .slice(0, 3)
-  .map((a) => a.key)
-  .join("','")}']
-
-Available actions:
+Return action keys from this list, nothing else:
 ${actions.map((a) => `${a.key}`).join("\n")}
 `;
 

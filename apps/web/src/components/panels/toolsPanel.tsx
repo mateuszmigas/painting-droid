@@ -55,7 +55,6 @@ export const ToolsPanel = memo(() => {
           commandId="openRemoveBackgroundDialog"
         />
         <CommandIconButton size="medium" commandId="openChatPopup" />
-        <CommandIconButton size="medium" commandId="openAdjustmentsPopup" />
       </div>
     </div>
   );
