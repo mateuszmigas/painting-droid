@@ -29,7 +29,7 @@ Models using API keys need a desktop version for secure storage
 ### Ollama LLaVa
 
 1. Navigate to [https://ollama.com/](https://ollama.com/) and install Ollama.&#x20;
-2. Download llava model and run `ollama pull llava` to pull [ollava](https://ollama.com/library/llava) model.
+2. Run `ollama pull llava` to pull [ollava](https://ollama.com/library/llava) model
 3. If you run hosted web version (from [https://www.paintingdroid.com/](https://www.paintingdroid.com/)) of app make sure to add it to Ollama CORS. For example on macOS:\
    `launchctl setenv OLLAMA_ORIGINS "https://www.paintingdroid.com"`. Check [link](https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama) for details.
 4. The defaults should work, if not adjust server address in model settings.
