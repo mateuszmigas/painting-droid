@@ -59,4 +59,3 @@ export const ToolsPanel = memo(() => {
     </div>
   );
 });
-

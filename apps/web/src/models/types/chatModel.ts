@@ -5,6 +5,12 @@ import type {
   CustomFieldsSchemaAsValues,
 } from "@/utils/customFieldsSchema";
 
+export type ChatActionKey = string;
+export type ChatAction = {
+  key: ChatActionKey;
+  description: string;
+};
+
 export type ChatSection<
   TOptionsSchema extends CustomFieldsSchema,
   TConfigSchema extends CustomFieldsSchema
@@ -14,9 +20,13 @@ export type ChatSection<
     modelId: string,
     prompt: string,
     image: ImageCompressed | null,
+    actions: ChatAction[],
     options: CustomFieldsSchemaAsValues<TOptionsSchema>,
     config: CustomFieldsSchemaAsValues<TConfigSchema>
-  ) => Promise<ReadableStream>;
+  ) => Promise<{
+    stream: ReadableStream;
+    getActions: () => Promise<ChatActionKey[]>;
+  }>;
 };
 
 export const createChatSection = <

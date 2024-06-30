@@ -8,9 +8,10 @@ export const ChatPopup = memo(() => {
         maxHeight: "calc(var(--radix-popper-available-height) - 60px)",
         maxWidth: "calc(var(--radix-popper-available-width) - 120px)",
       }}
-      className="w-[400px] h-[500px]"
+      className="w-[600px] h-[800px]"
     >
       <Chat />
     </div>
   );
 });
+

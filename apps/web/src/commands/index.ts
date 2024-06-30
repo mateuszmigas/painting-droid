@@ -92,4 +92,3 @@ export type ExecuteCommand = (
 ) => Promise<void>;
 
 export type ExecuteCommandWithDefaults = (id: CommandId) => Promise<void>;
-
