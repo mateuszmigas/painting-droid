@@ -1,8 +1,12 @@
 import type { RgbaColor } from "./color";
 import type { Position } from "./common";
 import type { ImageUncompressed } from "./imageData";
+import { ImageMask } from "./imageMask";
 
-const getPixelColor = (position: Position, imageData: ImageUncompressed) => {
+export const getPixelColor = (
+  position: Position,
+  imageData: ImageUncompressed
+) => {
   const { x, y } = position;
   const index = (y * imageData.width + x) * 4;
   return {
@@ -13,40 +17,58 @@ const getPixelColor = (position: Position, imageData: ImageUncompressed) => {
   };
 };
 
-const setPixelColor = (
-  position: Position,
-  targetColor: RgbaColor,
-  imageData: ImageUncompressed
-) => {
-  const { width, data } = imageData;
-  const index = (position.y * width + position.x) * 4;
-  data[index] = targetColor.r;
-  data[index + 1] = targetColor.g;
-  data[index + 2] = targetColor.b;
-  data[index + 3] = targetColor.a * 255;
-};
-
 export const floodFill = (
   imageData: ImageUncompressed,
   position: Position,
   fillColor: RgbaColor,
   shouldFill: (targetColor: RgbaColor, originColor: RgbaColor) => boolean
-) => spanFill(imageData, position, fillColor, shouldFill);
-
-//https://en.wikipedia.org/wiki/Flood_fill#Span_filling
-const spanFill = (
-  imageData: ImageUncompressed,
-  position: Position,
-  fillColor: RgbaColor,
-  shouldFill: (targetColor: RgbaColor, originColor: RgbaColor) => boolean
-): ImageUncompressed => {
-  const { width, height } = imageData;
-
+) => {
   const originColor = getPixelColor(position, imageData);
 
-  if (shouldFill(originColor, fillColor)) {
+  if (shouldFill(fillColor, originColor)) {
     return imageData;
   }
+
+  const fillMask = generateFillMask(imageData, position, (color) =>
+    shouldFill(color, originColor)
+  );
+
+  if (!fillMask) {
+    return imageData;
+  }
+
+  const fillData = fillMask.getData();
+
+  for (let maskIndex = 0; maskIndex < fillData.length; maskIndex++) {
+    if (fillData[maskIndex]) {
+      const imageIndex = maskIndex * 4;
+      imageData.data[imageIndex] = fillColor.r;
+      imageData.data[imageIndex + 1] = fillColor.g;
+      imageData.data[imageIndex + 2] = fillColor.b;
+      imageData.data[imageIndex + 3] = fillColor.a * 255;
+    }
+  }
+
+  return imageData;
+};
+
+export const selectMask = (
+  imageData: ImageUncompressed,
+  position: Position,
+  shouldFill: (color: RgbaColor) => boolean
+): ImageMask | null => {
+  return generateFillMask(imageData, position, shouldFill);
+};
+
+//https://en.wikipedia.org/wiki/Flood_fill#Span_filling
+const generateFillMask = (
+  imageData: ImageUncompressed,
+  position: Position,
+  shouldFill: (color: RgbaColor) => boolean
+): ImageMask | null => {
+  const { width, height } = imageData;
+
+  const filled = new ImageMask(width, height);
 
   const shouldBeFilled = (position: { x: number; y: number }) => {
     if (
@@ -55,8 +77,11 @@ const spanFill = (
       position.y >= 0 &&
       position.y < height
     ) {
+      if (filled.get(position.x, position.y)) {
+        return false;
+      }
       const targetColor = getPixelColor(position, imageData);
-      return shouldFill(targetColor, originColor);
+      return shouldFill(targetColor);
     }
     return false;
   };
@@ -80,17 +105,17 @@ const spanFill = (
     let { x, y } = stack.pop()!;
     let lx = x;
     while (shouldBeFilled({ x: lx - 1, y })) {
-      setPixelColor({ x: lx - 1, y }, fillColor, imageData);
+      filled.set(lx - 1, y, true);
       lx = lx - 1;
     }
     while (shouldBeFilled({ x, y })) {
-      setPixelColor({ x, y }, fillColor, imageData);
+      filled.set(x, y, true);
       x = x + 1;
     }
     scan(lx, x - 1, y + 1);
     scan(lx, x - 1, y - 1);
   }
 
-  return imageData;
+  return filled;
 };
 

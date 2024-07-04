@@ -94,6 +94,11 @@ const translations = {
       transform: "Transform Selection",
       apply: "Apply Selection",
     },
+    "captured-mask": {
+      add: "Select Area",
+      transform: "Transform Area",
+      apply: "Apply Area",
+    },
     "drawn-rectangle": {
       add: "Draw Rectangle",
       transform: "Transform Rectangle",
@@ -108,6 +113,9 @@ const translations = {
   tools: {
     rectangleSelect: {
       name: "Rectangle Select",
+    },
+    magicWandSelect: {
+      name: "Magic Wand Select",
     },
     shapeDraw: {
       name: "Shape",
@@ -416,3 +424,4 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
+

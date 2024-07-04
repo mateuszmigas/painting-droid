@@ -20,6 +20,11 @@ const rasterizeRectangle = (
   context.strokeRect(x, y, width, height);
 };
 
+const rasterizeMask = (
+  _context: CanvasBitmapContext,
+  _shape: Extract<CanvasShape, { type: "captured-mask" }>
+) => {};
+
 const rasterizeEllipse = (
   context: CanvasBitmapContext,
   shape: Extract<CanvasShape, { type: "drawn-ellipse" }>
@@ -72,7 +77,11 @@ export const rasterizeShape = async (
     case "drawn-ellipse":
       rasterizeEllipse(context, shape);
       break;
+    case "captured-mask":
+      rasterizeMask(context, shape);
+      break;
     default:
       assertNever(shape);
   }
 };
+

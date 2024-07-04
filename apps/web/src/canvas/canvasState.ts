@@ -3,6 +3,7 @@ import { getTranslations } from "@/translations";
 import type { RgbaColor } from "@/utils/color";
 import type { BoundingBox, Rectangle, Size } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
+import type { ImageMaskData } from "@/utils/imageMask";
 import { uuid } from "@/utils/uuid";
 
 const translations = getTranslations();
@@ -35,7 +36,11 @@ export type CanvasShape = {
   | {
       id: string;
       type: "captured-rectangle";
-      capturedArea: CanvasCapturedArea;
+    }
+  | {
+      id: string;
+      type: "captured-mask";
+      imageMask: ImageMaskData;
     }
   | {
       id: string;
@@ -81,3 +86,4 @@ export const createDefaultCanvasState = (
   size,
   baseColor: baseColor !== undefined ? baseColor : defaultCanvasColor,
 });
+

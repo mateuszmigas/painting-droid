@@ -17,6 +17,7 @@ import {
 import { SelectionGrip, type SelectionGripProps } from "./selectionGrip.solid";
 import { assertNever } from "@/utils/typeGuards";
 import { Ellipse, type EllipseProps } from "./ellipse.solid";
+import { SelectionMask, type SelectionMaskProps } from "./selectionMask.solid";
 
 export type Shape2d =
   | ({ type: "circle" } & CircleProps)
@@ -25,7 +26,8 @@ export type Shape2d =
   | ({ type: "selection-rectangle" } & SelectionRectangleProps)
   | ({ type: "selection-grip" } & SelectionGripProps)
   | ({ type: "image-rectangle" } & ImageRectangleProps)
-  | ({ type: "ellipse" } & EllipseProps);
+  | ({ type: "ellipse" } & EllipseProps)
+  | ({ type: "selection-mask" } & SelectionMaskProps);
 
 export const Shape = (props: { shape: Shape2d; viewport: Viewport }) => {
   switch (props.shape.type) {
@@ -43,6 +45,8 @@ export const Shape = (props: { shape: Shape2d; viewport: Viewport }) => {
       return <SelectionGrip {...props.shape} viewport={props.viewport} />;
     case "image-rectangle":
       return <ImageRectangle {...props.shape} viewport={props.viewport} />;
+    case "selection-mask":
+      return <SelectionMask {...props.shape} viewport={props.viewport} />;
     default:
       return assertNever(props.shape);
   }
