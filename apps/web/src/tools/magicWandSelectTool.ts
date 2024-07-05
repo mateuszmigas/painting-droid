@@ -12,6 +12,7 @@ import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 import type { CanvasShape } from "@/canvas/canvasState";
 import { uuid } from "@/utils/uuid";
 import { ImageProcessor } from "@/utils/imageProcessor";
+import { calculateFilledBoundingBox } from "@/utils/image";
 
 const translations = getTranslations().tools.magicWandSelect;
 
@@ -57,15 +58,11 @@ class MagicWandSelectTool implements CanvasTool<never> {
     }
 
     const fillMask = selectMask(imageData, position, (color) =>
-      areColorsClose(color, originColor, 0.5)
+      areColorsClose(color, originColor, 10)
     )!;
 
-    const boundingBox = {
-      x: 0,
-      y: 0,
-      width: imageData.width,
-      height: imageData.height,
-    };
+    const boundingBox = calculateFilledBoundingBox(fillMask);
+
     const shape: CanvasShape = {
       id: uuid(),
       type: "captured-area",
@@ -80,6 +77,7 @@ class MagicWandSelectTool implements CanvasTool<never> {
 
     ImageProcessor.fromClonedContext(this.bitmapContext)
       .mask(fillMask)
+      .crop(boundingBox)
       .toCompressedData()
       .then((data) => {
         this.onCommitCallback?.({

@@ -11,3 +11,7 @@ export type ImageCompressed = {
   height: number;
   data: ImageCompressedData;
 };
+
+export type ImageMaskData = Uint8Array;
+export type ImageMask = ImageUncompressed;
+

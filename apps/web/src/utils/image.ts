@@ -1,3 +1,6 @@
+import type { BoundingBox } from "./common";
+import type { ImageUncompressed } from "./imageData";
+
 export const dataUrlToImage = (dataUrl: string) => {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
@@ -56,5 +59,35 @@ export const blobToDataUrl = (blob: Blob) => {
 export const blobToBase64 = async (blob: Blob) => {
   const dataUrl = await blobToDataUrl(blob);
   return dataUrl.split(",")[1];
+};
+
+export const calculateFilledBoundingBox = (
+  imageData: ImageUncompressed
+): BoundingBox => {
+  const { width, height, data } = imageData;
+
+  let minX = width;
+  let minY = height;
+  let maxX = 0;
+  let maxY = 0;
+
+  for (let maskIndex = 0; maskIndex < data.length; maskIndex++) {
+    const x = maskIndex % width;
+    const y = Math.floor(maskIndex / width);
+
+    if (data[maskIndex]) {
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x);
+      maxY = Math.max(maxY, y);
+    }
+  }
+
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
 };
 

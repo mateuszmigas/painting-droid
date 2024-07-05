@@ -1,22 +1,17 @@
-export type ImageMaskData = Uint8Array;
+import type { Position } from "./common";
+import type { ImageUncompressed } from "./imageData";
 
-export class ImageMask {
-  private data: ImageMaskData;
+export const getAtPosition = (image: ImageUncompressed, position: Position) => {
+  const { width, data } = image;
+  return !!data[position.y * width + position.x];
+};
 
-  constructor(private width: number, height: number) {
-    this.data = new Uint8Array(width * height);
-  }
-
-  get(x: number, y: number) {
-    return !!this.data[y * this.width + x];
-  }
-
-  set(x: number, y: number, value: boolean) {
-    this.data[y * this.width + x] = value ? 1 : 0;
-  }
-
-  getData() {
-    return this.data;
-  }
-}
+export const setAtPosition = (
+  image: ImageUncompressed,
+  position: Position,
+  value: boolean
+) => {
+  const { width, data } = image;
+  data[position.y * width + position.x] = value ? 1 : 0;
+};
 

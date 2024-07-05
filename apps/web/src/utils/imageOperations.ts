@@ -1,7 +1,7 @@
 import type { RgbaColor } from "./color";
 import type { Position } from "./common";
-import type { ImageUncompressed } from "./imageData";
-import { ImageMask } from "./imageMask";
+import type { ImageMask, ImageUncompressed } from "./imageData";
+import { getAtPosition, setAtPosition } from "./imageMask";
 
 export const getPixelColor = (
   position: Position,
@@ -37,7 +37,7 @@ export const floodFill = (
     return imageData;
   }
 
-  const fillData = fillMask.getData();
+  const fillData = fillMask.data;
 
   for (let maskIndex = 0; maskIndex < fillData.length; maskIndex++) {
     if (fillData[maskIndex]) {
@@ -68,7 +68,11 @@ const generateFillMask = (
 ): ImageMask | null => {
   const { width, height } = imageData;
 
-  const filled = new ImageMask(width, height);
+  const filled = {
+    data: new Uint8ClampedArray(width * height),
+    width,
+    height,
+  };
 
   const shouldBeFilled = (position: { x: number; y: number }) => {
     if (
@@ -77,7 +81,7 @@ const generateFillMask = (
       position.y >= 0 &&
       position.y < height
     ) {
-      if (filled.get(position.x, position.y)) {
+      if (getAtPosition(filled, position)) {
         return false;
       }
       const targetColor = getPixelColor(position, imageData);
@@ -105,11 +109,11 @@ const generateFillMask = (
     let { x, y } = stack.pop()!;
     let lx = x;
     while (shouldBeFilled({ x: lx - 1, y })) {
-      filled.set(lx - 1, y, true);
+      setAtPosition(filled, { x: lx - 1, y }, true);
       lx = lx - 1;
     }
     while (shouldBeFilled({ x, y })) {
-      filled.set(x, y, true);
+      setAtPosition(filled, { x, y }, true);
       x = x + 1;
     }
     scan(lx, x - 1, y + 1);

@@ -6,8 +6,11 @@ import {
 import { type RgbaColor, rgbaToRgbaString } from "./color";
 import type { CanvasBitmapContext, Rectangle, Size } from "./common";
 import { dataUrlToImage } from "./image";
-import type { ImageCompressedData, ImageUncompressed } from "./imageData";
-import type { ImageMask } from "./imageMask";
+import type {
+  ImageCompressedData,
+  ImageMask,
+  ImageUncompressed,
+} from "./imageData";
 
 export class ImageProcessor {
   private context!: CanvasBitmapContext;
@@ -174,7 +177,7 @@ export class ImageProcessor {
     this.tasks.push(async () => {
       const { width, height } = this.context.canvas;
       const imageData = this.context.getImageData(0, 0, width, height);
-      const maskData = mask.getData();
+      const maskData = mask.data;
 
       for (let maskIndex = 0; maskIndex < maskData.length; maskIndex++) {
         const imageIndex = maskIndex * 4;
