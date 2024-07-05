@@ -43,21 +43,16 @@ export const useCanvasToolHandlers = () => {
       const { shape, bitmapContextChanged } = result;
 
       if (shape) {
-        if (shape.capturedArea) {
-          shape.capturedArea.data = await ImageProcessor.fromCropContext(
-            context.bitmap,
-            shape.boundingBox
-          ).toCompressedData();
-        }
         await canvasActionDispatcher.execute("addShape", { shape });
       }
 
       if (bitmapContextChanged) {
         const activeLayer = layers[activeLayerIndex];
         const { name, icon } = canvasToolsMetadata[toolId!];
-        const { data, width, height } = await ImageProcessor.fromContext(
-          context.bitmap
-        ).toCompressed();
+        const { data, width, height } =
+          await ImageProcessor.fromExistingContext(
+            context.bitmap
+          ).toCompressed();
 
         const layerData =
           !activeLayer.visible && activeLayer.data

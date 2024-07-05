@@ -43,15 +43,6 @@ export const canvasShapeToShapes2d = (
     result.push(...createGripsShapes(shape.boundingBox));
   }
 
-  if (shape.type === "captured-mask") {
-    result.push({
-      type: "selection-mask",
-      mask: shape.imageMask,
-    });
-    result.push(createSelectionShape(shape.boundingBox));
-    result.push(...createGripsShapes(shape.boundingBox));
-  }
-
   if (shape.type === "generated-image" || shape.type === "dropped-image") {
     result.push(
       createSelectionShape(shape.boundingBox, [

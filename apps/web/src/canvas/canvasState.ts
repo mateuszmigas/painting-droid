@@ -39,11 +39,6 @@ export type CanvasShape = {
     }
   | {
       id: string;
-      type: "captured-mask";
-      imageMask: ImageMaskData;
-    }
-  | {
-      id: string;
       type: "drawn-rectangle";
       fill: RgbaColor;
       stroke: { color: RgbaColor; width: number };

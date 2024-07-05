@@ -10,6 +10,8 @@ import { getPixelColor, selectMask } from "@/utils/imageOperations";
 import { areColorsClose } from "@/utils/color";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 import type { CanvasShape } from "@/canvas/canvasState";
+import { uuid } from "@/utils/uuid";
+import { ImageProcessor } from "@/utils/imageProcessor";
 
 const translations = getTranslations().tools.magicWandSelect;
 
@@ -24,7 +26,7 @@ class MagicWandSelectTool implements CanvasTool<never> {
   configure(_: never): void {}
 
   processEvent(event: CanvasToolEvent) {
-    if (event.type !== "pointerDown") {
+    if (event.type !== "pointerUp") {
       return;
     }
     const imageData = this.bitmapContext.getImageData(
@@ -38,49 +40,54 @@ class MagicWandSelectTool implements CanvasTool<never> {
       x: ~~event.canvasPosition.x,
       y: ~~event.canvasPosition.y,
     };
+
+    if (
+      position.x < 0 ||
+      position.y < 0 ||
+      position.x >= imageData.width ||
+      position.y >= imageData.height
+    ) {
+      return;
+    }
+
     const originColor = getPixelColor(position, imageData);
     const fillMask = selectMask(imageData, position, (color) =>
       areColorsClose(color, originColor, 0.5)
     )!;
 
+    const boundingBox = {
+      x: 0,
+      y: 0,
+      width: imageData.width,
+      height: imageData.height,
+    };
     const shape: CanvasShape = {
-      id: "123",
-      type: "captured-mask",
-      boundingBox: {
-        x: 0,
-        y: 0,
-        width: imageData.width,
-        height: imageData.height,
+      id: uuid(),
+      type: "captured-rectangle",
+      boundingBox,
+      capturedArea: {
+        box: boundingBox,
+        data: null as never, //data will be set when the shape is committed
       },
-      imageMask: fillMask.getData(),
     };
 
     this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
 
-    // const fillData = fillMask.getData();
-
-    // for (let maskIndex = 0; maskIndex < fillData.length; maskIndex++) {
-    //   if (fillData[maskIndex]) {
-    //     const imageIndex = maskIndex * 4;
-    //     imageData.data[imageIndex] = 255;
-    //     imageData.data[imageIndex + 1] = 0;
-    //     imageData.data[imageIndex + 2] = 0;
-    //     imageData.data[imageIndex + 3] = 255;
-    //   }
-    // }
-
-    // imageData.data.set(imageData.data);
-    // this.bitmapContext.putImageData(imageData, 0, 0);
-    this.onCommitCallback?.({ bitmapContextChanged: true });
+    ImageProcessor.fromClonedContext(this.bitmapContext)
+      .mask(fillMask)
+      .toCompressedData()
+      .then((data) => {
+        this.onCommitCallback?.({
+          shape: { ...shape, capturedArea: { box: boundingBox, data } },
+        });
+      });
   }
 
   onCommit(callback: (result: CanvasToolResult) => void) {
     this.onCommitCallback = callback;
   }
 
-  reset() {
-    // this.startCanvasPosition = null;
-  }
+  reset() {}
 }
 
 export const magicWandSelectToolMetadata = createCanvasToolMetadata({
