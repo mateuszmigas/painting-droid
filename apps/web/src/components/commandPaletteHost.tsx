@@ -24,6 +24,8 @@ import type { CommandContext } from "@/commands/context";
 import { useDialogService } from "@/contexts/dialogService";
 import { sortBySelector } from "@/utils/array";
 import { useNotificationService } from "@/contexts/notificationService";
+import { getTranslations } from "@/translations";
+const commandPaletteTranslations = getTranslations().commandPalette;
 
 export type CommandService = {
   executeCommandWithDefaults: ExecuteCommandWithDefaults;
@@ -82,9 +84,9 @@ export const CommandPaletteHost = memo(
 
     return (
       <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput placeholder={commandPaletteTranslations.placeholder} />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>{commandPaletteTranslations.noResults}</CommandEmpty>
           {sortedCommands.map((command) => (
             <CommandItem
               onSelect={() => {

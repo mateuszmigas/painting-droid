@@ -57,6 +57,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.0",
+    "react-markdown": "^9.0.1",
     "react-resizable-panels": "^2.0.19",
     "solid-js": "^1.8.18",
     "solid-transition-group": "^0.2.3",

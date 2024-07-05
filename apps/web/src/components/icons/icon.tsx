@@ -76,6 +76,7 @@ import {
   Bot,
   BotMessageSquare,
   WandSparkles,
+  RefreshCw,
 } from "lucide-react";
 import { Deselect } from "./custom/deselect";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
@@ -163,7 +164,8 @@ type BaseIconType =
   | "image-minus"
   | "bot"
   | "bot-message-square"
-  | "wand-sparkles";
+  | "wand-sparkles"
+  | "refresh";
 
 export type IconType = BaseIconType | `${BaseIconType}_ai`;
 
@@ -358,6 +360,8 @@ const renderLucideIcon = (
       return <BotMessageSquare className={className} size={fontSize} />;
     case "wand-sparkles":
       return <WandSparkles className={className} size={fontSize} />;
+    case "refresh":
+      return <RefreshCw className={className} size={fontSize} />;
     default:
       return assertNever(icon);
   }

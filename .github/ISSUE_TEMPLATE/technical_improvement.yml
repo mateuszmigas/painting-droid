@@ -1,6 +1,5 @@
 name: 'Technical improvement'
 description: 'Suggest a technical improvement for this project'
-title: '[Tech] '
 labels: 'technical improvement'
 body: 
   - type: textarea

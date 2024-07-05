@@ -1,6 +1,5 @@
 import { memo, useEffect, useRef, useState } from "react";
 import { Input } from "../ui/input";
-import { cn } from "@/utils/css";
 import { Button } from "../ui/button";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Droid } from "../droid";
@@ -19,17 +18,43 @@ import {
   SelectValue,
 } from "../ui/select";
 import { readStream } from "@/utils/stream";
+import { adjustmentsMetadata } from "@/adjustments";
+import { ChatSuggestion } from "./chatSuggestion";
+import { ChatMessageRow } from "./chatMessageRow";
+import {
+  PromiseCancellationTokenSource,
+  makeCancellableWithToken,
+} from "@/utils/promise";
+import { features } from "@/features";
+import type { ChatAction, ChatActionKey } from "@/types/chat";
+import { useChatStore } from "@/store/chatStore";
 
-const chatTranslations = getTranslations().chat;
+const translations = getTranslations();
+const chatTranslations = translations.chat;
 
-type ChatMessage =
-  | {
-      type: "user";
-      text: string;
-    }
-  | ({ type: "assistant" } & ({ text: string } | { error: string }));
+const actions: ChatAction[] = Object.entries(adjustmentsMetadata).map(
+  ([key, value]) => {
+    return { key, description: value.name };
+  }
+);
+
+const filterValidActions = (actions: ChatActionKey[]) => {
+  if (!Array.isArray(actions)) {
+    return [];
+  }
+  return actions.filter(
+    (action) => typeof action === "string" && action in adjustmentsMetadata
+  );
+};
 
 export const Chat = memo(() => {
+  const {
+    messages,
+    addMessage,
+    updateLastMessage,
+    removeLastMessage,
+    clearMessages,
+  } = useChatStore();
   const models = useChatModels();
   const canvasData = useWorkspacesStore((state) =>
     activeWorkspaceCanvasDataSelector(state)
@@ -39,69 +64,79 @@ export const Chat = memo(() => {
   const scrollTargetRef = useRef<HTMLDivElement>(null);
   const [modelId, setModelId] = useState<string>(models[0]?.id);
   const [prompt, setPrompt] = useState<string>("");
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { type: "assistant", text: chatTranslations.welcomeMessage },
-  ]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showSuggestions, setShotSuggestions] = useState(true);
+  const fetchActionsTokenSource = useRef<PromiseCancellationTokenSource>();
 
   const sendMessage = async (prompt: string) => {
-    setShotSuggestions(false);
     setIsProcessing(true);
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { type: "user", text: prompt },
-    ]);
+    addMessage({ type: "user", text: prompt });
     setPrompt("");
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { type: "assistant", text: "..." },
-    ]);
+    addMessage({ type: "assistant", text: "..." });
 
     const { definition, config } = models.find(
       (model) => model.id === modelId
     )!;
 
-    const updateLastMessage = (
-      updater: (message: ChatMessage) => ChatMessage
-    ) =>
-      setMessages((prevMessages) => [
-        ...prevMessages.slice(0, prevMessages.length - 1),
-        updater(prevMessages[prevMessages.length - 1]),
-      ]);
+    const image = activeLayer.data
+      ? { ...canvasData.size, data: activeLayer.data }
+      : null;
 
-    definition.chat
-      .execute(
+    try {
+      const { stream, getActions } = await definition.chat.execute(
         modelId,
         prompt,
-        activeLayer.data
-          ? { ...canvasData.size, data: activeLayer.data }
-          : null,
+        image,
+        actions,
         {},
         config
-      )
-      .then((img) => {
-        updateLastMessage(() => ({ type: "assistant", text: "" }));
-        readStream(img, (chunk) => {
-          updateLastMessage((lastMessage) =>
-            "text" in lastMessage
-              ? { ...lastMessage, text: lastMessage.text + chunk }
-              : lastMessage
-          );
-        });
-      })
-      .catch((error) => {
-        updateLastMessage(() => ({
-          type: "assistant",
-          error: error.message,
+      );
+
+      updateLastMessage(() => ({ type: "assistant", text: "" }));
+
+      await readStream(stream, (chunk) =>
+        updateLastMessage((lastMessage) =>
+          "text" in lastMessage
+            ? { ...lastMessage, text: lastMessage.text + chunk }
+            : lastMessage
+        )
+      );
+
+      updateLastMessage((message) => ({ ...message, actions: [] }));
+
+      if (!features.chatActions) {
+        return;
+      }
+      fetchActionsTokenSource.current = new PromiseCancellationTokenSource();
+      makeCancellableWithToken(
+        getActions(),
+        fetchActionsTokenSource.current.getToken()
+      ).then((actionKeys) => {
+        updateLastMessage((message) => ({
+          ...message,
+          actions: filterValidActions(actionKeys),
         }));
-      })
-      .finally(() => {
-        setIsProcessing(false);
       });
+    } catch {
+      updateLastMessage(() => ({
+        type: "assistant",
+        error: "Error",
+      }));
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  const retry = async () => {
+    fetchActionsTokenSource.current?.cancel();
+    const userMessage = messages[messages.length - 2];
+    if (userMessage.type !== "user") {
+      return;
+    }
+    removeLastMessage();
+    await sendMessage(userMessage.text);
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Need to trigger scrollIntoView on messages change
   useEffect(() => {
     scrollTargetRef.current?.scrollIntoView({ behavior: "instant" });
   }, [messages]);
@@ -121,49 +156,47 @@ export const Chat = memo(() => {
         sendMessage(prompt);
       }}
     >
-      <Select onValueChange={setModelId} value={modelId}>
-        <SelectTrigger>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {models.map((model) => (
-            <SelectItem key={model.id} value={model.id}>
-              <div className="truncate max-w-[300px]">{model.display}</div>
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex flex-row items-center gap-medium">
+        <Select onValueChange={setModelId} value={modelId}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {models.map((model) => (
+              <SelectItem key={model.id} value={model.id}>
+                <div className="truncate max-w-[300px]">{model.display}</div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button
+          disabled={isProcessing}
+          variant="outline"
+          type="button"
+          onClick={clearMessages}
+        >
+          {translations.general.clear}
+        </Button>
+      </div>
       <ScrollArea ref={scrollAreaRef} className="flex-1">
         <div className="flex flex-col gap-medium">
           {messages.map((message, index) => (
-            <div
-              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-              key={index}
-              className={cn("rounded-lg py-small px-medium", {
-                "bg-primary text-input-foreground self-end":
-                  message.type === "user",
-                "self-start": message.type === "assistant",
-                "text-destructive": "error" in message,
-              })}
-            >
-              {"error" in message ? message.error : message.text}
-            </div>
+            // biome-ignore lint/suspicious/noArrayIndexKey: it's fine to use index as key here
+            <ChatMessageRow key={index} message={message} onRetry={retry} />
           ))}
         </div>
         <div ref={scrollTargetRef} />
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      {showSuggestions && (
+      {messages.length === 1 && (
         <div className="flex flex-col gap-small">
-          {chatTranslations.suggestions.map((suggestion) => (
-            <button
+          {chatTranslations.suggestions.map((suggestion, index) => (
+            <ChatSuggestion
+              // biome-ignore lint/suspicious/noArrayIndexKey: it's fine to use index as key here
+              key={index}
+              suggestion={suggestion}
               onClick={() => sendMessage(suggestion)}
-              type="button"
-              key={suggestion}
-              className="rounded-lg text-sm py-small px-medium border self-end"
-            >
-              {suggestion}
-            </button>
+            />
           ))}
         </div>
       )}
@@ -187,3 +220,4 @@ export const Chat = memo(() => {
     </form>
   );
 });
+
