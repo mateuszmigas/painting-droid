@@ -306,7 +306,7 @@ This action cannot be undone.`,
     openSettingsDialog: "Open Settings",
     fitCanvasToWindow: "Fit Canvas to Window",
     openCommandPalette: "Open Command Palette",
-    openChatPopup: "Open Chat",
+    toggleChatPopup: "Open Chat",
     openFile: "Open File",
     redoCanvasAction: "Redo Canvas Action",
     undoCanvasAction: "Undo Canvas Action",
@@ -349,6 +349,7 @@ This action cannot be undone.`,
     anchor: "Anchor",
     apply: "Apply",
     cancel: "Cancel",
+    clear: "Clear",
     close: "Close",
     create: "Create",
     edit: "Edit",
@@ -416,3 +417,4 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
+

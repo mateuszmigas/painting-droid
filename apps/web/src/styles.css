@@ -127,6 +127,15 @@
     background: linear-gradient(to bottom, var(--hsvalue-track-color), black);
   }
 
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
   @keyframes glow-animation {
     0% {
       stroke: red;
@@ -149,6 +158,10 @@
     animation: glow-animation 1.5s infinite alternate;
   }
 
+  .animate-fade-in {
+    animation: fade-in 0.2s ease-in-out;
+  }
+
   .pile {
     display: grid;
     > * {
@@ -156,3 +169,4 @@
     }
   }
 }
+

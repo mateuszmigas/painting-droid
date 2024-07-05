@@ -1,4 +1,8 @@
-import type { ChatActionKey } from "@/models/types/chatModel";
+export type ChatActionKey = string;
+export type ChatAction = {
+  key: ChatActionKey;
+  description: string;
+};
 
 export type ChatMessage =
   | {
