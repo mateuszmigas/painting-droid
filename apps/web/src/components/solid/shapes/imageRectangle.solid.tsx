@@ -1,5 +1,6 @@
 /* @jsxImportSource solid-js */
 import type { BoundingBox } from "@/utils/common";
+import { cn } from "@/utils/css";
 import type { Viewport } from "@/utils/manipulation";
 import {
   createSignal,
@@ -11,6 +12,7 @@ import {
 export type ImageRectangleProps = {
   boundingBox: BoundingBox;
   blob?: Blob;
+  outline: boolean;
 };
 
 export const ImageRectangle = (
@@ -43,7 +45,7 @@ export const ImageRectangle = (
 
   return (
     <image
-      class="pixelated-canvas"
+      class={cn("pixelated-canvas", props.outline && "image-outline")}
       width={Math.abs(props.boundingBox.width) * props.viewport.zoom}
       height={Math.abs(props.boundingBox.height) * props.viewport.zoom}
       preserveAspectRatio="none"
@@ -52,3 +54,4 @@ export const ImageRectangle = (
     />
   );
 };
+

@@ -51,6 +51,11 @@ class MagicWandSelectTool implements CanvasTool<never> {
     }
 
     const originColor = getPixelColor(position, imageData);
+
+    if (originColor.a < 1) {
+      return;
+    }
+
     const fillMask = selectMask(imageData, position, (color) =>
       areColorsClose(color, originColor, 0.5)
     )!;
@@ -63,7 +68,7 @@ class MagicWandSelectTool implements CanvasTool<never> {
     };
     const shape: CanvasShape = {
       id: uuid(),
-      type: "captured-rectangle",
+      type: "captured-area",
       boundingBox,
       capturedArea: {
         box: boundingBox,

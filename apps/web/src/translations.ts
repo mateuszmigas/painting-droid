@@ -94,7 +94,7 @@ const translations = {
       transform: "Transform Selection",
       apply: "Apply Selection",
     },
-    "captured-mask": {
+    "captured-area": {
       add: "Select Area",
       transform: "Transform Area",
       apply: "Apply Area",

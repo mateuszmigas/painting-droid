@@ -162,6 +162,11 @@
     animation: fade-in 0.2s ease-in-out;
   }
 
+  .image-outline {
+    filter: drop-shadow(1px 0 0 white) drop-shadow(0 1px 0 white)
+      drop-shadow(-1px 0 0 white) drop-shadow(0 -1px 0 white);
+  }
+
   .pile {
     display: grid;
     > * {
