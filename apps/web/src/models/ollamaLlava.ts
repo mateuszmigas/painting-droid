@@ -11,6 +11,7 @@ import { blobToBase64 } from "@/utils/image";
 import { handleHttpError } from "./utils";
 import { makeDeferred } from "@/utils/promise";
 import type { ImageCompressed } from "@/utils/imageData";
+import { features } from "@/features";
 const translations = getTranslations().models;
 
 const imageModelSystemPrompt = "You are an assistant for a graphic program.";
@@ -116,7 +117,9 @@ const chat = createChatSection({
         const parsed = JSON.parse(chunk) as ChatResponseChunk;
         controller.enqueue(parsed.response);
         promptResponse += parsed.response;
-        parsed.done && getActions(promptResponse);
+        if (features.chatActions && parsed.done) {
+          getActions(promptResponse);
+        }
       },
     });
 

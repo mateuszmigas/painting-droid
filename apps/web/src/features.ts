@@ -7,4 +7,6 @@ export const features = {
   nativeColorPicker: isMobile(),
   shareFiles: "share" in navigator,
   computeShaders: "gpu" in navigator,
+  chatActions: false,
 };
+

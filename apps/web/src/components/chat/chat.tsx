@@ -27,6 +27,7 @@ import {
   PromiseCancellationTokenSource,
   makeCancellableWithToken,
 } from "@/utils/promise";
+import { features } from "@/features";
 
 const chatTranslations = getTranslations().chat;
 
@@ -37,7 +38,6 @@ const actions: ChatAction[] = Object.entries(adjustmentsMetadata).map(
 );
 
 const filterValidActions = (actions: ChatActionKey[]) => {
-  console.log("filtering", actions);
   if (!Array.isArray(actions)) {
     return [];
   }
@@ -114,6 +114,9 @@ export const Chat = memo(() => {
 
       updateLastMessage((message) => ({ ...message, actions: [] }));
 
+      if (!features.chatActions) {
+        return;
+      }
       fetchActionsTokenSource.current = new PromiseCancellationTokenSource();
       makeCancellableWithToken(
         getActions(),

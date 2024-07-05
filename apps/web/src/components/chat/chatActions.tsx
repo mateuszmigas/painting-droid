@@ -25,7 +25,7 @@ export const ChatActions = memo(
                 variant="link"
                 className="p-2"
                 onClick={() => {
-                  console.log("handling action", action);
+                  //todo
                 }}
               >
                 {adjustmentsMetadata[action as AdjustmentId].name}
