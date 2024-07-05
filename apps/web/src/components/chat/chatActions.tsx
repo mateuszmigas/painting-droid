@@ -2,8 +2,8 @@ import { memo } from "react";
 import { IconButton } from "../icons/iconButton";
 import { Button } from "../ui/button";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import type { ChatActionKey } from "@/models/types/chatModel";
 import { type AdjustmentId, adjustmentsMetadata } from "@/adjustments";
+import type { ChatActionKey } from "@/types/chat";
 
 export const ChatActions = memo(
   (props: {
