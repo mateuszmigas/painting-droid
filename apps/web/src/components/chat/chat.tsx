@@ -19,17 +19,18 @@ import {
 } from "../ui/select";
 import { readStream } from "@/utils/stream";
 import { adjustmentsMetadata } from "@/adjustments";
-import type { ChatAction, ChatActionKey } from "@/models/types/chatModel";
 import { ChatSuggestion } from "./chatSuggestion";
 import { ChatMessageRow } from "./chatMessageRow";
-import type { ChatMessage } from "./types";
 import {
   PromiseCancellationTokenSource,
   makeCancellableWithToken,
 } from "@/utils/promise";
 import { features } from "@/features";
+import type { ChatAction, ChatActionKey } from "@/types/chat";
+import { useChatStore } from "@/store/chatStore";
 
-const chatTranslations = getTranslations().chat;
+const translations = getTranslations();
+const chatTranslations = translations.chat;
 
 const actions: ChatAction[] = Object.entries(adjustmentsMetadata).map(
   ([key, value]) => {
@@ -47,6 +48,13 @@ const filterValidActions = (actions: ChatActionKey[]) => {
 };
 
 export const Chat = memo(() => {
+  const {
+    messages,
+    addMessage,
+    updateLastMessage,
+    removeLastMessage,
+    clearMessages,
+  } = useChatStore();
   const models = useChatModels();
   const canvasData = useWorkspacesStore((state) =>
     activeWorkspaceCanvasDataSelector(state)
@@ -56,37 +64,18 @@ export const Chat = memo(() => {
   const scrollTargetRef = useRef<HTMLDivElement>(null);
   const [modelId, setModelId] = useState<string>(models[0]?.id);
   const [prompt, setPrompt] = useState<string>("");
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { type: "assistant", text: chatTranslations.welcomeMessage },
-  ]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showSuggestions, setShotSuggestions] = useState(true);
   const fetchActionsTokenSource = useRef<PromiseCancellationTokenSource>();
 
   const sendMessage = async (prompt: string) => {
-    setShotSuggestions(false);
     setIsProcessing(true);
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { type: "user", text: prompt },
-    ]);
+    addMessage({ type: "user", text: prompt });
     setPrompt("");
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { type: "assistant", text: "..." },
-    ]);
+    addMessage({ type: "assistant", text: "..." });
 
     const { definition, config } = models.find(
       (model) => model.id === modelId
     )!;
-
-    const updateLastMessage = (
-      updater: (message: ChatMessage) => ChatMessage
-    ) =>
-      setMessages((prevMessages) => [
-        ...prevMessages.slice(0, prevMessages.length - 1),
-        updater(prevMessages[prevMessages.length - 1]),
-      ]);
 
     const image = activeLayer.data
       ? { ...canvasData.size, data: activeLayer.data }
@@ -143,7 +132,7 @@ export const Chat = memo(() => {
     if (userMessage.type !== "user") {
       return;
     }
-    setMessages((prevMessages) => prevMessages.slice(0, -2));
+    removeLastMessage();
     await sendMessage(userMessage.text);
   };
 
@@ -167,18 +156,28 @@ export const Chat = memo(() => {
         sendMessage(prompt);
       }}
     >
-      <Select onValueChange={setModelId} value={modelId}>
-        <SelectTrigger>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {models.map((model) => (
-            <SelectItem key={model.id} value={model.id}>
-              <div className="truncate max-w-[300px]">{model.display}</div>
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex flex-row items-center gap-medium">
+        <Select onValueChange={setModelId} value={modelId}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {models.map((model) => (
+              <SelectItem key={model.id} value={model.id}>
+                <div className="truncate max-w-[300px]">{model.display}</div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button
+          disabled={isProcessing}
+          variant="outline"
+          type="button"
+          onClick={clearMessages}
+        >
+          {translations.general.clear}
+        </Button>
+      </div>
       <ScrollArea ref={scrollAreaRef} className="flex-1">
         <div className="flex flex-col gap-medium">
           {messages.map((message, index) => (
@@ -189,7 +188,7 @@ export const Chat = memo(() => {
         <div ref={scrollTargetRef} />
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      {showSuggestions && (
+      {messages.length === 1 && (
         <div className="flex flex-col gap-small">
           {chatTranslations.suggestions.map((suggestion, index) => (
             <ChatSuggestion

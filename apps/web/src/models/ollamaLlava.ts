@@ -1,17 +1,13 @@
 import { getTranslations } from "@/translations";
 import { createConfigSchema } from "./types/baseModel";
-import {
-  type ChatModel,
-  createChatSection,
-  type ChatAction,
-  type ChatActionKey,
-} from "./types/chatModel";
+import { type ChatModel, createChatSection } from "./types/chatModel";
 import type { CustomFieldsSchemaAsValues } from "@/utils/customFieldsSchema";
 import { blobToBase64 } from "@/utils/image";
 import { handleHttpError } from "./utils";
 import { makeDeferred } from "@/utils/promise";
 import type { ImageCompressed } from "@/utils/imageData";
 import { features } from "@/features";
+import type { ChatAction, ChatActionKey } from "@/types/chat";
 const translations = getTranslations().models;
 
 const imageModelSystemPrompt = "You are an assistant for a graphic program.";

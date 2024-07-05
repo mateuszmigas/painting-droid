@@ -2,14 +2,14 @@ import { cn } from "@/utils/css";
 import { memo } from "react";
 import ReactMarkdown from "react-markdown";
 import { ChatActions } from "./chatActions";
-import type { ChatMessage } from "./types";
+import type { ChatMessage } from "@/types/chat";
 
 export const ChatMessageRow = memo(
   (props: { message: ChatMessage; onRetry: () => void }) => {
     const { message, onRetry } = props;
     return (
       <div
-        className={cn("rounded-lg py-small px-medium", {
+        className={cn("animate-fade-in rounded-lg py-small px-medium", {
           "bg-primary text-primary-foreground self-end":
             message.type === "user",
           "w-full": message.type === "assistant",

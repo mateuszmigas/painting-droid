@@ -297,6 +297,10 @@ This action cannot be undone.`,
     dark: "Dark",
     system: "System",
   },
+  commandPalette: {
+    placeholder: "Type a command or search...",
+    noResults: "No results found",
+  },
   commands: {
     clearActiveWorkspace: "Clear Workspace",
     closeActiveWorkspace: "Close Workspace",
@@ -349,6 +353,7 @@ This action cannot be undone.`,
     anchor: "Anchor",
     apply: "Apply",
     cancel: "Cancel",
+    clear: "Clear",
     close: "Close",
     create: "Create",
     edit: "Edit",
@@ -416,3 +421,4 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
+

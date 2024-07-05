@@ -4,12 +4,7 @@ import type {
   CustomFieldsSchema,
   CustomFieldsSchemaAsValues,
 } from "@/utils/customFieldsSchema";
-
-export type ChatActionKey = string;
-export type ChatAction = {
-  key: ChatActionKey;
-  description: string;
-};
+import type { ChatAction, ChatActionKey } from "@/types/chat";
 
 export type ChatSection<
   TOptionsSchema extends CustomFieldsSchema,
