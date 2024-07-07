@@ -2,12 +2,14 @@ import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import {
   createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
+  type InferToolSettings,
   type CanvasTool,
   type CanvasToolEvent,
   type CanvasToolResult,
 } from "./canvasTool";
 import { getPixelColor, selectMask } from "@/utils/imageOperations";
-import { areColorsClose } from "@/utils/color";
+import { areColorsClose, calculateForegroundColor } from "@/utils/color";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 import type { CanvasShape } from "@/canvas/canvasState";
 import { uuid } from "@/utils/uuid";
@@ -16,15 +18,30 @@ import { calculateFilledBoundingBox } from "@/utils/image";
 
 const translations = getTranslations().tools.magicWandSelect;
 
-class MagicWandSelectTool implements CanvasTool<never> {
+const settingsSchema = createCanvasToolSettingsSchema({
+  tolerance: {
+    name: translations.settings.tolerance,
+    type: "range-percent",
+    defaultValue: 10,
+    min: 0,
+    max: 50,
+  },
+});
+
+type MagicWandSelectToolSettings = InferToolSettings<typeof settingsSchema>;
+
+class MagicWandSelectTool implements CanvasTool<MagicWandSelectToolSettings> {
   private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
+  private tolerance = 0;
 
   constructor(
     private bitmapContext: CanvasBitmapContext,
     private vectorContext: CanvasVectorContext
   ) {}
 
-  configure(_: never): void {}
+  configure(settings: MagicWandSelectToolSettings) {
+    this.tolerance = settings.tolerance;
+  }
 
   processEvent(event: CanvasToolEvent) {
     if (event.type !== "pointerDown") {
@@ -58,7 +75,7 @@ class MagicWandSelectTool implements CanvasTool<never> {
     }
 
     const fillMask = selectMask(imageData, position, (color) =>
-      areColorsClose(color, originColor, 10)
+      areColorsClose(color, originColor, this.tolerance)
     )!;
 
     const boundingBox = calculateFilledBoundingBox(fillMask);
@@ -67,6 +84,7 @@ class MagicWandSelectTool implements CanvasTool<never> {
       id: uuid(),
       type: "captured-area",
       boundingBox,
+      outlineColor: calculateForegroundColor(originColor),
       capturedArea: {
         box: boundingBox,
         data: null as never, //data will be set when the shape is committed
@@ -97,7 +115,7 @@ export const magicWandSelectToolMetadata = createCanvasToolMetadata({
   id: "magicWandSelect",
   name: translations.name,
   icon: "wand-sparkles",
-  settingsSchema: {},
+  settingsSchema,
   create: (context) => new MagicWandSelectTool(context.bitmap, context.vector),
 });
 

@@ -35,7 +35,8 @@ export const canvasShapeToShapes2d = (
       type: "image-rectangle",
       boundingBox: shape.boundingBox,
       blob: shape.capturedArea.data,
-      outline: shape.type === "captured-area",
+      outlineColor:
+        shape.type === "captured-area" ? shape.outlineColor : undefined,
     });
   }
 

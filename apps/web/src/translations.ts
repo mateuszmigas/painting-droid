@@ -116,6 +116,9 @@ const translations = {
     },
     magicWandSelect: {
       name: "Magic Wand Select",
+      settings: {
+        tolerance: "Tolerance",
+      },
     },
     shapeDraw: {
       name: "Shape",

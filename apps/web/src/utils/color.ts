@@ -159,9 +159,11 @@ export const calculateLuminance = (color: RgbColor) => {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
 
-export const calculateTextColor = (color: RgbColor) => {
+export const calculateForegroundColor = (color: RgbColor): RgbaColor => {
   const luminance = calculateLuminance(color);
-  return luminance > 0.5 ? "#000" : "#fff";
+  return luminance > 0.5
+    ? { r: 0, g: 0, b: 0, a: 1 }
+    : { r: 255, g: 255, b: 255, a: 1 };
 };
 
 export const areColorsEqual = (color1: RgbaColor, color2: RgbaColor) => {

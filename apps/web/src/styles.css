@@ -163,8 +163,11 @@
   }
 
   .image-outline {
-    filter: drop-shadow(1px 0 0 white) drop-shadow(0 1px 0 white)
-      drop-shadow(-1px 0 0 white) drop-shadow(0 -1px 0 white);
+    --image-outline-color: white;
+    filter: drop-shadow(1px 0 0 var(--image-outline-color))
+      drop-shadow(0 1px 0 var(--image-outline-color))
+      drop-shadow(-1px 0 0 var(--image-outline-color))
+      drop-shadow(0 -1px 0 var(--image-outline-color));
   }
 
   .pile {
