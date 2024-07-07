@@ -63,6 +63,7 @@ export const rasterizeShape = async (
 
   switch (shape.type) {
     case "captured-rectangle":
+    case "captured-area":
     case "generated-image":
     case "dropped-image":
       break;
@@ -76,3 +77,4 @@ export const rasterizeShape = async (
       assertNever(shape);
   }
 };
+

@@ -57,12 +57,15 @@ export const useCanvasTool = (
       if (shapeTransformTool.beginTransform(canvasPosition, screenPosition)) {
         shapeTransformTool.stepTransform(canvasPosition);
       } else {
-        toolHandlers.resolveActiveShape();
-        drawTool.processEvent({
-          type: "pointerDown",
-          canvasPosition,
-          screenPosition,
-        });
+        if (toolHandlers.getActiveShape()) {
+          toolHandlers.resolveActiveShape();
+        } else {
+          drawTool.processEvent({
+            type: "pointerDown",
+            canvasPosition,
+            screenPosition,
+          });
+        }
       }
     };
 

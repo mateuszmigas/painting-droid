@@ -5,6 +5,7 @@ import { fillDrawToolMetadata } from "./fillDrawTool";
 import { rectangleSelectToolMetadata } from "./rectangleSelectTool";
 import { sprayDrawToolMetadata } from "./sprayDrawTool";
 import { shapeDrawToolMetadata } from "./shapeDrawTool";
+import { magicWandSelectToolMetadata } from "./magicWandSelectTool";
 
 export const canvasToolsMetadata = {
   brush: brushDrawToolMetadata,
@@ -13,6 +14,7 @@ export const canvasToolsMetadata = {
   fill: fillDrawToolMetadata,
   spray: sprayDrawToolMetadata,
   rectangleSelect: rectangleSelectToolMetadata,
+  magicWand: magicWandSelectToolMetadata,
   shape: shapeDrawToolMetadata,
 } as const;
 

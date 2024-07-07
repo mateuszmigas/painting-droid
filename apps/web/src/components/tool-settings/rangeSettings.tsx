@@ -24,10 +24,10 @@ export const RangeSetting = (props: {
       orientation="horizontal"
       title={title}
     >
-      <SliderPrimitive.Track className="relative h-input-thin w-full grow overflow-hidden rounded-md bg-primary/20 border">
+      <SliderPrimitive.Track className="relative h-input-thin w-full grow overflow-hidden rounded-md bg-primary/75 border">
         <SliderPrimitive.Range className="absolute h-full bg-primary" />
       </SliderPrimitive.Track>
-      <div className="absolute pl-1.5">
+      <div className="absolute pl-1.5 text-primary-foreground">
         {format === "percent" ? `${value}%` : value}
       </div>
     </SliderPrimitive.Root>

@@ -6,7 +6,11 @@ import {
 import { type RgbaColor, rgbaToRgbaString } from "./color";
 import type { CanvasBitmapContext, Rectangle, Size } from "./common";
 import { dataUrlToImage } from "./image";
-import type { ImageCompressedData, ImageUncompressed } from "./imageData";
+import type {
+  ImageCompressedData,
+  ImageMask,
+  ImageUncompressed,
+} from "./imageData";
 
 export class ImageProcessor {
   private context!: CanvasBitmapContext;
@@ -19,8 +23,17 @@ export class ImageProcessor {
     });
   }
 
-  public static fromContext(context: CanvasBitmapContext) {
+  public static fromExistingContext(context: CanvasBitmapContext) {
     return new ImageProcessor(() => Promise.resolve(context));
+  }
+
+  public static fromClonedContext(context: CanvasBitmapContext) {
+    return new ImageProcessor(async () => {
+      const { width, height } = context.canvas;
+      const cloneContext = createCanvasContext(width, height);
+      cloneContext.drawImage(context.canvas, 0, 0);
+      return cloneContext;
+    });
   }
 
   public static fromColor(color: RgbaColor, size: Size) {
@@ -156,6 +169,27 @@ export class ImageProcessor {
       const resizeContext = createCanvasContext(width, height);
       resizeContext.drawImage(this.context.canvas, 0, 0, width, height);
       this.context = resizeContext;
+    });
+    return this;
+  }
+
+  mask(mask: ImageMask) {
+    this.tasks.push(async () => {
+      const { width, height } = this.context.canvas;
+      const imageData = this.context.getImageData(0, 0, width, height);
+      const maskData = mask.data;
+
+      for (let maskIndex = 0; maskIndex < maskData.length; maskIndex++) {
+        const imageIndex = maskIndex * 4;
+        if (!maskData[maskIndex]) {
+          imageData.data[imageIndex] = 0;
+          imageData.data[imageIndex + 1] = 0;
+          imageData.data[imageIndex + 2] = 0;
+          imageData.data[imageIndex + 3] = 0;
+        }
+      }
+
+      this.context.putImageData(imageData, 0, 0);
     });
     return this;
   }

@@ -35,10 +35,12 @@ export const canvasShapeToShapes2d = (
       type: "image-rectangle",
       boundingBox: shape.boundingBox,
       blob: shape.capturedArea.data,
+      outlineColor:
+        shape.type === "captured-area" ? shape.outlineColor : undefined,
     });
   }
 
-  if (shape.type === "captured-rectangle") {
+  if (shape.type === "captured-rectangle" || shape.type === "captured-area") {
     result.push(createSelectionShape(shape.boundingBox));
     result.push(...createGripsShapes(shape.boundingBox));
   }
@@ -79,3 +81,4 @@ export const canvasShapeToShapes2d = (
 
   return result;
 };
+

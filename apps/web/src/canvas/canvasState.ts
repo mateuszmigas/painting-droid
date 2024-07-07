@@ -1,7 +1,7 @@
 import { defaultCanvasColor } from "@/constants";
 import { getTranslations } from "@/translations";
 import type { RgbaColor } from "@/utils/color";
-import type { BoundingBox, Rectangle, Size } from "@/utils/common";
+import type { BoundingBox, Color, Rectangle, Size } from "@/utils/common";
 import type { ImageCompressedData } from "@/utils/imageData";
 import { uuid } from "@/utils/uuid";
 
@@ -31,6 +31,12 @@ export type CanvasShape = {
       id: string;
       type: "dropped-image";
       capturedArea: CanvasCapturedArea;
+    }
+  | {
+      id: string;
+      type: "captured-area";
+      capturedArea: CanvasCapturedArea;
+      outlineColor?: Color;
     }
   | {
       id: string;
@@ -81,3 +87,4 @@ export const createDefaultCanvasState = (
   size,
   baseColor: baseColor !== undefined ? baseColor : defaultCanvasColor,
 });
+

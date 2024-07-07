@@ -94,6 +94,11 @@ const translations = {
       transform: "Transform Selection",
       apply: "Apply Selection",
     },
+    "captured-area": {
+      add: "Select Area",
+      transform: "Transform Area",
+      apply: "Apply Area",
+    },
     "drawn-rectangle": {
       add: "Draw Rectangle",
       transform: "Transform Rectangle",
@@ -108,6 +113,12 @@ const translations = {
   tools: {
     rectangleSelect: {
       name: "Rectangle Select",
+    },
+    magicWandSelect: {
+      name: "Magic Wand Select",
+      settings: {
+        tolerance: "Tolerance",
+      },
     },
     shapeDraw: {
       name: "Shape",

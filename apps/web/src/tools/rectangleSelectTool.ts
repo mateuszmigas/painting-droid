@@ -1,4 +1,8 @@
-import type { CanvasVectorContext, Position } from "@/utils/common";
+import type {
+  CanvasBitmapContext,
+  CanvasVectorContext,
+  Position,
+} from "@/utils/common";
 import { fastRound } from "@/utils/math";
 import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
@@ -12,6 +16,7 @@ import type { CanvasShape } from "@/canvas/canvasState";
 import { validateShape } from "../utils/boundingBoxTransform";
 import { createRectangleFromPoints } from "@/utils/geometry";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
+import { ImageProcessor } from "@/utils/imageProcessor";
 
 const translations = getTranslations().tools.rectangleSelect;
 
@@ -21,7 +26,10 @@ class RectangleSelectTool implements CanvasTool<never> {
   private onCommitCallback: ((result: CanvasToolResult) => void) | null = null;
   private shapeId = "";
 
-  constructor(private vectorContext: CanvasVectorContext) {}
+  constructor(
+    private bitmapContext: CanvasBitmapContext,
+    private vectorContext: CanvasVectorContext
+  ) {}
 
   configure(_: never): void {}
 
@@ -71,7 +79,15 @@ class RectangleSelectTool implements CanvasTool<never> {
         this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
 
       if (event.type === "pointerUp") {
-        isValid && this.onCommitCallback?.({ shape: shape });
+        if (isValid) {
+          ImageProcessor.fromCropContext(this.bitmapContext, shape.boundingBox)
+            .toCompressedData()
+            .then((data) => {
+              this.onCommitCallback?.({
+                shape: { ...shape, capturedArea: { box: boundingBox, data } },
+              });
+            });
+        }
         this.reset();
       }
     }
@@ -91,6 +107,6 @@ export const rectangleSelectToolMetadata = createCanvasToolMetadata({
   name: translations.name,
   icon: "rectangle-select",
   settingsSchema: {},
-  create: (context) => new RectangleSelectTool(context.vector),
+  create: (context) => new RectangleSelectTool(context.bitmap, context.vector),
 });
 

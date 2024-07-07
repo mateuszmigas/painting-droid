@@ -1,5 +1,7 @@
 /* @jsxImportSource solid-js */
-import type { BoundingBox } from "@/utils/common";
+import { ColorProcessor } from "@/utils/colorProcessor";
+import type { BoundingBox, Color } from "@/utils/common";
+import { cn } from "@/utils/css";
 import type { Viewport } from "@/utils/manipulation";
 import {
   createSignal,
@@ -11,6 +13,7 @@ import {
 export type ImageRectangleProps = {
   boundingBox: BoundingBox;
   blob?: Blob;
+  outlineColor?: Color;
 };
 
 export const ImageRectangle = (
@@ -43,7 +46,12 @@ export const ImageRectangle = (
 
   return (
     <image
-      class="pixelated-canvas"
+      style={{
+        "--image-outline-color": props.outlineColor
+          ? ColorProcessor.fromRgba(props.outlineColor).toRgbString()
+          : undefined,
+      }}
+      class={cn("pixelated-canvas", props.outlineColor && "image-outline")}
       width={Math.abs(props.boundingBox.width) * props.viewport.zoom}
       height={Math.abs(props.boundingBox.height) * props.viewport.zoom}
       preserveAspectRatio="none"
@@ -52,3 +60,4 @@ export const ImageRectangle = (
     />
   );
 };
+

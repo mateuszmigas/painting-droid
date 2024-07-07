@@ -5,7 +5,7 @@ import { AlphaSlider } from "./alphaSlider";
 import {
   type RgbaColor,
   type HsvaColor,
-  calculateTextColor,
+  calculateForegroundColor,
 } from "@/utils/color";
 import { useStableCallback } from "@/hooks";
 import { ColorButton } from "./colorButton";
@@ -76,7 +76,11 @@ export const CustomColorPicker = (props: {
             <div className="relative flex-1">
               <ColorButton className="absolute size-full" color={rgbaColor} />
               <div
-                style={{ color: calculateTextColor(rgbaColor) }}
+                style={{
+                  color: ColorProcessor.fromRgba(
+                    calculateForegroundColor(rgbaColor)
+                  ).toRgbString(),
+                }}
                 className="absolute size-full flex items-end justify-end p-small"
               >
                 <IconButton
@@ -95,3 +99,4 @@ export const CustomColorPicker = (props: {
     </Popover>
   );
 };
+

@@ -37,7 +37,7 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
 
   constructor(private bitmapContext: CanvasBitmapContext) {}
 
-  configure(settings: FillDrawToolSettings): void {
+  configure(settings: FillDrawToolSettings) {
     const { color, tolerance } = settings;
     this.fillColor = color;
     this.tolerance = tolerance;
