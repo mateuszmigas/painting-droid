@@ -27,7 +27,7 @@ class MagicWandSelectTool implements CanvasTool<never> {
   configure(_: never): void {}
 
   processEvent(event: CanvasToolEvent) {
-    if (event.type !== "pointerUp") {
+    if (event.type !== "pointerDown") {
       return;
     }
     const imageData = this.bitmapContext.getImageData(

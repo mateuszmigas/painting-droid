@@ -65,6 +65,7 @@ export const subscribeToPointerEvents = (
   };
   const pointerUp = (event: PointerEvent) => {
     event.preventDefault();
+    if (event.button !== 0) return;
     onPointerUp({
       x: event.offsetX,
       y: event.offsetY,

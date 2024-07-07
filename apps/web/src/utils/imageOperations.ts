@@ -1,7 +1,20 @@
 import type { RgbaColor } from "./color";
 import type { Position } from "./common";
 import type { ImageMask, ImageUncompressed } from "./imageData";
-import { getAtPosition, setAtPosition } from "./imageMask";
+
+const getAtPosition = (image: ImageUncompressed, position: Position) => {
+  const { width, data } = image;
+  return !!data[position.y * width + position.x];
+};
+
+const setAtPosition = (
+  image: ImageUncompressed,
+  position: Position,
+  value: boolean
+) => {
+  const { width, data } = image;
+  data[position.y * width + position.x] = value ? 1 : 0;
+};
 
 export const getPixelColor = (
   position: Position,
