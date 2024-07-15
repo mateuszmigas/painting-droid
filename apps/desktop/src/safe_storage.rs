@@ -1,4 +1,4 @@
-use keyring::{Entry};
+use keyring::Entry;
 
 pub struct SafeStorage {
     entry: Entry,
@@ -20,6 +20,6 @@ impl SafeStorage {
     }
 
     pub fn delete_password(&self) -> Result<(), String> {
-        self.entry.delete_password().map_err(|e| e.to_string())
+        self.entry.delete_credential().map_err(|e| e.to_string())
     }
 }
