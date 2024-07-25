@@ -95,7 +95,7 @@ jobs:
       - name: Install packages
         run: pnpm install --prefer-offline
 
-      - uses: mateuszmigas/tauri-action
+      - uses: mateuszmigas/tauri-action@dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
