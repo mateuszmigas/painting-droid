@@ -95,7 +95,7 @@ jobs:
       - name: Install packages
         run: pnpm install --prefer-offline
 
-      - uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@v0.5.10
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
@@ -134,4 +134,3 @@ jobs:
   #         git add .
   #         git commit -m "Bump version to ${{ env.new_version }}"
   #         git push
-
