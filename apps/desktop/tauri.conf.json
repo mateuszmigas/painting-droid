@@ -23,7 +23,6 @@
   "plugins": {
     "updater": {
       "active": true,
-      "createUpdaterArtifacts": true,
       "endpoints": [
         "https://github.com/mateuszmigas/painting-droid/releases/latest/download/latest.json"
       ],
