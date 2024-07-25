@@ -16,7 +16,7 @@
       "icons/icon.ico"
     ]
   },
-  "productName": "Painting Droid",
+  "productName": "PaintingDroid",
   "version": "../../package.json",
   "identifier": "com.painting-droid.dev",
   "plugins": {
@@ -45,3 +45,4 @@
     ]
   }
 }
+
