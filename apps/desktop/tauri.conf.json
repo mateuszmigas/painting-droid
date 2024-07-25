@@ -8,6 +8,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -22,6 +23,7 @@
   "plugins": {
     "updater": {
       "active": true,
+      "createUpdaterArtifacts": true,
       "endpoints": [
         "https://github.com/mateuszmigas/painting-droid/releases/latest/download/latest.json"
       ],
