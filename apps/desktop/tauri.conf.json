@@ -7,7 +7,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["deb", "rpm", "appimage", "nsis", "app", "dmg"],
     "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
@@ -17,7 +17,7 @@
       "icons/icon.ico"
     ]
   },
-  "productName": "PaintingDroid",
+  "productName": "Painting Droid",
   "version": "../../package.json",
   "identifier": "com.painting-droid.dev",
   "plugins": {
