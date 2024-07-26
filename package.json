@@ -1,6 +1,6 @@
 {
   "name": "painting-droid",
-  "version": "0.2.22",
+  "version": "0.3.0",
   "description": "",
   "scripts": {
     "dev:web": "pnpm --filter @painting-droid/web run dev",
