@@ -116,22 +116,22 @@ jobs:
           prerelease: false
           args: ${{ matrix.settings.args }}
 
-  update-version:
-    needs: publish
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # update-version:
+  #   needs: publish
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
 
-      - name: Bump version
-        run: |
-          echo "new_version=$(npm version --commit-hooks false --git-tag-version false ${{ github.event.inputs.version }})" >> $GITHUB_ENV
+  #     - name: Bump version
+  #       run: |
+  #         echo "new_version=$(npm version --commit-hooks false --git-tag-version false ${{ github.event.inputs.version }})" >> $GITHUB_ENV
 
-      - name: Commit version
-        run: |
-          git config --global user.email "github-actions@noreply.github.com"
-          git config --global user.name "github-actions"
-          git add .
-          git commit -m "Bump version to ${{ env.new_version }}"
-          git push
+  #     - name: Commit version
+  #       run: |
+  #         git config --global user.email "github-actions@noreply.github.com"
+  #         git config --global user.name "github-actions"
+  #         git add .
+  #         git commit -m "Bump version to ${{ env.new_version }}"
+  #         git push
 
