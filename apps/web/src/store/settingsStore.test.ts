@@ -1,6 +1,8 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { settingsStoreCreator } from "./settingsStore";
 import { create } from "zustand";
+
+vi.mock("@tauri-apps/api/core", () => ({}));
 
 describe("settingsStore", () => {
   test("Sets theme correctly", () => {
@@ -11,3 +13,4 @@ describe("settingsStore", () => {
     expect(store.getState().theme).toBe("light");
   });
 });
+
