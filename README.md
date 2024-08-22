@@ -34,7 +34,7 @@ Painting Droid is an AI-powered cross-platform painting app inspired by the lege
 
 | Platform | Details | Link |
 | -------- | ------------------------- | -- |
-| Dekstop  | Windows/MacOS | [Github Releases](https://github.com/mateuszmigas/painting-droid/releases) |
+| Desktop  | Windows/MacOS | [Github Releases](https://github.com/mateuszmigas/painting-droid/releases) |
 | Browser (Desktop)  | Chrome/Safari/Firefox  | [Web](https://painting-droid-web.vercel.app/) |
 | Browser (Mobile)  | Not tested | [Web](https://painting-droid-web.vercel.app/) |
 | Container | Docker/Kubernetes | [Docker Hub](https://hub.docker.com/r/mateuszmigas/painting-droid) |
