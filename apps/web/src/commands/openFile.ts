@@ -19,20 +19,20 @@ export const command = createCommand({
       .openFile({
         extensions: [workspace.format, ...supportedImageFormats],
       })
-      .then(async (result) => {
-        if (!result) {
+      .then(async (path) => {
+        if (!path) {
           return;
         }
-        const { fileName, extension } = splitNameAndExtension(result.name);
+        const { fileName, extension } = splitNameAndExtension(path);
 
         if (extension?.toLocaleLowerCase() === workspace.format) {
-          const text = await fileSystem.readFileAsText(result.path);
+          const text = await fileSystem.readFileAsText(path);
           const { data } = await decodePwd(text);
           context.stores
             .workspaces()
             .createWorkspaceFromCanvasData(fileName, data);
         } else {
-          const dataUrl = await fileSystem.readFileAsDataURL(result.path);
+          const dataUrl = await fileSystem.readFileAsDataURL(path);
           const image = await ImageProcessor.fromDataUrl(
             dataUrl
           ).toCompressed();
@@ -47,4 +47,3 @@ export const command = createCommand({
       });
   },
 });
-

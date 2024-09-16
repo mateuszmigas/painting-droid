@@ -30,3 +30,5 @@ export type CanvasContext = {
   bitmap: CanvasBitmapContext | null;
   vector: CanvasVectorContext | null;
 };
+
+export type FilePath = string;
