@@ -12,15 +12,14 @@
     "updater:allow-download-and-install",
     "process:allow-restart",
     "shell:allow-open",
-    "menu:allow-set-as-app-menu",
-    "menu:allow-new",
-    "menu:allow-create-default",
-    "menu:allow-append",
-    "menu:allow-items",
+    "core:menu:allow-set-as-app-menu",
+    "core:menu:allow-new",
+    "core:menu:allow-create-default",
+    "core:menu:allow-append",
+    "core:menu:allow-items",
     "clipboard-manager:allow-read-image",
     "clipboard-manager:allow-write-image",
-    "image:allow-rgba",
-    "webview:allow-set-webview-zoom"
+    "core:image:allow-rgba",
+    "core:webview:allow-set-webview-zoom"
   ]
 }
-

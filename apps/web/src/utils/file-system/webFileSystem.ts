@@ -1,5 +1,6 @@
 import { workspace } from "@/constants";
 import type { PlatformFileSystem } from "./platformFileSystem";
+import type { FilePath } from "../common";
 
 declare global {
   interface Window {
@@ -65,17 +66,14 @@ const openFileWithFileSystemApi = async (options: { extensions: string[] }) => {
       types: [{ accept }],
       startIn: "desktop",
     });
-    return {
-      name: fileHandle.name,
-      path: URL.createObjectURL(await fileHandle.getFile()),
-    };
+    return URL.createObjectURL(await fileHandle.getFile());
   } catch {
     return null;
   }
 };
 
 const openFileWithInput = async (options: { extensions: string[] }) => {
-  return new Promise<{ name: string; path: string } | null>((resolve) => {
+  return new Promise<FilePath | null>((resolve) => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.multiple = false;
@@ -88,10 +86,7 @@ const openFileWithInput = async (options: { extensions: string[] }) => {
       };
       const result = e?.target?.files?.[0] || null;
       if (result) {
-        resolve({
-          name: result.name,
-          path: URL.createObjectURL(result),
-        });
+        resolve(URL.createObjectURL(result));
       } else {
         resolve(null);
       }

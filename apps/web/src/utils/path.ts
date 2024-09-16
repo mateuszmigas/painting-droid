@@ -4,4 +4,3 @@ export const splitNameAndExtension = (name: string) => {
   const fileName = parts.join(".");
   return { fileName, extension };
 };
-

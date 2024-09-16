@@ -8,6 +8,7 @@ import {
 import { getTranslations } from "@/translations";
 import type { PlatformFileSystem } from "./platformFileSystem";
 import { splitNameAndExtension } from "../path";
+import type { FilePath } from "../common";
 
 const translations = getTranslations();
 
@@ -27,7 +28,7 @@ const bytesToBase64 = (buffer: Uint8Array) => {
 
 const openFile = async (options: {
   extensions: string[];
-}): Promise<{ name: string; path: string } | null> => {
+}): Promise<FilePath | null> => {
   const file = await open({
     multiple: false,
     directory: false,
@@ -38,10 +39,7 @@ const openFile = async (options: {
   if (!file) {
     return null;
   }
-  return {
-    name: file.name!,
-    path: file.path,
-  };
+  return file;
 };
 
 const readFileAsText = (path: string) => {

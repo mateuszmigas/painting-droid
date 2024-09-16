@@ -1,7 +1,7 @@
+import type { FilePath } from "../common";
+
 export type PlatformFileSystem = {
-  openFile: (options: {
-    extensions: string[];
-  }) => Promise<{ name: string; path: string } | null>;
+  openFile: (options: { extensions: string[] }) => Promise<FilePath | null>;
   readFileAsDataURL: (path: string) => Promise<string>;
   readFileAsText: (path: string) => Promise<string>;
   saveTextToFile: (
