@@ -11,19 +11,19 @@ edition = "2021"
 tauri-build = { version = "2.0.0-rc.6", features = [] }
 
 [dependencies]
-tauri = { version = "2.0.0-rc.16", features = ["image-png"] }
+tauri = { version = "2.0.1", features = ["image-png"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-tauri-plugin-shell = "2.0.0-rc.3"
-tauri-plugin-dialog = "2.0.0-rc.7"
+tauri-plugin-shell = "2.0.1"
+tauri-plugin-dialog = "2.0.1"
 tauri-plugin-fs = "2.0.0-beta.3"
-tauri-plugin-process = "2.0.0-rc.1"
-reqwest = { version = "0.12.7", features = ["blocking", "multipart"] }
+tauri-plugin-process = "2.0.1"
+reqwest = { version = "0.12.8", features = ["blocking", "multipart"] }
 keyring = "3.3.0"
 regex = "1.11.0"
 tauri-plugin-clipboard-manager = "2.1.0-beta.7"
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-updater = "2.0.0-rc.3"
+tauri-plugin-updater = "2.0.2"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
