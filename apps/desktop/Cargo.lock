@@ -367,6 +367,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "brotli"
+version = "7.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cc97b8f16f944bba54f0433f07e30be199b6dc2bd25937444bbad560bcea29bd"
+dependencies = [
+ "alloc-no-stdlib",
+ "alloc-stdlib",
+ "brotli-decompressor",
+]
+
+[[package]]
 name = "brotli-decompressor"
 version = "4.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2106,9 +2117,12 @@ dependencies = [
 
 [[package]]
 name = "keyring"
-version = "3.4.0"
+version = "3.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd3d701d3de5b9c4b0d9d077f8c2c66f0388d75e96932ebbb7cdff8713d7f7c6"
+checksum = "11351fce7c6e2b5f1871e3c8ed048d60d909ab6fea6b96bfe41a6409277a2ee5"
+dependencies = [
+ "log",
+]
 
 [[package]]
 name = "kuchikiki"
@@ -3696,9 +3710,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.128"
+version = "1.0.132"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6ff5456707a1de34e7e37f2a6fd3d3f808c318259cbd01ab6377795054b483d8"
+checksum = "d726bfaff4b320266d395898905d0eba0345aae23b54aee3a737e260fd46db03"
 dependencies = [
  "itoa 1.0.11",
  "memchr",
@@ -4136,9 +4150,9 @@ checksum = "61c41af27dd6d1e27b1b16b489db798443478cef1f06a660c96db617ba5de3b1"
 
 [[package]]
 name = "tauri"
-version = "2.0.3"
+version = "2.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd96d46534b10765ce0c6208f9451d98ea38636364a41b272d3610c70dd0e4c3"
+checksum = "5ce2818e803ce3097987296623ed8c0d9f65ed93b4137ff9a83e168bdbf62932"
 dependencies = [
  "anyhow",
  "bytes",
@@ -4233,7 +4247,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "95d7443dd4f0b597704b6a14b964ee2ed16e99928d8e6292ae9825f09fbcd30e"
 dependencies = [
  "base64 0.22.1",
- "brotli",
+ "brotli 6.0.0",
  "ico",
  "json-patch",
  "plist",
@@ -4302,9 +4316,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-dialog"
-version = "2.0.1"
+version = "2.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ddb2fe88b602461c118722c574e2775ab26a4e68886680583874b2f6520608b7"
+checksum = "6ff33d09331cc22bf4771a2633b62afc1038e36273eef22bff12f53d33decd91"
 dependencies = [
  "log",
  "raw-window-handle",
@@ -4320,9 +4334,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-fs"
-version = "2.0.1"
+version = "2.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab300488ebec3487ca5f56289692e7e45feb07eea8d5e1dba497f7dc9dd9c407"
+checksum = "16d0816b27207c29aaff632c73b702785140cf16fe6150c201a2720245b8ea88"
 dependencies = [
  "anyhow",
  "dunce",
@@ -4351,9 +4365,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-shell"
-version = "2.0.1"
+version = "2.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "371fb9aca2823990a2d0db7970573be5fdf07881fcaa2b835b29631feb84aec1"
+checksum = "0ad7880c5586b6b2104be451e3d7fc0f3800c84bda69e9ba81c828f87cb34267"
 dependencies = [
  "encoding_rs",
  "log",
@@ -4421,9 +4435,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-runtime-wry"
-version = "2.1.0"
+version = "2.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aaac63b65df8e85570993eaf93ae1dd73a6fb66d8bd99674ce65f41dc3c63e7d"
+checksum = "62fa2068e8498ad007b54d5773d03d57c3ff6dd96f8c8ce58beff44d0d5e0d30"
 dependencies = [
  "gtk",
  "http",
@@ -4447,11 +4461,11 @@ dependencies = [
 
 [[package]]
 name = "tauri-utils"
-version = "2.0.1"
+version = "2.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c38b0230d6880cf6dd07b6d7dd7789a0869f98ac12146e0d18d1c1049215a045"
+checksum = "1fc65d6f5c54e56b66258948a6d9e47a82ea41f4b5a7612bfbdd1634c2913ed0"
 dependencies = [
- "brotli",
+ "brotli 7.0.0",
  "cargo_metadata",
  "ctor",
  "dunce",
@@ -5626,9 +5640,9 @@ dependencies = [
 
 [[package]]
 name = "wry"
-version = "0.46.0"
+version = "0.46.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "469a3765ecc3e8aa9ccdf3c5a52c82697ec03037cd60494488763880d31a1b3a"
+checksum = "6fa1c8c760041c64ce6be99f83d6cb55fe3fcd85a1ad46d32895f6e65cee87ba"
 dependencies = [
  "base64 0.22.1",
  "block2",
