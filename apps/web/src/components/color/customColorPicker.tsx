@@ -99,4 +99,3 @@ export const CustomColorPicker = (props: {
     </Popover>
   );
 };
-

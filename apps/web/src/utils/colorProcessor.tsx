@@ -22,7 +22,11 @@ export class ColorProcessor {
   }
 
   public static fromHsv(color: HsvColor): ColorProcessor {
-    return new ColorProcessor(hsvaToRgba({ ...color, a: 1 }));
+    const rgba = hsvaToRgba({ ...color, a: 1 });
+    if (color.s === 0 && color.v === 0) {
+      rgba.r = rgba.g = rgba.b = 0;
+    }
+    return new ColorProcessor(rgba);
   }
 
   public static fromHex(hex: string): ColorProcessor {
@@ -38,7 +42,11 @@ export class ColorProcessor {
   }
 
   public toHsv(): HsvColor {
-    return rgbToHsv(this.rgbaColor);
+    const hsv = rgbToHsv(this.rgbaColor);
+    if (hsv.s === 0 && hsv.v === 0) {
+      hsv.h = 0;
+    }
+    return hsv;
   }
 
   public toRgbaString(): string {
@@ -54,4 +62,3 @@ export class ColorProcessor {
     return rgbToHex(this.rgbaColor);
   }
 }
-
