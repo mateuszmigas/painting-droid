@@ -1,0 +1,30 @@
+{
+  "app-id": "com.paintingdroid.PaintingDroid",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "21.08",
+  "sdk": "org.freedesktop.Sdk",
+  "command": "paintingdroid",
+  "finish-args": [
+    "--share=network",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--device=dri",
+    "--filesystem=home"
+  ],
+  "modules": [
+    {
+      "name": "paintingdroid",
+      "buildsystem": "simple",
+      "build-commands": [
+        "install -D paintingdroid /app/bin/paintingdroid"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/mateuszmigas/painting-droid/archive/refs/tags/v0.2.25.tar.gz",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ]
+}

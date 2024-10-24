@@ -135,3 +135,25 @@ jobs:
           git commit -m "Bump version to ${{ env.new_version }}"
           git push
 
+  build-flatpak:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flatpak
+        run: |
+          sudo apt-get install -y flatpak-builder
+          flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      - name: Build Flatpak package
+        run: |
+          flatpak-builder --user --install --force-clean build-dir flatpak/com.paintingdroid.PaintingDroid.json
+
+      - name: Publish Flatpak package
+        run: |
+          flatpak build-export repo build-dir
+          flatpak build-bundle repo paintingdroid.flatpak com.paintingdroid.PaintingDroid
+          flatpak --user remote-add --no-gpg-verify local-repo repo
+          flatpak --user install local-repo com.paintingdroid.PaintingDroid
