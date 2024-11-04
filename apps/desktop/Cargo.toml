@@ -18,7 +18,7 @@ tauri-plugin-shell = "2.0.2"
 tauri-plugin-dialog = "2.0.3"
 tauri-plugin-fs = "2.0.0-beta.3"
 tauri-plugin-process = "2.0.1"
-reqwest = { version = "0.12.8", features = ["blocking", "multipart"] }
+reqwest = { version = "0.12.9", features = ["blocking", "multipart"] }
 keyring = "3.6.1"
 regex = "1.11.1"
 tauri-plugin-clipboard-manager = "2.1.0-beta.7"
