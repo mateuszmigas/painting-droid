@@ -62,7 +62,7 @@
     "solid-js": "^1.9.3",
     "solid-transition-group": "^0.2.3",
     "sonner": "^1.7.0",
-    "tailwind-merge": "^2.5.4",
+    "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vite-plugin-solid": "^2.10.2",
     "zod": "^3.23.8",
@@ -70,11 +70,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.49.0",
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.isequal": "^4.5.8",
     "@types/lodash.throttle": "^4.1.9",
-    "@types/node": "^22.9.0",
+    "@types/node": "^22.9.3",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@uiw/react-color-sketch": "^2.3.2",
@@ -83,7 +83,7 @@
     "jsdom": "^25.0.1",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
-    "typescript": "^5.6.3",
+    "typescript": "^5.7.2",
     "vite": "^5.4.11",
     "vitest": "^2.1.5"
   }
