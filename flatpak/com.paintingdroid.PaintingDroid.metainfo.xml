@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>com.paintingdroid.PaintingDroid</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Painting Droid</name>
+  <summary>A simple and powerful painting application</summary>
+  <description>
+    <p>Painting Droid is a simple and powerful painting application that allows users to create and edit images with ease. It supports various tools and features to enhance the painting experience.</p>
+  </description>
+  <developer_name>Mateusz Migas</developer_name>
+  <url type="homepage">https://github.com/mateuszmigas/painting-droid</url>
+  <url type="bugtracker">https://github.com/mateuszmigas/painting-droid/issues</url>
+  <url type="help">https://github.com/mateuszmigas/painting-droid/wiki</url>
+  <update_contact>mateuszmigas@users.noreply.github.com</update_contact>
+</component>
