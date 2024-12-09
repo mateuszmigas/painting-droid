@@ -17,7 +17,7 @@ import type { CanvasToolId } from "@/tools";
 import type { Size } from "@/utils/common";
 import { type Viewport, screenToViewportPosition } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
-import { memo, useRef, useEffect } from "react";
+import { memo, useRef, useEffect, type RefObject } from "react";
 import { domNames } from "@/constants";
 import { testIds } from "@/utils/testIds";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
@@ -58,11 +58,15 @@ export const CanvasViewport = memo(
     isLocked: boolean;
   }) => {
     const { viewport, size, isLocked } = props;
-    const hostElementRef = useRef<HTMLDivElement>(null);
+    const hostElementRef = useRef<HTMLDivElement>(
+      null
+    ) as RefObject<HTMLDivElement>;
 
     const canvasBackgroundRef = useRef<HTMLDivElement>(null);
     const canvasStackRef = useRef<HTMLCanvasElement[]>([]);
-    const vectorContextRef = useRef<HTMLDivElement>(null);
+    const vectorContextRef = useRef<HTMLElement>(
+      null
+    ) as RefObject<HTMLElement>;
     const canvasActionDispatcher = useCanvasActionDispatcher();
     const { context } = useCanvasContextStore();
     const { layers, activeLayerIndex, shapes, baseColor } = useWorkspacesStore(
@@ -176,7 +180,7 @@ export const CanvasViewport = memo(
         {/* vector overlay (CanvasVectorContext) */}
         <div
           className="size-full origin-top-left absolute left-0 top-0"
-          ref={vectorContextRef}
+          ref={vectorContextRef as RefObject<HTMLDivElement>}
           style={{
             zIndex: layers.length + 1,
           }}
@@ -185,3 +189,4 @@ export const CanvasViewport = memo(
     );
   }
 );
+

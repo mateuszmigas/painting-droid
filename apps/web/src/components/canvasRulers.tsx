@@ -2,7 +2,7 @@ import { useListener, useStableCallback } from "@/hooks";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
 import type { Viewport } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
-import { useEffect, useRef } from "react";
+import { type RefObject, useEffect, useRef } from "react";
 
 const rulerConfig = {
   dpi: window.devicePixelRatio,
@@ -102,8 +102,12 @@ export const CanvasRulers = (props: {
   observableViewport: Observable<Viewport>;
 }) => {
   const { observableViewport } = props;
-  const canvasHorizontalRef = useRef<HTMLCanvasElement>(null);
-  const canvasVerticalRef = useRef<HTMLCanvasElement>(null);
+  const canvasHorizontalRef = useRef<HTMLCanvasElement>(
+    null
+  ) as RefObject<HTMLCanvasElement>;
+  const canvasVerticalRef = useRef<HTMLCanvasElement>(
+    null
+  ) as RefObject<HTMLCanvasElement>;
   const canvasHorizontalContextRef = useRef<CanvasRenderingContext2D | null>(
     null
   );
@@ -144,7 +148,7 @@ export const CanvasRulers = (props: {
       canvasVerticalContextRef.current =
         canvasVerticalRef.current.getContext("2d");
     }
-  }, []);
+  }, [canvasVerticalRef.current, canvasHorizontalRef.current]);
 
   useListener(observableViewport, drawRulers, {
     triggerOnMount: true,
@@ -182,3 +186,4 @@ export const CanvasRulers = (props: {
     </div>
   );
 };
+
