@@ -3,7 +3,7 @@ import { CustomMenuBar } from "../menu-bar/customMenuBar";
 import { NativeMenuBarProxy } from "../menu-bar/nativeMenuBarProxy";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { useWorkspacesStore } from "@/store";
-import { memo, useLayoutEffect, useRef, useState } from "react";
+import { memo, type RefObject, useLayoutEffect, useRef, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { CommandIconButton } from "../commandIconButton";
 import {
@@ -25,7 +25,9 @@ const translations = getTranslations();
 const compactThreshold = 640;
 
 export const AppHeaderBar = memo(() => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(
+    null
+  ) as RefObject<HTMLDivElement>;
   const [compactMenuBar, setCompactMenuBar] = useState<boolean>(false);
   const { workspaces, activeWorkspaceId, selectWorkspace, closeWorkspace } =
     useWorkspacesStore((state) => state);
@@ -35,7 +37,7 @@ export const AppHeaderBar = memo(() => {
     if (containerRef.current) {
       setCompactMenuBar(containerRef.current.clientWidth < compactThreshold);
     }
-  }, []);
+  }, [containerRef.current]);
 
   useResizeObserver(containerRef, ({ width }) => {
     setCompactMenuBar(width < compactThreshold);
@@ -135,3 +137,4 @@ export const AppHeaderBar = memo(() => {
     </div>
   );
 });
+

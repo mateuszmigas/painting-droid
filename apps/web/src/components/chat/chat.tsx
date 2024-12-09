@@ -65,7 +65,9 @@ export const Chat = memo(() => {
   const [modelId, setModelId] = useState<string>(models[0]?.id);
   const [prompt, setPrompt] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const fetchActionsTokenSource = useRef<PromiseCancellationTokenSource>();
+  const fetchActionsTokenSource = useRef<PromiseCancellationTokenSource>(
+    new PromiseCancellationTokenSource()
+  );
 
   const sendMessage = async (prompt: string) => {
     setIsProcessing(true);

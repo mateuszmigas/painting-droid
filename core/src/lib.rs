@@ -45,3 +45,8 @@ pub fn sepia(data: Vec<u8>) -> WasmResult<Vec<u8>> {
     }
     Ok(result)
 }
+
+#[wasm_bindgen]
+pub fn hello(name: String) -> String {
+    format!("Hello, {}!", name)
+}

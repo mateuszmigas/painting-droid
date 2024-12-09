@@ -2,7 +2,7 @@ import { useSettingsStore } from "@/store";
 import { IconButton } from "@/components/icons/iconButton";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useRef, useState } from "react";
+import { type RefObject, useRef, useState } from "react";
 import { IconSave } from "@/components/icons/iconSave";
 import { modelDefinitions } from "@/models/definitions";
 import type { AppUserModelState } from "@/store/settingsStore";
@@ -23,7 +23,9 @@ export const ConfigureModelRow = (props: {
   shouldFocus: boolean;
 }) => {
   const { userModel, onRemove, shouldFocus } = props;
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(
+    null
+  ) as RefObject<HTMLInputElement>;
   const modelDefinition = modelDefinitions.find(
     (modelDefinition) => modelDefinition.type === userModel.type
   ) as BaseModel;
