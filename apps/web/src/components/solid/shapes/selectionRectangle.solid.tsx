@@ -55,7 +55,7 @@ export const SelectionRectangle = (
                   e.stopPropagation()
                 )
               }
-              class="fixed -translate-x-1/2 bg-primary text-primary-foreground shadow hover:bg-primary/90 rounded-sm px-small"
+              class="fixed -translate-x-1/2 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 rounded-sm px-small"
               onClick={action.callback}
             >
               {action.display}
