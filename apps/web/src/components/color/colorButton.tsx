@@ -29,7 +29,7 @@ export const ColorButton = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type="button"
         className={cn(
-          "transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+          "transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
           "pile rounded-md border overflow-hidden",
           className
         )}

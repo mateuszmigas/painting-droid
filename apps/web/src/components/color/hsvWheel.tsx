@@ -77,7 +77,7 @@ export const HsvWheel = memo(
               left: `calc(50% + ${position.x * 50}%)`,
               top: `calc(50% + ${position.y * 50}%)`,
             }}
-            className="pointer-events-none cursor-pointer -translate-x-1/2 -translate-y-1/2 absolute h-4 w-4 rounded-full border shadow-black/50 border-white shadow transition-colors"
+            className="pointer-events-none cursor-pointer -translate-x-1/2 -translate-y-1/2 absolute h-4 w-4 rounded-full border shadow-black/50 border-white shadow-sm transition-colors"
           />
         </div>
       </div>

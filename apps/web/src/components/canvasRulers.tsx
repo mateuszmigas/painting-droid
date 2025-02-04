@@ -169,7 +169,7 @@ export const CanvasRulers = (props: {
   });
 
   return (
-    <div className="absolute size-full pointer-events-none overflow-hidden z-[1]">
+    <div className="absolute size-full pointer-events-none overflow-hidden z-1">
       <canvas
         ref={canvasHorizontalRef}
         height={rulerConfig.offset * rulerConfig.dpi}

@@ -67,7 +67,7 @@ export const ConfigureModelRow = (props: {
             />
           </div>
           {modelDefinition?.useApiKey && (
-            <div className="flex flex-col gap-medium flex-[2]">
+            <div className="flex flex-col gap-medium flex-2">
               <Label className={!secureKeyValue ? "text-destructive" : ""}>
                 {translations.general.secret}
               </Label>

@@ -161,7 +161,7 @@ export const RemoveBackgroundDialog = memo((props: { close: () => void }) => {
               </FormMessage>
             )}
           </div>
-          <div className="flex flex-grow justify-between flex-col gap-big min-w-64">
+          <div className="flex grow justify-between flex-col gap-big min-w-64">
             <div className="flex flex-col gap-big">
               <FormField
                 control={form.control}

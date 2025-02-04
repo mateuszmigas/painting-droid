@@ -44,7 +44,7 @@ export const HsValueSlider = memo(
         >
           <SliderPrimitive.Range />
         </SliderPrimitive.Track>
-        <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border shadow-black/50 border-white shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring" />
+        <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border shadow-black/50 border-white shadow-sm transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring" />
       </SliderPrimitive.Root>
     );
   }
