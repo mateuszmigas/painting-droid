@@ -8,7 +8,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.0.6", features = [] }
+tauri-build = { version = "2.1.0", features = [] }
 
 [dependencies]
 tauri = { version = "2.2.5", features = ["image-png"] }
@@ -18,7 +18,7 @@ tauri-plugin-shell = "2.2.0"
 tauri-plugin-dialog = "2.2.0"
 tauri-plugin-fs = "2.0.0-beta.3"
 tauri-plugin-process = "2.2.0"
-reqwest = { version = "0.12.14", features = ["blocking", "multipart"] }
+reqwest = { version = "0.12.15", features = ["blocking", "multipart"] }
 keyring = "3.6.2"
 regex = "1.11.1"
 tauri-plugin-clipboard-manager = "2.2.2"
