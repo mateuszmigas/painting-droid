@@ -10,7 +10,7 @@ import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { type RgbaColor, areColorsClose } from "@/utils/color";
 import { floodFill as cpuFloodFill } from "@/utils/imageOperations";
-import { webgpuFloodFill, isWebGPUSupported } from "../../utils/webgpuFloodFill";
+import { webgpuFloodFill, isWebGPUSupported } from "@/utils/webgpuFloodFill";
 
 const translations = getTranslations().tools.fillDraw;
 
@@ -83,7 +83,8 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
           startX,
           startY,
           fillColorArray,
-          this.tolerance
+          // Convert percentage tolerance (0-50 from settings) to absolute (0-255 like) for WebGPU
+          Math.round((this.tolerance / 100) * 255) 
         );
         if (filledImageData) {
           console.log("WebGPU Flood Fill successful.");
@@ -99,16 +100,16 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
     if (!filledImageData) {
       console.log("Using CPU Flood Fill.");
       // Ensure a fresh copy of originalImageData is used if WebGPU attempt modified it partially (though it shouldn't)
-      const cpuImageData = this.bitmapContext.getImageData(0, 0, width, height);
-      const filledCpuData = cpuFloodFill(
+      const cpuImageData = this.bitmapContext.getImageData(0, 0, width, height); // Fresh ImageData
+      cpuFloodFill( // Modifies cpuImageData.data in place
         cpuImageData,
         { x: startX, y: startY },
         this.fillColor, // cpuFloodFill expects RgbaColor object
         (targetColor, originColor) =>
-          areColorsClose(targetColor, originColor, this.tolerance)
+          areColorsClose(targetColor, originColor, this.tolerance) // areColorsClose expects percentage
       );
-      // cpuFloodFill returns a new ImageData object with the filled data.
-      filledImageData = filledCpuData;
+      // cpuImageData's .data has been modified. It's already an ImageData object.
+      filledImageData = cpuImageData;
     }
 
     if (filledImageData) {

@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeAll, test } from 'vitest';
+import { describe, it, expect, test } from 'vitest'; // Removed beforeAll
 import { webgpuFloodFill, isWebGPUSupported } from './webgpuFloodFill';
 import { floodFill as cpuFloodFill } from './imageOperations';
 import { type RgbaColor, areColorsClose } from './color';
 
 // Helper to create RGBA color object
-const createRgba = (r: number, g: number, b: number, aAlpha: number = 1): RgbaColor => ({ r, g, b, a: aAlpha });
+const createRgba = (r: number, g: number, b: number, aAlpha = 1): RgbaColor => ({ r, g, b, a: aAlpha }); // Fixed: noInferrableTypes
 // Helper to create fill color array for WebGPU [R, G, B, A] with A as 0-255
 const createFillColorArray = (color: RgbaColor): [number, number, number, number] => [
   color.r,
@@ -79,7 +79,7 @@ const GREEN = createRgba(0, 255, 0);
 const BLUE = createRgba(0, 0, 255);
 const BLACK = createRgba(0, 0, 0);
 const WHITE = createRgba(255, 255, 255);
-const TRANSPARENT_BLACK = createRgba(0,0,0,0);
+// TRANSPARENT_BLACK was unused
 
 describe('isWebGPUSupported', () => {
   it('should return a boolean', () => {
@@ -108,16 +108,18 @@ describe('webgpuFloodFill vs cpuFloodFill', () => {
     const startX = 1;
     const startY = 1;
     const fillColor = GREEN;
-    const tolerance = 0; // Exact match
+    const tolerancePercent = 0; // Exact match
+    const absoluteToleranceForGpu = Math.round((tolerancePercent / 100) * 255);
 
     // CPU version
     const cpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    const expectedOutput = cpuFloodFill(
+    cpuFloodFill( // Modifies cpuInput.data in place
       cpuInput,
       { x: startX, y: startY },
       fillColor,
-      (targetColor, originColor) => areColorsClose(targetColor, originColor, tolerance)
+      (targetColor, originColor) => areColorsClose(targetColor, originColor, tolerancePercent)
     );
+    const expectedOutput = cpuInput;
 
     // WebGPU version
     const gpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
@@ -126,7 +128,7 @@ describe('webgpuFloodFill vs cpuFloodFill', () => {
       startX,
       startY,
       createFillColorArray(fillColor),
-      tolerance
+      absoluteToleranceForGpu
     );
 
     expect(actualOutput).not.toBeNull();
@@ -154,31 +156,32 @@ describe('webgpuFloodFill vs cpuFloodFill', () => {
     const fillColor = GREEN;
     
     // Test case 1: Low tolerance, should only fill RED
-    let tolerance = 5; // Max diff of 5 per channel
-    let cpuInput1 = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    let expected1 = cpuFloodFill(cpuInput1, { x: startX, y: startY }, fillColor, 
-      (target, origin) => areColorsClose(target, origin, tolerance, false) // Assuming tolerance in areColorsClose is %
+    const tolerancePercent1 = 5;  // Fixed: useConst
+    const absoluteToleranceForGpu1 = Math.round((tolerancePercent1 / 100) * 255); // Fixed: useConst
+    
+    const cpuInput1 = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height); // Fixed: useConst
+    cpuFloodFill(cpuInput1, { x: startX, y: startY }, fillColor, 
+      (target, origin) => areColorsClose(target, origin, tolerancePercent1)
     );
-    // For direct comparison, we need to ensure `areColorsClose` is using absolute tolerance if webgpu is.
-    // The webgpuFloodFill uses absolute tolerance. cpuFloodFill's `areColorsClose` might use percentage.
-    // For this test, let's ensure `areColorsClose` uses an absolute interpretation matching the shader.
-    // The shader has `abs(i32(r) - i32(params.targetColorR)) <= i32(params.tolerance)`.
-    // `areColorsClose` has: `Math.abs(c1.r - c2.r) <= tolerance && ...` if `isPercent = false`.
-    // So, we set `isPercent = false` for cpuFloodFill's callback.
-
-    let gpuInput1 = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    let actual1 = await webgpuFloodFill(gpuInput1, startX, startY, createFillColorArray(fillColor), tolerance);
+    const expected1 = cpuInput1;
+    
+    const gpuInput1 = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height); // Fixed: useConst
+    const actual1 = await webgpuFloodFill(gpuInput1, startX, startY, createFillColorArray(fillColor), absoluteToleranceForGpu1); // Fixed: useConst; Pass absolute
     expect(actual1).not.toBeNull();
     if(actual1) expect(compareImageData(actual1, expected1)).toBe(true);
 
     // Test case 2: Higher tolerance, should fill RED and slightlyOffRed
-    tolerance = 15; // Max diff of 15 per channel
-    let cpuInput2 = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    let expected2 = cpuFloodFill(cpuInput2, { x: startX, y: startY }, fillColor, 
-      (target, origin) => areColorsClose(target, origin, tolerance, false)
+    const tolerancePercent2 = 15; // Fixed: useConst
+    const absoluteToleranceForGpu2 = Math.round((tolerancePercent2 / 100) * 255); // Fixed: useConst
+
+    const cpuInput2 = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height); // Fixed: useConst
+    cpuFloodFill(cpuInput2, { x: startX, y: startY }, fillColor, 
+      (target, origin) => areColorsClose(target, origin, tolerancePercent2)
     );
-    let gpuInput2 = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    let actual2 = await webgpuFloodFill(gpuInput2, startX, startY, createFillColorArray(fillColor), tolerance);
+    const expected2 = cpuInput2;
+
+    const gpuInput2 = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height); // Fixed: useConst
+    const actual2 = await webgpuFloodFill(gpuInput2, startX, startY, createFillColorArray(fillColor), absoluteToleranceForGpu2); // Fixed: useConst; Pass absolute
     expect(actual2).not.toBeNull();
     if(actual2) expect(compareImageData(actual2, expected2)).toBe(true);
   });
@@ -198,15 +201,17 @@ describe('webgpuFloodFill vs cpuFloodFill', () => {
     const startX = 1;
     const startY = 2; // Start on one leg of the U
     const fillColor = GREEN;
-    const tolerance = 0;
+    const tolerancePercent = 0;
+    const absoluteToleranceForGpu = Math.round((tolerancePercent / 100) * 255);
 
     const cpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    const expectedOutput = cpuFloodFill(cpuInput, { x: startX, y: startY }, fillColor,
-      (target, origin) => areColorsClose(target, origin, tolerance, false)
+    cpuFloodFill(cpuInput, { x: startX, y: startY }, fillColor,
+      (target, origin) => areColorsClose(target, origin, tolerancePercent)
     );
+    const expectedOutput = cpuInput;
 
     const gpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    const actualOutput = await webgpuFloodFill(gpuInput, startX, startY, createFillColorArray(fillColor), tolerance);
+    const actualOutput = await webgpuFloodFill(gpuInput, startX, startY, createFillColorArray(fillColor), absoluteToleranceForGpu);
 
     expect(actualOutput).not.toBeNull();
     if (actualOutput) {
@@ -232,15 +237,17 @@ describe('webgpuFloodFill vs cpuFloodFill', () => {
     const startX = 0;
     const startY = 0;
     const fillColor = GREEN;
-    const tolerance = 0;
+    const tolerancePercent = 0;
+    const absoluteToleranceForGpu = Math.round((tolerancePercent / 100) * 255);
 
     const cpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    const expectedOutput = cpuFloodFill(cpuInput, { x: startX, y: startY }, fillColor,
-      (target, origin) => areColorsClose(target, origin, tolerance, false)
+    cpuFloodFill(cpuInput, { x: startX, y: startY }, fillColor,
+      (target, origin) => areColorsClose(target, origin, tolerancePercent)
     );
+    const expectedOutput = cpuInput;
 
     const gpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    const actualOutput = await webgpuFloodFill(gpuInput, startX, startY, createFillColorArray(fillColor), tolerance);
+    const actualOutput = await webgpuFloodFill(gpuInput, startX, startY, createFillColorArray(fillColor), absoluteToleranceForGpu);
 
     expect(actualOutput).not.toBeNull();
     if(actualOutput) expect(compareImageData(actualOutput, expectedOutput)).toBe(true);
@@ -260,18 +267,20 @@ describe('webgpuFloodFill vs cpuFloodFill', () => {
     const startY = 1; 
     // Target color for flood fill is derived from startX, startY. So target is GREEN.
     const fillColor = BLUE; // Fill with BLUE if it were to fill
-    const tolerance = 0;
+    const tolerancePercent = 0;
+    const absoluteToleranceForGpu = Math.round((tolerancePercent / 100) * 255);
 
     // CPU: cpuFloodFill derives target color from start point.
     const cpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    const expectedOutput = cpuFloodFill(cpuInput, { x: startX, y: startY }, fillColor,
-      (target, origin) => areColorsClose(target, origin, tolerance, false)
+    cpuFloodFill(cpuInput, { x: startX, y: startY }, fillColor,
+      (target, origin) => areColorsClose(target, origin, tolerancePercent)
     );
+    const expectedOutput = cpuInput;
     // In this case, only the GREEN pixel at (1,1) should become BLUE.
 
     // WebGPU: webgpuFloodFill also derives target color from start point.
     const gpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    const actualOutput = await webgpuFloodFill(gpuInput, startX, startY, createFillColorArray(fillColor), tolerance);
+    const actualOutput = await webgpuFloodFill(gpuInput, startX, startY, createFillColorArray(fillColor), absoluteToleranceForGpu);
 
     expect(actualOutput).not.toBeNull();
     if (actualOutput) {
@@ -293,15 +302,17 @@ describe('webgpuFloodFill vs cpuFloodFill', () => {
     const startX = 0;
     const startY = 0;
     const fillColor = GREEN;
-    const tolerance = 0;
+    const tolerancePercent = 0;
+    const absoluteToleranceForGpu = Math.round((tolerancePercent / 100) * 255);
 
     const cpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    const expectedOutput = cpuFloodFill(cpuInput, { x: startX, y: startY }, fillColor,
-      (target, origin) => areColorsClose(target, origin, tolerance, false)
+    cpuFloodFill(cpuInput, { x: startX, y: startY }, fillColor,
+      (target, origin) => areColorsClose(target, origin, tolerancePercent)
     );
+    const expectedOutput = cpuInput;
 
     const gpuInput = new ImageData(new Uint8ClampedArray(inputImageData.data), width, height);
-    const actualOutput = await webgpuFloodFill(gpuInput, startX, startY, createFillColorArray(fillColor), tolerance);
+    const actualOutput = await webgpuFloodFill(gpuInput, startX, startY, createFillColorArray(fillColor), absoluteToleranceForGpu);
 
     expect(actualOutput).not.toBeNull();
     if(actualOutput) expect(compareImageData(actualOutput, expectedOutput)).toBe(true);
