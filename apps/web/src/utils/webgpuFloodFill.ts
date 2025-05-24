@@ -1,4 +1,5 @@
 // apps/web/src/utils/webgpuFloodFill.ts
+import floodFillShaderWGSL from '../shaders/floodFill.wgsl?raw';
 
 export function isWebGPUSupported(): boolean {
   return !!navigator.gpu;
@@ -119,23 +120,13 @@ export async function webgpuFloodFill(
   });
   device.queue.writeBuffer(paramsGpuBuffer, 0, paramsArray);
 
-  // Fetch shader code
-  let shaderCode = "";
-  try {
-    // Adjust the path as necessary based on your project structure and how files are served.
-    // This path assumes the shaders directory is relative to where the script is run or served from.
-    const response = await fetch("/src/shaders/floodFill.wgsl");
-    if (!response.ok) {
-      throw new Error(`Failed to fetch shader: ${response.statusText}`);
-    }
-    shaderCode = await response.text();
-  } catch (error) {
-    console.error("Error loading WGSL shader:", error);
-    return null;
-  }
+  // Use imported shader code
+  const shaderCode = floodFillShaderWGSL;
 
   if (!shaderCode) {
-    console.error("Shader code is empty.");
+    // This check might be redundant if Vite guarantees the import on valid file, 
+    // but good for safety or if the file could somehow be empty.
+    console.error("Shader code is empty. Check the import or the .wgsl file.");
     return null;
   }
 
