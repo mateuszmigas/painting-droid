@@ -6,7 +6,7 @@ import {
   RawImage,
   pipeline,
   env,
-} from "@xenova/transformers";
+} from "@huggingface/transformers";
 import { sizeToString } from "@/utils/format";
 import { ImageProcessor } from "@/utils/imageProcessor";
 
@@ -36,7 +36,8 @@ const createLazyPipeline = <T>(
 const objectDetectionPipeline = createLazyPipeline(
   (onLoading?: (value: LoadingProgressValue) => void) =>
     pipeline("object-detection", "Xenova/detr-resnet-50", {
-      quantized: false,
+      dtype: "fp32",
+      device: 'webgpu',
       progress_callback: onLoading,
     })
 );
@@ -52,6 +53,8 @@ const transformerJsServer = {
     const name = "briaai/RMBG-1.4";
     const model = await AutoModel.from_pretrained(name, {
       config: { model_type: "custom" },
+      device: 'webgpu',
+      dtype: "fp32",
     });
     const processor = await AutoProcessor.from_pretrained(name, {
       config: {
