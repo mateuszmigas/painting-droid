@@ -5,9 +5,8 @@ export function isWebGPUSupported(): boolean {
   return !!navigator.gpu;
 }
 
+// This interface must match the 'FloodFillParams' struct in floodFill.wgsl
 interface ShaderParams {
-  startX: number; // Added
-  startY: number; // Added
   targetColorR: number;
   targetColorG: number;
   targetColorB: number;
@@ -19,20 +18,39 @@ interface ShaderParams {
   tolerance: number;
   width: number;
   height: number;
+  // Note: startX, startY are NOT in the shader's FloodFillParams struct
+  // for the iterative version, so they are not included here.
 }
 
-// getPixel and isColorMatch are unused in this version of the file with the simple shader.
-// Removing them to clear TS6133 errors. If a more complex CPU-interaction or different shader
-// were used, they might be needed.
+// Helper function to check if a starting pixel matches the target criteria.
+// This is a CPU-side check before starting GPU operations.
+function checkStartPixel(
+    initialPixelData: Uint8ClampedArray,
+    startIndex: number,
+    targetR: number, targetG: number, targetB: number, targetA: number,
+    tolerance: number
+): boolean {
+    const r = initialPixelData[startIndex];
+    const g = initialPixelData[startIndex + 1];
+    const b = initialPixelData[startIndex + 2];
+    const a = initialPixelData[startIndex + 3];
+
+    const dr = Math.abs(r - targetR);
+    const dg = Math.abs(g - targetG);
+    const db = Math.abs(b - targetB);
+    const da = Math.abs(a - targetA);
+    return dr <= tolerance && dg <= tolerance && db <= tolerance && da <= tolerance;
+}
+
 
 export async function webgpuFloodFill(
   imageData: ImageData,
   startX: number,
   startY: number,
-  fillColor: [number, number, number, number], // Changed from targetColor to fillColor for clarity
-  tolerance: number
+  fillColor: [number, number, number, number], // RGBA array, A is 0-255
+  tolerance: number // Absolute tolerance 0-255
 ): Promise<ImageData | null> {
-  if (!navigator.gpu) {
+  if (!isWebGPUSupported()) { // Use the exported function for clarity
     console.error("WebGPU not supported on this browser.");
     return null;
   }
@@ -49,162 +67,192 @@ export async function webgpuFloodFill(
     return null;
   }
 
-  const { width, height, data: pixelDataBuffer } = imageData; // Renamed data to avoid conflict
+  const { width, height, data: initialPixelDataBuffer } = imageData;
+  const initialPixelArrayU32 = new Uint32Array(initialPixelDataBuffer.buffer);
+  const stateSize = width * height * 4; // Size in bytes for u32 state array
 
-  // Determine the actual target color from the start coordinates
-  const startPixelIndex = (startY * width + startX) * 4;
-  const targetR = pixelDataBuffer[startPixelIndex];
-  const targetG = pixelDataBuffer[startPixelIndex + 1];
-  const targetB = pixelDataBuffer[startPixelIndex + 2];
-  const targetA = pixelDataBuffer[startPixelIndex + 3];
+  // 1. Determine the actual target color from the start coordinates
+  const startPixelFlatIndex = (startY * width + startX) * 4; // For Uint8ClampedArray
+  const targetR = initialPixelDataBuffer[startPixelFlatIndex];
+  const targetG = initialPixelDataBuffer[startPixelFlatIndex + 1];
+  const targetB = initialPixelDataBuffer[startPixelFlatIndex + 2];
+  const targetA = initialPixelDataBuffer[startPixelFlatIndex + 3];
 
-  // Prepare image data buffer (u32 array)
-  // The shader expects u32s (like 0xAABBGGRR or 0xAARRGGBB depending on endianness and how it's read)
-  // ImageData data is Uint8ClampedArray [R, G, B, A, R, G, B, A, ...]
-  // The current shader does:
-  // let r = (pixelColor >> 0) & 0xFF;
-  // let g = (pixelColor >> 8) & 0xFF;
-  // let b = (pixelColor >> 16) & 0xFF;
-  // let a = (pixelColor >> 24) & 0xFF;
-  // This implies a u32 format where alpha is most significant, e.g. 0xAABBGGRR (if read as little-endian by shader)
-  // Or, if the CPU writes it as ARGB and shader reads as is.
-  // Let's assume the Uint32Array conversion handles this correctly for the platform.
-  const inputImageDataArray = new Uint32Array(pixelDataBuffer.buffer);
-
-  const imageGpuBuffer = device.createBuffer({
-    size: inputImageDataArray.byteLength,
+  // 2. Buffer Creation
+  // PixelsGpuBuffer (will be modified)
+  const pixelsGpuBuffer = device.createBuffer({
+    size: initialPixelArrayU32.byteLength,
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
     mappedAtCreation: true,
   });
-  new Uint32Array(imageGpuBuffer.getMappedRange()).set(inputImageDataArray);
-  imageGpuBuffer.unmap();
+  new Uint32Array(pixelsGpuBuffer.getMappedRange()).set(initialPixelArrayU32);
+  pixelsGpuBuffer.unmap();
 
-  // Prepare parameters buffer
-  const params: ShaderParams = { // Use ShaderParams type
-    // startX and startY are not directly used by this simple shader version,
-    // but are part of ShaderParams for consistency or future use.
-    // The shader code provided in previous steps (floodFill.wgsl) did not use startX/Y in its main logic.
-    // If it were the iterative one, it would be different.
-    // For the simple shader (color all matching pixels), startX/Y are not needed by the shader itself.
-    // However, the ShaderParams struct in WGSL does have them.
-    // Let's assume they are still needed in the struct for now.
-    startX: startX, // These are not used by the current simple shader
-    startY: startY, // but are in the ShaderParams struct definition
-    targetColorR: targetR,
-    targetColorG: targetG,
-    targetColorB: targetB,
-    targetColorA: targetA,
-    fillColorR: fillColor[0], // Use the fillColor parameter
-    fillColorG: fillColor[1],
-    fillColorB: fillColor[2],
-    fillColorA: fillColor[3], // Alpha from fillColor is already 0-255
-    tolerance,
-    width,
-    height,
+  // currentStateGpuBuffer
+  const stateInitial = new Uint32Array(width * height); // All 0s
+  const startPixelIndexU32 = startY * width + startX; // For u32 array
+
+  if (checkStartPixel(initialPixelDataBuffer, startPixelFlatIndex, targetR, targetG, targetB, targetA, tolerance)) {
+    stateInitial[startPixelIndexU32] = 1; // Mark start pixel as filled
+    // Pre-color the starting pixel in the main buffer
+    const fillU32 = (fillColor[3] << 24) | (fillColor[2] << 16) | (fillColor[1] << 8) | fillColor[0];
+    // Create a temporary buffer to write the single pixel color to avoid large array creation
+    const tempFillBuffer = new Uint32Array([fillU32]);
+    device.queue.writeBuffer(pixelsGpuBuffer, startPixelIndexU32 * 4, tempFillBuffer);
+  } else {
+    console.log("Start pixel does not match target color criteria. No fill performed.");
+    // Return original image data as no fill will happen, or a copy if preferred
+    return new ImageData(new Uint8ClampedArray(initialPixelArrayU32.buffer), width, height);
+  }
+
+  let currentStateGpuBuffer = device.createBuffer({
+    size: stateSize,
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+    mappedAtCreation: true,
+  });
+  new Uint32Array(currentStateGpuBuffer.getMappedRange()).set(stateInitial);
+  currentStateGpuBuffer.unmap();
+
+  // nextStateGpuBuffer (initialized to 0s)
+  let nextStateGpuBuffer = device.createBuffer({
+    size: stateSize,
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+    mappedAtCreation: true, // mappedAtCreation makes it easy to zero-fill
+  });
+  new Uint32Array(nextStateGpuBuffer.getMappedRange()).set(new Uint32Array(width*height)); // Ensure it's zeroed
+  nextStateGpuBuffer.unmap();
+
+
+  // pixelsChangedGpuBuffer
+  const pixelsChangedGpuBuffer = device.createBuffer({
+    size: 4, // single u32
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC | GPUBufferUsage.MAP_READ,
+  });
+  const zeroArrayForPixelsChanged = new Uint32Array([0]); // For resetting
+
+  // paramsGpuBuffer
+  const params: ShaderParams = {
+    targetColorR: targetR, targetColorG: targetG, targetColorB: targetB, targetColorA: targetA,
+    fillColorR: fillColor[0], fillColorG: fillColor[1], fillColorB: fillColor[2], fillColorA: fillColor[3],
+    tolerance, width, height,
   };
-
-  // Order must match the ShaderParams struct in WGSL if it's being read sequentially.
-  // The current WGSL (from previous context, the simple one) is:
-  // struct FloodFillParams { startX, startY, targetColorR...GBA, fillColorR...GBA, tolerance, width, height }
-  // This order must be respected.
   const paramsArray = new Uint32Array([
-    params.startX, params.startY,
     params.targetColorR, params.targetColorG, params.targetColorB, params.targetColorA,
     params.fillColorR, params.fillColorG, params.fillColorB, params.fillColorA,
     params.tolerance, params.width, params.height,
   ]);
-
   const paramsGpuBuffer = device.createBuffer({
     size: paramsArray.byteLength,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
   device.queue.writeBuffer(paramsGpuBuffer, 0, paramsArray);
 
-  // Use imported shader code
+  // Shader Code (already imported via Vite ?raw)
   const shaderCode = floodFillShaderWGSL;
-
   if (!shaderCode) {
-    // This check might be redundant if Vite guarantees the import on valid file, 
-    // but good for safety or if the file could somehow be empty.
-    console.error("Shader code is empty. Check the import or the .wgsl file.");
+    console.error("Shader code is empty. Check import.");
+    // Cleanup before returning
+    pixelsGpuBuffer.destroy();
+    currentStateGpuBuffer.destroy();
+    nextStateGpuBuffer.destroy();
+    pixelsChangedGpuBuffer.destroy();
+    paramsGpuBuffer.destroy();
     return null;
   }
+  const shaderModule = device.createShaderModule({ code: shaderCode });
 
-  const shaderModule = device.createShaderModule({
-    code: shaderCode,
-  });
-
-  // Create compute pipeline
-  const pipeline = device.createComputePipeline({
-    layout: device.createPipelineLayout({
-      bindGroupLayouts: [
-        device.createBindGroupLayout({
-          entries: [
-            {
-              binding: 0,
-              visibility: GPUShaderStage.COMPUTE,
-              buffer: { type: "storage" },
-            },
-            {
-              binding: 1,
-              visibility: GPUShaderStage.COMPUTE,
-              buffer: { type: "uniform" },
-            },
-          ],
-        }),
-      ],
-    }),
-    compute: {
-      module: shaderModule,
-      entryPoint: "main",
-    },
-  });
-
-  // Create bind group
-  const bindGroup = device.createBindGroup({
-    layout: pipeline.getBindGroupLayout(0),
+  // 3. BindGroupLayout
+  const bindGroupLayout = device.createBindGroupLayout({
     entries: [
-      { binding: 0, resource: { buffer: imageGpuBuffer } },
-      { binding: 1, resource: { buffer: paramsGpuBuffer } },
+      { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: "storage" } }, // pixels
+      { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: "read-only-storage" } }, // currentState
+      { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: "storage" } }, // nextState
+      { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: "uniform" } },   // params
+      { binding: 4, visibility: GPUShaderStage.COMPUTE, buffer: { type: "storage" } },   // pixelsChanged
     ],
   });
 
-  // Create command encoder and dispatch compute shader
-  const commandEncoder = device.createCommandEncoder();
-  const passEncoder = commandEncoder.beginComputePass();
-  passEncoder.setPipeline(pipeline);
-  passEncoder.setBindGroup(0, bindGroup);
-  const workgroupCountX = Math.ceil(width / 8);
-  const workgroupCountY = Math.ceil(height / 8);
-  passEncoder.dispatchWorkgroups(workgroupCountX, workgroupCountY, 1);
-  passEncoder.end();
-
-  // Create GPU buffer for reading back the result
-  const readBuffer = device.createBuffer({
-    size: inputImageDataArray.byteLength,
-    usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+  // Pipeline
+  const pipeline = device.createComputePipeline({
+    layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
+    compute: { module: shaderModule, entryPoint: "main" },
   });
 
-  commandEncoder.copyBufferToBuffer(
-    imageGpuBuffer,
-    0, // Source offset
-    readBuffer,
-    0, // Destination offset
-    inputImageDataArray.byteLength
-  );
+  // 5. Iteration Loop
+  const workgroupCountX = Math.ceil(width / 8);
+  const workgroupCountY = Math.ceil(height / 8);
+  const maxIterations = width * height; // Safety break
+  let iteration = 0;
 
-  // Submit commands
-  device.queue.submit([commandEncoder.finish()]);
+  for (iteration = 0; iteration < maxIterations; iteration++) {
+    device.queue.writeBuffer(pixelsChangedGpuBuffer, 0, zeroArrayForPixelsChanged); // Reset flag
 
-  // Read back the data
-  await readBuffer.mapAsync(GPUMapMode.READ);
-  const resultArray = new Uint8ClampedArray(readBuffer.getMappedRange());
-  const resultImageData = new ImageData(resultArray, width, height);
+    const commandEncoder = device.createCommandEncoder();
+    commandEncoder.clearBuffer(nextStateGpuBuffer); // Clear nextState to 0s
 
-  readBuffer.unmap();
-  imageGpuBuffer.destroy();
+    const passEncoder = commandEncoder.beginComputePass();
+    passEncoder.setPipeline(pipeline);
+    const bindGroup = device.createBindGroup({ // Bind group created per iteration if buffers swap
+        layout: bindGroupLayout,
+        entries: [
+            { binding: 0, resource: { buffer: pixelsGpuBuffer } },
+            { binding: 1, resource: { buffer: currentStateGpuBuffer } },
+            { binding: 2, resource: { buffer: nextStateGpuBuffer } },
+            { binding: 3, resource: { buffer: paramsGpuBuffer } },
+            { binding: 4, resource: { buffer: pixelsChangedGpuBuffer } },
+        ],
+    });
+    passEncoder.setBindGroup(0, bindGroup);
+    passEncoder.dispatchWorkgroups(workgroupCountX, workgroupCountY, 1);
+    passEncoder.end();
+    
+    // Copy nextState to currentState for the next iteration
+    commandEncoder.copyBufferToBuffer(nextStateGpuBuffer, 0, currentStateGpuBuffer, 0, stateSize);
+    
+    // Create a temporary buffer to read back pixelsChangedGpuBuffer
+    const readbackPixelsChangedBuffer = device.createBuffer({
+        size: 4,
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+    });
+    commandEncoder.copyBufferToBuffer(pixelsChangedGpuBuffer, 0, readbackPixelsChangedBuffer, 0, 4);
+
+    device.queue.submit([commandEncoder.finish()]);
+    
+    await readbackPixelsChangedBuffer.mapAsync(GPUMapMode.READ);
+    const changedResult = new Uint32Array(readbackPixelsChangedBuffer.getMappedRange());
+    const pixelsWereChanged = changedResult[0] === 1;
+    readbackPixelsChangedBuffer.unmap(); // Unmap before destroying
+    readbackPixelsChangedBuffer.destroy();
+
+    if (!pixelsWereChanged) {
+      break; 
+    }
+  }
+  if (iteration === maxIterations) {
+      console.warn("WebGPU Flood Fill reached max iterations.");
+  }
+
+  // 6. Result Handling & Cleanup
+  const resultReadBuffer = device.createBuffer({
+    size: initialPixelArrayU32.byteLength,
+    usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+  });
+  const commandEncoderFinal = device.createCommandEncoder();
+  commandEncoderFinal.copyBufferToBuffer(pixelsGpuBuffer, 0, resultReadBuffer, 0, initialPixelArrayU32.byteLength);
+  device.queue.submit([commandEncoderFinal.finish()]);
+
+  await resultReadBuffer.mapAsync(GPUMapMode.READ);
+  // It's crucial that resultReadBuffer.getMappedRange() is not accessed after unmap or buffer destruction.
+  // Create a copy of the data.
+  const finalPixelDataArrayU8 = new Uint8ClampedArray(resultReadBuffer.getMappedRange().slice(0));
+  resultReadBuffer.unmap();
+
+  pixelsGpuBuffer.destroy();
+  currentStateGpuBuffer.destroy();
+  nextStateGpuBuffer.destroy();
+  pixelsChangedGpuBuffer.destroy();
   paramsGpuBuffer.destroy();
-  readBuffer.destroy();
+  resultReadBuffer.destroy();
 
-  return resultImageData;
+  return new ImageData(finalPixelDataArrayU8, width, height);
 }
