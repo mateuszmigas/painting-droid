@@ -6,6 +6,7 @@ import {
   type RgbaColor,
   type HsvaColor,
   calculateForegroundColor,
+  areColorsEqual,
 } from "@/utils/color";
 import { useStableCallback } from "@/hooks";
 import { ColorButton } from "./colorButton";
@@ -17,6 +18,7 @@ import { RecentColorGrid } from "./color-grids/recentGrid";
 import { FavoriteColorGrid } from "./color-grids/favoriteGrid";
 import { IconButton } from "../icons/iconButton";
 import { useSettingsStore } from "@/store";
+import { useEffect, useRef, useState } from "react";
 
 export const CustomColorPicker = (props: {
   value: RgbaColor;
@@ -25,18 +27,40 @@ export const CustomColorPicker = (props: {
   className?: string;
 }) => {
   const { value, onChange, title, className } = props;
-  const rgbaColor = value;
-  const hsvaColor = ColorProcessor.fromRgba(value).toHsva();
+  const [hsvaColor, setHsvaColorState] = useState(
+    ColorProcessor.fromRgba(value).toHsva()
+  );
+  const lastSent = useRef<RgbaColor | null>(null);
   const { addFavoriteColor, addRecentColor } = useSettingsStore();
 
+  useEffect(() => {
+    if (lastSent.current && areColorsEqual(lastSent.current, value)) {
+      return;
+    }
+    setHsvaColorState(ColorProcessor.fromRgba(value).toHsva());
+  }, [value]);
+
   const setHsvaColor = useStableCallback((newColor: Partial<HsvaColor>) => {
-    const newHsva = { ...hsvaColor, ...newColor };
-    onChange(ColorProcessor.fromHsva(newHsva).toRgba());
+    setHsvaColorState((prev) => {
+      const updated = { ...prev, ...newColor };
+      const rgba = ColorProcessor.fromHsva(updated).toRgba();
+      lastSent.current = rgba;
+      onChange(rgba);
+      return updated;
+    });
   });
 
   const setRgbaColor = useStableCallback((newColor: Partial<RgbaColor>) => {
-    onChange({ ...rgbaColor, ...newColor });
+    setHsvaColorState((prev) => {
+      const rgba = { ...ColorProcessor.fromHsva(prev).toRgba(), ...newColor };
+      const updated = ColorProcessor.fromRgba(rgba).toHsva();
+      lastSent.current = rgba;
+      onChange(rgba);
+      return updated;
+    });
   });
+
+  const rgbaColor = ColorProcessor.fromHsva(hsvaColor).toRgba();
 
   return (
     <Popover onOpenChange={(open) => !open && addRecentColor(rgbaColor)}>
