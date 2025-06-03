@@ -47,6 +47,70 @@ pub fn sepia(data: Vec<u8>) -> WasmResult<Vec<u8>> {
 }
 
 #[wasm_bindgen]
+pub fn flood_fill(
+    mut data: Vec<u8>,
+    width: u32,
+    height: u32,
+    start_x: u32,
+    start_y: u32,
+    fill_r: u8,
+    fill_g: u8,
+    fill_b: u8,
+    fill_a: u8,
+    tolerance: f32,
+) -> WasmResult<Vec<u8>> {
+    let mut visited = vec![false; (width * height) as usize];
+
+    let get_color = |x: u32, y: u32, buf: &Vec<u8>| -> [u8; 4] {
+        let idx = ((y * width + x) * 4) as usize;
+        [buf[idx], buf[idx + 1], buf[idx + 2], buf[idx + 3]]
+    };
+
+    let mut stack = vec![(start_x as i32, start_y as i32)];
+    let origin = get_color(start_x, start_y, &data);
+
+    let color_close = |c1: [u8; 4], c2: [u8; 4]| -> bool {
+        let rgb_tol = 255.0 * (tolerance / 100.0);
+        let alpha_tol = tolerance / 100.0;
+        (c1[0] as f32 - c2[0] as f32).abs() <= rgb_tol &&
+        (c1[1] as f32 - c2[1] as f32).abs() <= rgb_tol &&
+        (c1[2] as f32 - c2[2] as f32).abs() <= rgb_tol &&
+        ((c1[3] as f32 / 255.0) - (c2[3] as f32 / 255.0)).abs() <= alpha_tol
+    };
+
+    if color_close([fill_r, fill_g, fill_b, fill_a], origin) {
+        return Ok(data);
+    }
+
+    while let Some((x, y)) = stack.pop() {
+        if x < 0 || x >= width as i32 || y < 0 || y >= height as i32 {
+            continue;
+        }
+        let idx = (y as u32 * width + x as u32) as usize;
+        if visited[idx] {
+            continue;
+        }
+        visited[idx] = true;
+        let color = get_color(x as u32, y as u32, &data);
+        if !color_close(color, origin) {
+            continue;
+        }
+        let data_idx = idx * 4;
+        data[data_idx] = fill_r;
+        data[data_idx + 1] = fill_g;
+        data[data_idx + 2] = fill_b;
+        data[data_idx + 3] = fill_a;
+
+        stack.push((x + 1, y));
+        stack.push((x - 1, y));
+        stack.push((x, y + 1));
+        stack.push((x, y - 1));
+    }
+
+    Ok(data)
+}
+
+#[wasm_bindgen]
 pub fn hello(name: String) -> String {
     format!("Hello, {}!", name)
 }

@@ -10,6 +10,31 @@ export function grayscale(data: Uint8Array): Uint8Array;
 * @returns {Uint8Array}
 */
 export function sepia(data: Uint8Array): Uint8Array;
+/**
+* @param {Uint8Array} data
+* @param {number} width
+* @param {number} height
+* @param {number} start_x
+* @param {number} start_y
+* @param {number} r
+* @param {number} g
+* @param {number} b
+* @param {number} a
+* @param {number} tolerance
+* @returns {Uint8Array}
+*/
+export function flood_fill(
+  data: Uint8Array,
+  width: number,
+  height: number,
+  start_x: number,
+  start_y: number,
+  r: number,
+  g: number,
+  b: number,
+  a: number,
+  tolerance: number
+): Uint8Array;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
@@ -17,6 +42,18 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly grayscale: (a: number, b: number, c: number) => void;
   readonly sepia: (a: number, b: number, c: number) => void;
+  readonly flood_fill: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+    g: number,
+    h: number,
+    i: number,
+    j: number
+  ) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;

@@ -10,6 +10,7 @@ import type { CanvasBitmapContext } from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { type RgbaColor, areColorsClose } from "@/utils/color";
 import { floodFill } from "@/utils/imageOperations";
+import { coreClient } from "@/wasm/core/coreClient";
 
 const translations = getTranslations().tools.fillDraw;
 
@@ -47,6 +48,7 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
     if (event.type !== "pointerDown") {
       return;
     }
+
     const imageData = this.bitmapContext.getImageData(
       0,
       0,
@@ -54,17 +56,31 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
       this.bitmapContext.canvas.height
     );
 
-    const filledData = floodFill(
-      imageData,
-      { x: ~~event.canvasPosition.x, y: ~~event.canvasPosition.y },
-      this.fillColor!,
-      (targetColor, originColor) =>
-        areColorsClose(targetColor, originColor, this.tolerance)
-    );
+    const position = {
+      x: ~~event.canvasPosition.x,
+      y: ~~event.canvasPosition.y,
+    };
 
-    imageData.data.set(filledData.data);
-    this.bitmapContext.putImageData(imageData, 0, 0);
-    this.onCommitCallback?.({ bitmapContextChanged: true });
+    coreClient
+      .floodFill(imageData, position, this.fillColor!, this.tolerance)
+      .then((filled) => {
+        imageData.data.set(filled.data);
+        this.bitmapContext.putImageData(imageData, 0, 0);
+        this.onCommitCallback?.({ bitmapContextChanged: true });
+      })
+      .catch(() => {
+        const filledData = floodFill(
+          imageData,
+          position,
+          this.fillColor!,
+          (targetColor, originColor) =>
+            areColorsClose(targetColor, originColor, this.tolerance)
+        );
+
+        imageData.data.set(filledData.data);
+        this.bitmapContext.putImageData(imageData, 0, 0);
+        this.onCommitCallback?.({ bitmapContextChanged: true });
+      });
   }
 
   onCommit(callback: (result: CanvasToolResult) => void) {

@@ -119,6 +119,40 @@ export function sepia(data) {
     }
 }
 
+/**
+* @param {Uint8Array} data
+* @param {number} width
+* @param {number} height
+* @param {number} start_x
+* @param {number} start_y
+* @param {number} r
+* @param {number} g
+* @param {number} b
+* @param {number} a
+* @param {number} tolerance
+* @returns {Uint8Array}
+*/
+export function flood_fill(data, width, height, start_x, start_y, r, g, b, a, tolerance) {
+    try {
+        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+        const ptr0 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.flood_fill(retptr, ptr0, len0, width, height, start_x, start_y, r, g, b, a, tolerance);
+        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+        var r2 = getDataViewMemory0().getInt32(retptr + 4 * 2, true);
+        var r3 = getDataViewMemory0().getInt32(retptr + 4 * 3, true);
+        if (r3) {
+            throw takeObject(r2);
+        }
+        var v2 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 1, 1);
+        return v2;
+    } finally {
+        wasm.__wbindgen_add_to_stack_pointer(16);
+    }
+}
+
 async function __wbg_load(module, imports) {
     if (typeof Response === 'function' && module instanceof Response) {
         if (typeof WebAssembly.instantiateStreaming === 'function') {
