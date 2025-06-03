@@ -4,6 +4,7 @@ import coreUrl from "./core_bg.wasm?url";
 import { ImageUncompressed } from "@/utils/imageData";
 import type { RgbaColor } from "@/utils/color";
 import type { Position } from "@/utils/common";
+import { floodFillGpu } from "@/utils/gpuFloodFill";
 
 const coreServer = {
   init: () => Promise.resolve(),
@@ -54,6 +55,22 @@ const coreServer = {
       height: imageData.height,
       data: new Uint8ClampedArray(result.buffer),
     };
+  },
+  floodFillGpu: async (
+    imageData: ImageUncompressed,
+    position: Position,
+    color: RgbaColor,
+    tolerance: number
+  ): Promise<ImageUncompressed> => {
+    const clone = {
+      width: imageData.width,
+      height: imageData.height,
+      data: new Uint8ClampedArray(imageData.data),
+    };
+
+    await floodFillGpu(clone, position, color, tolerance);
+
+    return clone;
   },
 };
 

@@ -136,3 +136,75 @@ const generateFillMask = (
   return filled;
 };
 
+export const generateFillMaskFromBitmap = (
+  mask: ImageMask,
+  position: Position
+): ImageMask => {
+  const { width, height } = mask;
+
+  const filled = {
+    data: new Uint8ClampedArray(width * height),
+    width,
+    height,
+  };
+
+  const shouldBeFilled = (pos: { x: number; y: number }) => {
+    if (pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height) {
+      if (getAtPosition(filled, pos)) {
+        return false;
+      }
+      return !!mask.data[pos.y * width + pos.x];
+    }
+    return false;
+  };
+
+  const stack: Position[] = [];
+  stack.push(position);
+
+  const scan = (lx: number, rx: number, y: number) => {
+    let span_added = false;
+    for (let x = lx; x <= rx; x++) {
+      if (!shouldBeFilled({ x, y })) {
+        span_added = false;
+      } else if (!span_added) {
+        stack.push({ x, y });
+        span_added = true;
+      }
+    }
+  };
+
+  while (stack.length > 0) {
+    let { x, y } = stack.pop()!;
+    let lx = x;
+    while (shouldBeFilled({ x: lx - 1, y })) {
+      setAtPosition(filled, { x: lx - 1, y }, true);
+      lx = lx - 1;
+    }
+    while (shouldBeFilled({ x, y })) {
+      setAtPosition(filled, { x, y }, true);
+      x = x + 1;
+    }
+    scan(lx, x - 1, y + 1);
+    scan(lx, x - 1, y - 1);
+  }
+
+  return filled;
+};
+
+export const fillImageWithMask = (
+  imageData: ImageUncompressed,
+  mask: ImageMask,
+  color: RgbaColor
+) => {
+  const data = mask.data;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i]) {
+      const idx = i * 4;
+      imageData.data[idx] = color.r;
+      imageData.data[idx + 1] = color.g;
+      imageData.data[idx + 2] = color.b;
+      imageData.data[idx + 3] = color.a * 255;
+    }
+  }
+  return imageData;
+};

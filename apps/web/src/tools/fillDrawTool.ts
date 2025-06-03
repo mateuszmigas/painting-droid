@@ -11,6 +11,7 @@ import { getTranslations } from "@/translations";
 import { type RgbaColor, areColorsClose } from "@/utils/color";
 import { floodFill } from "@/utils/imageOperations";
 import { coreClient } from "@/wasm/core/coreClient";
+import { features } from "@/features";
 
 const translations = getTranslations().tools.fillDraw;
 
@@ -61,8 +62,11 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
       y: ~~event.canvasPosition.y,
     };
 
-    coreClient
-      .floodFill(imageData, position, this.fillColor!, this.tolerance)
+    const fill = features.computeShaders
+      ? coreClient.floodFillGpu(imageData, position, this.fillColor!, this.tolerance)
+      : coreClient.floodFill(imageData, position, this.fillColor!, this.tolerance);
+
+    fill
       .then((filled) => {
         imageData.data.set(filled.data);
         this.bitmapContext.putImageData(imageData, 0, 0);
