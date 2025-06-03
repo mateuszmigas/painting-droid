@@ -4,9 +4,12 @@ import {
   AutoModel,
   AutoProcessor,
   RawImage,
+  type ProgressInfo,
+  type PretrainedModelOptions,
+  type PretrainedConfig,
   pipeline,
   env,
-} from "@xenova/transformers";
+} from "@huggingface/transformers";
 import { sizeToString } from "@/utils/format";
 import { ImageProcessor } from "@/utils/imageProcessor";
 
@@ -37,8 +40,17 @@ const objectDetectionPipeline = createLazyPipeline(
   (onLoading?: (value: LoadingProgressValue) => void) =>
     pipeline("object-detection", "Xenova/detr-resnet-50", {
       quantized: false,
-      progress_callback: onLoading,
-    })
+      progress_callback: (data: ProgressInfo) => {
+        if (onLoading && data.status === "progress") {
+          onLoading({
+            loaded: data.loaded,
+            total: data.total,
+            progress: data.progress,
+          });
+        }
+      },
+      device: "webgpu",
+    } as unknown as PretrainedModelOptions & { quantized?: boolean })
 );
 
 const transformerJsServer = {
@@ -50,23 +62,32 @@ const transformerJsServer = {
       imageCompressed.width !== size.width ||
       imageCompressed.height !== size.height;
     const name = "briaai/RMBG-1.4";
-    const model = await AutoModel.from_pretrained(name, {
-      config: { model_type: "custom" },
-    });
-    const processor = await AutoProcessor.from_pretrained(name, {
-      config: {
-        do_normalize: true,
-        do_pad: false,
-        do_rescale: true,
-        do_resize: true,
-        image_mean: [0.5, 0.5, 0.5],
-        feature_extractor_type: "ImageFeatureExtractor",
-        image_std: [1, 1, 1],
-        resample: 2,
-        rescale_factor: 0.00392156862745098,
-        size,
+    const model = await AutoModel.from_pretrained(
+      name,
+      {
+        device: "webgpu",
+        // Custom config for RMBG-1.4
+        config: { model_type: "custom" } as PretrainedConfig,
+      } as unknown as PretrainedModelOptions
+    );
+    const processor = await AutoProcessor.from_pretrained(
+      name,
+      {
+        device: "webgpu",
+        config: {
+          do_normalize: true,
+          do_pad: false,
+          do_rescale: true,
+          do_resize: true,
+          image_mean: [0.5, 0.5, 0.5],
+          feature_extractor_type: "ImageFeatureExtractor",
+          image_std: [1, 1, 1],
+          resample: 2,
+          rescale_factor: 0.00392156862745098,
+          size,
       },
-    });
+    } as unknown as PretrainedModelOptions
+    );
 
     let imageProcessor = ImageProcessor.fromCompressedData(
       imageCompressed.data
