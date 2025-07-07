@@ -148,7 +148,7 @@ export const CanvasRulers = (props: {
       canvasVerticalContextRef.current =
         canvasVerticalRef.current.getContext("2d");
     }
-  }, [canvasVerticalRef.current, canvasHorizontalRef.current]);
+  }, []);
 
   useListener(observableViewport, drawRulers, {
     triggerOnMount: true,
@@ -186,4 +186,3 @@ export const CanvasRulers = (props: {
     </div>
   );
 };
-

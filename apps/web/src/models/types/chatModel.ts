@@ -32,7 +32,6 @@ export const createChatSection = <
 ) => section;
 
 export type ChatModel = BaseModel & {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: checked
   chat: ChatSection<any, any>;
 };
-

@@ -12,7 +12,6 @@ type ImageFromBlobProps = Omit<
 export const ImageFromBlob = memo((props: ImageFromBlobProps) => {
   const { blob, imgRef, ...rest } = props;
   const src = useBlobUrl(blob);
-  // biome-ignore lint/a11y/useAltText: <explanation>
+  // biome-ignore lint/a11y/useAltText: checked
   return <img {...rest} ref={imgRef} src={src} />;
 });
-

@@ -18,7 +18,6 @@ const LayerItem = (props: {
 }) => {
   const { layer, selected, onClick, setVisibility } = props;
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div
       onClick={onClick}
       className={cn(

@@ -37,7 +37,7 @@ export const AppHeaderBar = memo(() => {
     if (containerRef.current) {
       setCompactMenuBar(containerRef.current.clientWidth < compactThreshold);
     }
-  }, [containerRef.current]);
+  }, []);
 
   useResizeObserver(containerRef, ({ width }) => {
     setCompactMenuBar(width < compactThreshold);
@@ -137,4 +137,3 @@ export const AppHeaderBar = memo(() => {
     </div>
   );
 });
-

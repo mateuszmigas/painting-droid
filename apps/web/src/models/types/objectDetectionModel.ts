@@ -33,6 +33,6 @@ export const createObjectDetectionSection = <
 ) => section;
 
 export type ObjectDetectionModel = BaseModel & {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: checked
   detectObjects: ObjectDetectionSection<any, any>;
 };

@@ -15,7 +15,8 @@
     "test:e2e:install-browsers": "pnpm exec playwright install --with-deps",
     "validate": "pnpm run check-types && pnpm run test:unit && pnpm run lint",
     "lint": "biome lint src",
-    "analyze-bundle": "pnpm dlx vite-bundle-visualizer"
+    "analyze-bundle": "pnpm dlx vite-bundle-visualizer",
+    "bm:migrate": "biome migrate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

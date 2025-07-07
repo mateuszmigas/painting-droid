@@ -27,6 +27,6 @@ export const createImageToImageSection = <
 ) => section;
 
 export type ImageToImageModel = BaseModel & {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: checked
   imageToImage: ImageToImageSection<any, any>;
 };

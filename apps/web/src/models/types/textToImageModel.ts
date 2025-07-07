@@ -26,6 +26,6 @@ export const createTextToImageSection = <
 ) => section;
 
 export type TextToImageModel = BaseModel & {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: checked
   textToImage: TextToImageSection<any, any>;
 };

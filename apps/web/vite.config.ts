@@ -2,7 +2,6 @@ import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import solidPlugin from "vite-plugin-solid";
-import { splitVendorChunkPlugin } from "vite";
 import packageJson from "../../package.json";
 
 const isDesktop = "TAURI_ENV_PLATFORM" in process.env;
@@ -25,7 +24,6 @@ export default defineConfig(async (configEnv) => ({
     react({ exclude: /\.solid\.tsx$/ }),
     solidPlugin({ include: /\.solid\.tsx$/ }),
     configureResponse(),
-    splitVendorChunkPlugin(),
   ],
   build: {
     chunkSizeWarningLimit: 1024,

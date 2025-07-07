@@ -89,7 +89,7 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
 
       setResult(result);
       setSelectedDetectionIndex(result.length > 0 ? 0 : null);
-    } catch (error) {
+    } catch {
       setResult(translations.errors.processingError);
       setSelectedDetectionIndex(null);
     } finally {
@@ -181,7 +181,7 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
                   </SelectTrigger>
                   <SelectContent>
                     {result.map((model, index) => (
-                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                      // biome-ignore lint/suspicious/noArrayIndexKey: checked
                       <SelectItem key={index} value={index.toString()}>
                         <div className="flex flex-row items-center gap-medium">
                           <div>{model.score.toFixed(2)}</div>

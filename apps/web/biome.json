@@ -1,27 +1,44 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.6.0/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
       },
       "complexity": {
         "noForEach": "off"
       },
       "a11y": {
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "noStaticElementInteractions": "off",
+        "useKeyWithClickEvents": "off"
       }
     },
-    "ignore": [
-      "wasm/",
-      "solid/",
-      "src/commands/index.ts",
-      "src/utils/worker.ts"
+    "includes": [
+      "**",
+      "!**/wasm/**",
+      "!**/solid/**",
+      "!**/src/commands/index.ts",
+      "!**/src/utils/worker.ts"
     ]
   },
   "formatter": {
@@ -30,4 +47,3 @@
     "lineWidth": 120
   }
 }
-

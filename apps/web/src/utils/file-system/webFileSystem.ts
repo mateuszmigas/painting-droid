@@ -118,7 +118,7 @@ const saveBlobWithFileSystemApi = async (
     const writable = await fileHandle.createWritable();
     await writable.write(blob);
     await writable.close();
-  } catch (error) {
+  } catch {
     //todo: maybe inform user that he didn't save the file
   }
 };

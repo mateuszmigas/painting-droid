@@ -1,11 +1,23 @@
+import { markerColors } from "@/constants";
+import {
+  useBlobUrl,
+  useCanvasActionDispatcher,
+  useObjectDetectionModels,
+} from "@/hooks";
 import type { ObjectDetectionResult } from "@/models/types/objectDetectionModel";
+import { useWorkspacesStore } from "@/store";
+import {
+  activeWorkspaceActiveLayerSelector,
+  activeWorkspaceCanvasDataSelector,
+} from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
 import type { ImageCompressedData } from "@/utils/imageData";
+import { ImageProcessor } from "@/utils/imageProcessor";
 import { memo, useState } from "react";
 import { Icon } from "../icons/icon";
+import { ImageFit } from "../image/imageFit";
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { ImageFit } from "../image/imageFit";
 import { Label } from "../ui/label";
 import { Progress } from "../ui/progress";
 import {
@@ -15,18 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useWorkspacesStore } from "@/store";
-import {
-  activeWorkspaceActiveLayerSelector,
-  activeWorkspaceCanvasDataSelector,
-} from "@/store/workspacesStore";
-import {
-  useBlobUrl,
-  useCanvasActionDispatcher,
-  useObjectDetectionModels,
-} from "@/hooks";
-import { ImageProcessor } from "@/utils/imageProcessor";
-import { markerColors } from "@/constants";
 
 const getColor = (index: number) => markerColors[index % markerColors.length];
 
@@ -36,6 +36,7 @@ const applyResultToImage = (
   imageData: ImageCompressedData,
   result: ObjectDetectionResult[]
 ) => {
+  // biome-ignore lint/correctness/useHookAtTopLevel: checked
   return ImageProcessor.fromCompressedData(imageData)
     .useContext(async (context) => {
       context.lineWidth = 4;
@@ -111,7 +112,7 @@ export const LabelObjectsDialog = memo((props: { close: () => void }) => {
       if (result.length > 0) {
         setImageData(await applyResultToImage(originalImage, result));
       }
-    } catch (error) {
+    } catch {
       setResult(translations.errors.processingError);
     } finally {
       setIsProcessing(false);
@@ -180,7 +181,7 @@ export const LabelObjectsDialog = memo((props: { close: () => void }) => {
                 <div className="rounded-md min-h-0 flex-1 border overflow-auto max-h-[176px] px-small py-0.5">
                   {result?.map((r, index) => (
                     <div
-                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                      // biome-ignore lint/suspicious/noArrayIndexKey: legitimate use case
                       key={index}
                       className="flex flex-row justify-between gap-small items-center"
                     >

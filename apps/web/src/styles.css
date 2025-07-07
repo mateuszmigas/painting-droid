@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+/** biome-ignore-all lint/suspicious/noDuplicateProperties: checked */
+@import "tailwindcss";
 
 @plugin 'tailwindcss-animate';
 
@@ -299,4 +300,3 @@
     }
   }
 }
-
