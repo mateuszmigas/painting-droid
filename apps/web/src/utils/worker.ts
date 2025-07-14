@@ -8,6 +8,7 @@ const isCallback = (arg: unknown): arg is { __callbackId__: string } =>
 
 export const createProxyServer = (
   workerSelf: Window & typeof globalThis,
+  // biome-ignore lint/suspicious/noExplicitAny: checked
   api: Record<string, (...args: any[]) => Promise<unknown>>,
   init?: () => Promise<unknown>,
 ) => {
@@ -63,6 +64,7 @@ export const createProxyClient = <T extends {}>(initWorker: () => Worker) => {
   };
   const handler: ProxyHandler<typeof client> = {
     get(_, prop) {
+      // biome-ignore lint/suspicious/noPrototypeBuiltins: checked
       if (Object.prototype.hasOwnProperty.call(client, prop)) {
         return client[prop as keyof typeof client];
       }

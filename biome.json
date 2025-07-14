@@ -1,6 +1,10 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": ["apps/web/src/**", "apps/desktop/src/**", "!apps/web/src/wasm/core", "!**/*.solid.tsx"]
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -24,16 +28,7 @@
       "a11y": {
         "noSvgWithoutTitle": "off"
       }
-    },
-    "includes": [
-      "**",
-      "!**/apps/web/src/wasm/**",
-      "!**/apps/web/src/commands/index.ts",
-      "!**/apps/web/src/utils/worker.ts",
-      "!**/core/pkg/**",
-      "!**/apps/web/e2e/testApp.ts",
-      "!**/*.solid.tsx"
-    ]
+    }
   },
   "formatter": {
     "indentStyle": "space",
