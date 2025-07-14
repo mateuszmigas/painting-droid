@@ -1,9 +1,6 @@
-import { type DragEventHandler, useState, type DragEvent } from "react";
+import { type DragEvent, type DragEventHandler, useState } from "react";
 
-export const useDragWatcher = (): [
-  boolean,
-  Record<string, DragEventHandler>
-] => {
+export const useDragWatcher = (): [boolean, Record<string, DragEventHandler>] => {
   const [isDragging, setIsDragging] = useState(false);
   return [
     isDragging,
@@ -14,10 +11,7 @@ export const useDragWatcher = (): [
       },
       onDragLeave: (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
-        if (
-          e.relatedTarget === null ||
-          !e.currentTarget.contains(e.relatedTarget as never)
-        ) {
+        if (e.relatedTarget === null || !e.currentTarget.contains(e.relatedTarget as never)) {
           setIsDragging(false);
         }
       },
@@ -28,4 +22,3 @@ export const useDragWatcher = (): [
     },
   ];
 };
-

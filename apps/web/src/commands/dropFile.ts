@@ -1,9 +1,9 @@
+import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import type { FileInfo } from "@/utils/file";
-import type { CommandContext } from "./context";
-import { createCommand } from "./createCommand";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import { uuid } from "@/utils/uuid";
-import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
+import type { CommandContext } from "./context";
+import { createCommand } from "./createCommand";
 
 export const command = createCommand({
   id: "dropFile",
@@ -12,17 +12,12 @@ export const command = createCommand({
     context: CommandContext,
     payload: {
       file: FileInfo;
-      operation:
-        | "create-new-workspace"
-        | "add-new-layer"
-        | "paste-onto-active-layer";
-    }
+      operation: "create-new-workspace" | "add-new-layer" | "paste-onto-active-layer";
+    },
   ) => {
     const { file, operation } = payload;
     const imageProcessor = ImageProcessor.fromFile(file.blob);
-    const canvasData = activeWorkspaceCanvasDataSelector(
-      context.stores.workspaces()
-    );
+    const canvasData = activeWorkspaceCanvasDataSelector(context.stores.workspaces());
 
     if (operation === "paste-onto-active-layer") {
       const { width, height, data } = await imageProcessor.toCompressed();
@@ -43,17 +38,13 @@ export const command = createCommand({
     if (operation === "create-new-workspace") {
       const { width, height, data } = await imageProcessor.toCompressed();
 
-      await context.stores
-        .workspaces()
-        .createWorkspaceFromImage(file.fileName, { width, height }, data);
+      await context.stores.workspaces().createWorkspaceFromImage(file.fileName, { width, height }, data);
 
       return;
     }
 
     if (operation === "add-new-layer") {
-      const data = await imageProcessor
-        .resize(canvasData.size)
-        .toCompressedData();
+      const data = await imageProcessor.resize(canvasData.size).toCompressedData();
 
       await context.canvasActionDispatcher.execute("addLayer", {
         id: uuid(),

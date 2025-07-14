@@ -1,8 +1,8 @@
+import { features } from "@/features";
+import { getTranslations } from "@/translations";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { getTranslations } from "@/translations";
 import { selectWorkspaceAsImage } from "./selectors/workspace";
-import { features } from "@/features";
 
 const translations = getTranslations();
 
@@ -13,16 +13,11 @@ export const command = createCommand({
   config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     if (!features.shareFiles) {
-      context.notificationService.showError(
-        translations.errors.sharingNotSupported
-      );
+      context.notificationService.showError(translations.errors.sharingNotSupported);
       return;
     }
     const format = "jpeg";
-    const { name, blob } = await selectWorkspaceAsImage(
-      context.stores.workspaces(),
-      format
-    );
+    const { name, blob } = await selectWorkspaceAsImage(context.stores.workspaces(), format);
     const file = new File([blob], `${name}.${format}`, {
       type: `image/${format}`,
     });

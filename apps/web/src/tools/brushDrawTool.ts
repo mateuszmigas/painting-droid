@@ -1,14 +1,14 @@
+import { getTranslations } from "@/translations";
+import { ColorProcessor } from "@/utils/colorProcessor";
+import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
 import {
+  type CanvasTool,
+  type CanvasToolEvent,
   type CanvasToolResult,
   createCanvasToolMetadata,
   createCanvasToolSettingsSchema,
-  type CanvasTool,
-  type CanvasToolEvent,
   type InferToolSettings,
 } from "./canvasTool";
-import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
-import { getTranslations } from "@/translations";
-import { ColorProcessor } from "@/utils/colorProcessor";
 
 const translations = getTranslations().tools.brushDraw;
 
@@ -41,14 +41,13 @@ class BrushDrawTool implements CanvasTool<BrushDrawToolSettings> {
 
   constructor(
     private bitmapContext: CanvasBitmapContext,
-    private vectorContext: CanvasVectorContext
+    private vectorContext: CanvasVectorContext,
   ) {}
 
   configure(settings: BrushDrawToolSettings): void {
     const { size, color } = settings;
     this.bitmapContext.lineWidth = size;
-    this.bitmapContext.strokeStyle =
-      ColorProcessor.fromRgba(color).toRgbaString();
+    this.bitmapContext.strokeStyle = ColorProcessor.fromRgba(color).toRgbaString();
     this.bitmapContext.lineCap = "round";
     this.bitmapContext.lineJoin = "round";
   }
@@ -72,10 +71,7 @@ class BrushDrawTool implements CanvasTool<BrushDrawToolSettings> {
       ]);
 
       if (this.isDrawing) {
-        this.bitmapContext.lineTo(
-          event.canvasPosition.x,
-          event.canvasPosition.y
-        );
+        this.bitmapContext.lineTo(event.canvasPosition.x, event.canvasPosition.y);
         this.bitmapContext.stroke();
       }
     }
@@ -107,4 +103,3 @@ export const brushDrawToolMetadata = createCanvasToolMetadata({
   settingsSchema,
   create: (context) => new BrushDrawTool(context.bitmap, context.vector),
 });
-

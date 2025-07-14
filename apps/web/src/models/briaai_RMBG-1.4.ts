@@ -1,8 +1,5 @@
 import { transformerJsClient } from "./providers/local/transformerJsClient";
-import {
-  createRemoveBackgroundSection,
-  type RemoveBackgroundModel,
-} from "./types/removeBackgroundModel";
+import { createRemoveBackgroundSection, type RemoveBackgroundModel } from "./types/removeBackgroundModel";
 
 const removeBackground = createRemoveBackgroundSection({
   optionsSchema: {},
@@ -19,4 +16,3 @@ export const model = {
   url: "https://huggingface.co/briaai/RMBG-1.4",
   removeBackground,
 } as const satisfies RemoveBackgroundModel;
-

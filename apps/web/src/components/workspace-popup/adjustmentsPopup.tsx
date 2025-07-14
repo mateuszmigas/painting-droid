@@ -1,32 +1,28 @@
 import { memo, useEffect } from "react";
-import { Button } from "../ui/button";
+import { adjustmentsMetadata } from "@/adjustments";
+import { useCanvasContextStore } from "@/contexts/canvasContextStore";
+import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
 import { useWorkspacesStore } from "@/store";
 import {
-  type WorkspacePopup,
   activeWorkspaceActiveLayerSelector,
   activeWorkspaceCanvasDataSelector,
   activeWorkspaceSelector,
+  type WorkspacePopup,
 } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
-import { coreClient } from "@/wasm/core/coreClient";
-import { useCanvasActionDispatcher, useStableCallback } from "@/hooks";
-import { adjustmentsMetadata } from "@/adjustments";
-import { useCanvasContextStore } from "@/contexts/canvasContextStore";
-import {
-  restoreContextFromCompressed,
-  restoreContextFromUncompressed,
-} from "@/utils/canvas";
+import { restoreContextFromCompressed, restoreContextFromUncompressed } from "@/utils/canvas";
 import { ImageProcessor } from "@/utils/imageProcessor";
+import { coreClient } from "@/wasm/core/coreClient";
+import { Button } from "../ui/button";
 
 const translations = getTranslations();
 
 export const AdjustmentsPopup = memo(() => {
-  const popup = useWorkspacesStore(
-    (store) => activeWorkspaceSelector(store).popup!
-  ) as Extract<WorkspacePopup, { type: "adjustments" }>;
-  const { layers, activeLayerIndex } = useWorkspacesStore((s) =>
-    activeWorkspaceCanvasDataSelector(s)
-  );
+  const popup = useWorkspacesStore((store) => activeWorkspaceSelector(store).popup!) as Extract<
+    WorkspacePopup,
+    { type: "adjustments" }
+  >;
+  const { layers, activeLayerIndex } = useWorkspacesStore((s) => activeWorkspaceCanvasDataSelector(s));
   const canvasDispatcher = useCanvasActionDispatcher();
   const closePopup = useWorkspacesStore((store) => store.closePopup);
   const adjustment = adjustmentsMetadata[popup.adjustmentId];
@@ -51,9 +47,7 @@ export const AdjustmentsPopup = memo(() => {
       return;
     }
 
-    const data = await ImageProcessor.fromUncompressed(
-      imageData
-    ).toCompressedData();
+    const data = await ImageProcessor.fromUncompressed(imageData).toCompressedData();
 
     await canvasDispatcher.execute("updateLayerData", {
       layerId: activeLayer.id,
@@ -70,8 +64,7 @@ export const AdjustmentsPopup = memo(() => {
       if (!imageData) {
         return;
       }
-      previewContext &&
-        restoreContextFromUncompressed(previewContext, imageData);
+      previewContext && restoreContextFromUncompressed(previewContext, imageData);
     };
     run();
   }, [previewContext, runAdjustment]);
@@ -79,9 +72,7 @@ export const AdjustmentsPopup = memo(() => {
   useEffect(() => {
     return () => {
       if (previewContext !== null) {
-        const activeLayer = activeWorkspaceActiveLayerSelector(
-          useWorkspacesStore.getState()
-        );
+        const activeLayer = activeWorkspaceActiveLayerSelector(useWorkspacesStore.getState());
         restoreContextFromCompressed(previewContext, activeLayer.data);
       }
     };
@@ -94,11 +85,8 @@ export const AdjustmentsPopup = memo(() => {
         <Button variant="secondary" onClick={closePopup}>
           {translations.general.cancel}
         </Button>
-        <Button onClick={() => applyToLayer()}>
-          {translations.general.apply}
-        </Button>
+        <Button onClick={() => applyToLayer()}>{translations.general.apply}</Button>
       </div>
     </div>
   );
 });
-

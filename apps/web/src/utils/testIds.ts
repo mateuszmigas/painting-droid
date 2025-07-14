@@ -5,4 +5,3 @@ export const testIds = {
   colorPickerHexInput: "color-picker-hex-input",
   selectContent: "select-content",
 };
-

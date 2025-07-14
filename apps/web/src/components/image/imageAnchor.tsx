@@ -42,16 +42,9 @@ export const ImageAnchor = (props: {
       <IconButton {...createCellProps("left")} type="anchor-left" />
       <IconButton {...createCellProps("center")} type="image" />
       <IconButton {...createCellProps("right")} type="anchor-right" />
-      <IconButton
-        {...createCellProps("bottom-left")}
-        type="anchor-bottom-left"
-      />
+      <IconButton {...createCellProps("bottom-left")} type="anchor-bottom-left" />
       <IconButton {...createCellProps("bottom")} type="anchor-bottom" />
-      <IconButton
-        {...createCellProps("bottom-right")}
-        type="anchor-bottom-right"
-      />
+      <IconButton {...createCellProps("bottom-right")} type="anchor-bottom-right" />
     </div>
   );
 };
-

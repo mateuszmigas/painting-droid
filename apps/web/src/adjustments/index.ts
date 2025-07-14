@@ -33,4 +33,3 @@ export const getDefaultAdjustmentsSettings = (adjustmentId: AdjustmentId) => {
   Object.entries(adjustmentsMetadata[adjustmentId].settings).forEach(() => {}); //todo
   return result;
 };
-

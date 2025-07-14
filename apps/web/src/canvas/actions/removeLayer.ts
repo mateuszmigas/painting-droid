@@ -1,13 +1,13 @@
+import { getTranslations } from "@/translations";
+import type { CanvasLayerId } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
-import type { CanvasLayerId } from "../canvasState";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
 export const createCanvasAction = async (
   context: CanvasActionContext,
-  payload: { layerId: CanvasLayerId }
+  payload: { layerId: CanvasLayerId },
 ): Promise<CanvasAction> => {
   const { layerId } = payload;
   const state = context.getState();
@@ -16,9 +16,7 @@ export const createCanvasAction = async (
     throw new Error("Cannot remove the last layer");
   }
 
-  const removedLayerIndex = state.layers.findIndex(
-    (layer) => layer.id === layerId
-  );
+  const removedLayerIndex = state.layers.findIndex((layer) => layer.id === layerId);
 
   const capturedData = {
     index: removedLayerIndex,
@@ -32,13 +30,9 @@ export const createCanvasAction = async (
     execute: async (state) => {
       return {
         ...state,
-        layers: state.layers.filter(
-          (layer) => layer.id !== capturedData.layer.id
-        ),
+        layers: state.layers.filter((layer) => layer.id !== capturedData.layer.id),
         activeLayerIndex:
-          capturedData.index === state.activeLayerIndex
-            ? Math.max(capturedData.index - 1, 0)
-            : state.activeLayerIndex,
+          capturedData.index === state.activeLayerIndex ? Math.max(capturedData.index - 1, 0) : state.activeLayerIndex,
       };
     },
     undo: async (state) => {
@@ -54,4 +48,3 @@ export const createCanvasAction = async (
     },
   };
 };
-

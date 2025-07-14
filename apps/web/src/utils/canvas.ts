@@ -15,15 +15,10 @@ export const convertToBlob = (context: CanvasBitmapContext, type: string) => {
   if (context instanceof OffscreenCanvasRenderingContext2D) {
     return context.canvas.convertToBlob({ type });
   }
-  return new Promise<Blob>((resolve) =>
-    context.canvas.toBlob((blob) => resolve(blob!), type)
-  );
+  return new Promise<Blob>((resolve) => context.canvas.toBlob((blob) => resolve(blob!), type));
 };
 
-export const restoreContextFromCompressed = async (
-  context: CanvasBitmapContext,
-  data: ImageCompressedData | null
-) => {
+export const restoreContextFromCompressed = async (context: CanvasBitmapContext, data: ImageCompressedData | null) => {
   if (data) {
     const image = await createImageBitmap(data);
     const { width, height } = image;
@@ -34,39 +29,28 @@ export const restoreContextFromCompressed = async (
   }
 };
 
-export const restoreContextFromUncompressed = (
-  context: CanvasBitmapContext,
-  uncompressed: ImageUncompressed
-) => {
-  context.putImageData(
-    new ImageData(uncompressed.data, uncompressed.width, uncompressed.height),
-    0,
-    0
-  );
+export const restoreContextFromUncompressed = (context: CanvasBitmapContext, uncompressed: ImageUncompressed) => {
+  context.putImageData(new ImageData(uncompressed.data, uncompressed.width, uncompressed.height), 0, 0);
 };
 
 export const drawTransformedImage = (
   context: CanvasBitmapContext,
   boundingBox: BoundingBox,
-  image: CanvasImageSource
+  image: CanvasImageSource,
 ) => {
   const { x, y, width, height } = boundingBox;
   const { width: canvasWidth, height: canvasHeight } = context.canvas;
   const flipHorizontal = width < 0;
   const flipVertical = height < 0;
   context.save();
-  context.translate(
-    flipHorizontal ? canvasWidth : 0,
-    flipVertical ? canvasHeight : 0
-  );
+  context.translate(flipHorizontal ? canvasWidth : 0, flipVertical ? canvasHeight : 0);
   context.scale(flipHorizontal ? -1 : 1, flipVertical ? -1 : 1);
   context.drawImage(
     image,
     flipHorizontal ? canvasWidth - x : x,
     flipVertical ? canvasHeight - y : y,
     Math.abs(width),
-    Math.abs(height)
+    Math.abs(height),
   );
   context.restore();
 };
-

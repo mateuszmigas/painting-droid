@@ -1,122 +1,93 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useSettingsStore } from "@/store";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { memo, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icons/icon";
+import { Link } from "@/components/link";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { links } from "@/constants";
 import { type ModelType, modelDefinitions } from "@/models/definitions";
+import type { BaseModel } from "@/models/types/baseModel";
+import { useSettingsStore } from "@/store";
 import { getTranslations } from "@/translations";
+import { isDesktop } from "@/utils/platform";
+import { safeStorage } from "@/utils/safe-storage";
 import { uuid } from "@/utils/uuid";
 import { ConfigureModelRow } from "./configureModelRow";
-import { isDesktop } from "@/utils/platform";
-import { Link } from "@/components/link";
-import { links } from "@/constants";
-import type { BaseModel } from "@/models/types/baseModel";
-import { safeStorage } from "@/utils/safe-storage";
 
 const translations = getTranslations();
 const tabTranslations = translations.dialogs.settings.tabs.models;
 
 export const defaultSecureKeyPlaceholder = "***************";
 
-export const ConfigureModels = memo(
-  (props: { showDesktopVersionInfo: boolean }) => {
-    const { showDesktopVersionInfo } = props;
-    const models = modelDefinitions.filter(
-      (md: BaseModel) => !md.predefined && (!md.useApiKey || isDesktop())
-    );
-    const [selectedModel, setSelectedModel] = useState<ModelType | "">(
-      models.length > 0 ? models[0].type : ""
-    );
-    const { userModels, addModel, removeModel } = useSettingsStore(
-      (state) => state
-    );
-    const hostRef = useRef<HTMLDivElement>(null);
-    const scrollTo = useRef<number | null>(null);
+export const ConfigureModels = memo((props: { showDesktopVersionInfo: boolean }) => {
+  const { showDesktopVersionInfo } = props;
+  const models = modelDefinitions.filter((md: BaseModel) => !md.predefined && (!md.useApiKey || isDesktop()));
+  const [selectedModel, setSelectedModel] = useState<ModelType | "">(models.length > 0 ? models[0].type : "");
+  const { userModels, addModel, removeModel } = useSettingsStore((state) => state);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const scrollTo = useRef<number | null>(null);
 
-    return (
-      <div className="size-full flex flex-row gap-big">
-        <div className="flex flex-col gap-big w-full flex-1">
-          {models.length > 0 && (
-            <div className="flex flex-row gap-medium">
-              <Select
-                value={selectedModel}
-                onValueChange={setSelectedModel as (_: string) => void}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {models.map((md) => (
-                    <SelectItem key={md.type} value={md.type}>
-                      {md.defaultName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                disabled={!selectedModel}
-                variant="secondary"
-                onClick={() => {
-                  addModel({
-                    id: uuid(),
-                    type: selectedModel as ModelType,
-                    display: modelDefinitions.find(
-                      (md) => md.type === selectedModel
-                    )?.defaultName as string,
-                  });
-                  scrollTo.current = userModels.length;
-                }}
-              >
-                <Icon className="mr-2" type="plus-circle" size="small" />
-                {tabTranslations.addModel}
-              </Button>
-            </div>
-          )}
-          <ScrollArea className="whitespace-nowrap overflow-auto flex-1">
-            <div
-              ref={hostRef}
-              className="relative flex flex-col gap-medium w-full"
+  return (
+    <div className="size-full flex flex-row gap-big">
+      <div className="flex flex-col gap-big w-full flex-1">
+        {models.length > 0 && (
+          <div className="flex flex-row gap-medium">
+            <Select value={selectedModel} onValueChange={setSelectedModel as (_: string) => void}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {models.map((md) => (
+                  <SelectItem key={md.type} value={md.type}>
+                    {md.defaultName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              disabled={!selectedModel}
+              variant="secondary"
+              onClick={() => {
+                addModel({
+                  id: uuid(),
+                  type: selectedModel as ModelType,
+                  display: modelDefinitions.find((md) => md.type === selectedModel)?.defaultName as string,
+                });
+                scrollTo.current = userModels.length;
+              }}
             >
-              {userModels.map((userModel, index) => (
-                <ConfigureModelRow
-                  key={userModel.id}
-                  shouldFocus={index === scrollTo.current}
-                  userModel={userModel}
-                  onRemove={(id) => {
-                    const modelDefinition = modelDefinitions.find(
-                      (md) => md.type === userModel.type
-                    );
-                    if (
-                      modelDefinition &&
-                      "useApiKey" in modelDefinition &&
-                      modelDefinition.useApiKey
-                    ) {
-                      safeStorage.delete(id);
-                    }
-                    removeModel(id);
-                  }}
-                />
-              ))}
-            </div>
-          </ScrollArea>
-          {showDesktopVersionInfo && !isDesktop() && (
-            <div className="rounded-md border pb-small px-medium">
-              <span className="text-xs">{tabTranslations.message} </span>
-              <Link href={links.downloadDesktop} className="text-xs">
-                {translations.general.download}
-              </Link>
-            </div>
-          )}
-        </div>
+              <Icon className="mr-2" type="plus-circle" size="small" />
+              {tabTranslations.addModel}
+            </Button>
+          </div>
+        )}
+        <ScrollArea className="whitespace-nowrap overflow-auto flex-1">
+          <div ref={hostRef} className="relative flex flex-col gap-medium w-full">
+            {userModels.map((userModel, index) => (
+              <ConfigureModelRow
+                key={userModel.id}
+                shouldFocus={index === scrollTo.current}
+                userModel={userModel}
+                onRemove={(id) => {
+                  const modelDefinition = modelDefinitions.find((md) => md.type === userModel.type);
+                  if (modelDefinition && "useApiKey" in modelDefinition && modelDefinition.useApiKey) {
+                    safeStorage.delete(id);
+                  }
+                  removeModel(id);
+                }}
+              />
+            ))}
+          </div>
+        </ScrollArea>
+        {showDesktopVersionInfo && !isDesktop() && (
+          <div className="rounded-md border pb-small px-medium">
+            <span className="text-xs">{tabTranslations.message} </span>
+            <Link href={links.downloadDesktop} className="text-xs">
+              {translations.general.download}
+            </Link>
+          </div>
+        )}
       </div>
-    );
-  }
-);
-
+    </div>
+  );
+});

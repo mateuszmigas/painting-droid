@@ -22,8 +22,6 @@ export class NotificationService {
 
 export const notificationService = new NotificationService();
 
-export const NotificationServiceContext =
-  createContext<NotificationService>(notificationService);
+export const NotificationServiceContext = createContext<NotificationService>(notificationService);
 
-export const useNotificationService = () =>
-  useContext<NotificationService>(NotificationServiceContext);
+export const useNotificationService = () => useContext<NotificationService>(NotificationServiceContext);

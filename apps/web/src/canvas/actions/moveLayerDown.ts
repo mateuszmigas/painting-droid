@@ -1,13 +1,13 @@
+import { getTranslations } from "@/translations";
+import type { CanvasLayerId } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
-import type { CanvasLayerId } from "../canvasState";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
 export const createCanvasAction = async (
   context: CanvasActionContext,
-  payload: { layerId: CanvasLayerId }
+  payload: { layerId: CanvasLayerId },
 ): Promise<CanvasAction> => {
   const { layerId } = payload;
   const state = context.getState();

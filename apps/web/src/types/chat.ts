@@ -9,8 +9,4 @@ export type ChatMessage =
       type: "user";
       text: string;
     }
-  | ({ type: "assistant" } & (
-      | { text: string; actions?: ChatActionKey[] }
-      | { error: string }
-    ));
-
+  | ({ type: "assistant" } & ({ text: string; actions?: ChatActionKey[] } | { error: string }));

@@ -1,13 +1,13 @@
-import { createSystemKeyGesture } from "@/utils/keyGesture";
-import type { CommandContext } from "./context";
-import { createCommand } from "./createCommand";
+import { domNames } from "@/constants";
+import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
 import { clipboard } from "@/utils/clipboard";
-import { domNames } from "@/constants";
+import { createSystemKeyGesture } from "@/utils/keyGesture";
 import { calculateMousePosition } from "@/utils/manipulation";
-import { activeWorkspaceSelector } from "@/store/workspacesStore";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";
 import { uuid } from "@/utils/uuid";
+import type { CommandContext } from "./context";
+import { createCommand } from "./createCommand";
 
 const translations = getTranslations();
 
@@ -27,7 +27,7 @@ export const command = createCommand({
     const position = calculateMousePosition(
       activeWorkspaceSelector(context.stores.workspaces()).viewport!,
       observableMousePosition.getValue(),
-      document.getElementById(domNames.workspaceViewport)!
+      document.getElementById(domNames.workspaceViewport)!,
     );
 
     const { width, height } = await createImageBitmap(data);
@@ -49,4 +49,3 @@ export const command = createCommand({
     });
   },
 });
-

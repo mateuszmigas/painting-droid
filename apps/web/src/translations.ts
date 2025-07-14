@@ -184,16 +184,11 @@ This action cannot be undone.`,
     },
   },
   chat: {
-    welcomeMessage:
-      "Hello! I am your creative assistant. How can I assist you with your image?",
+    welcomeMessage: "Hello! I am your creative assistant. How can I assist you with your image?",
     errors: {
       noModels: "No chat models available. Go to settings to add some.",
     },
-    suggestions: [
-      "What objects are in this image?",
-      "Suggest a filter for this image.",
-      "Suggest image enhancements.",
-    ],
+    suggestions: ["What objects are in this image?", "Suggest a filter for this image.", "Suggest image enhancements."],
   },
   dialogs: {
     settings: {
@@ -205,8 +200,7 @@ This action cannot be undone.`,
         models: {
           title: "AI Models",
           addModel: "Add Model",
-          message:
-            "Models using API keys need a desktop version for secure storage",
+          message: "Models using API keys need a desktop version for secure storage",
         },
       },
     },
@@ -219,8 +213,7 @@ This action cannot be undone.`,
         },
         theme: {
           title: "Theme",
-          message:
-            "Set your preferred theme. I can adapt to the system theme, or you can choose light or dark.",
+          message: "Set your preferred theme. I can adapt to the system theme, or you can choose light or dark.",
         },
         models: {
           title: "Models",
@@ -266,8 +259,7 @@ This action cannot be undone.`,
         absolute: "Absolute",
         offset: "Offset",
       },
-      printCrop: (crop: Rectangle) =>
-        `Crop x: ${crop.x}, y: ${crop.y}, width: ${crop.width}, height: ${crop.height}`,
+      printCrop: (crop: Rectangle) => `Crop x: ${crop.x}, y: ${crop.y}, width: ${crop.width}, height: ${crop.height}`,
       errors: {
         tooSmall: "Crop area too small",
         outOfBounds: "Crop area out of bounds",
@@ -432,4 +424,3 @@ This action cannot be undone.`,
 };
 
 export const getTranslations = () => translations;
-

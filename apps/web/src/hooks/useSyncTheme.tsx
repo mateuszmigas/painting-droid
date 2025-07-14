@@ -1,6 +1,6 @@
+import { useEffect } from "react";
 import { useSettingsStore } from "@/store";
 import { applyTheme } from "@/utils/theme";
-import { useEffect } from "react";
 
 export const useSyncTheme = () => {
   const theme = useSettingsStore((state) => state.theme);
@@ -18,4 +18,3 @@ export const useSyncTheme = () => {
     return () => mediaQuery.removeEventListener("change", onMediaQueryChange);
   }, [theme]);
 };
-

@@ -1,27 +1,17 @@
-import { ColorSetting } from "./colorSetting";
-import { OptionSetting } from "./optionSetting";
+import { memo } from "react";
 import type { RgbaColor } from "@/utils/color";
 import type { CustomField } from "@/utils/customFieldsSchema";
+import { ColorSetting } from "./colorSetting";
+import { OptionSetting } from "./optionSetting";
 import { RangeSetting } from "./rangeSettings";
-import { memo } from "react";
 
 export const ToolSetting = memo(
-  (props: {
-    customField: CustomField;
-    value: unknown;
-    onChange: (newValue: unknown) => void;
-  }) => {
+  (props: { customField: CustomField; value: unknown; onChange: (newValue: unknown) => void }) => {
     const { customField, value, onChange } = props;
     const { type } = customField;
 
     if (type === "color") {
-      return (
-        <ColorSetting
-          title={customField.name}
-          value={value as RgbaColor}
-          onChange={onChange}
-        />
-      );
+      return <ColorSetting title={customField.name} value={value as RgbaColor} onChange={onChange} />;
     }
     if (type === "option-number" || type === "option-string") {
       return (
@@ -47,6 +37,5 @@ export const ToolSetting = memo(
     }
 
     throw new Error(`Unsupported setting type: ${type}`);
-  }
+  },
 );
-

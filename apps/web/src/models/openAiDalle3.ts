@@ -1,10 +1,8 @@
-import {
-  createTextToImageSection,
-  type TextToImageModel,
-} from "./types/textToImageModel";
-import { apiClient } from "@/utils/api-client";
 import { getTranslations } from "@/translations";
+import { apiClient } from "@/utils/api-client";
+import { createTextToImageSection, type TextToImageModel } from "./types/textToImageModel";
 import { createApiKeyPlaceholder, handleHttpError } from "./utils";
+
 const translations = getTranslations().models;
 
 const textToImage = createTextToImageSection({
@@ -86,4 +84,3 @@ export const model = {
   useApiKey: true,
   textToImage,
 } as const satisfies TextToImageModel;
-

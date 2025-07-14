@@ -1,6 +1,6 @@
 import { workspace } from "@/constants";
-import type { PlatformFileSystem } from "./platformFileSystem";
 import type { FilePath } from "../common";
+import type { PlatformFileSystem } from "./platformFileSystem";
 
 declare global {
   interface Window {
@@ -55,12 +55,14 @@ const openFile = async (options: { extensions: string[] }) => {
 
 const openFileWithFileSystemApi = async (options: { extensions: string[] }) => {
   try {
-    const accept = options.extensions.reduce((acc, extension) => {
-      const key =
-        extension === workspace.format ? "text/plain" : `image/${extension}`;
-      acc[key] = [`.${extension}`];
-      return acc;
-    }, {} as Record<string, string[]>);
+    const accept = options.extensions.reduce(
+      (acc, extension) => {
+        const key = extension === workspace.format ? "text/plain" : `image/${extension}`;
+        acc[key] = [`.${extension}`];
+        return acc;
+      },
+      {} as Record<string, string[]>,
+    );
 
     const [fileHandle] = await window.showOpenFilePicker({
       types: [{ accept }],
@@ -77,9 +79,7 @@ const openFileWithInput = async (options: { extensions: string[] }) => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.multiple = false;
-    fileInput.accept = options.extensions
-      .map((extension) => `.${extension}`)
-      .join(",");
+    fileInput.accept = options.extensions.map((extension) => `.${extension}`).join(",");
     fileInput.addEventListener("change", (event) => {
       const e = event as unknown as {
         target: { files: FileList | null };
@@ -95,22 +95,14 @@ const openFileWithInput = async (options: { extensions: string[] }) => {
   });
 };
 
-const saveBlobWithAnchor = (
-  blob: Blob,
-  filename: string,
-  extension: string
-) => {
+const saveBlobWithAnchor = (blob: Blob, filename: string, extension: string) => {
   const anchor = document.createElement("a");
   anchor.href = URL.createObjectURL(blob);
   anchor.download = `${filename}.${extension}`;
   anchor.click();
 };
 
-const saveBlobWithFileSystemApi = async (
-  blob: Blob,
-  filename: string,
-  extension: string
-) => {
+const saveBlobWithFileSystemApi = async (blob: Blob, filename: string, extension: string) => {
   try {
     const fileHandle = await window.showSaveFilePicker({
       suggestedName: `${filename}.${extension}`,
@@ -118,25 +110,17 @@ const saveBlobWithFileSystemApi = async (
     const writable = await fileHandle.createWritable();
     await writable.write(blob);
     await writable.close();
-  } catch (error) {
+  } catch {
     //todo: maybe inform user that he didn't save the file
   }
 };
 
-const saveTextToFile = async (
-  text: string,
-  filename: string,
-  extension: string
-) => {
+const saveTextToFile = async (text: string, filename: string, extension: string) => {
   const blob = new Blob([text], { type: "text/plain" });
   saveBlobToFile(blob, filename, extension);
 };
 
-const saveBlobToFile = async (
-  blob: Blob,
-  filename: string,
-  extension: string
-) => {
+const saveBlobToFile = async (blob: Blob, filename: string, extension: string) => {
   if ("showSaveFilePicker" in window) {
     return saveBlobWithFileSystemApi(blob, filename, extension);
   }

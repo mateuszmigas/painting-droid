@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+/** biome-ignore-all lint/suspicious/noDuplicateProperties: checked */
+@import "tailwindcss";
 
 @plugin 'tailwindcss-animate';
 
@@ -194,8 +195,9 @@
 
   .alpha-background {
     --alpha-background-size: 10px;
-    background: repeating-conic-gradient(#bfbfbf 0% 25%, #fff 0% 50%) 50% /
-      var(--alpha-background-size) var(--alpha-background-size);
+    background:
+      repeating-conic-gradient(#bfbfbf 0% 25%, #fff 0% 50%) 50% / var(--alpha-background-size)
+      var(--alpha-background-size);
   }
 
   .dark {
@@ -219,7 +221,8 @@
 
   .wheel-hsl {
     border-radius: 50%;
-    background: conic-gradient(
+    background:
+      conic-gradient(
         from 0deg,
         rgb(255, 0, 0),
         rgb(255, 255, 0),
@@ -228,18 +231,14 @@
         rgb(0, 0, 255),
         rgb(255, 0, 255),
         rgb(255, 0, 0)
-      ),
-      radial-gradient(circle closest-side, white, transparent);
+      ), radial-gradient(circle closest-side, white, transparent);
     background-blend-mode: overlay;
   }
 
   .alpha-track {
     --alpha-track-color: 10px;
-    background: linear-gradient(
-        to bottom,
-        var(--alpha-track-color),
-        transparent
-      ),
+    background:
+      linear-gradient(to bottom, var(--alpha-track-color), transparent),
       repeating-conic-gradient(#bfbfbf 0% 25%, #fff 0% 50%) 50% / 10px 10px;
     background-blend-mode: normal;
   }
@@ -286,17 +285,14 @@
 
   .image-outline {
     --image-outline-color: white;
-    filter: drop-shadow(1px 0 0 var(--image-outline-color))
-      drop-shadow(0 1px 0 var(--image-outline-color))
-      drop-shadow(-1px 0 0 var(--image-outline-color))
-      drop-shadow(0 -1px 0 var(--image-outline-color));
+    filter: drop-shadow(1px 0 0 var(--image-outline-color)) drop-shadow(0 1px 0 var(--image-outline-color))
+      drop-shadow(-1px 0 0 var(--image-outline-color)) drop-shadow(0 -1px 0 var(--image-outline-color));
   }
 
   .pile {
     display: grid;
     > * {
-      grid-area: 1/1;
+      grid-area: 1 / 1;
     }
   }
 }
-

@@ -1,7 +1,7 @@
+import { getTranslations } from "@/translations";
 import { uuid } from "@/utils/uuid";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 

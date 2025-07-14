@@ -1,8 +1,8 @@
+import { type RefObject, useEffect, useRef } from "react";
 import { useListener, useStableCallback } from "@/hooks";
 import { useResizeObserver } from "@/hooks/useResizeObserver";
 import type { Viewport } from "@/utils/manipulation";
 import type { Observable } from "@/utils/observable";
-import { type RefObject, useEffect, useRef } from "react";
 
 const rulerConfig = {
   dpi: window.devicePixelRatio,
@@ -34,17 +34,9 @@ const drawRuler = (
   context: CanvasRenderingContext2D,
   viewport: Viewport,
   color: string,
-  orientation: "horizontal" | "vertical"
+  orientation: "horizontal" | "vertical",
 ) => {
-  const {
-    dpi,
-    offset,
-    shortLine,
-    longLine,
-    lineThickness,
-    subCellsCount,
-    font,
-  } = rulerConfig;
+  const { dpi, offset, shortLine, longLine, lineThickness, subCellsCount, font } = rulerConfig;
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   context.fillStyle = color;
   context.lineWidth = 1;
@@ -54,11 +46,9 @@ const drawRuler = (
 
   const cellSize = calculateCellSize(viewport.zoom) * dpi;
 
-  const total =
-    (isHorizontal ? context.canvas.width : context.canvas.height) * dpi;
+  const total = (isHorizontal ? context.canvas.width : context.canvas.height) * dpi;
 
-  const position =
-    (isHorizontal ? viewport.position.x : viewport.position.y) * dpi;
+  const position = (isHorizontal ? viewport.position.x : viewport.position.y) * dpi;
 
   let start = (position % cellSize) - cellSize;
 
@@ -98,31 +88,16 @@ const drawRuler = (
 
 const color = "#64748B";
 
-export const CanvasRulers = (props: {
-  observableViewport: Observable<Viewport>;
-}) => {
+export const CanvasRulers = (props: { observableViewport: Observable<Viewport> }) => {
   const { observableViewport } = props;
-  const canvasHorizontalRef = useRef<HTMLCanvasElement>(
-    null
-  ) as RefObject<HTMLCanvasElement>;
-  const canvasVerticalRef = useRef<HTMLCanvasElement>(
-    null
-  ) as RefObject<HTMLCanvasElement>;
-  const canvasHorizontalContextRef = useRef<CanvasRenderingContext2D | null>(
-    null
-  );
-  const canvasVerticalContextRef = useRef<CanvasRenderingContext2D | null>(
-    null
-  );
+  const canvasHorizontalRef = useRef<HTMLCanvasElement>(null) as RefObject<HTMLCanvasElement>;
+  const canvasVerticalRef = useRef<HTMLCanvasElement>(null) as RefObject<HTMLCanvasElement>;
+  const canvasHorizontalContextRef = useRef<CanvasRenderingContext2D | null>(null);
+  const canvasVerticalContextRef = useRef<CanvasRenderingContext2D | null>(null);
 
   const drawHorizontalRuler = useStableCallback((viewport: Viewport) => {
     if (canvasHorizontalContextRef.current) {
-      drawRuler(
-        canvasHorizontalContextRef.current,
-        viewport,
-        color,
-        "horizontal"
-      );
+      drawRuler(canvasHorizontalContextRef.current, viewport, color, "horizontal");
     }
   });
   const drawVerticalRuler = useStableCallback((viewport: Viewport) => {
@@ -139,16 +114,14 @@ export const CanvasRulers = (props: {
     if (canvasHorizontalRef.current) {
       const rectangle = canvasHorizontalRef.current.getBoundingClientRect();
       canvasHorizontalRef.current.width = rectangle.width;
-      canvasHorizontalContextRef.current =
-        canvasHorizontalRef.current.getContext("2d");
+      canvasHorizontalContextRef.current = canvasHorizontalRef.current.getContext("2d");
     }
     if (canvasVerticalRef.current) {
       const rectangle = canvasVerticalRef.current.getBoundingClientRect();
       canvasVerticalRef.current.height = rectangle.height;
-      canvasVerticalContextRef.current =
-        canvasVerticalRef.current.getContext("2d");
+      canvasVerticalContextRef.current = canvasVerticalRef.current.getContext("2d");
     }
-  }, [canvasVerticalRef.current, canvasHorizontalRef.current]);
+  }, []);
 
   useListener(observableViewport, drawRulers, {
     triggerOnMount: true,
@@ -180,10 +153,7 @@ export const CanvasRulers = (props: {
         width={rulerConfig.offset * rulerConfig.dpi}
         className="bg-background pixelated-canvas absolute top-[20px] w-[20px] h-full"
       />
-      <div className="size-[20px] border-r border-b flex justify-center text-xs items-center bg-background">
-        PX
-      </div>
+      <div className="size-[20px] border-r border-b flex justify-center text-xs items-center bg-background">PX</div>
     </div>
   );
 };
-

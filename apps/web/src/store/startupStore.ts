@@ -24,8 +24,5 @@ export const startupStoreCreator: StateCreator<AppStartupSlice> = (set) => ({
 });
 
 export const useStartupStore = create<AppStartupSlice>()(
-  persist(
-    startupStoreCreator,
-    createSyncStorage({ version: 2, name: "startup" })
-  )
+  persist(startupStoreCreator, createSyncStorage({ version: 2, name: "startup" })),
 );

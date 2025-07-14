@@ -126,14 +126,9 @@ export const hexToRgb = (hex: string): RgbColor => {
     throw new Error("Invalid hex color");
   }
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-  const formattedHex = hex.replace(
-    shorthandRegex,
-    (_, r, g, b) => r + r + g + g + b + b
-  );
+  const formattedHex = hex.replace(shorthandRegex, (_, r, g, b) => r + r + g + g + b + b);
 
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
-    formattedHex
-  )!;
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(formattedHex)!;
 
   return {
     r: Number.parseInt(result[1], 16),
@@ -144,9 +139,7 @@ export const hexToRgb = (hex: string): RgbColor => {
 
 export const rgbToHex = (color: RgbColor): string => {
   const { r, g, b } = color;
-  return `#${((1 << 24) | (r << 16) | (g << 8) | b)
-    .toString(16)
-    .slice(1)}`.toUpperCase();
+  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`.toUpperCase();
 };
 
 export const normalizeRgb = (color: RgbColor) => {
@@ -161,25 +154,14 @@ export const calculateLuminance = (color: RgbColor) => {
 
 export const calculateForegroundColor = (color: RgbColor): RgbaColor => {
   const luminance = calculateLuminance(color);
-  return luminance > 0.5
-    ? { r: 0, g: 0, b: 0, a: 1 }
-    : { r: 255, g: 255, b: 255, a: 1 };
+  return luminance > 0.5 ? { r: 0, g: 0, b: 0, a: 1 } : { r: 255, g: 255, b: 255, a: 1 };
 };
 
 export const areColorsEqual = (color1: RgbaColor, color2: RgbaColor) => {
-  return (
-    color1.r === color2.r &&
-    color1.g === color2.g &&
-    color1.b === color2.b &&
-    color1.a === color2.a
-  );
+  return color1.r === color2.r && color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
 };
 
-export const areColorsClose = (
-  color1: RgbaColor,
-  color2: RgbaColor,
-  percentageTolerance = 10
-) => {
+export const areColorsClose = (color1: RgbaColor, color2: RgbaColor, percentageTolerance = 10) => {
   const rgbTolerance = 255 * (percentageTolerance / 100);
   const alphaTolerance = percentageTolerance / 100;
   return (
@@ -189,4 +171,3 @@ export const areColorsClose = (
     Math.abs(color1.b - color2.b) <= rgbTolerance
   );
 };
-

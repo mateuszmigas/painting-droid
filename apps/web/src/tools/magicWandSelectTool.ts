@@ -1,20 +1,20 @@
-import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
+import type { CanvasShape } from "@/canvas/canvasState";
 import { getTranslations } from "@/translations";
+import { areColorsClose, calculateForegroundColor } from "@/utils/color";
+import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
+import { calculateFilledBoundingBox } from "@/utils/image";
+import { getPixelColor, selectMask } from "@/utils/imageOperations";
+import { ImageProcessor } from "@/utils/imageProcessor";
+import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
+import { uuid } from "@/utils/uuid";
 import {
-  createCanvasToolMetadata,
-  createCanvasToolSettingsSchema,
-  type InferToolSettings,
   type CanvasTool,
   type CanvasToolEvent,
   type CanvasToolResult,
+  createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
+  type InferToolSettings,
 } from "./canvasTool";
-import { getPixelColor, selectMask } from "@/utils/imageOperations";
-import { areColorsClose, calculateForegroundColor } from "@/utils/color";
-import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
-import type { CanvasShape } from "@/canvas/canvasState";
-import { uuid } from "@/utils/uuid";
-import { ImageProcessor } from "@/utils/imageProcessor";
-import { calculateFilledBoundingBox } from "@/utils/image";
 
 const translations = getTranslations().tools.magicWandSelect;
 
@@ -36,7 +36,7 @@ class MagicWandSelectTool implements CanvasTool<MagicWandSelectToolSettings> {
 
   constructor(
     private bitmapContext: CanvasBitmapContext,
-    private vectorContext: CanvasVectorContext
+    private vectorContext: CanvasVectorContext,
   ) {}
 
   configure(settings: MagicWandSelectToolSettings) {
@@ -51,7 +51,7 @@ class MagicWandSelectTool implements CanvasTool<MagicWandSelectToolSettings> {
       0,
       0,
       this.bitmapContext.canvas.width,
-      this.bitmapContext.canvas.height
+      this.bitmapContext.canvas.height,
     );
 
     const position = {
@@ -59,12 +59,7 @@ class MagicWandSelectTool implements CanvasTool<MagicWandSelectToolSettings> {
       y: ~~event.canvasPosition.y,
     };
 
-    if (
-      position.x < 0 ||
-      position.y < 0 ||
-      position.x >= imageData.width ||
-      position.y >= imageData.height
-    ) {
+    if (position.x < 0 || position.y < 0 || position.x >= imageData.width || position.y >= imageData.height) {
       return;
     }
 
@@ -74,9 +69,7 @@ class MagicWandSelectTool implements CanvasTool<MagicWandSelectToolSettings> {
       return;
     }
 
-    const fillMask = selectMask(imageData, position, (color) =>
-      areColorsClose(color, originColor, this.tolerance)
-    )!;
+    const fillMask = selectMask(imageData, position, (color) => areColorsClose(color, originColor, this.tolerance))!;
 
     const boundingBox = calculateFilledBoundingBox(fillMask);
 
@@ -118,4 +111,3 @@ export const magicWandSelectToolMetadata = createCanvasToolMetadata({
   settingsSchema,
   create: (context) => new MagicWandSelectTool(context.bitmap, context.vector),
 });
-

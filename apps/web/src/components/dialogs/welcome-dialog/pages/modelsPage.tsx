@@ -3,6 +3,7 @@ import { Droid } from "@/components/droid";
 import { Typewriter } from "@/components/typewriter";
 import { useTypewriter } from "@/hooks";
 import { getTranslations } from "@/translations";
+
 const translations = getTranslations();
 
 const message = translations.dialogs.welcome.pages.models.message;

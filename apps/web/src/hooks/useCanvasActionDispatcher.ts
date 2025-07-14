@@ -1,10 +1,7 @@
+import { useMemo } from "react";
 import { CanvasActionDispatcher } from "@/canvas/canvasActionDispatcher";
 import { useWorkspacesStore } from "@/store";
-import {
-  type WorkspaceId,
-  activeWorkspaceSelector,
-} from "@/store/workspacesStore";
-import { useMemo } from "react";
+import { activeWorkspaceSelector, type WorkspaceId } from "@/store/workspacesStore";
 
 const dispatchersCache: Record<WorkspaceId, CanvasActionDispatcher> = {};
 
@@ -19,25 +16,18 @@ const clearZombieDispatchers = (workspaceIds: WorkspaceId[]) => {
 };
 
 export const useCanvasActionDispatcher = () => {
-  const workspaceId = useWorkspacesStore(
-    (state) => activeWorkspaceSelector(state).id
-  );
-  const workspacesLength = useWorkspacesStore(
-    (state) => state.workspaces.length
-  );
+  const workspaceId = useWorkspacesStore((state) => activeWorkspaceSelector(state).id);
+  const workspacesLength = useWorkspacesStore((state) => state.workspaces.length);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Using workspaces.length to trigger the memoization
   const canvasActionDispatcher = useMemo(() => {
-    const workspaceIds = useWorkspacesStore
-      .getState()
-      .workspaces.map((w) => w.id);
+    const workspaceIds = useWorkspacesStore.getState().workspaces.map((w) => w.id);
     clearZombieDispatchers(workspaceIds);
 
     if (!dispatchersCache[workspaceId]) {
       const dispatcher = new CanvasActionDispatcher();
       dispatcher.init({
-        getState: () =>
-          activeWorkspaceSelector(useWorkspacesStore.getState()).canvasData,
+        getState: () => activeWorkspaceSelector(useWorkspacesStore.getState()).canvasData,
         setState: (state) => {
           return useWorkspacesStore.getState().setCanvasData(state);
         },

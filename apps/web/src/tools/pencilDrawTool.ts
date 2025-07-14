@@ -1,14 +1,14 @@
+import { getTranslations } from "@/translations";
+import { ColorProcessor } from "@/utils/colorProcessor";
+import type { CanvasBitmapContext } from "@/utils/common";
 import {
-  type InferToolSettings,
-  createCanvasToolMetadata,
-  createCanvasToolSettingsSchema,
   type CanvasTool,
   type CanvasToolEvent,
   type CanvasToolResult,
+  createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
+  type InferToolSettings,
 } from "./canvasTool";
-import type { CanvasBitmapContext } from "@/utils/common";
-import { getTranslations } from "@/translations";
-import { ColorProcessor } from "@/utils/colorProcessor";
 
 const translations = getTranslations().tools.pencilDraw;
 
@@ -31,8 +31,7 @@ class PencilDrawTool implements CanvasTool<PencilDrawToolSettings> {
   configure(settings: PencilDrawToolSettings): void {
     const { color } = settings;
     this.bitmapContext.lineWidth = 1;
-    this.bitmapContext.strokeStyle =
-      ColorProcessor.fromRgba(color).toRgbaString();
+    this.bitmapContext.strokeStyle = ColorProcessor.fromRgba(color).toRgbaString();
   }
 
   processEvent(event: CanvasToolEvent) {
@@ -70,4 +69,3 @@ export const pencilDrawToolMetadata = createCanvasToolMetadata({
   settingsSchema,
   create: (context) => new PencilDrawTool(context.bitmap),
 });
-

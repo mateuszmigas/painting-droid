@@ -8,4 +8,3 @@ export const webSafeStorage: PlatformSafeStorage = {
     throw new Error("Not implemented");
   },
 };
-

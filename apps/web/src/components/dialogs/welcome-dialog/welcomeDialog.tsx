@@ -1,14 +1,10 @@
-import { getTranslations } from "@/translations";
 import { memo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { WelcomePage } from "./pages/welcomePage";
-import { ThemesPage } from "./pages/themes-page/themesPage";
+import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { getTranslations } from "@/translations";
 import { ModelsPage } from "./pages/modelsPage";
-import {
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ThemesPage } from "./pages/themes-page/themesPage";
+import { WelcomePage } from "./pages/welcomePage";
 
 const translations = getTranslations();
 const dialogTranslations = translations.dialogs.welcome;
@@ -27,26 +23,14 @@ export const WelcomeDialog = memo((props: { close: () => void }) => {
       {pages[pageIndex] === "welcome" && <WelcomePage />}
       {pages[pageIndex] === "theme" && <ThemesPage />}
       {pages[pageIndex] === "models" && <ModelsPage />}
-      <div
-        className={`gap-medium flex flex-row ${
-          pageIndex === 0 ? "justify-end" : "justify-between"
-        }`}
-      >
+      <div className={`gap-medium flex flex-row ${pageIndex === 0 ? "justify-end" : "justify-between"}`}>
         {pageIndex > 0 && (
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => setPageIndex(pageIndex - 1)}
-          >
+          <Button type="button" variant="secondary" onClick={() => setPageIndex(pageIndex - 1)}>
             {translations.general.previous}
           </Button>
         )}
         {pageIndex < pages.length - 1 ? (
-          <Button
-            className="place-self-end"
-            type="button"
-            onClick={() => setPageIndex(pageIndex + 1)}
-          >
+          <Button className="place-self-end" type="button" onClick={() => setPageIndex(pageIndex + 1)}>
             {translations.general.next}
           </Button>
         ) : (

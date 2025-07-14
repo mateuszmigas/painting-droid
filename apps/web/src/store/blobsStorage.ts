@@ -1,6 +1,6 @@
+import { arrayBufferToBlob, blobToArrayBuffer } from "@/utils/image";
 import { IndexedDBStore } from "@/utils/indexedDBStore";
 import { isApple } from "@/utils/platform";
-import { blobToArrayBuffer, arrayBufferToBlob } from "@/utils/image";
 
 const blobsDb = new IndexedDBStore({
   name: "pd-blobs",

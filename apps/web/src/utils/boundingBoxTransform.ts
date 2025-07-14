@@ -1,24 +1,14 @@
-import type { BoundingBox, Position } from "@/utils/common";
-import {
-  distanceBetweenPoints,
-  isPositionInRectangle,
-  normalizeBoundingBox,
-} from "./geometry";
 import { domNames } from "@/constants";
+import type { BoundingBox, Position } from "@/utils/common";
+import { distanceBetweenPoints, isPositionInRectangle, normalizeBoundingBox } from "./geometry";
 
 export const gripSize = 12;
 
-export type TransformGripId =
-  | "grip-top-left"
-  | "grip-top-right"
-  | "grip-bottom-left"
-  | "grip-bottom-right";
+export type TransformGripId = "grip-top-left" | "grip-top-right" | "grip-bottom-left" | "grip-bottom-right";
 
 export type TransformHandle = TransformGripId | "body";
 
-export const generateGrips = (
-  boundingBox: BoundingBox
-): { gripId: TransformGripId; position: Position }[] => {
+export const generateGrips = (boundingBox: BoundingBox): { gripId: TransformGripId; position: Position }[] => {
   const { x, y, width, height } = boundingBox;
   return [
     { gripId: "grip-top-left", position: { x, y } },
@@ -32,7 +22,7 @@ export const transform = (
   handle: TransformHandle,
   boundingBox: BoundingBox,
   startPosition: Position,
-  endPosition: Position
+  endPosition: Position,
 ): BoundingBox => {
   const distance = {
     x: endPosition.x - startPosition.x,
@@ -87,11 +77,9 @@ export const transform = (
 export const pickHandle = (
   canvasPosition: Position,
   screenPosition: Position,
-  boundingBox: BoundingBox
+  boundingBox: BoundingBox,
 ): TransformHandle | null => {
-  const svgHostBox = document
-    .getElementById(domNames.svgHostId)!
-    .getBoundingClientRect();
+  const svgHostBox = document.getElementById(domNames.svgHostId)!.getBoundingClientRect();
 
   const gripElements = document.getElementsByClassName(domNames.svgGripClass);
   const relativeScreenPosition = {
@@ -107,9 +95,7 @@ export const pickHandle = (
     }
   }
 
-  if (
-    isPositionInRectangle(canvasPosition, normalizeBoundingBox(boundingBox))
-  ) {
+  if (isPositionInRectangle(canvasPosition, normalizeBoundingBox(boundingBox))) {
     return "body";
   }
 
@@ -119,18 +105,11 @@ export const pickHandle = (
 const minShapeSize = 1;
 const minScreenDistanceToDraw = 5;
 
-export const validateShape = (
-  boundingBox: BoundingBox,
-  startScreenPosition: Position,
-  endScreenPosition: Position
-) => {
-  const hasValidSize =
-    boundingBox.width >= minShapeSize && boundingBox.height >= minShapeSize;
+export const validateShape = (boundingBox: BoundingBox, startScreenPosition: Position, endScreenPosition: Position) => {
+  const hasValidSize = boundingBox.width >= minShapeSize && boundingBox.height >= minShapeSize;
 
   const hasValidScreenDistance =
-    distanceBetweenPoints(startScreenPosition, endScreenPosition) >
-    minScreenDistanceToDraw;
+    distanceBetweenPoints(startScreenPosition, endScreenPosition) > minScreenDistanceToDraw;
 
   return hasValidSize && hasValidScreenDistance;
 };
-

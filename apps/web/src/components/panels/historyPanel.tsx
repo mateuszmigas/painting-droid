@@ -1,13 +1,11 @@
 import { memo, useState } from "react";
-import { Icon, type IconType } from "../icons/icon";
 import { useCanvasActionDispatcher, useListener } from "@/hooks";
 import { CommandIconButton } from "../commandIconButton";
+import { Icon, type IconType } from "../icons/icon";
 
 export const HistoryPanel = memo(() => {
   const canvasActionDispatcher = useCanvasActionDispatcher();
-  const [actions, setActions] = useState<{ display: string; icon: IconType }[]>(
-    []
-  );
+  const [actions, setActions] = useState<{ display: string; icon: IconType }[]>([]);
   const [cursor, setCursor] = useState(0);
 
   useListener(
@@ -16,20 +14,14 @@ export const HistoryPanel = memo(() => {
       setActions(info.actions);
       setCursor(info.cursor);
     },
-    { triggerOnMount: true }
+    { triggerOnMount: true },
   );
 
   return (
     <div className="flex flex-col size-full p-small gap-small">
       <div className="flex flex-row gap-small items-center">
-        <CommandIconButton
-          disabled={cursor === 0}
-          commandId="undoCanvasAction"
-        />
-        <CommandIconButton
-          disabled={cursor === actions.length - 1}
-          commandId="redoCanvasAction"
-        />
+        <CommandIconButton disabled={cursor === 0} commandId="undoCanvasAction" />
+        <CommandIconButton disabled={cursor === actions.length - 1} commandId="redoCanvasAction" />
       </div>
       <div className="flex-1 overflow-auto flex flex-col">
         {actions.map((action, index) => (
@@ -48,4 +40,3 @@ export const HistoryPanel = memo(() => {
     </div>
   );
 });
-

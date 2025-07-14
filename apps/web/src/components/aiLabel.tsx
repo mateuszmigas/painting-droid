@@ -10,13 +10,9 @@ export const AiLabel = (props: { size: number; className?: string }) => {
         width: `${size * 1.25}px`,
         height: `${size}px`,
       }}
-      className={cn(
-        "bg-primary text-primary-foreground rounded-md text-center font-mono",
-        className
-      )}
+      className={cn("bg-primary text-primary-foreground rounded-md text-center font-mono", className)}
     >
       AI
     </div>
   );
 };
-

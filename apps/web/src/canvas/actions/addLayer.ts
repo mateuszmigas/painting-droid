@@ -1,14 +1,14 @@
+import { getTranslations } from "@/translations";
 import { createDefaultLayer } from "./../canvasState";
+import type { CanvasLayerData, CanvasLayerId } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
-import type { CanvasLayerData, CanvasLayerId } from "../canvasState";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
 export const createCanvasAction = async (
   context: CanvasActionContext,
-  payload: { id: CanvasLayerId; data?: CanvasLayerData; name?: string }
+  payload: { id: CanvasLayerId; data?: CanvasLayerData; name?: string },
 ): Promise<CanvasAction> => {
   const { id, data, name } = payload;
   const state = context.getState();
@@ -36,9 +36,7 @@ export const createCanvasAction = async (
     undo: async (state) => {
       return {
         ...state,
-        layers: state.layers.filter(
-          (layer) => layer.id !== capturedData.newLayer.id
-        ),
+        layers: state.layers.filter((layer) => layer.id !== capturedData.newLayer.id),
         activeLayerIndex: capturedData.previousLayerIndex,
       };
     },

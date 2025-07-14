@@ -1,6 +1,4 @@
-export const createFrameTicker = (
-  callback: (sinceLastTickMs: number, isLastTick?: boolean) => void
-) => {
+export const createFrameTicker = (callback: (sinceLastTickMs: number, isLastTick?: boolean) => void) => {
   let rafHandle = 0;
   let start = 0;
 
@@ -23,4 +21,3 @@ export const createFrameTicker = (
   };
 };
 export type FrameTicker = ReturnType<typeof createFrameTicker>;
-

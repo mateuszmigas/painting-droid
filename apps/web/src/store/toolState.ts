@@ -1,6 +1,6 @@
-import { defaultCanvasToolsSettings, type CanvasToolId } from "@/tools";
 import { create, type StateCreator } from "zustand";
 import { persist } from "zustand/middleware";
+import { type CanvasToolId, defaultCanvasToolsSettings } from "@/tools";
 import { createSyncStorage } from "./syncStorage";
 
 type AppToolState = {
@@ -15,10 +15,7 @@ const defaultState: AppToolState = {
 
 type AppToolSlice = AppToolState & {
   setSelectedToolId: (type: CanvasToolId) => void;
-  updateToolSettings: (
-    toolId: CanvasToolId,
-    settings: Record<string, unknown>
-  ) => void;
+  updateToolSettings: (toolId: CanvasToolId, settings: Record<string, unknown>) => void;
 };
 
 export const settingsStoreCreator: StateCreator<AppToolSlice> = (set) => ({
@@ -34,9 +31,5 @@ export const settingsStoreCreator: StateCreator<AppToolSlice> = (set) => ({
 });
 
 export const useToolStore = create<AppToolSlice>()(
-  persist(
-    settingsStoreCreator,
-    createSyncStorage({ version: 10, name: "tool" })
-  )
+  persist(settingsStoreCreator, createSyncStorage({ version: 10, name: "tool" })),
 );
-

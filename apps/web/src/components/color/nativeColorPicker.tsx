@@ -13,10 +13,7 @@ export const NativeColorPicker = (props: {
       type="color"
       className={cn("bg-transparent", className)}
       value={ColorProcessor.fromRgba(value).toHex()}
-      onChange={(e) =>
-        onChange(ColorProcessor.fromHex(e.target.value).toRgba())
-      }
+      onChange={(e) => onChange(ColorProcessor.fromHex(e.target.value).toRgba())}
     />
   );
 };
-

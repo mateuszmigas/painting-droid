@@ -1,14 +1,11 @@
-import type { CanvasLayer } from "@/canvas/canvasState";
-import type { CanvasBitmapContext } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
-import { clearContext } from "@/utils/canvas";
+import type { CanvasLayer } from "@/canvas/canvasState";
 import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 import { features } from "@/features";
+import { clearContext } from "@/utils/canvas";
+import type { CanvasBitmapContext } from "@/utils/common";
 
-const restoreLayers = async (
-  contextStack: CanvasBitmapContext[],
-  layers: CanvasLayer[]
-) => {
+const restoreLayers = async (contextStack: CanvasBitmapContext[], layers: CanvasLayer[]) => {
   //run all operations together to avoid flickering
   const canvasOperations: (() => void)[] = [];
 
@@ -34,34 +31,26 @@ const restoreLayers = async (
 export const useSyncCanvasWithLayers = (
   canvasStackRef: RefObject<HTMLCanvasElement[]>,
   layers: CanvasLayer[],
-  activeLayerIndex: number
+  activeLayerIndex: number,
 ) => {
   const { setBitmapContext } = useCanvasContextStore();
-  const contextsMap = useRef(
-    new WeakMap<HTMLCanvasElement, CanvasBitmapContext>()
-  );
+  const contextsMap = useRef(new WeakMap<HTMLCanvasElement, CanvasBitmapContext>());
 
   useEffect(() => {
     if (!canvasStackRef.current) {
       return;
     }
 
-    const stackContexts = canvasStackRef.current.map(
-      (element: HTMLCanvasElement) => {
-        if (!contextsMap.current.has(element)) {
-          contextsMap.current.set(
-            element,
-            features.offscreenCanvas
-              ? element.transferControlToOffscreen().getContext("2d")!
-              : element.getContext("2d")!
-          );
-        }
-        return contextsMap.current.get(element)!;
+    const stackContexts = canvasStackRef.current.map((element: HTMLCanvasElement) => {
+      if (!contextsMap.current.has(element)) {
+        contextsMap.current.set(
+          element,
+          features.offscreenCanvas ? element.transferControlToOffscreen().getContext("2d")! : element.getContext("2d")!,
+        );
       }
-    );
+      return contextsMap.current.get(element)!;
+    });
 
-    restoreLayers(stackContexts, layers).then(() =>
-      setBitmapContext(stackContexts[activeLayerIndex])
-    );
+    restoreLayers(stackContexts, layers).then(() => setBitmapContext(stackContexts[activeLayerIndex]));
   }, [layers, activeLayerIndex, canvasStackRef, setBitmapContext]);
 };

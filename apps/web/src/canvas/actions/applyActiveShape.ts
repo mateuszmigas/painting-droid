@@ -1,15 +1,13 @@
 import { getTranslations } from "@/translations";
-import type { CanvasAction } from "./action";
-import type { CanvasActionContext } from "./context";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import { spreadOmitKeys } from "@/utils/object";
 import { rasterizeShape } from "@/utils/shapeRasterizer";
+import type { CanvasAction } from "./action";
+import type { CanvasActionContext } from "./context";
 
 const translations = getTranslations();
 
-export const createCanvasAction = async (
-  context: CanvasActionContext
-): Promise<CanvasAction> => {
+export const createCanvasAction = async (context: CanvasActionContext): Promise<CanvasAction> => {
   const state = context.getState();
   const { size } = state;
 
@@ -45,14 +43,10 @@ export const createCanvasAction = async (
         layers:
           capturedData.previousLayerData !== capturedData.newLayerData
             ? state.layers.map((layer, index) =>
-                index === state.activeLayerIndex
-                  ? { ...layer, data: capturedData.newLayerData }
-                  : layer
+                index === state.activeLayerIndex ? { ...layer, data: capturedData.newLayerData } : layer,
               )
             : state.layers,
-        shapes: spreadOmitKeys(state.shapes, [
-          capturedData.previousActiveShapeId,
-        ]),
+        shapes: spreadOmitKeys(state.shapes, [capturedData.previousActiveShapeId]),
         activeShapeId: null,
       };
     },
@@ -62,19 +56,15 @@ export const createCanvasAction = async (
         layers:
           capturedData.previousLayerData !== capturedData.newLayerData
             ? state.layers.map((layer, index) =>
-                index === state.activeLayerIndex
-                  ? { ...layer, data: capturedData.previousLayerData }
-                  : layer
+                index === state.activeLayerIndex ? { ...layer, data: capturedData.previousLayerData } : layer,
               )
             : state.layers,
         shapes: {
           ...state.shapes,
-          [capturedData.previousActiveShapeId]:
-            capturedData.previousActiveShape,
+          [capturedData.previousActiveShapeId]: capturedData.previousActiveShape,
         },
         activeShapeId: capturedData.previousActiveShapeId,
       };
     },
   };
 };
-

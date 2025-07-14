@@ -22,4 +22,3 @@ export default defineConfig({
   },
   snapshotPathTemplate: "{testDir}/snapshots/{testFilePath}/{arg}{ext}",
 });
-

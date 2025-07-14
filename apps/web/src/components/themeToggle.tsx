@@ -4,10 +4,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSettingsStore } from "@/store";
-import { Icon } from "./icons/icon";
 import { themes } from "@/constants";
+import { useSettingsStore } from "@/store";
 import { getTranslations } from "@/translations";
+import { Icon } from "./icons/icon";
+
 const translations = getTranslations();
 
 export const ModeToggle = () => {
@@ -45,4 +46,3 @@ export const ModeToggle = () => {
     </DropdownMenu>
   );
 };
-

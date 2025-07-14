@@ -1,9 +1,9 @@
-import { PromiseQueue } from "./../utils/promise";
+import { getTranslations } from "@/translations";
 import { Observable } from "@/utils/observable";
+import { PromiseQueue } from "./../utils/promise";
 import { canvasActions } from "./actions";
 import type { CanvasAction } from "./actions/action";
 import type { CanvasState } from "./canvasState";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
@@ -12,9 +12,7 @@ type CanvasStore = {
   setState: (newState: CanvasState) => void;
 };
 type ActionId = keyof typeof canvasActions;
-type GetActionPayload<T extends ActionId> = Parameters<
-  (typeof canvasActions)[T]
->[1];
+type GetActionPayload<T extends ActionId> = Parameters<(typeof canvasActions)[T]>[1];
 
 type StackInfo = {
   actions: Pick<CanvasAction, "display" | "icon">[];

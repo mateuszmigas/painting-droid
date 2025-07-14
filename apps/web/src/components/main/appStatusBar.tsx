@@ -1,47 +1,39 @@
+import { memo, useEffect, useRef, useState } from "react";
+import { domNames } from "@/constants";
+import { useDialogService } from "@/contexts/dialogService";
+import { notificationService } from "@/contexts/notificationService";
+import { useIdleCallback, useListener } from "@/hooks";
+import { useResizeObserver } from "@/hooks/useResizeObserver";
+import { useStartupStore } from "@/store/startupStore";
 import {
   activeWorkspaceCanvasDataSelector,
   activeWorkspaceSelector,
   useWorkspacesStore,
 } from "@/store/workspacesStore";
-import { Icon } from "../icons/icon";
+import { getTranslations } from "@/translations";
 import type { Position } from "@/utils/common";
-import { useResizeObserver } from "@/hooks/useResizeObserver";
-import { useIdleCallback, useListener } from "@/hooks";
-import { memo, useEffect, useRef, useState } from "react";
 import { screenToViewportPosition } from "@/utils/manipulation";
 import { fastRound } from "@/utils/math";
-import { CommandIconButton } from "../commandIconButton";
-import { domNames } from "@/constants";
 import { observableMousePosition } from "@/utils/mousePositionWatcher";
-import { Button } from "../ui/button";
-import { type Update, checkForUpdates } from "@/utils/updater";
 import { appVersion, isDesktop, platform } from "@/utils/platform";
-import { getTranslations } from "@/translations";
-import { useStartupStore } from "@/store/startupStore";
-import { notificationService } from "@/contexts/notificationService";
-import { useDialogService } from "@/contexts/dialogService";
+import { checkForUpdates, type Update } from "@/utils/updater";
+import { CommandIconButton } from "../commandIconButton";
 import { WelcomeDialog } from "../dialogs/welcome-dialog/welcomeDialog";
+import { Icon } from "../icons/icon";
+import { Button } from "../ui/button";
 
 const translations = getTranslations();
 
-const formatPosition = (position: Position) =>
-  `${fastRound(position.x)}, ${fastRound(position.y)}`;
-const formatSize = (size: { width: number; height: number }) =>
-  `${size.width}x${size.height}`;
+const formatPosition = (position: Position) => `${fastRound(position.x)}, ${fastRound(position.y)}`;
+const formatSize = (size: { width: number; height: number }) => `${size.width}x${size.height}`;
 
 export const AppStatusBar = memo(() => {
   const positionElementRef = useRef<HTMLDivElement>(null);
   const workspaceElementPositionRef = useRef<Position>({ x: 0, y: 0 });
-  const size = useWorkspacesStore(
-    (state) => activeWorkspaceCanvasDataSelector(state).size
-  );
+  const size = useWorkspacesStore((state) => activeWorkspaceCanvasDataSelector(state).size);
   const [update, setUpdate] = useState<Update | null>(null);
-  const [updateState, setUpdateState] = useState<
-    "checking" | "available" | "downloading" | "finished"
-  >("checking");
-  const viewport = useWorkspacesStore(
-    (state) => activeWorkspaceSelector(state).viewport
-  );
+  const [updateState, setUpdateState] = useState<"checking" | "available" | "downloading" | "finished">("checking");
+  const viewport = useWorkspacesStore((state) => activeWorkspaceSelector(state).viewport);
   const { openDialog } = useDialogService();
 
   useResizeObserver(domNames.workspaceViewport, ({ x, y }) => {
@@ -63,9 +55,7 @@ export const AppStatusBar = memo(() => {
     const startupStore = useStartupStore.getState();
 
     if (appVersion() !== startupStore.lastVersion) {
-      notificationService.showInfo(
-        translations.updater.updatedTo(appVersion())
-      );
+      notificationService.showInfo(translations.updater.updatedTo(appVersion()));
       startupStore.setCurrentVersion(appVersion());
     }
 
@@ -81,9 +71,7 @@ export const AppStatusBar = memo(() => {
         x: position.x - workspaceElementPositionRef.current.x,
         y: position.y - workspaceElementPositionRef.current.y,
       };
-      positionElementRef.current.textContent = formatPosition(
-        screenToViewportPosition(canvasPosition, viewport)
-      );
+      positionElementRef.current.textContent = formatPosition(screenToViewportPosition(canvasPosition, viewport));
     }
   });
 
@@ -120,11 +108,7 @@ export const AppStatusBar = memo(() => {
           </Button>
         )}
         {updateState === "finished" && update && (
-          <Button
-            className="h-[18px] px-medium"
-            variant="default"
-            onClick={() => update.restart()}
-          >
+          <Button className="h-[18px] px-medium" variant="default" onClick={() => update.restart()}>
             {translations.updater.installedAndRestart}
           </Button>
         )}

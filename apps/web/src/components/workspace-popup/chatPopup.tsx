@@ -14,4 +14,3 @@ export const ChatPopup = memo(() => {
     </div>
   );
 });
-

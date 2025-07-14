@@ -1,22 +1,13 @@
-import type {
-  CanvasBitmapContext,
-  CanvasVectorContext,
-  Position,
-} from "@/utils/common";
-import { fastRound } from "@/utils/math";
-import { getTranslations } from "@/translations";
-import { uuid } from "@/utils/uuid";
-import {
-  createCanvasToolMetadata,
-  type CanvasTool,
-  type CanvasToolEvent,
-  type CanvasToolResult,
-} from "./canvasTool";
 import type { CanvasShape } from "@/canvas/canvasState";
-import { validateShape } from "../utils/boundingBoxTransform";
+import { getTranslations } from "@/translations";
+import type { CanvasBitmapContext, CanvasVectorContext, Position } from "@/utils/common";
 import { createRectangleFromPoints } from "@/utils/geometry";
-import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 import { ImageProcessor } from "@/utils/imageProcessor";
+import { fastRound } from "@/utils/math";
+import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
+import { uuid } from "@/utils/uuid";
+import { validateShape } from "../utils/boundingBoxTransform";
+import { type CanvasTool, type CanvasToolEvent, type CanvasToolResult, createCanvasToolMetadata } from "./canvasTool";
 
 const translations = getTranslations().tools.rectangleSelect;
 
@@ -28,7 +19,7 @@ class RectangleSelectTool implements CanvasTool<never> {
 
   constructor(
     private bitmapContext: CanvasBitmapContext,
-    private vectorContext: CanvasVectorContext
+    private vectorContext: CanvasVectorContext,
   ) {}
 
   configure(_: never): void {}
@@ -44,20 +35,14 @@ class RectangleSelectTool implements CanvasTool<never> {
       return;
     }
 
-    if (
-      (event.type === "pointerMove" || event.type === "pointerUp") &&
-      this.startCanvasPosition !== null
-    ) {
+    if ((event.type === "pointerMove" || event.type === "pointerUp") && this.startCanvasPosition !== null) {
       const endCanvasPosition = {
         x: fastRound(event.canvasPosition.x),
         y: fastRound(event.canvasPosition.y),
       };
       const endScreenPosition = event.screenPosition;
 
-      const boundingBox = createRectangleFromPoints(
-        this.startCanvasPosition,
-        endCanvasPosition
-      );
+      const boundingBox = createRectangleFromPoints(this.startCanvasPosition, endCanvasPosition);
 
       const shape: CanvasShape = {
         id: this.shapeId,
@@ -69,14 +54,9 @@ class RectangleSelectTool implements CanvasTool<never> {
         },
       };
 
-      const isValid = validateShape(
-        boundingBox,
-        this.startScreenPosition!,
-        endScreenPosition
-      );
+      const isValid = validateShape(boundingBox, this.startScreenPosition!, endScreenPosition);
 
-      isValid &&
-        this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
+      isValid && this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
 
       if (event.type === "pointerUp") {
         if (isValid) {
@@ -109,4 +89,3 @@ export const rectangleSelectToolMetadata = createCanvasToolMetadata({
   settingsSchema: {},
   create: (context) => new RectangleSelectTool(context.bitmap, context.vector),
 });
-

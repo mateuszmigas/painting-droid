@@ -1,9 +1,5 @@
-import type {
-  CanvasBitmapContext,
-  CanvasContext,
-  CanvasVectorContext,
-} from "@/utils/common";
 import { createContext, useContext } from "react";
+import type { CanvasBitmapContext, CanvasContext, CanvasVectorContext } from "@/utils/common";
 
 type CanvasPreviewContextStore = {
   context: CanvasContext;
@@ -11,9 +7,8 @@ type CanvasPreviewContextStore = {
   setVectorContext: (context: CanvasVectorContext) => void;
 };
 
-export const CanvasPreviewContextStoreContext =
-  createContext<CanvasPreviewContextStore>({} as CanvasPreviewContextStore);
+export const CanvasPreviewContextStoreContext = createContext<CanvasPreviewContextStore>(
+  {} as CanvasPreviewContextStore,
+);
 
-export const useCanvasContextStore = () =>
-  useContext<CanvasPreviewContextStore>(CanvasPreviewContextStoreContext);
-
+export const useCanvasContextStore = () => useContext<CanvasPreviewContextStore>(CanvasPreviewContextStoreContext);

@@ -1,12 +1,6 @@
-import { Label } from "../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import type { CustomField } from "@/utils/customFieldsSchema";
+import { Label } from "../ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 export const OptionNumberCustomField = (props: {
   customField: CustomField;
@@ -18,10 +12,7 @@ export const OptionNumberCustomField = (props: {
   return (
     <>
       <Label>{field.name}</Label>
-      <Select
-        onValueChange={(value) => onChange(Number(value))}
-        value={value.toString()}
-      >
+      <Select onValueChange={(value) => onChange(Number(value))} value={value.toString()}>
         <SelectTrigger>
           <SelectValue />
         </SelectTrigger>

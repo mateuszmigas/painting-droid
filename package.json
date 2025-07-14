@@ -9,12 +9,19 @@
     "build:web:docker": "docker build -t mateuszmigas/painting-droid .",
     "build:desktop": "pnpm --filter @painting-droid/desktop run build",
     "build:core": "pnpm --filter @painting-droid/core run build",
-    "validate": "pnpm -r validate"
+    "validate": "pnpm format-and-lint && pnpm check-types",
+    "validate:fix": "pnpm format-and-lint:fix && pnpm check-types",
+    "check-types": "pnpm -r check-types",
+    "format-and-lint": "biome check .",
+    "format-and-lint:fix": "biome check . --write"
   },
   "author": "Mateusz Migas",
   "license": "MIT",
   "engines": {
     "node": ">=18",
     "pnpm": ">=3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.0.6"
   }
 }

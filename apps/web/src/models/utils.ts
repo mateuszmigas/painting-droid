@@ -4,10 +4,7 @@ const translations = getTranslations().models;
 
 export const handleHttpError = (status: number) => {
   if (status !== 200) {
-    throw new Error(
-      translations.errors[status as keyof typeof translations.errors] ||
-        translations.errors.default
-    );
+    throw new Error(translations.errors[status as keyof typeof translations.errors] || translations.errors.default);
   }
 };
 
@@ -18,4 +15,3 @@ export const handleHttpError = (status: number) => {
 export const createApiKeyPlaceholder = (modelId: string) => {
   return `APIKEY(${modelId})`;
 };
-

@@ -47,7 +47,7 @@ export class ViewportManipulator extends ThrottleHtmlManipulator {
   constructor(
     protected element: HTMLElement,
     protected getCurrentViewport: () => Viewport,
-    private onViewportChange: (newViewport: Viewport) => void
+    private onViewportChange: (newViewport: Viewport) => void,
   ) {
     super(element);
 

@@ -1,18 +1,15 @@
-import {
-  createDefaultCanvasState,
-  type CanvasState,
-} from "@/canvas/canvasState";
-import type { Size } from "@/utils/common";
-import type { Viewport } from "@/utils/manipulation";
-import { uuid } from "@/utils/uuid";
 import { create, type StateCreator } from "zustand";
 import { type PersistStorage, persist } from "zustand/middleware";
-import { getTranslations } from "@/translations";
 import type { AdjustmentId } from "@/adjustments";
-import type { ImageCompressedData } from "@/utils/imageData";
-import { blobsStorage } from "./blobsStorage";
+import { type CanvasState, createDefaultCanvasState } from "@/canvas/canvasState";
 import { workspace } from "@/constants";
+import { getTranslations } from "@/translations";
 import type { RgbaColor } from "@/utils/color";
+import type { Size } from "@/utils/common";
+import type { ImageCompressedData } from "@/utils/imageData";
+import type { Viewport } from "@/utils/manipulation";
+import { uuid } from "@/utils/uuid";
+import { blobsStorage } from "./blobsStorage";
 
 const translations = getTranslations();
 
@@ -59,47 +56,25 @@ type AppWorkspacesSlice = AppWorkspacesState & {
   closeWorkspace: (workspaceId: WorkspaceId) => void;
   clearWorkspace: (workspaceId: WorkspaceId) => void;
   setWorkspaceViewport: (viewport: Viewport) => void;
-  addNewActiveWorkspace: (
-    size: Size,
-    name: string,
-    baseColor: RgbaColor | null
-  ) => void;
-  editWorkspace: (
-    id: WorkspaceId,
-    name: string,
-    baseColor: RgbaColor | null
-  ) => void;
-  createWorkspaceFromCanvasData: (
-    name: string,
-    canvasData: CanvasState
-  ) => void;
-  createWorkspaceFromImage: (
-    name: string,
-    size: Size,
-    data: ImageCompressedData
-  ) => void;
+  addNewActiveWorkspace: (size: Size, name: string, baseColor: RgbaColor | null) => void;
+  editWorkspace: (id: WorkspaceId, name: string, baseColor: RgbaColor | null) => void;
+  createWorkspaceFromCanvasData: (name: string, canvasData: CanvasState) => void;
+  createWorkspaceFromImage: (name: string, size: Size, data: ImageCompressedData) => void;
   setCanvasData: (canvasData: CanvasState) => void;
   openPopup: (type: WorkspacePopup) => void;
   closePopup: () => void;
   updatePopupSettings: (settings: Record<string, unknown>) => void;
 };
 
-export const mapActiveWorkspace = (
-  state: AppWorkspacesState,
-  map: (workspace: Workspace) => Workspace
-) => {
+export const mapActiveWorkspace = (state: AppWorkspacesState, map: (workspace: Workspace) => Workspace) => {
   const activeWorkspace = state.activeWorkspaceId;
   return {
     ...state,
-    workspaces: state.workspaces.map((workspace) =>
-      workspace.id === activeWorkspace ? map(workspace) : workspace
-    ),
+    workspaces: state.workspaces.map((workspace) => (workspace.id === activeWorkspace ? map(workspace) : workspace)),
   };
 };
 
-export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
-  set
-) => ({
+export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (set) => ({
   ...defaultState,
   selectWorkspace: (id) =>
     set((state) => ({
@@ -118,10 +93,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       return {
         ...state,
         workspaces,
-        activeWorkspaceId:
-          state.activeWorkspaceId === id
-            ? workspaces[0].id
-            : state.activeWorkspaceId,
+        activeWorkspaceId: state.activeWorkspaceId === id ? workspaces[0].id : state.activeWorkspaceId,
       };
     }),
   clearWorkspace: (id) =>
@@ -129,9 +101,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       return {
         ...state,
         workspaces: state.workspaces.map((w) =>
-          w.id === id
-            ? { ...w, canvasData: createDefaultCanvasState(w.canvasData.size) }
-            : w
+          w.id === id ? { ...w, canvasData: createDefaultCanvasState(w.canvasData.size) } : w,
         ),
       };
     }),
@@ -140,13 +110,9 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       mapActiveWorkspace(state, (workspace) => ({
         ...workspace,
         viewport,
-      }))
+      })),
     ),
-  addNewActiveWorkspace: (
-    size: Size,
-    name: string,
-    baseColor: RgbaColor | null
-  ) => {
+  addNewActiveWorkspace: (size: Size, name: string, baseColor: RgbaColor | null) => {
     const newId = uuid();
     return set((state) => ({
       ...state,
@@ -162,11 +128,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       activeWorkspaceId: newId,
     }));
   },
-  editWorkspace: (
-    id: WorkspaceId,
-    name: string,
-    baseColor: RgbaColor | null
-  ) => {
+  editWorkspace: (id: WorkspaceId, name: string, baseColor: RgbaColor | null) => {
     return set((state) => ({
       ...state,
       workspaces: state.workspaces.map((workspace) =>
@@ -179,7 +141,7 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
                 baseColor,
               },
             }
-          : workspace
+          : workspace,
       ),
     }));
   },
@@ -224,30 +186,28 @@ export const workspacesStoreCreator: StateCreator<AppWorkspacesSlice> = (
       mapActiveWorkspace(state, (workspace) => ({
         ...workspace,
         canvasData,
-      }))
+      })),
     ),
   openPopup: (type: WorkspacePopup) =>
     set((state) =>
       mapActiveWorkspace(state, (workspace) => ({
         ...workspace,
         popup: type,
-      }))
+      })),
     ),
   closePopup: () =>
     set((state) =>
       mapActiveWorkspace(state, (workspace) => ({
         ...workspace,
         popup: null,
-      }))
+      })),
     ),
   updatePopupSettings: (settings) =>
     set((state) =>
       mapActiveWorkspace(state, (workspace) => ({
         ...workspace,
-        popup: workspace.popup
-          ? { ...workspace.popup, settings }
-          : workspace.popup,
-      }))
+        popup: workspace.popup ? { ...workspace.popup, settings } : workspace.popup,
+      })),
     ),
 });
 
@@ -299,18 +259,15 @@ export const useWorkspacesStore = create<AppWorkspacesSlice>()(
     version: 17,
     name: "workspaces",
     storage,
-  })
+  }),
 );
 
 export const activeWorkspaceSelector = (state: AppWorkspacesState) => {
   return state.workspaces.find((w) => w.id === state.activeWorkspaceId)!;
 };
 
-export const activeWorkspaceCanvasDataSelector = (
-  state: AppWorkspacesState
-) => {
-  return state.workspaces.find((w) => w.id === state.activeWorkspaceId)!
-    .canvasData;
+export const activeWorkspaceCanvasDataSelector = (state: AppWorkspacesState) => {
+  return state.workspaces.find((w) => w.id === state.activeWorkspaceId)!.canvasData;
 };
 
 export const activeLayerSelector = (state: CanvasState) => {
@@ -323,10 +280,7 @@ export const activeShapeSelector = (state: CanvasState) => {
   return activeShapeId ? shapes[activeShapeId] : null;
 };
 
-export const activeWorkspaceActiveLayerSelector = (
-  state: AppWorkspacesState
-) => {
+export const activeWorkspaceActiveLayerSelector = (state: AppWorkspacesState) => {
   const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(state);
   return layers[activeLayerIndex];
 };
-

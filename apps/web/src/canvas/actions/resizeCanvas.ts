@@ -1,14 +1,14 @@
+import { getTranslations } from "@/translations";
+import type { Size } from "@/utils/common";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
-import { getTranslations } from "@/translations";
-import type { Size } from "@/utils/common";
 
 const translations = getTranslations();
 
 export const createCanvasAction = async (
   context: CanvasActionContext,
-  payload: { newSize: Size }
+  payload: { newSize: Size },
 ): Promise<CanvasAction> => {
   const { newSize } = payload;
   const state = context.getState();
@@ -18,9 +18,7 @@ export const createCanvasAction = async (
     if (layer.data === null) {
       newLayersData.push(null);
     } else {
-      const newData = await ImageProcessor.fromCompressedData(layer.data)
-        .resize(newSize)
-        .toCompressedData();
+      const newData = await ImageProcessor.fromCompressedData(layer.data).resize(newSize).toCompressedData();
       newLayersData.push(newData);
     }
   }
@@ -61,4 +59,3 @@ export const createCanvasAction = async (
     },
   };
 };
-

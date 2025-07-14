@@ -1,7 +1,4 @@
-import {
-  modelDefinitions,
-  objectDetectionModelTypes,
-} from "@/models/definitions";
+import { modelDefinitions, objectDetectionModelTypes } from "@/models/definitions";
 import type { ObjectDetectionModel } from "@/models/types/objectDetectionModel";
 import { useSettingsStore } from "@/store";
 import { getDefaultValues } from "@/utils/customFieldsSchema";
@@ -19,7 +16,7 @@ export const useObjectDetectionModels = (): ObjectDetectionModelInfo[] => {
     .filter((model) => objectDetectionModelTypes.includes(model.type))
     .map((model) => {
       const definition = modelDefinitions.find(
-        (modelDefinition) => modelDefinition.type === model.type
+        (modelDefinition) => modelDefinition.type === model.type,
       ) as ObjectDetectionModel;
       return {
         id: model.id,

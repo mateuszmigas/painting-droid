@@ -1,7 +1,7 @@
+import { getTranslations } from "@/translations";
 import { createSystemKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
@@ -11,7 +11,5 @@ export const command = createCommand({
   icon: "undo",
   defaultKeyGesture: createSystemKeyGesture({ key: "Z", ctrlOrCmd: true }),
   config: { showInPalette: true },
-  execute: async (context: CommandContext) =>
-    context.canvasActionDispatcher.undo(),
+  execute: async (context: CommandContext) => context.canvasActionDispatcher.undo(),
 });
-

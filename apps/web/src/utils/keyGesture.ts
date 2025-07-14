@@ -15,9 +15,7 @@ export const createSystemKeyGesture = (input: {
   shift?: boolean;
   alt?: boolean;
 }): KeyGesture => {
-  return isApple()
-    ? createKeyGesture({ ...input, meta: true })
-    : createKeyGesture({ ...input, ctrl: true });
+  return isApple() ? createKeyGesture({ ...input, meta: true }) : createKeyGesture({ ...input, ctrl: true });
 };
 
 export const createKeyGesture = (input: {
@@ -39,7 +37,7 @@ export const keyGestureToString = (keyGesture: KeyGesture) =>
     ...Array.from(
       `${keyGesture.ctrl ? "⌃" : ""}${keyGesture.alt ? "⌥" : ""}${
         keyGesture.shift ? "⇧" : ""
-      }${keyGesture.meta ? "⌘" : ""}`
+      }${keyGesture.meta ? "⌘" : ""}`,
     ),
     keyGesture.key,
   ].join("");
@@ -49,7 +47,7 @@ export const keyGestureToAccelerator = (keyGesture: KeyGesture) =>
     ...Array.from(
       `${keyGesture.ctrl ? "Ctrl+" : ""}${keyGesture.alt ? "Alt+" : ""}${
         keyGesture.shift ? "Shift+" : ""
-      }${keyGesture.meta ? "Cmd+" : ""}`
+      }${keyGesture.meta ? "Cmd+" : ""}`,
     ),
     keyGesture.key,
   ].join("");
@@ -58,13 +56,10 @@ const mapCodeToKey = (code: string): Key => {
   return code.toUpperCase() as Key;
 };
 
-export const eventToKeyGesture = (
-  e: KeyboardEvent | React.KeyboardEvent<Element>
-): KeyGesture => ({
+export const eventToKeyGesture = (e: KeyboardEvent | React.KeyboardEvent<Element>): KeyGesture => ({
   key: mapCodeToKey(e.key),
   alt: e.altKey,
   shift: e.shiftKey,
   meta: e.metaKey,
   ctrl: e.ctrlKey,
 });
-

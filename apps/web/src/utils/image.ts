@@ -22,10 +22,7 @@ export const fileToBlob = async (file: File) => {
   return new Blob([arrayBuffer], { type: file.type });
 };
 
-export const base64ToBlob = async (
-  base64: string,
-  format: "image/jpeg" | "image/png" = "image/png"
-) => {
+export const base64ToBlob = async (base64: string, format: "image/jpeg" | "image/png" = "image/png") => {
   const response = await fetch(`data:${format};base64,${base64}`);
   return await response.blob();
 };
@@ -61,9 +58,7 @@ export const blobToBase64 = async (blob: Blob) => {
   return dataUrl.split(",")[1];
 };
 
-export const calculateFilledBoundingBox = (
-  imageData: ImageUncompressed
-): BoundingBox => {
+export const calculateFilledBoundingBox = (imageData: ImageUncompressed): BoundingBox => {
   const { width, height, data } = imageData;
 
   let minX = width;
@@ -90,4 +85,3 @@ export const calculateFilledBoundingBox = (
     height: maxY - minY,
   };
 };
-

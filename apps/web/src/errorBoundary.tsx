@@ -4,10 +4,7 @@ import { isProduction } from "./utils/platform";
 type ErrorBoundaryProps = { children: ReactNode };
 type ErrorBoundaryState = { error: string };
 
-export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { error: "" };
@@ -29,13 +26,10 @@ export class ErrorBoundary extends Component<
       return isProduction() ? (
         <h1 className="p-big">"Something went wrong. Reloading..."</h1>
       ) : (
-        <h1 className="p-big text-destructive">
-          App crashed: {this.state.error}
-        </h1>
+        <h1 className="p-big text-destructive">App crashed: {this.state.error}</h1>
       );
     }
 
     return this.props.children;
   }
 }
-

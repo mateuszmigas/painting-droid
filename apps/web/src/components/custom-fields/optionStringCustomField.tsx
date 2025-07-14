@@ -1,12 +1,6 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import type { CustomField } from "@/utils/customFieldsSchema";
 import { Label } from "../ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 export const OptionStringCustomField = (props: {
   customField: CustomField;
@@ -33,4 +27,3 @@ export const OptionStringCustomField = (props: {
     </>
   );
 };
-

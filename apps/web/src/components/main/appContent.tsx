@@ -1,22 +1,19 @@
-import {
-  ResizableHandle,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { ToolsPanel } from "../panels/toolsPanel";
-import { LayersPanel } from "../panels/layersPanel";
-import { HistoryPanel } from "../panels/historyPanel";
-import { MetadataPanel } from "../panels/metadataPanel";
-import { WorkspaceViewport } from "../workspaceViewport";
-import { ToolSettingsBar } from "../toolSettingsBar";
-import { AppEdgePanel } from "./appEdgePanel";
+import { memo } from "react";
+import { ResizableHandle, ResizablePanelGroup } from "@/components/ui/resizable";
+import { useCommandService } from "@/contexts/commandService";
+import { useGlobalKeyboardHandler } from "@/hooks";
 import { useLayoutStore } from "@/store";
 import type { AppColumnNames, AppPanelNames } from "@/store/layoutStore";
 import { getTranslations } from "@/translations";
-import { AppColumn } from "./appColumn";
-import { useCommandService } from "@/contexts/commandService";
-import { useGlobalKeyboardHandler } from "@/hooks";
-import { memo } from "react";
+import { HistoryPanel } from "../panels/historyPanel";
+import { LayersPanel } from "../panels/layersPanel";
+import { MetadataPanel } from "../panels/metadataPanel";
+import { ToolsPanel } from "../panels/toolsPanel";
+import { ToolSettingsBar } from "../toolSettingsBar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { WorkspaceViewport } from "../workspaceViewport";
+import { AppColumn } from "./appColumn";
+import { AppEdgePanel } from "./appEdgePanel";
 
 const translations = getTranslations();
 
@@ -24,9 +21,7 @@ export const AppContent = memo(() => {
   const { executeCommand } = useCommandService();
   useGlobalKeyboardHandler(executeCommand);
 
-  const { panels, columns, setPanelSize, setColumnSize } = useLayoutStore(
-    (state) => state
-  );
+  const { panels, columns, setPanelSize, setColumnSize } = useLayoutStore((state) => state);
 
   const createPanelProps = (name: AppPanelNames) => {
     return {
@@ -78,4 +73,3 @@ export const AppContent = memo(() => {
     </div>
   );
 });
-

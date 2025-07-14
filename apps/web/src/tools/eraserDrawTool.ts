@@ -1,13 +1,13 @@
+import { getTranslations } from "@/translations";
+import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
 import {
-  type InferToolSettings,
-  createCanvasToolSettingsSchema,
   type CanvasTool,
   type CanvasToolEvent,
-  createCanvasToolMetadata,
   type CanvasToolResult,
+  createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
+  type InferToolSettings,
 } from "./canvasTool";
-import type { CanvasBitmapContext, CanvasVectorContext } from "@/utils/common";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations().tools.eraserDraw;
 
@@ -35,7 +35,7 @@ class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
 
   constructor(
     private bitmapContext: CanvasBitmapContext,
-    private vectorContext: CanvasVectorContext
+    private vectorContext: CanvasVectorContext,
   ) {}
 
   configure(settings: EraserDrawToolSettings): void {
@@ -67,10 +67,7 @@ class EraserDrawTool implements CanvasTool<EraserDrawToolSettings> {
       ]);
 
       if (this.isDrawing) {
-        this.bitmapContext.lineTo(
-          event.canvasPosition.x,
-          event.canvasPosition.y
-        );
+        this.bitmapContext.lineTo(event.canvasPosition.x, event.canvasPosition.y);
         this.bitmapContext.stroke();
       }
     }
@@ -104,4 +101,3 @@ export const eraserDrawToolMetadata = createCanvasToolMetadata({
   settingsSchema,
   create: (context) => new EraserDrawTool(context.bitmap, context.vector),
 });
-

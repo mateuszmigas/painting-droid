@@ -1,22 +1,13 @@
 /* @jsxImportSource solid-js */
 import type { Viewport } from "@/utils/manipulation";
-import { Circle, type CircleProps } from "./circle.solid";
-import { Rectangle, type RectangleProps } from "./rectangle.solid";
-import {
-  SelectionCircle,
-  type SelectionCircleProps,
-} from "./selectionCircle.solid";
-import {
-  SelectionRectangle,
-  type SelectionRectangleProps,
-} from "./selectionRectangle.solid";
-import {
-  ImageRectangle,
-  type ImageRectangleProps,
-} from "./imageRectangle.solid";
-import { SelectionGrip, type SelectionGripProps } from "./selectionGrip.solid";
 import { assertNever } from "@/utils/typeGuards";
+import { Circle, type CircleProps } from "./circle.solid";
 import { Ellipse, type EllipseProps } from "./ellipse.solid";
+import { ImageRectangle, type ImageRectangleProps } from "./imageRectangle.solid";
+import { Rectangle, type RectangleProps } from "./rectangle.solid";
+import { SelectionCircle, type SelectionCircleProps } from "./selectionCircle.solid";
+import { SelectionGrip, type SelectionGripProps } from "./selectionGrip.solid";
+import { SelectionRectangle, type SelectionRectangleProps } from "./selectionRectangle.solid";
 
 export type Shape2d =
   | ({ type: "circle" } & CircleProps)
@@ -47,4 +38,3 @@ export const Shape = (props: { shape: Shape2d; viewport: Viewport }) => {
       return assertNever(props.shape);
   }
 };
-

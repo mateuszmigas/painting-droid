@@ -1,19 +1,19 @@
+import type { CanvasShape } from "@/canvas/canvasState";
+import { getTranslations } from "@/translations";
+import { validateShape } from "@/utils/boundingBoxTransform";
+import type { CanvasVectorContext, Position } from "@/utils/common";
+import { createRectangleFromPoints } from "@/utils/geometry";
+import { fastRound } from "@/utils/math";
+import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
+import { uuid } from "@/utils/uuid";
 import {
+  type CanvasTool,
+  type CanvasToolEvent,
   type CanvasToolResult,
   createCanvasToolMetadata,
   createCanvasToolSettingsSchema,
-  type CanvasTool,
-  type CanvasToolEvent,
   type InferToolSettings,
 } from "./canvasTool";
-import type { CanvasVectorContext, Position } from "@/utils/common";
-import { getTranslations } from "@/translations";
-import { fastRound } from "@/utils/math";
-import { uuid } from "@/utils/uuid";
-import type { CanvasShape } from "@/canvas/canvasState";
-import { createRectangleFromPoints } from "@/utils/geometry";
-import { validateShape } from "@/utils/boundingBoxTransform";
-import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
 
 const translations = getTranslations().tools.shapeDraw;
 
@@ -89,34 +89,21 @@ class ShapeDrawTool implements CanvasTool<ShapeDrawToolSettings> {
       return;
     }
 
-    if (
-      (event.type === "pointerMove" || event.type === "pointerUp") &&
-      this.startCanvasPosition !== null
-    ) {
+    if ((event.type === "pointerMove" || event.type === "pointerUp") && this.startCanvasPosition !== null) {
       const endCanvasPosition = {
         x: fastRound(event.canvasPosition.x),
         y: fastRound(event.canvasPosition.y),
       };
       this.endScreenPosition = event.screenPosition;
 
-      const boundingBox = createRectangleFromPoints(
-        this.startCanvasPosition,
-        endCanvasPosition
-      );
+      const boundingBox = createRectangleFromPoints(this.startCanvasPosition, endCanvasPosition);
 
       this.shapeDraft = { ...this.shapeDraft, boundingBox };
 
-      const isValid = validateShape(
-        boundingBox,
-        this.startScreenPosition!,
-        this.endScreenPosition!
-      );
+      const isValid = validateShape(boundingBox, this.startScreenPosition!, this.endScreenPosition!);
 
       if (isValid) {
-        this.vectorContext.render(
-          "tool",
-          canvasShapeToShapes2d(this.shapeDraft)
-        );
+        this.vectorContext.render("tool", canvasShapeToShapes2d(this.shapeDraft));
       }
 
       if (event.type === "pointerUp") {

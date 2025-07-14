@@ -6,7 +6,7 @@ export const webApiClient: ApiClient = {
     options: {
       body: string | FormData;
       headers: Record<string, string>;
-    }
+    },
   ) => {
     const result = await fetch(url, {
       method: "POST",
@@ -32,4 +32,3 @@ export const webApiClient: ApiClient = {
     return { status: result.status, data: new ArrayBuffer(0) };
   },
 };
-

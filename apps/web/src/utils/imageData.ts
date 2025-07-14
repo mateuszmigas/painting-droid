@@ -14,4 +14,3 @@ export type ImageCompressed = {
 
 export type ImageMaskData = Uint8Array;
 export type ImageMask = ImageUncompressed;
-

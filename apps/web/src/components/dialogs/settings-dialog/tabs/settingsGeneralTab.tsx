@@ -1,19 +1,13 @@
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { themes } from "@/constants";
 import { useAlertService } from "@/contexts/alertService";
 import { useSettingsStore } from "@/store";
 import { blobsStorage } from "@/store/blobsStorage";
 import { getTranslations } from "@/translations";
 import { safeStorage } from "@/utils/safe-storage";
-import { memo } from "react";
 
 const translations = getTranslations();
 
@@ -40,7 +34,7 @@ export const SettingsGeneralTab = memo(() => {
       {
         content: translations.alerts.clearData.confirm,
         variant: "destructive",
-      }
+      },
     );
     if (result) {
       clearData();
@@ -51,10 +45,7 @@ export const SettingsGeneralTab = memo(() => {
     <div className="flex gap-big flex-col justify-between h-full">
       <div className="flex flex-col space-y-form-field-big w-48">
         <Label>{translations.general.theme}</Label>
-        <Select
-          value={settingsStore.theme}
-          onValueChange={settingsStore.setTheme}
-        >
+        <Select value={settingsStore.theme} onValueChange={settingsStore.setTheme}>
           <SelectTrigger>
             <SelectValue />
           </SelectTrigger>
@@ -75,4 +66,3 @@ export const SettingsGeneralTab = memo(() => {
     </div>
   );
 });
-

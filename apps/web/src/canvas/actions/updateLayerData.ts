@@ -1,5 +1,5 @@
 import type { IconType } from "@/components/icons/icon";
-import type { CanvasLayerId, CanvasLayerData } from "../canvasState";
+import type { CanvasLayerData, CanvasLayerId } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
 
@@ -10,7 +10,7 @@ export const createCanvasAction = async (
     display: string;
     icon: IconType;
     data: CanvasLayerData;
-  }
+  },
 ): Promise<CanvasAction> => {
   const { layerId, display: source, icon, data } = payload;
   const state = context.getState();
@@ -48,4 +48,3 @@ export const createCanvasAction = async (
     },
   };
 };
-

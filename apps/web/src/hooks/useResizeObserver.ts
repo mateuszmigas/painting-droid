@@ -1,15 +1,13 @@
-import type { Rectangle } from "@/utils/common";
 import { type RefObject, useEffect } from "react";
+import type { Rectangle } from "@/utils/common";
 
 export const useResizeObserver = (
   elementRefOrId: RefObject<HTMLElement> | string,
-  onResize: (rectangle: Rectangle) => void
+  onResize: (rectangle: Rectangle) => void,
 ) => {
   useEffect(() => {
     const element =
-      typeof elementRefOrId === "string"
-        ? document.getElementById(elementRefOrId)
-        : elementRefOrId.current;
+      typeof elementRefOrId === "string" ? document.getElementById(elementRefOrId) : elementRefOrId.current;
 
     if (!element) {
       return;
@@ -31,4 +29,3 @@ export const useResizeObserver = (
     };
   }, [elementRefOrId, onResize]);
 };
-

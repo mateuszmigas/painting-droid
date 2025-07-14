@@ -13,8 +13,6 @@
     "test:e2e:debug": "pnpm exec playwright test --debug",
     "test:e2e:serve": "E2E_TESTS=true vite build && vite preview",
     "test:e2e:install-browsers": "pnpm exec playwright install --with-deps",
-    "validate": "pnpm run check-types && pnpm run test:unit && pnpm run lint",
-    "lint": "biome lint src",
     "analyze-bundle": "pnpm dlx vite-bundle-visualizer"
   },
   "dependencies": {
@@ -69,7 +67,6 @@
     "zustand": "^5.0.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.1.1",
     "@playwright/test": "^1.54.1",
     "@tailwindcss/postcss": "^4.1.11",
     "@types/lodash.debounce": "^4.0.9",

@@ -3,7 +3,6 @@ import { testIds } from "../src/utils/testIds";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const mouseSleep = 10;
-const keyboardSleep = 10;
 
 export class TestApp {
   public static async from(page: Page) {
@@ -14,13 +13,9 @@ export class TestApp {
 
   constructor(private page: Page) {}
 
-  async getLayerCanvasBuffer(index: number = 0) {
-    const canvas = await this.page
-      .getByTestId(testIds.canvasLayer(index))
-      .elementHandle()!;
-    const dataUrl = await canvas!.evaluate((node: HTMLCanvasElement) =>
-      node.toDataURL()
-    );
+  async getLayerCanvasBuffer(index = 0) {
+    const canvas = await this.page.getByTestId(testIds.canvasLayer(index)).elementHandle()!;
+    const dataUrl = await canvas!.evaluate((node: HTMLCanvasElement) => node.toDataURL());
     const base64Data = dataUrl.split(",")[1];
     return Buffer.from(base64Data, "base64");
   }
@@ -36,9 +31,7 @@ export class TestApp {
   }
 
   async setToolSetting(settingKey: string, value: string) {
-    const setting = await this.page.getByTestId(
-      testIds.toolSetting(settingKey)
-    );
+    const setting = await this.page.getByTestId(testIds.toolSetting(settingKey));
     const type = await setting.getAttribute("data-type");
 
     if (type === "color") {

@@ -1,67 +1,40 @@
-import { Button } from "../ui/button";
-import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { memo, useState } from "react";
-import type { Size } from "@/utils/common";
-import { Input } from "../ui/input";
-import { Icon } from "../icons/icon";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { memo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  FormField,
-  FormItem,
-  FormControl,
-  FormMessage,
-  Form,
-  FormLabel,
-} from "../ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { getTranslations } from "@/translations";
-import { useCanvasActionDispatcher, useTextToImageModels } from "@/hooks";
 import { useCommandService } from "@/contexts/commandService";
-import { ImageFromBlob } from "../image/imageFromBlob";
-import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
+import { useCanvasActionDispatcher, useTextToImageModels } from "@/hooks";
 import type { TextToImageModelInfo } from "@/hooks/useTextToImageModels";
+import { getTranslations } from "@/translations";
+import type { Size } from "@/utils/common";
+import { type CustomField, getDefaultValues } from "@/utils/customFieldsSchema";
 import { scaleRectangleToFitParent } from "@/utils/geometry";
+import type { ImageCompressedData } from "@/utils/imageData";
 import { uuid } from "@/utils/uuid";
 import { CustomFieldArray } from "../custom-fields/customFieldArray";
-import type { ImageCompressedData } from "@/utils/imageData";
+import { Icon } from "../icons/icon";
+import { ImageFromBlob } from "../image/imageFromBlob";
+import { Button } from "../ui/button";
+import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Input } from "../ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const translations = getTranslations();
 const dialogTranslations = translations.dialogs.textToImage;
 const FormSchema = z.object({
-  prompt: z
-    .string()
-    .min(10, { message: "Prompt must be at least 10 characters." }),
+  prompt: z.string().min(10, { message: "Prompt must be at least 10 characters." }),
   modelId: z.string(),
   modelOptionsValues: z.record(z.string(), z.unknown()),
 });
 
-const getDefaultModelOptions = (
-  models: TextToImageModelInfo[],
-  modelId: string
-) => {
+const getDefaultModelOptions = (models: TextToImageModelInfo[], modelId: string) => {
   const model = models.find((model) => model.id === modelId);
-  return (model?.definition.textToImage.optionsSchema || {}) as Record<
-    string,
-    CustomField
-  >;
+  return (model?.definition.textToImage.optionsSchema || {}) as Record<string, CustomField>;
 };
 
-const getDefaultModelOptionsValues = (
-  models: TextToImageModelInfo[],
-  modelId: string
-) =>
-  getDefaultValues(getDefaultModelOptions(models, modelId)) as Record<
-    string,
-    unknown
-  >;
+const getDefaultModelOptionsValues = (models: TextToImageModelInfo[], modelId: string) =>
+  getDefaultValues(getDefaultModelOptions(models, modelId)) as Record<string, unknown>;
 
 const defaultSize = { width: 320, height: 320 };
 
@@ -81,8 +54,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
       modelOptionsValues: getDefaultModelOptionsValues(models, defaultModelId),
     },
   });
-  const imageSize = (form.watch("modelOptionsValues.size") ??
-    defaultSize) as Size;
+  const imageSize = (form.watch("modelOptionsValues.size") ?? defaultSize) as Size;
   const [isGenerating, setIsGenerating] = useState(false);
   const [image, setImage] = useState<ImageCompressedData | null>(null);
 
@@ -90,9 +62,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     setIsGenerating(true);
 
     const optionsValues = form.watch("modelOptionsValues");
-    const { definition, config } = models.find(
-      (model) => model.id === data.modelId
-    )!;
+    const { definition, config } = models.find((model) => model.id === data.modelId)!;
 
     definition.textToImage
       .execute(modelId, data.prompt, optionsValues, config)
@@ -113,8 +83,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     }
 
     await executeCommand("selectTool", { toolId: "rectangleSelect" });
-    const currentSize = (form.watch("modelOptionsValues.size") ??
-      defaultSize) as Size;
+    const currentSize = (form.watch("modelOptionsValues.size") ?? defaultSize) as Size;
     await canvasActionDispatcher.execute("addShape", {
       display: translations.models.textToImage.name,
       shape: {
@@ -132,17 +101,12 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
 
   const modelId = form.watch("modelId");
   const modelOptions = getDefaultModelOptions(models, modelId);
-  const { scale } = scaleRectangleToFitParent(
-    { x: 0, y: 0, ...imageSize },
-    defaultSize,
-    1
-  );
+  const { scale } = scaleRectangleToFitParent({ x: 0, y: 0, ...imageSize }, defaultSize, 1);
 
   const error = form.formState.errors.root?.message;
 
   //todo: remove after release
-  const isLocked =
-    models.find((model) => model.id === modelId)?.definition?.type === "demo";
+  const isLocked = models.find((model) => model.id === modelId)?.definition?.type === "demo";
 
   return (
     <DialogContent style={{ minWidth: "fit-content" }}>
@@ -150,10 +114,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
         <DialogTitle>{dialogTranslations.title}</DialogTitle>
       </DialogHeader>
       <Form {...form}>
-        <form
-          className="flex flex-col gap-big sm:flex-row"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
+        <form className="flex flex-col gap-big sm:flex-row" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex basis-0 flex-col items-center justify-center gap-big size-full">
             <div
               style={{
@@ -162,13 +123,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
               }}
               className="border object-contain box-content"
             >
-              {image && (
-                <ImageFromBlob
-                  className="size-full object-contain"
-                  blob={image}
-                  alt=""
-                />
-              )}
+              {image && <ImageFromBlob className="size-full object-contain" blob={image} alt="" />}
             </div>
           </div>
           <div className="flex grow justify-between flex-col gap-big min-w-64">
@@ -182,10 +137,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                     <Select
                       onValueChange={(value) => {
                         form.setValue("modelId", value);
-                        form.setValue(
-                          "modelOptionsValues",
-                          getDefaultModelOptionsValues(models, value)
-                        );
+                        form.setValue("modelOptionsValues", getDefaultModelOptionsValues(models, value));
                       }}
                       value={field.value}
                     >
@@ -197,9 +149,7 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                       <SelectContent>
                         {models.map((model) => (
                           <SelectItem key={model.id} value={model.id}>
-                            <div className="truncate max-w-[300px]">
-                              {model.display}
-                            </div>
+                            <div className="truncate max-w-[300px]">{model.display}</div>
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -221,38 +171,24 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
                 )}
               />
               {isLocked && (
-                <FormMessage className={"text-muted-foreground"}>
-                  {"Demo model prompt cannot be edited"}
-                </FormMessage>
+                <FormMessage className={"text-muted-foreground"}>{"Demo model prompt cannot be edited"}</FormMessage>
               )}
               <div className="flex flex-col gap-big">
                 <CustomFieldArray
                   schema={modelOptions}
                   values={form.watch("modelOptionsValues")}
-                  onChange={(key, value) =>
-                    form.setValue(`modelOptionsValues.${key}`, value)
-                  }
+                  onChange={(key, value) => form.setValue(`modelOptionsValues.${key}`, value)}
                 />
               </div>
               <FormMessage className={"text-destructive"}>{error}</FormMessage>
             </div>
             <div className="gap-medium flex flex-row justify-end">
               <Button type="submit" variant="secondary" disabled={isGenerating}>
-                {image
-                  ? translations.general.regenerate
-                  : translations.general.generate}
+                {image ? translations.general.regenerate : translations.general.generate}
                 {isGenerating ? (
-                  <Icon
-                    className="ml-2 animate-spin"
-                    type="loader"
-                    size="small"
-                  />
+                  <Icon className="ml-2 animate-spin" type="loader" size="small" />
                 ) : (
-                  <Icon
-                    className="ml-2"
-                    type={image ? "check" : "brain"}
-                    size="small"
-                  />
+                  <Icon className="ml-2" type={image ? "check" : "brain"} size="small" />
                 )}
               </Button>
               <Button type="button" onClick={apply} disabled={!image}>
@@ -265,4 +201,3 @@ export const TextToImageDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

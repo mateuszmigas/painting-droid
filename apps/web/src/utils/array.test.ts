@@ -40,4 +40,3 @@ describe("takeLast", () => {
     expect(result).toEqual([1, 2, 3, 4, 5]);
   });
 });
-

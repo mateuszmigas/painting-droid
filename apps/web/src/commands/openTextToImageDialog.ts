@@ -1,7 +1,7 @@
-import type { CommandContext } from "./context";
-import { createCommand } from "./createCommand";
 import { TextToImageDialog } from "@/components/dialogs/textToImageDialog";
 import { getTranslations } from "@/translations";
+import type { CommandContext } from "./context";
+import { createCommand } from "./createCommand";
 
 const translations = getTranslations();
 
@@ -14,4 +14,3 @@ export const command = createCommand({
     context.dialogService.openDialog(TextToImageDialog, {});
   },
 });
-

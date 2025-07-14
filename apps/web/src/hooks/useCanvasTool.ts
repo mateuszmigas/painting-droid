@@ -1,10 +1,10 @@
-import type { CanvasContext, Position } from "@/utils/common";
 import { type RefObject, useEffect, useRef } from "react";
-import { canvasToolsMetadata, type CanvasToolId } from "@/tools";
+import { type CanvasToolId, canvasToolsMetadata } from "@/tools";
 import type { CanvasTool } from "@/tools/canvasTool";
+import { ShapeTransformTool } from "@/tools/shapeTransformTool";
+import type { CanvasContext, Position } from "@/utils/common";
 import { subscribeToPointerEvents } from "@/utils/manipulation/pointerEvents";
 import { useStableCallback } from ".";
-import { ShapeTransformTool } from "@/tools/shapeTransformTool";
 import { useCanvasToolHandlers } from "./useCanvasToolHandlers";
 
 export const useCanvasTool = (
@@ -13,31 +13,21 @@ export const useCanvasTool = (
   toolSettings: Record<string, unknown>,
   screenToCanvasConverter: (position: Position) => Position,
   context: CanvasContext,
-  enable: boolean
+  enable: boolean,
 ) => {
   const toolRef = useRef<CanvasTool<unknown> | null>(null);
   const previousToolId = useRef<CanvasToolId | null>(null);
   const toolHandlers = useCanvasToolHandlers();
-  const screenToCanvasConverterStable = useStableCallback(
-    screenToCanvasConverter
-  );
+  const screenToCanvasConverterStable = useStableCallback(screenToCanvasConverter);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: toolSettings is handled in next useEffect
   useEffect(() => {
-    if (
-      !elementRef.current ||
-      toolId === null ||
-      context.bitmap === null ||
-      context.vector === null ||
-      !enable
-    ) {
+    if (!elementRef.current || toolId === null || context.bitmap === null || context.vector === null || !enable) {
       return;
     }
 
     const element = elementRef.current;
-    const shapeTransformTool = new ShapeTransformTool(context.vector, () =>
-      toolHandlers.getActiveShape()
-    );
+    const shapeTransformTool = new ShapeTransformTool(context.vector, () => toolHandlers.getActiveShape());
     const drawTool: CanvasTool<unknown> = canvasToolsMetadata[toolId].create({
       bitmap: context.bitmap,
       vector: context.vector,
@@ -121,7 +111,7 @@ export const useCanvasTool = (
       onPointerDown,
       onPointerMove,
       onPointerUp,
-      onPointerLeave
+      onPointerLeave,
     );
 
     document.addEventListener("keydown", keyDownHandler);
@@ -131,15 +121,7 @@ export const useCanvasTool = (
       document.removeEventListener("keydown", keyDownHandler);
       unsubscribeManipulationEvents();
     };
-  }, [
-    toolId,
-    toolHandlers,
-    elementRef,
-    context.bitmap,
-    context.vector,
-    screenToCanvasConverterStable,
-    enable,
-  ]);
+  }, [toolId, toolHandlers, elementRef, context.bitmap, context.vector, screenToCanvasConverterStable, enable]);
 
   useEffect(() => {
     if (toolId === previousToolId.current) {
@@ -148,4 +130,3 @@ export const useCanvasTool = (
     previousToolId.current = toolId;
   }, [toolSettings, toolId]);
 };
-

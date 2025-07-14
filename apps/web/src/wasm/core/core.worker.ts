@@ -1,13 +1,11 @@
+import type { ImageUncompressed } from "@/utils/imageData";
 import { createProxyServer } from "@/utils/worker";
 import init, { grayscale, sepia } from "./core";
 import coreUrl from "./core_bg.wasm?url";
-import { ImageUncompressed } from "@/utils/imageData";
 
 const coreServer = {
   init: () => Promise.resolve(),
-  grayscale: async (
-    imageData: ImageUncompressed
-  ): Promise<ImageUncompressed> => {
+  grayscale: async (imageData: ImageUncompressed): Promise<ImageUncompressed> => {
     const view = new Uint8Array(imageData.data.buffer);
     const result = grayscale(view);
 

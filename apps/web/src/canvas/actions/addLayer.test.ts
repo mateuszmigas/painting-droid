@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { createCanvasAction } from "./addLayer";
 import { createDefaultCanvasState } from "../canvasState";
+import { createCanvasAction } from "./addLayer";
 import type { CanvasActionContext } from "./context";
 
 const state = createDefaultCanvasState({
@@ -37,4 +37,3 @@ describe("add layer", () => {
     expect(undoState).toStrictEqual(state);
   });
 });
-

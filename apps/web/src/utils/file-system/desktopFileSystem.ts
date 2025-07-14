@@ -1,14 +1,9 @@
 import { open, save } from "@tauri-apps/plugin-dialog";
-import {
-  writeTextFile,
-  writeFile,
-  readTextFile,
-  readFile,
-} from "@tauri-apps/plugin-fs";
+import { readFile, readTextFile, writeFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { getTranslations } from "@/translations";
-import type { PlatformFileSystem } from "./platformFileSystem";
-import { splitNameAndExtension } from "../path";
 import type { FilePath } from "../common";
+import { splitNameAndExtension } from "../path";
+import type { PlatformFileSystem } from "./platformFileSystem";
 
 const translations = getTranslations();
 
@@ -26,15 +21,11 @@ const bytesToBase64 = (buffer: Uint8Array) => {
   });
 };
 
-const openFile = async (options: {
-  extensions: string[];
-}): Promise<FilePath | null> => {
+const openFile = async (options: { extensions: string[] }): Promise<FilePath | null> => {
   const file = await open({
     multiple: false,
     directory: false,
-    filters: [
-      { name: translations.general.images, extensions: options.extensions },
-    ],
+    filters: [{ name: translations.general.images, extensions: options.extensions }],
   });
   if (!file) {
     return null;
@@ -53,11 +44,7 @@ const readFileAsDataURL = async (path: string) => {
   return `data:image/${extension};base64,${dataUrl}`;
 };
 
-const saveTextToFile = async (
-  text: string,
-  filename: string,
-  extension: string
-) => {
+const saveTextToFile = async (text: string, filename: string, extension: string) => {
   const path = await save({
     filters: [{ name: filename, extensions: [extension] }],
   });
@@ -67,11 +54,7 @@ const saveTextToFile = async (
   return writeTextFile(path, text);
 };
 
-const saveBlobToFile = async (
-  blob: Blob,
-  filename: string,
-  extension: string
-) => {
+const saveBlobToFile = async (blob: Blob, filename: string, extension: string) => {
   const path = await save({
     filters: [{ name: filename, extensions: [extension] }],
   });
@@ -89,4 +72,3 @@ export const desktopFileSystem: PlatformFileSystem = {
   saveTextToFile,
   saveBlobToFile,
 };
-

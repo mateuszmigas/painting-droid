@@ -1,7 +1,7 @@
+import { SmartCropDialog } from "@/components/dialogs/smartCropDialog";
+import { getTranslations } from "@/translations";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { getTranslations } from "@/translations";
-import { SmartCropDialog } from "@/components/dialogs/smartCropDialog";
 
 const translations = getTranslations();
 
@@ -14,4 +14,3 @@ export const command = createCommand({
     context.dialogService.openDialog(SmartCropDialog, {});
   },
 });
-
