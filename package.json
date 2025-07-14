@@ -23,5 +23,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.6"
+  },
+  "pnpm": {
+    "overrides": {
+      "rollup": "4.43.0"
+    }
   }
 }
