@@ -1,6 +1,6 @@
+import { readImage, writeImage } from "@tauri-apps/plugin-clipboard-manager";
 import type { ImageCompressedData } from "../imageData";
 import type { PlatformClipboard } from "./platformClipboard";
-import { writeImage, readImage } from "@tauri-apps/plugin-clipboard-manager";
 
 const copyImage = async (imageData: ImageCompressedData): Promise<void> => {
   const buffer = await imageData.arrayBuffer();
@@ -21,4 +21,3 @@ export const desktopClipboard: PlatformClipboard = {
   copyImage,
   pasteImage,
 };
-

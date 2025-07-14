@@ -57,4 +57,3 @@ describe("transformBoundingBox", () => {
     expect(result).toEqual({ x: 0, y: 0, width: 20, height: 30 });
   });
 });
-

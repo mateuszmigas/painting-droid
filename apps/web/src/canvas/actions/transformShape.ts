@@ -1,14 +1,14 @@
+import { getTranslations } from "@/translations";
 import type { Rectangle } from "@/utils/common";
 import type { CanvasShapeId } from "../canvasState";
 import type { CanvasAction } from "./action";
 import type { CanvasActionContext } from "./context";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
 export const createCanvasAction = async (
   context: CanvasActionContext,
-  payload: { shapeId: CanvasShapeId; boundingBox: Rectangle }
+  payload: { shapeId: CanvasShapeId; boundingBox: Rectangle },
 ): Promise<CanvasAction> => {
   const { shapeId, boundingBox } = payload;
   const state = context.getState();
@@ -53,4 +53,3 @@ export const createCanvasAction = async (
     },
   };
 };
-

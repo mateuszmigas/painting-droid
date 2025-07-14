@@ -1,73 +1,47 @@
 import { memo, useEffect, useRef, useState } from "react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
-import { Droid } from "../droid";
-import { useWorkspacesStore } from "@/store";
-import {
-  activeWorkspaceCanvasDataSelector,
-  activeLayerSelector,
-} from "@/store/workspacesStore";
-import { useChatModels } from "@/hooks";
-import { getTranslations } from "@/translations";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { readStream } from "@/utils/stream";
 import { adjustmentsMetadata } from "@/adjustments";
-import { ChatSuggestion } from "./chatSuggestion";
-import { ChatMessageRow } from "./chatMessageRow";
-import {
-  PromiseCancellationTokenSource,
-  makeCancellableWithToken,
-} from "@/utils/promise";
 import { features } from "@/features";
-import type { ChatAction, ChatActionKey } from "@/types/chat";
+import { useChatModels } from "@/hooks";
+import { useWorkspacesStore } from "@/store";
 import { useChatStore } from "@/store/chatStore";
+import { activeLayerSelector, activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
+import { getTranslations } from "@/translations";
+import type { ChatAction, ChatActionKey } from "@/types/chat";
+import { makeCancellableWithToken, PromiseCancellationTokenSource } from "@/utils/promise";
+import { readStream } from "@/utils/stream";
+import { Droid } from "../droid";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { ChatMessageRow } from "./chatMessageRow";
+import { ChatSuggestion } from "./chatSuggestion";
 
 const translations = getTranslations();
 const chatTranslations = translations.chat;
 
-const actions: ChatAction[] = Object.entries(adjustmentsMetadata).map(
-  ([key, value]) => {
-    return { key, description: value.name };
-  }
-);
+const actions: ChatAction[] = Object.entries(adjustmentsMetadata).map(([key, value]) => {
+  return { key, description: value.name };
+});
 
 const filterValidActions = (actions: ChatActionKey[]) => {
   if (!Array.isArray(actions)) {
     return [];
   }
-  return actions.filter(
-    (action) => typeof action === "string" && action in adjustmentsMetadata
-  );
+  return actions.filter((action) => typeof action === "string" && action in adjustmentsMetadata);
 };
 
 export const Chat = memo(() => {
-  const {
-    messages,
-    addMessage,
-    updateLastMessage,
-    removeLastMessage,
-    clearMessages,
-  } = useChatStore();
+  const { messages, addMessage, updateLastMessage, removeLastMessage, clearMessages } = useChatStore();
   const models = useChatModels();
-  const canvasData = useWorkspacesStore((state) =>
-    activeWorkspaceCanvasDataSelector(state)
-  );
+  const canvasData = useWorkspacesStore((state) => activeWorkspaceCanvasDataSelector(state));
   const activeLayer = activeLayerSelector(canvasData);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const scrollTargetRef = useRef<HTMLDivElement>(null);
   const [modelId, setModelId] = useState<string>(models[0]?.id);
   const [prompt, setPrompt] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const fetchActionsTokenSource = useRef<PromiseCancellationTokenSource>(
-    new PromiseCancellationTokenSource()
-  );
+  const fetchActionsTokenSource = useRef<PromiseCancellationTokenSource>(new PromiseCancellationTokenSource());
 
   const sendMessage = async (prompt: string) => {
     setIsProcessing(true);
@@ -75,32 +49,19 @@ export const Chat = memo(() => {
     setPrompt("");
     addMessage({ type: "assistant", text: "..." });
 
-    const { definition, config } = models.find(
-      (model) => model.id === modelId
-    )!;
+    const { definition, config } = models.find((model) => model.id === modelId)!;
 
-    const image = activeLayer.data
-      ? { ...canvasData.size, data: activeLayer.data }
-      : null;
+    const image = activeLayer.data ? { ...canvasData.size, data: activeLayer.data } : null;
 
     try {
-      const { stream, getActions } = await definition.chat.execute(
-        modelId,
-        prompt,
-        image,
-        actions,
-        {},
-        config
-      );
+      const { stream, getActions } = await definition.chat.execute(modelId, prompt, image, actions, {}, config);
 
       updateLastMessage(() => ({ type: "assistant", text: "" }));
 
       await readStream(stream, (chunk) =>
         updateLastMessage((lastMessage) =>
-          "text" in lastMessage
-            ? { ...lastMessage, text: lastMessage.text + chunk }
-            : lastMessage
-        )
+          "text" in lastMessage ? { ...lastMessage, text: lastMessage.text + chunk } : lastMessage,
+        ),
       );
 
       updateLastMessage((message) => ({ ...message, actions: [] }));
@@ -109,10 +70,7 @@ export const Chat = memo(() => {
         return;
       }
       fetchActionsTokenSource.current = new PromiseCancellationTokenSource();
-      makeCancellableWithToken(
-        getActions(),
-        fetchActionsTokenSource.current.getToken()
-      ).then((actionKeys) => {
+      makeCancellableWithToken(getActions(), fetchActionsTokenSource.current.getToken()).then((actionKeys) => {
         updateLastMessage((message) => ({
           ...message,
           actions: filterValidActions(actionKeys),
@@ -171,12 +129,7 @@ export const Chat = memo(() => {
             ))}
           </SelectContent>
         </Select>
-        <Button
-          disabled={isProcessing}
-          variant="outline"
-          type="button"
-          onClick={clearMessages}
-        >
+        <Button disabled={isProcessing} variant="outline" type="button" onClick={clearMessages}>
           {translations.general.clear}
         </Button>
       </div>
@@ -203,17 +156,8 @@ export const Chat = memo(() => {
         </div>
       )}
       <div className="flex flex-row gap-medium">
-        <Input
-          autoFocus
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-        />
-        <Button
-          disabled={prompt.length === 0 || isProcessing}
-          variant="outline"
-          type="submit"
-          className="px-medium"
-        >
+        <Input autoFocus value={prompt} onChange={(e) => setPrompt(e.target.value)} />
+        <Button disabled={prompt.length === 0 || isProcessing} variant="outline" type="submit" className="px-medium">
           <div className="w-6">
             <Droid typingDurationSeconds={0} />
           </div>
@@ -222,4 +166,3 @@ export const Chat = memo(() => {
     </form>
   );
 });
-

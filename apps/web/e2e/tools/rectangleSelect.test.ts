@@ -1,15 +1,9 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { TestApp } from "../testApp";
-import {
-  mouseActionBetweenPoints,
-  mouseActionBetweenRectangleCorners,
-} from "../utils";
+import { mouseActionBetweenPoints, mouseActionBetweenRectangleCorners } from "../utils";
 
 test.describe("rectangle select", () => {
-  test.skip(
-    ({ browserName }) => browserName === "webkit",
-    "This test is disabled for WebKit"
-  );
+  test.skip(({ browserName }) => browserName === "webkit", "This test is disabled for WebKit");
 
   test("makes a copy of the selected area", async ({ page }) => {
     const app = await TestApp.from(page);

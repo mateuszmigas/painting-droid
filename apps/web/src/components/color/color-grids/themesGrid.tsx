@@ -1,15 +1,8 @@
-import { useMemo, useState } from "react";
-import { memo } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ColorGrid } from "./colorGrid";
+import { memo, useMemo, useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { RgbaColor } from "@/utils/color";
 import { cn } from "@/utils/css";
+import { ColorGrid } from "./colorGrid";
 
 const themes: { id: string; name: string; colors: RgbaColor[] }[] = [
   {
@@ -62,39 +55,25 @@ const themes: { id: string; name: string; colors: RgbaColor[] }[] = [
   },
 ];
 
-export const ThemesColorGrid = memo(
-  (props: { onSelected: (color: RgbaColor) => void; className?: string }) => {
-    const { onSelected, className } = props;
-    const [value, onChange] = useState("basic");
-    const options = useMemo(
-      () => themes.map((theme) => ({ value: theme.id, label: theme.name })),
-      []
-    );
-    return (
-      <div className={cn("flex flex-col justify-between", className)}>
-        <Select
-          value={value as string}
-          onValueChange={(value) => onChange(value)}
-        >
-          <SelectTrigger
-            className={"text-xs h-[20px] pl-small pr-0 max-w-[70px] truncate"}
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {options.map((option) => (
-              <SelectItem key={option.value} value={option.value as string}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <ColorGrid
-          onSelected={onSelected}
-          colors={themes.find((theme) => theme.id === value)?.colors || []}
-        />
-      </div>
-    );
-  }
-);
-
+export const ThemesColorGrid = memo((props: { onSelected: (color: RgbaColor) => void; className?: string }) => {
+  const { onSelected, className } = props;
+  const [value, onChange] = useState("basic");
+  const options = useMemo(() => themes.map((theme) => ({ value: theme.id, label: theme.name })), []);
+  return (
+    <div className={cn("flex flex-col justify-between", className)}>
+      <Select value={value as string} onValueChange={(value) => onChange(value)}>
+        <SelectTrigger className={"text-xs h-[20px] pl-small pr-0 max-w-[70px] truncate"}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value as string}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <ColorGrid onSelected={onSelected} colors={themes.find((theme) => theme.id === value)?.colors || []} />
+    </div>
+  );
+});

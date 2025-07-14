@@ -25,4 +25,3 @@ export const Circle = (props: CircleProps & { viewport: Viewport }) => {
     />
   );
 };
-

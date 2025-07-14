@@ -15,4 +15,3 @@ export const createByteArray = (byteLength: number): ByteArray => {
     data: new ArrayBuffer(byteLength),
   };
 };
-

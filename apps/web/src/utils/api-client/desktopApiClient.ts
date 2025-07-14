@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { ApiClient } from "./apiClient";
 import { blobToArrayBuffer } from "../image";
+import type { ApiClient } from "./apiClient";
 
 const createBodyObject = async (formData: FormData) => {
   const body: Record<string, unknown> = {};
@@ -28,7 +28,7 @@ export const desktopApiClient: ApiClient = {
     options: {
       body: string | FormData;
       headers: Record<string, string>;
-    }
+    },
   ) => {
     const body =
       options.body instanceof FormData
@@ -55,4 +55,3 @@ export const desktopApiClient: ApiClient = {
     return result;
   },
 };
-

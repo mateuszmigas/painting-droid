@@ -1,9 +1,6 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { TestApp } from "../testApp";
-import {
-  mouseActionBetweenPoints,
-  mouseActionBetweenRectangleCorners,
-} from "../utils";
+import { mouseActionBetweenPoints, mouseActionBetweenRectangleCorners } from "../utils";
 
 test.describe("erase draw", () => {
   test("draw rectangle and erase part of it", async ({ page }) => {
@@ -25,8 +22,8 @@ test.describe("erase draw", () => {
       { x: box.x + box.width / 2, y: box.y + 50 },
     ]);
     const buffer = await app.getLayerCanvasBuffer();
-    await expect(buffer).toMatchSnapshot(["tool-eraser.png"],{
-      maxDiffPixelRatio: 0.01
+    await expect(buffer).toMatchSnapshot(["tool-eraser.png"], {
+      maxDiffPixelRatio: 0.01,
     });
   });
 });

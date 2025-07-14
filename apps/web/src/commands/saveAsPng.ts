@@ -1,7 +1,7 @@
-import type { CommandContext } from "./context";
-import { createCommand } from "./createCommand";
 import { getTranslations } from "@/translations";
 import { fileSystem } from "@/utils/file-system";
+import type { CommandContext } from "./context";
+import { createCommand } from "./createCommand";
 import { selectWorkspaceAsImage } from "./selectors/workspace";
 
 const translations = getTranslations();
@@ -13,10 +13,7 @@ export const command = createCommand({
   config: { showInPalette: true },
   execute: async (context: CommandContext) => {
     const format = "png";
-    const { name, blob } = await selectWorkspaceAsImage(
-      context.stores.workspaces(),
-      format
-    );
+    const { name, blob } = await selectWorkspaceAsImage(context.stores.workspaces(), format);
     fileSystem.saveBlobToFile(blob, name, format);
   },
 });

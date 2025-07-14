@@ -1,7 +1,6 @@
 import type { CanvasLayer, CanvasState } from "@/canvas/canvasState";
-import { blobToDataUrl } from "./image";
 import type { Size } from "./common";
-import { dataUrlToBlob } from "./image";
+import { blobToDataUrl, dataUrlToBlob } from "./image";
 
 export const encodePwd = async (canvasData: CanvasState, version: number) => {
   //todo: better storage
@@ -32,10 +31,7 @@ export const decodePwd = async (text: string) => {
 
   for (let i = 0; i < canvasData.layers.length; i++) {
     const layer = canvasData.layers[i];
-    layer.data =
-      layer.data !== null
-        ? await dataUrlToBlob(layer.data as unknown as string)
-        : null;
+    layer.data = layer.data !== null ? await dataUrlToBlob(layer.data as unknown as string) : null;
   }
 
   return {

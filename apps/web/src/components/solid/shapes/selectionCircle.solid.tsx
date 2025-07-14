@@ -7,9 +7,7 @@ export type SelectionCircleProps = {
   radius: number;
 };
 
-export const SelectionCircle = (
-  props: SelectionCircleProps & { viewport: Viewport }
-) => {
+export const SelectionCircle = (props: SelectionCircleProps & { viewport: Viewport }) => {
   return (
     <>
       <circle
@@ -30,4 +28,3 @@ export const SelectionCircle = (
     </>
   );
 };
-

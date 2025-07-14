@@ -1,13 +1,13 @@
+import { useEffect } from "react";
 import type { Observable } from "@/utils/observable";
 import { useStableCallback } from ".";
-import { useEffect } from "react";
 
 export const useListener = <T>(
   observable: Observable<T>,
   onChange: (value: T) => void,
   options?: {
     triggerOnMount?: boolean;
-  }
+  },
 ) => {
   const stableOnChange = useStableCallback(onChange);
 
@@ -17,4 +17,3 @@ export const useListener = <T>(
     return () => unsubscribe();
   }, [observable, stableOnChange, options?.triggerOnMount]);
 };
-

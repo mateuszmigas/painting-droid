@@ -1,7 +1,7 @@
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { cn } from "@/utils/css";
 import type { HsvColor } from "@/utils/color";
 import { ColorProcessor } from "@/utils/colorProcessor";
+import { cn } from "@/utils/css";
 
 export const AlphaSlider = (props: {
   value: number;
@@ -13,10 +13,7 @@ export const AlphaSlider = (props: {
   const { value, orientation = "vertical", onChange, color, className } = props;
   return (
     <SliderPrimitive.Root
-      className={cn(
-        "relative flex h-full touch-none select-none items-center",
-        className
-      )}
+      className={cn("relative flex h-full touch-none select-none items-center", className)}
       orientation={orientation}
       value={[value]}
       onValueChange={(values) => onChange(values[0])}
@@ -37,4 +34,3 @@ export const AlphaSlider = (props: {
     </SliderPrimitive.Root>
   );
 };
-

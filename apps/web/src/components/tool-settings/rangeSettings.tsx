@@ -1,5 +1,5 @@
-import { cn } from "@/utils/css";
 import * as SliderPrimitive from "@radix-ui/react-slider";
+import { cn } from "@/utils/css";
 
 export const RangeSetting = (props: {
   value: number;
@@ -13,10 +13,7 @@ export const RangeSetting = (props: {
   const { value, onChange, format, min, max, title, className } = props;
   return (
     <SliderPrimitive.Root
-      className={cn(
-        "relative flex touch-none select-none items-center w-20",
-        className
-      )}
+      className={cn("relative flex touch-none select-none items-center w-20", className)}
       value={[value]}
       min={min}
       max={max}
@@ -27,10 +24,7 @@ export const RangeSetting = (props: {
       <SliderPrimitive.Track className="relative h-input-thin w-full grow overflow-hidden rounded-md bg-primary/75 border">
         <SliderPrimitive.Range className="absolute h-full bg-primary" />
       </SliderPrimitive.Track>
-      <div className="absolute pl-1.5 text-primary-foreground">
-        {format === "percent" ? `${value}%` : value}
-      </div>
+      <div className="absolute pl-1.5 text-primary-foreground">{format === "percent" ? `${value}%` : value}</div>
     </SliderPrimitive.Root>
   );
 };
-

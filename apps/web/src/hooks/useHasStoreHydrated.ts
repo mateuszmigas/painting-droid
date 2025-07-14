@@ -15,9 +15,7 @@ export const useHasStoreHydrated = (store: {
       return;
     }
 
-    const unsubscribe = store.persist.onFinishHydration(() =>
-      setHasHydrated(true)
-    );
+    const unsubscribe = store.persist.onFinishHydration(() => setHasHydrated(true));
 
     return () => {
       unsubscribe();
@@ -26,4 +24,3 @@ export const useHasStoreHydrated = (store: {
 
   return hasHydrated;
 };
-

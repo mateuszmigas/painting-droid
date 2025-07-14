@@ -1,13 +1,13 @@
 import {
+  type HsvaColor,
+  type HsvColor,
   hexToRgb,
   hsvaToRgba,
-  rgbToHex,
-  rgbToHsv,
+  type RgbaColor,
   rgbaToHsva,
   rgbaToRgbaString,
-  type HsvColor,
-  type HsvaColor,
-  type RgbaColor,
+  rgbToHex,
+  rgbToHsv,
 } from "./color";
 
 export class ColorProcessor {
@@ -54,4 +54,3 @@ export class ColorProcessor {
     return rgbToHex(this.rgbaColor);
   }
 }
-

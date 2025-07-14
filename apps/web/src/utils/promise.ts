@@ -25,8 +25,7 @@ export class PromiseQueue {
   }
 }
 
-export const sleep = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const makeDeferred = <T>() => {
   let resolve: (value: T) => void = () => {};
@@ -53,14 +52,10 @@ export class PromiseCancellationTokenSource {
   }
 }
 
-export const makeCancellableWithToken = <T>(
-  promise: Promise<T>,
-  token: PromiseCancellationToken
-) =>
+export const makeCancellableWithToken = <T>(promise: Promise<T>, token: PromiseCancellationToken) =>
   new Promise<T>((resolve, reject) => {
     promise.then(
       (result) => !token.isCancellationRequested() && resolve(result),
-      (error) => !token.isCancellationRequested() && reject(error)
+      (error) => !token.isCancellationRequested() && reject(error),
     );
   });
-

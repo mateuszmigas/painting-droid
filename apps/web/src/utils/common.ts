@@ -1,5 +1,5 @@
-import type { RgbaColor } from "./color";
 import type { Shape2d } from "@/components/solid/shapes/shape.solid";
+import type { RgbaColor } from "./color";
 export type { Shape2d };
 
 export type Position = {
@@ -17,9 +17,7 @@ export type BoundingBox = Rectangle;
 
 export type Color = RgbaColor;
 
-export type CanvasBitmapContext =
-  | CanvasRenderingContext2D
-  | OffscreenCanvasRenderingContext2D;
+export type CanvasBitmapContext = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 export type CanvasVectorContext = {
   render: (groupId: "tool", shapes: Shape2d[]) => void;

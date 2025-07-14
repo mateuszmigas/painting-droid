@@ -1,17 +1,14 @@
-import type { Viewport } from "@/utils/manipulation";
-import type { Observable } from "@/utils/observable";
 import { type RefObject, useEffect, useMemo } from "react";
-import { useListener } from ".";
-import { createComponent, render } from "solid-js/web";
 import { createStore } from "solid-js/store";
-import { VectorCanvas } from "../components/solid/vectorCanvas.solid";
+import { createComponent, render } from "solid-js/web";
 import { useCanvasContextStore } from "@/contexts/canvasContextStore";
 import type { Shape2d } from "@/utils/common";
+import type { Viewport } from "@/utils/manipulation";
+import type { Observable } from "@/utils/observable";
+import { VectorCanvas } from "../components/solid/vectorCanvas.solid";
+import { useListener } from ".";
 
-export const useSyncCanvasVectorContext = (
-  elementRef: RefObject<HTMLElement>,
-  viewport: Observable<Viewport>
-) => {
+export const useSyncCanvasVectorContext = (elementRef: RefObject<HTMLElement>, viewport: Observable<Viewport>) => {
   const { setVectorContext } = useCanvasContextStore();
   const [getStore, setStore] = useMemo(
     () =>
@@ -19,15 +16,12 @@ export const useSyncCanvasVectorContext = (
         shapes?: Record<string, Shape2d[]>;
         viewport: Viewport;
       }>({ shapes: {}, viewport: viewport.getValue() }),
-    [viewport]
+    [viewport],
   );
 
   useEffect(() => {
     if (!elementRef.current) return;
-    const unmount = render(
-      () => createComponent(VectorCanvas as never, getStore),
-      elementRef.current
-    );
+    const unmount = render(() => createComponent(VectorCanvas as never, getStore), elementRef.current);
     setVectorContext({
       render: (groupId: string, shapes: Shape2d[]) => {
         setStore("shapes", { ...getStore.shapes, [groupId]: shapes });
@@ -43,4 +37,3 @@ export const useSyncCanvasVectorContext = (
 
   useListener(viewport, (viewport) => setStore("viewport", viewport));
 };
-

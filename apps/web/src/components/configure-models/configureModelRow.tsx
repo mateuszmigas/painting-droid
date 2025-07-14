@@ -1,18 +1,18 @@
-import { useSettingsStore } from "@/store";
-import { IconButton } from "@/components/icons/iconButton";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { type RefObject, useRef, useState } from "react";
-import { IconSave } from "@/components/icons/iconSave";
-import { modelDefinitions } from "@/models/definitions";
-import type { AppUserModelState } from "@/store/settingsStore";
+import { CustomFieldArray } from "@/components/custom-fields/customFieldArray";
 import { IconAnchor } from "@/components/icons/iconAnchor";
+import { IconButton } from "@/components/icons/iconButton";
+import { IconSave } from "@/components/icons/iconSave";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useScrollAndFocus } from "@/hooks";
+import { modelDefinitions } from "@/models/definitions";
 import type { BaseModel } from "@/models/types/baseModel";
+import { useSettingsStore } from "@/store";
+import type { AppUserModelState } from "@/store/settingsStore";
+import { getTranslations } from "@/translations";
 import { safeStorage } from "@/utils/safe-storage";
 import { ConfigureModelBadges } from "./configureModelBadges";
-import { useScrollAndFocus } from "@/hooks";
-import { getTranslations } from "@/translations";
-import { CustomFieldArray } from "@/components/custom-fields/customFieldArray";
 import { defaultSecureKeyPlaceholder } from "./configureModels";
 
 const translations = getTranslations();
@@ -23,19 +23,15 @@ export const ConfigureModelRow = (props: {
   shouldFocus: boolean;
 }) => {
   const { userModel, onRemove, shouldFocus } = props;
-  const inputRef = useRef<HTMLInputElement>(
-    null
-  ) as RefObject<HTMLInputElement>;
+  const inputRef = useRef<HTMLInputElement>(null) as RefObject<HTMLInputElement>;
   const modelDefinition = modelDefinitions.find(
-    (modelDefinition) => modelDefinition.type === userModel.type
+    (modelDefinition) => modelDefinition.type === userModel.type,
   ) as BaseModel;
 
   const { updateModel } = useSettingsStore((state) => state);
-  const [secureKeySaved, setSecureKeySaved] = useState<boolean>(
-    !!userModel.secureKeySet
-  );
+  const [secureKeySaved, setSecureKeySaved] = useState<boolean>(!!userModel.secureKeySet);
   const [secureKeyValue, setSecureKeyValue] = useState<string>(
-    userModel.secureKeySet ? defaultSecureKeyPlaceholder : ""
+    userModel.secureKeySet ? defaultSecureKeyPlaceholder : "",
   );
   useScrollAndFocus(shouldFocus, inputRef);
 
@@ -45,13 +41,7 @@ export const ConfigureModelRow = (props: {
     <div className="flex rounded-md border flex-col p-big items-start gap-medium pt-medium">
       <div className="w-full flex flex-row items-center gap-big justify-between">
         <span className="font-bold">{modelDefinition?.defaultName}</span>
-        {modelDefinition?.url && (
-          <IconAnchor
-            type="external-link"
-            size="small"
-            href={modelDefinition.url}
-          />
-        )}
+        {modelDefinition?.url && <IconAnchor type="external-link" size="small" href={modelDefinition.url} />}
       </div>
       {!modelDefinition.predefined && (
         <div className="flex flex-row gap-big w-full">
@@ -68,9 +58,7 @@ export const ConfigureModelRow = (props: {
           </div>
           {modelDefinition?.useApiKey && (
             <div className="flex flex-col gap-medium flex-2">
-              <Label className={!secureKeyValue ? "text-destructive" : ""}>
-                {translations.general.secret}
-              </Label>
+              <Label className={!secureKeyValue ? "text-destructive" : ""}>{translations.general.secret}</Label>
               <div className="flex flex-row gap-medium items-center justify-center">
                 <Input
                   value={secureKeyValue}
@@ -113,14 +101,9 @@ export const ConfigureModelRow = (props: {
       <div className="flex items-center justify-between w-full">
         <ConfigureModelBadges baseModel={modelDefinition} />
         {!modelDefinition?.predefined && (
-          <IconButton
-            type="trash"
-            size="small"
-            onClick={() => onRemove(userModel.id)}
-          />
+          <IconButton type="trash" size="small" onClick={() => onRemove(userModel.id)} />
         )}
       </div>
     </div>
   );
 };
-

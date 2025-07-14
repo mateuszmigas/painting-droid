@@ -1,29 +1,19 @@
-import { getTranslations } from "@/translations";
 import { memo, useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { ImageFit } from "../image/imageFit";
-import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  Form,
-} from "../ui/form";
 import { useForm } from "react-hook-form";
-import {
-  activeWorkspaceCanvasDataSelector,
-  useWorkspacesStore,
-} from "@/store/workspacesStore";
-import { ImageProcessor } from "@/utils/imageProcessor";
+import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
+import { activeWorkspaceCanvasDataSelector, useWorkspacesStore } from "@/store/workspacesStore";
+import { getTranslations } from "@/translations";
 import type { Rectangle, Size } from "@/utils/common";
+import type { ImageCompressedData } from "@/utils/imageData";
+import { ImageProcessor } from "@/utils/imageProcessor";
 import { ImageAnchor, type ImageAnchorType } from "../image/imageAnchor";
+import { ImageFit } from "../image/imageFit";
 import { ImageOffset } from "../image/imageOffset";
 import { NumberInput } from "../input/numberInput";
-import type { ImageCompressedData } from "@/utils/imageData";
+import { Button } from "../ui/button";
+import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 const dialogTranslations = getTranslations().dialogs.cropCanvas;
 const translations = getTranslations();
@@ -36,27 +26,16 @@ type FormData = {
 
 type CropType = "percentage" | "absolute" | "offset";
 
-const calculateCrop = (
-  formData: FormData,
-  canvasSize: Size,
-  cropType: CropType
-) => {
+const calculateCrop = (formData: FormData, canvasSize: Size, cropType: CropType) => {
   if (cropType === "percentage" || cropType === "absolute") {
     const { anchor, width, height } = formData[cropType];
-    const x = Math.round(
-      cropType === "percentage" ? (canvasSize.width * width) / 100 : width
-    );
-    const y = Math.round(
-      cropType === "percentage" ? (canvasSize.height * height) / 100 : height
-    );
+    const x = Math.round(cropType === "percentage" ? (canvasSize.width * width) / 100 : width);
+    const y = Math.round(cropType === "percentage" ? (canvasSize.height * height) / 100 : height);
 
     if (anchor === "top-left") return { x: 0, y: 0, width: x, height: y };
-    if (anchor === "top")
-      return { x: (canvasSize.width - x) / 2, y: 0, width: x, height: y };
-    if (anchor === "top-right")
-      return { x: canvasSize.width - x, y: 0, width: x, height: y };
-    if (anchor === "left")
-      return { x: 0, y: (canvasSize.height - y) / 2, width: x, height: y };
+    if (anchor === "top") return { x: (canvasSize.width - x) / 2, y: 0, width: x, height: y };
+    if (anchor === "top-right") return { x: canvasSize.width - x, y: 0, width: x, height: y };
+    if (anchor === "left") return { x: 0, y: (canvasSize.height - y) / 2, width: x, height: y };
     if (anchor === "center")
       return {
         x: Math.round((canvasSize.width - x) / 2),
@@ -71,8 +50,7 @@ const calculateCrop = (
         width: x,
         height: y,
       };
-    if (anchor === "bottom-left")
-      return { x: 0, y: canvasSize.height - y, width: x, height: y };
+    if (anchor === "bottom-left") return { x: 0, y: canvasSize.height - y, width: x, height: y };
     if (anchor === "bottom")
       return {
         x: Math.round((canvasSize.width - x) / 2),
@@ -118,9 +96,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
   const { close } = props;
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const [selectedTab, setSelectedTab] = useState<CropType>("percentage");
-  const canvasData = useWorkspacesStore((state) =>
-    activeWorkspaceCanvasDataSelector(state)
-  );
+  const canvasData = useWorkspacesStore((state) => activeWorkspaceCanvasDataSelector(state));
   const [imageData, setImageData] = useState<ImageCompressedData | null>(null);
   const imageDataUrl = useBlobUrl(imageData);
   const [isApplying, setIsApplying] = useState(false);
@@ -135,10 +111,8 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
 
   useEffect(() => {
     ImageProcessor.fromMergedCompressed(
-      canvasData.layers
-        .filter((layer) => layer.data)
-        .map((layer) => layer.data!),
-      canvasData.size
+      canvasData.layers.filter((layer) => layer.data).map((layer) => layer.data!),
+      canvasData.size,
     )
       .toCompressedData()
       .then((data) => {
@@ -188,28 +162,17 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
                 />
               )}
             />
-            <FormMessage
-              className={error ? "text-destructive" : "text-primary"}
-            >
+            <FormMessage className={error ? "text-destructive" : "text-primary"}>
               {error ? error : dialogTranslations.printCrop(crop)}
             </FormMessage>
           </div>
           <div className="flex h-full flex-col gap-big justify-between min-w-48">
-            <Tabs
-              value={selectedTab}
-              onValueChange={setSelectedTab as (value: string) => void}
-            >
+            <Tabs value={selectedTab} onValueChange={setSelectedTab as (value: string) => void}>
               <div className="w-full flex justify-center">
                 <TabsList>
-                  <TabsTrigger value="percentage">
-                    {dialogTranslations.types.percentage}
-                  </TabsTrigger>
-                  <TabsTrigger value="absolute">
-                    {dialogTranslations.types.absolute}
-                  </TabsTrigger>
-                  <TabsTrigger value="offset">
-                    {dialogTranslations.types.offset}
-                  </TabsTrigger>
+                  <TabsTrigger value="percentage">{dialogTranslations.types.percentage}</TabsTrigger>
+                  <TabsTrigger value="absolute">{dialogTranslations.types.absolute}</TabsTrigger>
+                  <TabsTrigger value="offset">{dialogTranslations.types.offset}</TabsTrigger>
                 </TabsList>
               </div>
               <TabsContent value="percentage" tabIndex={-1}>
@@ -220,10 +183,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{translations.general.anchor}</FormLabel>
-                        <ImageAnchor
-                          selectedAnchor={field.value as ImageAnchorType}
-                          onChange={field.onChange}
-                        />
+                        <ImageAnchor selectedAnchor={field.value as ImageAnchorType} onChange={field.onChange} />
                       </FormItem>
                     )}
                   />
@@ -233,9 +193,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
                       name="percentage.width"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>
-                            {translations.general.widthPercentage}
-                          </FormLabel>
+                          <FormLabel>{translations.general.widthPercentage}</FormLabel>
                           <FormControl>
                             <NumberInput {...field} onChange={field.onChange} />
                           </FormControl>
@@ -247,9 +205,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
                       name="percentage.height"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>
-                            {translations.general.heightPercentage}
-                          </FormLabel>
+                          <FormLabel>{translations.general.heightPercentage}</FormLabel>
                           <FormControl>
                             <NumberInput {...field} onChange={field.onChange} />
                           </FormControl>
@@ -267,10 +223,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{translations.general.anchor}</FormLabel>
-                        <ImageAnchor
-                          selectedAnchor={field.value as ImageAnchorType}
-                          onChange={field.onChange}
-                        />
+                        <ImageAnchor selectedAnchor={field.value as ImageAnchorType} onChange={field.onChange} />
                       </FormItem>
                     )}
                   />
@@ -310,10 +263,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{translations.general.offsets}</FormLabel>
-                        <ImageOffset
-                          offset={field.value}
-                          onChange={(e) => field.onChange(e)}
-                        />
+                        <ImageOffset offset={field.value} onChange={(e) => field.onChange(e)} />
                       </FormItem>
                     )}
                   />
@@ -321,11 +271,7 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
               </TabsContent>
             </Tabs>
             <div className="gap-medium flex flex-row justify-end">
-              <Button
-                disabled={!!error || isApplying}
-                type="button"
-                onClick={apply}
-              >
+              <Button disabled={!!error || isApplying} type="button" onClick={apply}>
                 {translations.general.apply}
               </Button>
             </div>
@@ -335,4 +281,3 @@ export const CropCanvasDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

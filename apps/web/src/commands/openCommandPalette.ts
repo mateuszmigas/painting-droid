@@ -1,7 +1,7 @@
+import { getTranslations } from "@/translations";
 import { createSystemKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
@@ -15,4 +15,3 @@ export const command = createCommand({
     context.stores.commandPalette().setIsOpen(true);
   },
 });
-

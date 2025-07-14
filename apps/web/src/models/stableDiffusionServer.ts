@@ -1,17 +1,12 @@
-import {
-  createTextToImageSection,
-  type TextToImageModel,
-} from "./types/textToImageModel";
-import { base64ToBlob, blobToDataUrl } from "@/utils/image";
-import { apiClient } from "@/utils/api-client";
 import { getTranslations } from "@/translations";
-import { handleHttpError } from "./utils";
-import { createConfigSchema } from "./types/baseModel";
+import { apiClient } from "@/utils/api-client";
 import type { CustomFieldsSchemaAsValues } from "@/utils/customFieldsSchema";
-import {
-  type ImageToImageModel,
-  createImageToImageSection,
-} from "./types/imageToImageModel";
+import { base64ToBlob, blobToDataUrl } from "@/utils/image";
+import { createConfigSchema } from "./types/baseModel";
+import { createImageToImageSection, type ImageToImageModel } from "./types/imageToImageModel";
+import { createTextToImageSection, type TextToImageModel } from "./types/textToImageModel";
+import { handleHttpError } from "./utils";
+
 const translations = getTranslations().models;
 
 const configSchema = createConfigSchema({
@@ -51,9 +46,7 @@ const imageToImage = createImageToImageSection({
     },
   },
   execute: async (_, prompt, image, options, config) => {
-    const { server } = config as CustomFieldsSchemaAsValues<
-      typeof configSchema
-    >;
+    const { server } = config as CustomFieldsSchemaAsValues<typeof configSchema>;
     const { steps, imageStrength } = options;
 
     const url = `${server}/sdapi/v1/img2img`;
@@ -126,9 +119,7 @@ const textToImage = createTextToImageSection({
     },
   },
   execute: async (_, prompt, options, config) => {
-    const { server } = config as CustomFieldsSchemaAsValues<
-      typeof configSchema
-    >;
+    const { server } = config as CustomFieldsSchemaAsValues<typeof configSchema>;
     const { size, steps } = options;
     const url = `${server}/sdapi/v1/txt2img`;
     const body = { prompt, steps, size };

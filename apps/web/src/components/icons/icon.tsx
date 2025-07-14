@@ -1,87 +1,88 @@
 /* This is an icon aggregator where all icons from various libraries are imported. 
   - https://lucide.dev/icons/
 */
-import { assertNever } from "@/utils/typeGuards";
+
 import {
-  Pen,
-  Pencil,
-  Moon,
-  Sun,
-  Plus,
-  Brush,
-  Command,
-  Save,
-  FilePlus2,
-  Lock,
-  Unlock,
-  Eye,
-  EyeOff,
-  X,
-  ArrowUp,
   ArrowDown,
-  ArrowUpToLine,
+  ArrowDownFromLine,
   ArrowDownToLine,
-  Copy,
-  RotateCcw,
-  Github,
-  Bug,
-  Square,
-  SquareMousePointer,
-  MousePointerSquareDashed,
-  Fullscreen,
-  Undo,
-  Redo,
-  FilePlus,
+  ArrowUp,
+  ArrowUpToLine,
+  Bot,
+  BotMessageSquare,
   BoxSelect,
-  Loader,
-  Check,
   Brain,
-  Menu,
-  Image,
-  Shapes,
-  FolderOpen,
+  Brush,
+  Bug,
+  Check,
   ClipboardCopy,
   ClipboardPaste,
   ClipboardX,
-  Eraser,
-  Download,
+  Command,
+  Copy,
   Crop,
+  Download,
+  Eraser,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  FileCog,
+  FilePlus,
+  FilePlus2,
+  FolderOpen,
+  Fullscreen,
+  Github,
+  HelpCircle,
+  Image,
+  ImageMinus,
+  ImagePlus,
+  Images,
+  Loader,
+  Lock,
+  Menu,
+  Merge,
+  Moon,
+  MousePointerSquareDashed,
+  MoveDown,
+  MoveDownLeft,
+  MoveDownRight,
   MoveLeft,
   MoveRight,
   MoveUp,
-  MoveDown,
   MoveUpLeft,
   MoveUpRight,
-  MoveDownLeft,
-  MoveDownRight,
-  ArrowDownFromLine,
-  Scaling,
-  Settings,
-  Trash2,
-  PlusCircle,
-  ExternalLink,
-  Merge,
-  Star,
   PaintBucket,
-  SprayCan,
-  Tags,
-  Scissors,
-  Share,
-  HelpCircle,
-  ImagePlus,
-  Images,
-  FileCog,
-  Settings2,
-  ImageMinus,
-  Bot,
-  BotMessageSquare,
-  WandSparkles,
+  Pen,
+  Pencil,
+  Plus,
+  PlusCircle,
+  Redo,
   RefreshCw,
+  RotateCcw,
+  Save,
+  Scaling,
+  Scissors,
+  Settings,
+  Settings2,
+  Shapes,
+  Share,
+  SprayCan,
+  Square,
+  SquareMousePointer,
+  Star,
+  Sun,
+  Tags,
+  Trash2,
+  Undo,
+  Unlock,
+  WandSparkles,
+  X,
 } from "lucide-react";
-import { Deselect } from "./custom/deselect";
-import { AnchorTopLeft } from "./custom/anchorTopLeft";
-import { AiLabel } from "../aiLabel";
 import { cn } from "@/utils/css";
+import { assertNever } from "@/utils/typeGuards";
+import { AiLabel } from "../aiLabel";
+import { AnchorTopLeft } from "./custom/anchorTopLeft";
+import { Deselect } from "./custom/deselect";
 
 type BaseIconType =
   | "pen"
@@ -171,11 +172,7 @@ export type IconType = BaseIconType | `${BaseIconType}_ai`;
 
 export type IconSize = "small" | "small-medium" | "medium" | number;
 
-const renderLucideIcon = (
-  icon: BaseIconType,
-  fontSize: number,
-  className?: string
-) => {
+const renderLucideIcon = (icon: BaseIconType, fontSize: number, className?: string) => {
   switch (icon) {
     case "pen":
       return <Pen className={className} size={fontSize} />;
@@ -286,40 +283,19 @@ const renderLucideIcon = (
     case "anchor-top":
       return <ArrowDownFromLine className={className} size={fontSize} />;
     case "anchor-bottom":
-      return (
-        <ArrowDownFromLine
-          className={`rotate-180 ${className}`}
-          size={fontSize}
-        />
-      );
+      return <ArrowDownFromLine className={`rotate-180 ${className}`} size={fontSize} />;
     case "anchor-left":
-      return (
-        <ArrowDownFromLine
-          className={`-rotate-90 ${className}`}
-          size={fontSize}
-        />
-      );
+      return <ArrowDownFromLine className={`-rotate-90 ${className}`} size={fontSize} />;
     case "anchor-right":
-      return (
-        <ArrowDownFromLine
-          className={`rotate-90 ${className}`}
-          size={fontSize}
-        />
-      );
+      return <ArrowDownFromLine className={`rotate-90 ${className}`} size={fontSize} />;
     case "anchor-top-left":
       return <AnchorTopLeft className={className} size={fontSize} />;
     case "anchor-top-right":
-      return (
-        <AnchorTopLeft className={`rotate-90 ${className}`} size={fontSize} />
-      );
+      return <AnchorTopLeft className={`rotate-90 ${className}`} size={fontSize} />;
     case "anchor-bottom-left":
-      return (
-        <AnchorTopLeft className={`-rotate-90 ${className}`} size={fontSize} />
-      );
+      return <AnchorTopLeft className={`-rotate-90 ${className}`} size={fontSize} />;
     case "anchor-bottom-right":
-      return (
-        <AnchorTopLeft className={`rotate-180 ${className}`} size={fontSize} />
-      );
+      return <AnchorTopLeft className={`rotate-180 ${className}`} size={fontSize} />;
     case "resize":
       return <Scaling className={className} size={fontSize} />;
     case "settings":
@@ -368,40 +344,22 @@ const renderLucideIcon = (
 };
 
 const calculateFontSize = (size: IconSize) => {
-  const fontSize =
-    typeof size === "number"
-      ? size
-      : size === "medium"
-      ? 24
-      : size === "small-medium"
-      ? 20
-      : 16;
+  const fontSize = typeof size === "number" ? size : size === "medium" ? 24 : size === "small-medium" ? 20 : 16;
   return fontSize;
 };
 
-export const Icon = (props: {
-  type: IconType;
-  size: IconSize;
-  className?: string;
-}) => {
+export const Icon = (props: { type: IconType; size: IconSize; className?: string }) => {
   const { type, size, className } = props;
   const fontSize = calculateFontSize(size);
 
   if (type.endsWith("_ai")) {
     const baseType = type.slice(0, -3) as BaseIconType;
     return (
-      <div
-        style={{ width: fontSize, height: fontSize }}
-        className={cn("relative", className)}
-      >
+      <div style={{ width: fontSize, height: fontSize }} className={cn("relative", className)}>
         {renderLucideIcon(baseType, fontSize, className)}
-        <AiLabel
-          size={fontSize / 2}
-          className="absolute -right-0.5 -bottom-0.5"
-        />
+        <AiLabel size={fontSize / 2} className="absolute -right-0.5 -bottom-0.5" />
       </div>
     );
   }
   return renderLucideIcon(type as BaseIconType, fontSize, className);
 };
-

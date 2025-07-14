@@ -1,22 +1,18 @@
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { HsvWheel } from "./hsvWheel";
-import { HsValueSlider } from "./hsValueSlider";
-import { AlphaSlider } from "./alphaSlider";
-import {
-  type RgbaColor,
-  type HsvaColor,
-  calculateForegroundColor,
-} from "@/utils/color";
 import { useStableCallback } from "@/hooks";
-import { ColorButton } from "./colorButton";
-import { ColorProcessor } from "@/utils/colorProcessor";
-import { ColorInputs } from "./colorInputs";
-import { cn } from "@/utils/css";
-import { ThemesColorGrid } from "./color-grids/themesGrid";
-import { RecentColorGrid } from "./color-grids/recentGrid";
-import { FavoriteColorGrid } from "./color-grids/favoriteGrid";
-import { IconButton } from "../icons/iconButton";
 import { useSettingsStore } from "@/store";
+import { calculateForegroundColor, type HsvaColor, type RgbaColor } from "@/utils/color";
+import { ColorProcessor } from "@/utils/colorProcessor";
+import { cn } from "@/utils/css";
+import { IconButton } from "../icons/iconButton";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { AlphaSlider } from "./alphaSlider";
+import { FavoriteColorGrid } from "./color-grids/favoriteGrid";
+import { RecentColorGrid } from "./color-grids/recentGrid";
+import { ThemesColorGrid } from "./color-grids/themesGrid";
+import { ColorButton } from "./colorButton";
+import { ColorInputs } from "./colorInputs";
+import { HsValueSlider } from "./hsValueSlider";
+import { HsvWheel } from "./hsvWheel";
 
 export const CustomColorPicker = (props: {
   value: RgbaColor;
@@ -41,19 +37,12 @@ export const CustomColorPicker = (props: {
   return (
     <Popover onOpenChange={(open) => !open && addRecentColor(rgbaColor)}>
       <PopoverTrigger asChild title={title}>
-        <ColorButton
-          className={cn("w-10 h-6", className)}
-          color={ColorProcessor.fromHsva(hsvaColor).toRgba()}
-        />
+        <ColorButton className={cn("w-10 h-6", className)} color={ColorProcessor.fromHsva(hsvaColor).toRgba()} />
       </PopoverTrigger>
       <PopoverContent align="start" className="flex flex-col gap-big w-[350px]">
         <div className="flex flex-col gap-big">
           <div className="flex flex-row h-[136px] relative gap-big">
-            <HsvWheel
-              className="size-[136px]"
-              color={hsvaColor}
-              setColor={setHsvaColor}
-            />
+            <HsvWheel className="size-[136px]" color={hsvaColor} setColor={setHsvaColor} />
             <HsValueSlider
               className="h-full"
               color={hsvaColor}
@@ -77,17 +66,11 @@ export const CustomColorPicker = (props: {
               <ColorButton className="absolute size-full" color={rgbaColor} />
               <div
                 style={{
-                  color: ColorProcessor.fromRgba(
-                    calculateForegroundColor(rgbaColor)
-                  ).toRgbString(),
+                  color: ColorProcessor.fromRgba(calculateForegroundColor(rgbaColor)).toRgbString(),
                 }}
                 className="absolute size-full flex items-end justify-end p-small"
               >
-                <IconButton
-                  type="star"
-                  size={"small"}
-                  onClick={() => addFavoriteColor(rgbaColor)}
-                />
+                <IconButton type="star" size={"small"} onClick={() => addFavoriteColor(rgbaColor)} />
               </div>
             </div>
             <FavoriteColorGrid className="flex-1" onSelected={setRgbaColor} />
@@ -99,4 +82,3 @@ export const CustomColorPicker = (props: {
     </Popover>
   );
 };
-

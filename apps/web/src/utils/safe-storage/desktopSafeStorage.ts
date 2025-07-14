@@ -7,4 +7,3 @@ export const desktopSafeStorage: PlatformSafeStorage = {
   },
   delete: async (key: string) => invoke("safe_storage_delete", { key }),
 };
-

@@ -3,8 +3,7 @@ import type { AdjustmentId } from ".";
 
 export const applyAdjustment = async (
   image: ImageCompressedData,
-  _adjustmentId: AdjustmentId
+  _adjustmentId: AdjustmentId,
 ): Promise<ImageCompressedData> => {
   return image;
 };
-

@@ -1,16 +1,8 @@
-import {
-  restoreContextFromUncompressed,
-  createCanvasContext,
-  convertToBlob,
-} from "./canvas";
+import { convertToBlob, createCanvasContext, restoreContextFromUncompressed } from "./canvas";
 import { type RgbaColor, rgbaToRgbaString } from "./color";
 import type { CanvasBitmapContext, Rectangle, Size } from "./common";
 import { dataUrlToImage } from "./image";
-import type {
-  ImageCompressedData,
-  ImageMask,
-  ImageUncompressed,
-} from "./imageData";
+import type { ImageCompressedData, ImageMask, ImageUncompressed } from "./imageData";
 
 export class ImageProcessor {
   private context!: CanvasBitmapContext;
@@ -55,10 +47,7 @@ export class ImageProcessor {
     });
   }
 
-  public static fromMergedCompressed(
-    imagesData: ImageCompressedData[],
-    size: Size
-  ) {
+  public static fromMergedCompressed(imagesData: ImageCompressedData[], size: Size) {
     return new ImageProcessor(async () => {
       const { width, height } = size;
       const context = createCanvasContext(width, height);
@@ -78,10 +67,7 @@ export class ImageProcessor {
     });
   }
 
-  public static fromCropContext(
-    context: CanvasBitmapContext,
-    rectangle: Rectangle
-  ) {
+  public static fromCropContext(context: CanvasBitmapContext, rectangle: Rectangle) {
     return new ImageProcessor(async () => {
       const { x, y, width, height } = rectangle;
       const data = context.getImageData(x, y, width, height);
@@ -114,10 +100,7 @@ export class ImageProcessor {
   public static fromFile(file: File) {
     return new ImageProcessor(async () => {
       const imageBitmap = await createImageBitmap(file);
-      const context = createCanvasContext(
-        imageBitmap.width,
-        imageBitmap.height
-      );
+      const context = createCanvasContext(imageBitmap.width, imageBitmap.height);
       context.drawImage(imageBitmap, 0, 0);
       return context;
     });
@@ -126,10 +109,7 @@ export class ImageProcessor {
   public static fromBlob(blob: Blob) {
     return new ImageProcessor(async () => {
       const imageBitmap = await createImageBitmap(blob);
-      const context = createCanvasContext(
-        imageBitmap.width,
-        imageBitmap.height
-      );
+      const context = createCanvasContext(imageBitmap.width, imageBitmap.height);
       context.drawImage(imageBitmap, 0, 0);
       return context;
     });
@@ -213,12 +193,7 @@ export class ImageProcessor {
 
   async toImageData() {
     await this.runTasks();
-    return this.context!.getImageData(
-      0,
-      0,
-      this.context.canvas.width,
-      this.context.canvas.height
-    );
+    return this.context!.getImageData(0, 0, this.context.canvas.width, this.context.canvas.height);
   }
 
   async toBlob(format: "jpeg" | "png" = "png") {
@@ -232,4 +207,3 @@ export class ImageProcessor {
     }
   }
 }
-

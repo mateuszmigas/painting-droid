@@ -1,8 +1,8 @@
+import { useMemo } from "react";
 import { chatModelTypes, modelDefinitions } from "@/models/definitions";
 import type { ChatModel } from "@/models/types/chatModel";
 import { useSettingsStore } from "@/store";
 import { getDefaultValues } from "@/utils/customFieldsSchema";
-import { useMemo } from "react";
 
 export type ChatModelInfo = {
   id: string;
@@ -18,15 +18,11 @@ export const useChatModels = (): ChatModelInfo[] => {
     return userModels
       .filter((model) => chatModelTypes.includes(model.type))
       .map((model) => {
-        const definition = modelDefinitions.find(
-          (modelDefinition) => modelDefinition.type === model.type
-        ) as ChatModel;
+        const definition = modelDefinitions.find((modelDefinition) => modelDefinition.type === model.type) as ChatModel;
 
         return {
           id: model.id,
-          display: model.display.trim()
-            ? model.display
-            : definition.defaultName,
+          display: model.display.trim() ? model.display : definition.defaultName,
           definition,
           config: {
             ...getDefaultValues(definition.configSchema ?? {}),
@@ -38,4 +34,3 @@ export const useChatModels = (): ChatModelInfo[] => {
 
   return models;
 };
-

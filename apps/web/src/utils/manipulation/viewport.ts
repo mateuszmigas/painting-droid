@@ -11,11 +11,7 @@ export const defaultViewport: Viewport = {
   zoom: 1,
 };
 
-export const zoomAtPosition = (
-  currentViewport: Viewport,
-  zoom: number,
-  position: Position
-): Viewport => ({
+export const zoomAtPosition = (currentViewport: Viewport, zoom: number, position: Position): Viewport => ({
   ...currentViewport,
   position: {
     x: position.x - (position.x - currentViewport.position.x) * zoom,
@@ -24,11 +20,7 @@ export const zoomAtPosition = (
   zoom: currentViewport.zoom * zoom,
 });
 
-export const calculateFitViewport = (
-  windowSize: Size,
-  targetArea: Rectangle,
-  padding: number
-): Viewport => {
+export const calculateFitViewport = (windowSize: Size, targetArea: Rectangle, padding: number): Viewport => {
   const result = scaleRectangleToFitParent(targetArea, windowSize, padding);
   return {
     position: { x: result.x, y: result.y },
@@ -36,11 +28,7 @@ export const calculateFitViewport = (
   };
 };
 
-export const calculateMousePosition = (
-  viewport: Viewport,
-  mousePosition: Position,
-  element: HTMLElement
-) => {
+export const calculateMousePosition = (viewport: Viewport, mousePosition: Position, element: HTMLElement) => {
   const elementRect = element.getBoundingClientRect();
   const position = {
     x: mousePosition.x - elementRect.x,
@@ -49,13 +37,9 @@ export const calculateMousePosition = (
   return screenToViewportPosition(position, viewport);
 };
 
-export const screenToViewportPosition = (
-  position: Position,
-  viewport: Viewport
-) => {
+export const screenToViewportPosition = (position: Position, viewport: Viewport) => {
   return {
     x: (position.x - viewport.position.x) / viewport.zoom,
     y: (position.y - viewport.position.y) / viewport.zoom,
   };
 };
-

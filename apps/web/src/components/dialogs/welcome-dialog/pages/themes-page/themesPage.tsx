@@ -6,8 +6,8 @@ import { themes } from "@/constants";
 import { useTypewriter } from "@/hooks";
 import { useSettingsStore } from "@/store";
 import { getTranslations } from "@/translations";
-import light_theme from "./assets/light_theme.png";
 import dark_theme from "./assets/dark_theme.png";
+import light_theme from "./assets/light_theme.png";
 import system_theme from "./assets/system_theme.png";
 
 const getAsset = (theme: string) => {
@@ -60,4 +60,3 @@ export const ThemesPage = () => {
     </div>
   );
 };
-

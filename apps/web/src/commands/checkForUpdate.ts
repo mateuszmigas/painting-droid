@@ -1,9 +1,9 @@
+import { notificationService } from "@/contexts/notificationService";
+import { getTranslations } from "@/translations";
+import { isDesktop } from "@/utils/platform";
+import { checkForUpdates } from "@/utils/updater";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { isDesktop } from "@/utils/platform";
-import { getTranslations } from "@/translations";
-import { notificationService } from "@/contexts/notificationService";
-import { checkForUpdates } from "@/utils/updater";
 
 const translations = getTranslations();
 
@@ -30,15 +30,11 @@ export const command = createCommand({
       });
     };
 
-    notificationService.showInfo(
-      `${translations.updater.available}: v${update.version}`,
-      {
-        action: {
-          label: translations.updater.install,
-          onClick: install,
-        },
-      }
-    );
+    notificationService.showInfo(`${translations.updater.available}: v${update.version}`, {
+      action: {
+        label: translations.updater.install,
+        onClick: install,
+      },
+    });
   },
 });
-

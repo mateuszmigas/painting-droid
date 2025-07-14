@@ -1,11 +1,8 @@
 import { type AdjustmentId, adjustmentsMetadata } from "@/adjustments";
-import { commands, type CommandId, type ExecuteCommand } from "@/commands";
-import {
-  activeWorkspaceCanvasDataSelector,
-  type useWorkspacesStore,
-} from "@/store/workspacesStore";
-import type { MenuItem } from "@/utils/menuItem";
+import { type CommandId, commands, type ExecuteCommand } from "@/commands";
+import { activeWorkspaceCanvasDataSelector, type useWorkspacesStore } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
+import type { MenuItem } from "@/utils/menuItem";
 
 const translations = getTranslations();
 
@@ -13,7 +10,7 @@ const itemFromCommand = (
   commandId: CommandId,
   executeCommand: ExecuteCommand,
   disabled?: boolean,
-  name?: string
+  name?: string,
 ): MenuItem => {
   const command = commands[commandId];
   return {
@@ -31,11 +28,9 @@ export const createMenuBarDefinition = (
   stores: {
     workspaces: ReturnType<typeof useWorkspacesStore.getState>;
   },
-  executeCommand: ExecuteCommand
+  executeCommand: ExecuteCommand,
 ): MenuItem[] => {
-  const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(
-    stores.workspaces
-  );
+  const { layers, activeLayerIndex } = activeWorkspaceCanvasDataSelector(stores.workspaces);
   return [
     {
       type: "parent",
@@ -90,16 +85,8 @@ export const createMenuBarDefinition = (
       items: [
         itemFromCommand("addLayer", executeCommand),
         itemFromCommand("duplicateLayer", executeCommand),
-        itemFromCommand(
-          "moveLayerUp",
-          executeCommand,
-          activeLayerIndex === layers.length - 1
-        ),
-        itemFromCommand(
-          "moveLayerDown",
-          executeCommand,
-          activeLayerIndex === 0
-        ),
+        itemFromCommand("moveLayerUp", executeCommand, activeLayerIndex === layers.length - 1),
+        itemFromCommand("moveLayerDown", executeCommand, activeLayerIndex === 0),
         itemFromCommand("removeLayer", executeCommand),
         { type: "separator" },
         itemFromCommand("hideLayer", executeCommand),
@@ -125,7 +112,7 @@ export const createMenuBarDefinition = (
                     adjustmentId: id as AdjustmentId,
                   }),
               },
-            } as const)
+            }) as const,
         ),
       ],
     },
@@ -142,4 +129,3 @@ export const createMenuBarDefinition = (
     },
   ];
 };
-

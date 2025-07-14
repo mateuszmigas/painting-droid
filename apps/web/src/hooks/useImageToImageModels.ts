@@ -1,8 +1,8 @@
+import { useMemo } from "react";
 import { imageToImageModelTypes, modelDefinitions } from "@/models/definitions";
 import type { ImageToImageModel } from "@/models/types/imageToImageModel";
 import { useSettingsStore } from "@/store";
 import { getDefaultValues } from "@/utils/customFieldsSchema";
-import { useMemo } from "react";
 
 export type ImageToImageModelInfo = {
   id: string;
@@ -19,14 +19,12 @@ export const useImageToImageModels = (): ImageToImageModelInfo[] => {
       .filter((model) => imageToImageModelTypes.includes(model.type))
       .map((model) => {
         const definition = modelDefinitions.find(
-          (modelDefinition) => modelDefinition.type === model.type
+          (modelDefinition) => modelDefinition.type === model.type,
         ) as ImageToImageModel;
 
         return {
           id: model.id,
-          display: model.display.trim()
-            ? model.display
-            : definition.defaultName,
+          display: model.display.trim() ? model.display : definition.defaultName,
           definition,
           config: {
             ...getDefaultValues(definition.configSchema ?? {}),
@@ -38,4 +36,3 @@ export const useImageToImageModels = (): ImageToImageModelInfo[] => {
 
   return models;
 };
-

@@ -1,11 +1,8 @@
-import { cn } from "@/utils/css";
-import { type IconType, type IconSize, Icon } from "./icon";
 import { type AnchorHTMLAttributes, forwardRef } from "react";
+import { cn } from "@/utils/css";
+import { Icon, type IconSize, type IconType } from "./icon";
 
-type IconAnchorProps = Omit<
-  AnchorHTMLAttributes<HTMLAnchorElement>,
-  "href" | "type"
-> & {
+type IconAnchorProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "type"> & {
   type: IconType;
   size: IconSize;
   href: string;
@@ -14,28 +11,21 @@ type IconAnchorProps = Omit<
   title?: string;
 };
 
-export const IconAnchor = forwardRef<HTMLAnchorElement, IconAnchorProps>(
-  (props, ref) => {
-    const { type, size, href, className, iconClassName, title, ...rest } =
-      props;
+export const IconAnchor = forwardRef<HTMLAnchorElement, IconAnchorProps>((props, ref) => {
+  const { type, size, href, className, iconClassName, title, ...rest } = props;
 
-    return (
-      <a
-        ref={ref}
-        {...rest}
-        className={cn(
-          "hover:bg-accent rounded-md hover:text-accent-foreground p-1",
-          className
-        )}
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        aria-label={title}
-        title={title}
-      >
-        <Icon type={type} size={size} className={iconClassName} />
-      </a>
-    );
-  }
-);
-
+  return (
+    <a
+      ref={ref}
+      {...rest}
+      className={cn("hover:bg-accent rounded-md hover:text-accent-foreground p-1", className)}
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={title}
+      title={title}
+    >
+      <Icon type={type} size={size} className={iconClassName} />
+    </a>
+  );
+});

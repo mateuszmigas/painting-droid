@@ -1,26 +1,16 @@
-import { getTranslations } from "@/translations";
 import { memo, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
+import { activeWorkspaceCanvasDataSelector, useWorkspacesStore } from "@/store/workspacesStore";
+import { getTranslations } from "@/translations";
+import type { Size } from "@/utils/common";
+import { ImageProcessor } from "@/utils/imageProcessor";
+import { ImageFit } from "../image/imageFit";
+import { NumberInput } from "../input/numberInput";
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { ImageFit } from "../image/imageFit";
-import { useBlobUrl, useCanvasActionDispatcher } from "@/hooks";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  Form,
-} from "../ui/form";
-import { useForm } from "react-hook-form";
-import {
-  activeWorkspaceCanvasDataSelector,
-  useWorkspacesStore,
-} from "@/store/workspacesStore";
-import { ImageProcessor } from "@/utils/imageProcessor";
-import type { Size } from "@/utils/common";
-import { NumberInput } from "../input/numberInput";
 
 const dialogTranslations = getTranslations().dialogs.resizeCanvas;
 const translations = getTranslations();
@@ -32,11 +22,7 @@ type FormData = {
 
 type ResizeType = "percentage" | "absolute";
 
-const calculateSize = (
-  formData: FormData,
-  canvasSize: Size,
-  resizeType: ResizeType
-) => {
+const calculateSize = (formData: FormData, canvasSize: Size, resizeType: ResizeType) => {
   const { width, height } = formData[resizeType];
 
   if (resizeType === "percentage") {
@@ -63,9 +49,7 @@ export const ResizeCanvasDialog = memo((props: { close: () => void }) => {
   const { close } = props;
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const [selectedTab, setSelectedTab] = useState<ResizeType>("percentage");
-  const canvasData = useWorkspacesStore((state) =>
-    activeWorkspaceCanvasDataSelector(state)
-  );
+  const canvasData = useWorkspacesStore((state) => activeWorkspaceCanvasDataSelector(state));
   const [imageData, setImageData] = useState<Blob | null>(null);
   const imageDataUrl = useBlobUrl(imageData);
   const [isResizing, setIsResizing] = useState(false);
@@ -79,10 +63,8 @@ export const ResizeCanvasDialog = memo((props: { close: () => void }) => {
 
   useEffect(() => {
     ImageProcessor.fromMergedCompressed(
-      canvasData.layers
-        .filter((layer) => layer.data)
-        .map((layer) => layer.data!),
-      canvasData.size
+      canvasData.layers.filter((layer) => layer.data).map((layer) => layer.data!),
+      canvasData.size,
     )
       .toCompressedData()
       .then((data) => {
@@ -119,32 +101,21 @@ export const ResizeCanvasDialog = memo((props: { close: () => void }) => {
               containerSize={{ width: 320, height: 320 }}
               containerScale="cover"
               imageStyle={{
-                scale: `${newSize.width / canvasData.size.width} ${
-                  newSize.height / canvasData.size.height
-                }`,
+                scale: `${newSize.width / canvasData.size.width} ${newSize.height / canvasData.size.height}`,
                 transformOrigin: "top left",
               }}
               src={imageDataUrl}
             />
-            <FormMessage
-              className={error ? "text-destructive" : "text-primary"}
-            >
+            <FormMessage className={error ? "text-destructive" : "text-primary"}>
               {error ? error : dialogTranslations.printSize(newSize)}
             </FormMessage>
           </div>
           <div className="flex h-full flex-col gap-big justify-between sm:w-48">
-            <Tabs
-              value={selectedTab}
-              onValueChange={setSelectedTab as (value: string) => void}
-            >
+            <Tabs value={selectedTab} onValueChange={setSelectedTab as (value: string) => void}>
               <div className="w-full flex justify-center">
                 <TabsList>
-                  <TabsTrigger value="percentage">
-                    {dialogTranslations.types.percentage}
-                  </TabsTrigger>
-                  <TabsTrigger value="absolute">
-                    {dialogTranslations.types.absolute}
-                  </TabsTrigger>
+                  <TabsTrigger value="percentage">{dialogTranslations.types.percentage}</TabsTrigger>
+                  <TabsTrigger value="absolute">{dialogTranslations.types.absolute}</TabsTrigger>
                 </TabsList>
               </div>
               <TabsContent value="percentage" tabIndex={-1}>
@@ -154,9 +125,7 @@ export const ResizeCanvasDialog = memo((props: { close: () => void }) => {
                     name="percentage.width"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>
-                          {translations.general.widthPercentage}
-                        </FormLabel>
+                        <FormLabel>{translations.general.widthPercentage}</FormLabel>
                         <FormControl>
                           <NumberInput {...field} onChange={field.onChange} />
                         </FormControl>
@@ -168,9 +137,7 @@ export const ResizeCanvasDialog = memo((props: { close: () => void }) => {
                     name="percentage.height"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>
-                          {translations.general.heightPercentage}
-                        </FormLabel>
+                        <FormLabel>{translations.general.heightPercentage}</FormLabel>
                         <FormControl>
                           <NumberInput {...field} onChange={field.onChange} />
                         </FormControl>
@@ -219,4 +186,3 @@ export const ResizeCanvasDialog = memo((props: { close: () => void }) => {
     </DialogContent>
   );
 });
-

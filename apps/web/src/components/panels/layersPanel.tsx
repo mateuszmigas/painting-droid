@@ -1,13 +1,14 @@
-import { IconButton } from "../icons/iconButton";
-import { cn } from "@/utils/css";
-import { useWorkspacesStore } from "@/store";
-import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { memo, useMemo } from "react";
 import type { CanvasLayer } from "@/canvas/canvasState";
 import { useCanvasActionDispatcher } from "@/hooks";
-import { ImageFromBlob } from "../image/imageFromBlob";
-import { CommandIconButton } from "../commandIconButton";
+import { useWorkspacesStore } from "@/store";
+import { activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
+import { cn } from "@/utils/css";
+import { CommandIconButton } from "../commandIconButton";
+import { IconButton } from "../icons/iconButton";
+import { ImageFromBlob } from "../image/imageFromBlob";
+
 const translations = getTranslations();
 
 const LayerItem = (props: {
@@ -18,22 +19,19 @@ const LayerItem = (props: {
 }) => {
   const { layer, selected, onClick, setVisibility } = props;
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+    // biome-ignore lint/a11y/useKeyWithClickEvents: checked
+    // biome-ignore lint/a11y/noStaticElementInteractions: checked
     <div
       onClick={onClick}
       className={cn(
         "rounded-sm flex border-2 flex-row p-small gap-small items-center overflow-hidden min-h-16",
-        selected && "border-primary"
+        selected && "border-primary",
       )}
     >
       <IconButton
         type={layer.visible ? "visible" : "hidden"}
         size="small"
-        title={
-          layer.visible
-            ? translations.canvasActions.hideLayer
-            : translations.canvasActions.showLayer
-        }
+        title={layer.visible ? translations.canvasActions.hideLayer : translations.canvasActions.showLayer}
         onClick={(e) => {
           e.stopPropagation();
           setVisibility(!layer.visible);
@@ -55,20 +53,12 @@ const LayerItem = (props: {
 };
 
 export const LayersPanel = memo(() => {
-  const { layers, activeLayerIndex } = useWorkspacesStore(
-    activeWorkspaceCanvasDataSelector
-  );
+  const { layers, activeLayerIndex } = useWorkspacesStore(activeWorkspaceCanvasDataSelector);
   const activeLayerId = layers[activeLayerIndex].id;
   const canvasActionDispatcher = useCanvasActionDispatcher();
 
-  const sortedLayers = useMemo(
-    () => layers.slice().sort((a, b) => a.id.localeCompare(b.id)),
-    [layers]
-  );
-  const layersOrder = useMemo(
-    () => layers.map((layer) => layer.id).reverse(),
-    [layers]
-  );
+  const sortedLayers = useMemo(() => layers.slice().sort((a, b) => a.id.localeCompare(b.id)), [layers]);
+  const layersOrder = useMemo(() => layers.map((layer) => layer.id).reverse(), [layers]);
 
   return (
     <div className="flex flex-col size-full p-small gap-small">
@@ -76,32 +66,18 @@ export const LayersPanel = memo(() => {
         <div className="flex flex-row gap-small items-center">
           <CommandIconButton commandId="addLayer" />
           <CommandIconButton commandId="duplicateLayer" />
-          <CommandIconButton
-            disabled={activeLayerIndex === layers.length - 1}
-            commandId="moveLayerUp"
-          />
-          <CommandIconButton
-            disabled={activeLayerIndex === 0}
-            commandId="moveLayerDown"
-          />
-          <CommandIconButton
-            disabled={activeLayerIndex === 0}
-            commandId="mergeLayerDown"
-          />
+          <CommandIconButton disabled={activeLayerIndex === layers.length - 1} commandId="moveLayerUp" />
+          <CommandIconButton disabled={activeLayerIndex === 0} commandId="moveLayerDown" />
+          <CommandIconButton disabled={activeLayerIndex === 0} commandId="mergeLayerDown" />
         </div>
-        <CommandIconButton
-          disabled={layers.length === 1}
-          commandId="removeLayer"
-        />
+        <CommandIconButton disabled={layers.length === 1} commandId="removeLayer" />
       </div>
       <div className="flex flex-col gap-small overflow-auto relative flex-1">
         {sortedLayers.map((layer) => (
           <div
             className="absolute transition-transform duration-standard bg-background"
             style={{
-              transform: `translateY(${
-                layersOrder.indexOf(layer.id) * (76 + 6)
-              }px)`,
+              transform: `translateY(${layersOrder.indexOf(layer.id) * (76 + 6)}px)`,
               zIndex: activeLayerId === layer.id ? 1 : 0,
               width: "100%",
             }}
@@ -116,10 +92,7 @@ export const LayersPanel = memo(() => {
                 })
               }
               setVisibility={(visible) =>
-                canvasActionDispatcher.execute(
-                  visible ? "showLayer" : "hideLayer",
-                  { layerId: layer.id }
-                )
+                canvasActionDispatcher.execute(visible ? "showLayer" : "hideLayer", { layerId: layer.id })
               }
             />
           </div>
@@ -128,4 +101,3 @@ export const LayersPanel = memo(() => {
     </div>
   );
 });
-

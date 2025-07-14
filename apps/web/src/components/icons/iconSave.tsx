@@ -1,4 +1,4 @@
-import { type IconSize, Icon } from "./icon";
+import { Icon, type IconSize } from "./icon";
 import { IconButton } from "./iconButton";
 
 export const IconSave = (props: {
@@ -9,9 +9,7 @@ export const IconSave = (props: {
   disabled?: boolean;
 }) => {
   return (
-    <div
-      className={`relative flex items-center justify-center ${props.className}`}
-    >
+    <div className={`relative flex items-center justify-center ${props.className}`}>
       <Icon
         className={`absolute transition-all text-green-500 hover:text-green-500 ${
           props.saved ? "scale-100 rotate-0" : "scale-0 -rotate-90"
@@ -31,4 +29,3 @@ export const IconSave = (props: {
     </div>
   );
 };
-

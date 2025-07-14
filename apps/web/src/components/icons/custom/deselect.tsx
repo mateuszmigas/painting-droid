@@ -1,7 +1,4 @@
-export const Deselect = (props: {
-  size: string | number;
-  className?: string;
-}) => {
+export const Deselect = (props: { size: string | number; className?: string }) => {
   const { size, className } = props;
   return (
     <svg
@@ -33,4 +30,3 @@ export const Deselect = (props: {
     </svg>
   );
 };
-

@@ -1,8 +1,8 @@
+import { useMemo } from "react";
 import { modelDefinitions, textToImageModelTypes } from "@/models/definitions";
 import type { TextToImageModel } from "@/models/types/textToImageModel";
 import { useSettingsStore } from "@/store";
 import { getDefaultValues } from "@/utils/customFieldsSchema";
-import { useMemo } from "react";
 
 export type TextToImageModelInfo = {
   id: string;
@@ -19,14 +19,12 @@ export const useTextToImageModels = (): TextToImageModelInfo[] => {
       .filter((model) => textToImageModelTypes.includes(model.type))
       .map((model) => {
         const definition = modelDefinitions.find(
-          (modelDefinition) => modelDefinition.type === model.type
+          (modelDefinition) => modelDefinition.type === model.type,
         ) as TextToImageModel;
 
         return {
           id: model.id,
-          display: model.display.trim()
-            ? model.display
-            : definition.defaultName,
+          display: model.display.trim() ? model.display : definition.defaultName,
           definition,
           config: {
             ...getDefaultValues(definition.configSchema ?? {}),

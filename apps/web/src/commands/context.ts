@@ -1,12 +1,7 @@
 import type { CanvasActionDispatcher } from "@/canvas/canvasActionDispatcher";
 import type { DialogService } from "@/components/dialogHost";
 import type { NotificationService } from "@/contexts/notificationService";
-import type {
-  useWorkspacesStore,
-  useCommandPaletteStore,
-  useLayoutStore,
-  useToolStore,
-} from "@/store";
+import type { useCommandPaletteStore, useLayoutStore, useToolStore, useWorkspacesStore } from "@/store";
 
 export type CommandContext = {
   stores: {
@@ -19,4 +14,3 @@ export type CommandContext = {
   notificationService: NotificationService;
   canvasActionDispatcher: CanvasActionDispatcher;
 };
-

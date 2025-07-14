@@ -6,4 +6,3 @@ export const uuid = () => {
   }
   return nanoid();
 };
-

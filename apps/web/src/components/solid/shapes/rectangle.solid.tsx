@@ -21,10 +21,7 @@ export const Rectangle = (props: RectangleProps & { viewport: Viewport }) => {
       height={props.rectangle.height * props.viewport.zoom}
       fill={props.fillColor ? rgbaToRgbaString(props.fillColor) : undefined}
       stroke={props.stroke ? rgbaToRgbaString(props.stroke.color) : undefined}
-      stroke-width={
-        props.stroke ? props.stroke.width * props.viewport.zoom : undefined
-      }
+      stroke-width={props.stroke ? props.stroke.width * props.viewport.zoom : undefined}
     />
   );
 };
-

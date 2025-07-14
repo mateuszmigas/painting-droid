@@ -18,10 +18,7 @@ type CreateComputePipelineOptions = {
   code: string;
   resultBuffer: { binding: number; size: number };
 };
-export const createComputePipeline = async (
-  device: GPUDevice,
-  pipelineOptions: CreateComputePipelineOptions
-) => {
+export const createComputePipeline = async (device: GPUDevice, pipelineOptions: CreateComputePipelineOptions) => {
   const { name, code } = pipelineOptions;
   const module = device.createShaderModule({
     label: `${name} shader`,
@@ -41,15 +38,11 @@ export const createComputePipeline = async (
 
   const bindGroupEntries = new Map<GPUIndex32, GPUBindingResource>();
 
-  const run = async (runOptions?: {
-    workgroups?: { x: number; y: number; z: number };
-  }) => {
+  const run = async (runOptions?: { workgroups?: { x: number; y: number; z: number } }) => {
     const bindGroup = device.createBindGroup({
       label: `${name} bind group`,
       layout: pipeline.getBindGroupLayout(0),
-      entries: Array.from(bindGroupEntries.entries()).map(
-        ([binding, resource]) => ({ binding, resource })
-      ),
+      entries: Array.from(bindGroupEntries.entries()).map(([binding, resource]) => ({ binding, resource })),
     });
     const encoder = device.createCommandEncoder({ label: `${name} encoder` });
     const pass = encoder.beginComputePass();
@@ -58,25 +51,17 @@ export const createComputePipeline = async (
     pass.dispatchWorkgroups(
       runOptions?.workgroups?.x ?? resultBuffer.size,
       runOptions?.workgroups?.y,
-      runOptions?.workgroups?.z
+      runOptions?.workgroups?.z,
     );
     pass.end();
 
-    const sourceBufferBinding = bindGroupEntries.get(
-      pipelineOptions.resultBuffer.binding
-    ) as GPUBufferBinding;
+    const sourceBufferBinding = bindGroupEntries.get(pipelineOptions.resultBuffer.binding) as GPUBufferBinding;
 
     if (!sourceBufferBinding) {
       throw Error("No source buffer found.");
     }
 
-    encoder.copyBufferToBuffer(
-      sourceBufferBinding.buffer,
-      0,
-      resultBuffer,
-      0,
-      resultBuffer.size
-    );
+    encoder.copyBufferToBuffer(sourceBufferBinding.buffer, 0, resultBuffer, 0, resultBuffer.size);
 
     const commandBuffer = encoder.finish();
     device.queue.submit([commandBuffer]);
@@ -88,17 +73,11 @@ export const createComputePipeline = async (
     return result;
   };
 
-  const setBuffer = (
-    binding: number,
-    buffer: ArrayBuffer,
-    type: "read" | "read-write" = "read"
-  ) => {
+  const setBuffer = (binding: number, buffer: ArrayBuffer, type: "read" | "read-write" = "read") => {
     const usage =
       type === "read"
         ? GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
-        : GPUBufferUsage.STORAGE |
-          GPUBufferUsage.COPY_SRC |
-          GPUBufferUsage.COPY_DST;
+        : GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST;
 
     const gpuBuffer = device.createBuffer({
       label: `${name} buffer(${binding})`,
@@ -121,4 +100,3 @@ export const createComputePipeline = async (
     dispose: destroy,
   };
 };
-

@@ -1,7 +1,7 @@
-import type { RgbaColor } from "@/utils/color";
-import { NativeColorPicker } from "./nativeColorPicker";
-import { CustomColorPicker } from "./customColorPicker";
 import { features } from "@/features";
+import type { RgbaColor } from "@/utils/color";
+import { CustomColorPicker } from "./customColorPicker";
+import { NativeColorPicker } from "./nativeColorPicker";
 
 export const ColorPicker = (props: {
   value: RgbaColor;
@@ -11,17 +11,8 @@ export const ColorPicker = (props: {
 }) => {
   const { value, onChange, title, className } = props;
   return features.nativeColorPicker ? (
-    <NativeColorPicker
-      value={value}
-      onChange={onChange}
-      className={className}
-    />
+    <NativeColorPicker value={value} onChange={onChange} className={className} />
   ) : (
-    <CustomColorPicker
-      value={value}
-      onChange={onChange}
-      title={title}
-      className={className}
-    />
+    <CustomColorPicker value={value} onChange={onChange} title={title} className={className} />
   );
 };

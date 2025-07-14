@@ -1,6 +1,6 @@
+import { getTranslations } from "@/translations";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
@@ -10,10 +10,7 @@ export const command = createCommand({
   icon: "x",
   config: { showInPalette: true },
   execute: async (context: CommandContext) => {
-    context.stores
-      .workspaces()
-      .clearWorkspace(context.stores.workspaces().activeWorkspaceId);
+    context.stores.workspaces().clearWorkspace(context.stores.workspaces().activeWorkspaceId);
     context.canvasActionDispatcher.clear();
   },
 });
-

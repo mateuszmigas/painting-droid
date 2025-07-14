@@ -1,7 +1,7 @@
 import { LabelObjectsDialog } from "@/components/dialogs/labelObjectsDialog";
+import { getTranslations } from "@/translations";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { getTranslations } from "@/translations";
 
 const translations = getTranslations();
 
@@ -14,4 +14,3 @@ export const command = createCommand({
     context.dialogService.openDialog(LabelObjectsDialog, {});
   },
 });
-

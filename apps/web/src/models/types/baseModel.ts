@@ -1,7 +1,4 @@
-import type {
-  CustomField,
-  CustomFieldsSchema,
-} from "@/utils/customFieldsSchema";
+import type { CustomField, CustomFieldsSchema } from "@/utils/customFieldsSchema";
 
 export type BaseModel = {
   type: string;
@@ -12,6 +9,4 @@ export type BaseModel = {
   configSchema?: Record<string, CustomField>;
 };
 
-export const createConfigSchema = <TConfigSchema extends CustomFieldsSchema>(
-  section: TConfigSchema
-) => section;
+export const createConfigSchema = <TConfigSchema extends CustomFieldsSchema>(section: TConfigSchema) => section;

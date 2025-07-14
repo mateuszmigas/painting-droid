@@ -8,8 +8,9 @@ const isCallback = (arg: unknown): arg is { __callbackId__: string } =>
 
 export const createProxyServer = (
   workerSelf: Window & typeof globalThis,
+  // biome-ignore lint/suspicious/noExplicitAny: checked
   api: Record<string, (...args: any[]) => Promise<unknown>>,
-  init?: () => Promise<unknown>
+  init?: () => Promise<unknown>,
 ) => {
   let isInitialized = false;
   workerSelf.addEventListener("message", async (message: MessageEvent) => {
@@ -48,9 +49,7 @@ export const createProxyClient = <T extends {}>(initWorker: () => Worker) => {
   const getWorker = () => {
     if (!_worker) {
       _worker = initWorker();
-      _worker.addEventListener("message", (event) =>
-        callbacks.forEach((callback) => callback(event))
-      );
+      _worker.addEventListener("message", (event) => callbacks.forEach((callback) => callback(event)));
     }
     return _worker;
   };
@@ -65,6 +64,7 @@ export const createProxyClient = <T extends {}>(initWorker: () => Worker) => {
   };
   const handler: ProxyHandler<typeof client> = {
     get(_, prop) {
+      // biome-ignore lint/suspicious/noPrototypeBuiltins: checked
       if (Object.prototype.hasOwnProperty.call(client, prop)) {
         return client[prop as keyof typeof client];
       }
@@ -76,8 +76,7 @@ export const createProxyClient = <T extends {}>(initWorker: () => Worker) => {
           if (isFunction(arg)) {
             const callbackId = uuid();
             const callback = (event: MessageEvent) => {
-              event.data.id === callbackId &&
-                arg(...((event.data as { result: unknown[] }).result as []));
+              event.data.id === callbackId && arg(...((event.data as { result: unknown[] }).result as []));
             };
             callbackIds.push(callbackId);
             callbacks.set(callbackId, callback);

@@ -1,3 +1,5 @@
+import { memo } from "react";
+import { Fragment } from "react/jsx-runtime";
 import {
   Menubar,
   MenubarContent,
@@ -10,15 +12,13 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { createMenuBarDefinition } from "./menuBarDefinition";
-import type { MenuItem } from "@/utils/menuItem";
-import { Fragment } from "react/jsx-runtime";
 import { useCommandService } from "@/contexts/commandService";
-import { memo } from "react";
 import { useWorkspacesStore } from "@/store";
-import { Icon } from "../icons/icon";
 import { keyGestureToString } from "@/utils/keyGesture";
+import type { MenuItem } from "@/utils/menuItem";
 import { handleMenuItemAction } from "@/utils/menuItemAction";
+import { Icon } from "../icons/icon";
+import { createMenuBarDefinition } from "./menuBarDefinition";
 
 const mapMenuItemToMenubar = (item: MenuItem) => {
   switch (item.type) {
@@ -46,11 +46,7 @@ const mapMenuItemToMenubar = (item: MenuItem) => {
         >
           {item.icon && <Icon type={item.icon} size="small" />}
           {item.label}
-          {item.keyGesture ? (
-            <MenubarShortcut>
-              {keyGestureToString(item.keyGesture)}
-            </MenubarShortcut>
-          ) : null}
+          {item.keyGesture ? <MenubarShortcut>{keyGestureToString(item.keyGesture)}</MenubarShortcut> : null}
         </MenubarItem>
       );
     case "separator":
@@ -95,4 +91,3 @@ export const CustomMenuBar = memo((props: { compact: boolean }) => {
     </Menubar>
   );
 });
-

@@ -1,14 +1,10 @@
 /* @jsxImportSource solid-js */
+
+import { createMemo, createRenderEffect, createSignal, onCleanup } from "solid-js";
 import { ColorProcessor } from "@/utils/colorProcessor";
 import type { BoundingBox, Color } from "@/utils/common";
 import { cn } from "@/utils/css";
 import type { Viewport } from "@/utils/manipulation";
-import {
-  createSignal,
-  onCleanup,
-  createMemo,
-  createRenderEffect,
-} from "solid-js";
 
 export type ImageRectangleProps = {
   boundingBox: BoundingBox;
@@ -16,9 +12,7 @@ export type ImageRectangleProps = {
   outlineColor?: Color;
 };
 
-export const ImageRectangle = (
-  props: ImageRectangleProps & { viewport: Viewport }
-) => {
+export const ImageRectangle = (props: ImageRectangleProps & { viewport: Viewport }) => {
   const [src, setSrc] = createSignal("");
   createRenderEffect(() => {
     if (!props.blob) {
@@ -36,11 +30,9 @@ export const ImageRectangle = (
     const isNegativeHeight = props.boundingBox.height < 0;
 
     return `translate(${
-      (props.boundingBox.x + (isNegativeWidth ? 0 : 0)) * props.viewport.zoom +
-      props.viewport.position.x
+      (props.boundingBox.x + (isNegativeWidth ? 0 : 0)) * props.viewport.zoom + props.viewport.position.x
     },${
-      (props.boundingBox.y + (isNegativeHeight ? 0 : 0)) * props.viewport.zoom +
-      props.viewport.position.y
+      (props.boundingBox.y + (isNegativeHeight ? 0 : 0)) * props.viewport.zoom + props.viewport.position.y
     }) scale(${isNegativeWidth ? -1 : 1},${isNegativeHeight ? -1 : 1})`;
   });
 
@@ -60,4 +52,3 @@ export const ImageRectangle = (
     />
   );
 };
-

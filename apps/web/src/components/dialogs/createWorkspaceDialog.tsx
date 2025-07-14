@@ -1,32 +1,22 @@
-import { Button } from "../ui/button";
-import {
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "../ui/dialog";
-import { memo } from "react";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Label } from "../ui/label";
-import { useState } from "react";
+import { memo, useState } from "react";
+import { defaultCanvasColor } from "@/constants";
+import { getTranslations } from "@/translations";
 import type { Color, Size } from "@/utils/common";
 import { scaleRectangleToFitParent } from "@/utils/geometry";
-import { ColorPicker } from "../color/colorPicker";
-import { defaultCanvasColor } from "@/constants";
-import { Input } from "../ui/input";
-import { getTranslations } from "@/translations";
 import { ColorButton } from "../color/colorButton";
+import { ColorPicker } from "../color/colorPicker";
+import { Button } from "../ui/button";
+import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 const translations = getTranslations();
 const dialogTranslations = translations.dialogs.createWorkspace;
 
 const parentSize = { width: 96, height: 64 };
 const calculateSvgRect = (width: number, height: number) => {
-  const { x, y, scale } = scaleRectangleToFitParent(
-    { x: 0, y: 0, width, height },
-    parentSize,
-    1
-  );
+  const { x, y, scale } = scaleRectangleToFitParent({ x: 0, y: 0, width, height }, parentSize, 1);
   return {
     x: `${x}`,
     y: `${y}`,
@@ -75,16 +65,12 @@ const sizes = [
 ];
 
 export const CreateWorkspaceDialog = memo(
-  (props: {
-    close: (result: { size: Size; name: string; color: Color | null }) => void;
-  }) => {
+  (props: { close: (result: { size: Size; name: string; color: Color | null }) => void }) => {
     const { close } = props;
     const [sizeKey, setSizeKey] = useState(sizes[0].key);
     const [name, setName] = useState("");
     const [color, setColor] = useState<Color>(defaultCanvasColor);
-    const [backgroundType, setBackgroundType] = useState<"none" | "solid">(
-      "solid"
-    );
+    const [backgroundType, setBackgroundType] = useState<"none" | "solid">("solid");
 
     return (
       <DialogContent>
@@ -103,11 +89,7 @@ export const CreateWorkspaceDialog = memo(
           <div className="flex flex-row gap-big">
             <div className="flex flex-col gap-form-field-big flex-1">
               <Label>{dialogTranslations.fields.name}</Label>
-              <Input
-                autoFocus
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+              <Input autoFocus value={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className="flex flex-col gap-form-field-big">
               <Label>{dialogTranslations.fields.background.name}</Label>
@@ -119,15 +101,11 @@ export const CreateWorkspaceDialog = memo(
                 >
                   <div className="flex items-center gap-small">
                     <RadioGroupItem value="none" id="radio-none" />
-                    <Label htmlFor="radio-none">
-                      {dialogTranslations.fields.background.options.none}
-                    </Label>
+                    <Label htmlFor="radio-none">{dialogTranslations.fields.background.options.none}</Label>
                   </div>
                   <div className="flex items-center gap-small">
                     <RadioGroupItem value="solid" id="radio-solid-color" />
-                    <Label htmlFor="radio-solid-color">
-                      {dialogTranslations.fields.background.options.solid}
-                    </Label>
+                    <Label htmlFor="radio-solid-color">{dialogTranslations.fields.background.options.solid}</Label>
                   </div>
                 </RadioGroup>
                 {backgroundType === "solid" ? (
@@ -148,18 +126,10 @@ export const CreateWorkspaceDialog = memo(
               </div>
             </div>
           </div>
-          <RadioGroup
-            value={sizeKey}
-            onValueChange={setSizeKey}
-            className="grid grid-cols-3 gap-big"
-          >
+          <RadioGroup value={sizeKey} onValueChange={setSizeKey} className="grid grid-cols-3 gap-big">
             {sizes.map((size) => (
               <div key={size.key}>
-                <RadioGroupItem
-                  value={size.key}
-                  id={size.key}
-                  className="peer sr-only"
-                />
+                <RadioGroupItem value={size.key} id={size.key} className="peer sr-only" />
                 <Label
                   htmlFor={size.key}
                   className="flex flex-col gap-small items-center justify-between rounded-md border-2 border-muted bg-popover p-medium hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
@@ -187,6 +157,5 @@ export const CreateWorkspaceDialog = memo(
         </form>
       </DialogContent>
     );
-  }
+  },
 );
-

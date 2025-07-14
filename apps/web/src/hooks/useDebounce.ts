@@ -1,6 +1,6 @@
 import { debounce } from "@/utils/function";
-import { useMountedRef } from "./useMountedRef";
 import { useStableCallback } from ".";
+import { useMountedRef } from "./useMountedRef";
 
 export const useDebounce = <T, A>(callback: (...args: A[]) => T, delay: number) => {
   const mounted = useMountedRef();

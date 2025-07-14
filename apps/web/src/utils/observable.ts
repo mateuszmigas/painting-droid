@@ -9,9 +9,7 @@ export class Observable<T> {
     this.listeners.push(listener);
 
     return () => {
-      this.listeners = this.listeners.filter(
-        (subscriber) => subscriber !== listener
-      );
+      this.listeners = this.listeners.filter((subscriber) => subscriber !== listener);
     };
   }
 
@@ -32,4 +30,3 @@ export class Observable<T> {
     this.listeners.forEach((observer) => observer(this.data));
   }
 }
-

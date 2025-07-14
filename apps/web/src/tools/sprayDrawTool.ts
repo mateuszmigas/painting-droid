@@ -1,20 +1,16 @@
-import {
-  type InferToolSettings,
-  createCanvasToolSettingsSchema,
-  type CanvasTool,
-  type CanvasToolEvent,
-  createCanvasToolMetadata,
-  type CanvasToolResult,
-} from "./canvasTool";
-import type {
-  CanvasBitmapContext,
-  CanvasVectorContext,
-  Position,
-} from "@/utils/common";
 import { getTranslations } from "@/translations";
 import { ColorProcessor } from "@/utils/colorProcessor";
+import type { CanvasBitmapContext, CanvasVectorContext, Position } from "@/utils/common";
 import { createFrameTicker, type FrameTicker } from "@/utils/frame";
 import { randomRange } from "@/utils/number";
+import {
+  type CanvasTool,
+  type CanvasToolEvent,
+  type CanvasToolResult,
+  createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
+  type InferToolSettings,
+} from "./canvasTool";
 
 const translations = getTranslations().tools.sprayDraw;
 
@@ -58,13 +54,12 @@ class SprayDrawTool implements CanvasTool<SprayDrawToolSettings> {
 
   constructor(
     private bitmapContext: CanvasBitmapContext,
-    private vectorContext: CanvasVectorContext
+    private vectorContext: CanvasVectorContext,
   ) {}
 
   configure(settings: SprayDrawToolSettings): void {
     const { range, density, color } = settings;
-    this.bitmapContext.fillStyle =
-      ColorProcessor.fromRgba(color).toRgbaString();
+    this.bitmapContext.fillStyle = ColorProcessor.fromRgba(color).toRgbaString();
     this.density = density;
     this.range = range;
   }
@@ -126,4 +121,3 @@ export const sprayDrawToolMetadata = createCanvasToolMetadata({
   settingsSchema,
   create: (context) => new SprayDrawTool(context.bitmap, context.vector),
 });
-

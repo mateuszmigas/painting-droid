@@ -1,5 +1,5 @@
-import { cn } from "@/utils/css";
 import { type AnchorHTMLAttributes, forwardRef } from "react";
+import { cn } from "@/utils/css";
 
 type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   children: React.ReactNode;
@@ -12,10 +12,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
     <a
       ref={ref}
       {...rest}
-      className={cn(
-        "text-primary underline-offset-4 hover:underline",
-        className
-      )}
+      className={cn("text-primary underline-offset-4 hover:underline", className)}
       href={href}
       target="_blank"
       rel="noreferrer"
@@ -24,4 +21,3 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => {
     </a>
   );
 });
-

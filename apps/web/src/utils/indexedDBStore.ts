@@ -7,31 +7,20 @@ type IndexedDBSchema<TStores extends Record<string, string>> = {
 type EventWithDb = { target: { result: IDBDatabase } };
 type EventWithCursor = { target: { result: IDBCursorWithValue } };
 
-export class IndexedDBStore<
-  TStores extends Record<string, string>,
-  TStoresKey = keyof TStores
-> {
+export class IndexedDBStore<TStores extends Record<string, string>, TStoresKey = keyof TStores> {
   private db!: IDBDatabase;
 
   constructor(private schema: IndexedDBSchema<TStores>) {}
 
-  async putValuesWithKeys<T>(
-    tableName: TStoresKey,
-    entries: { key: string; value: T }[]
-  ) {
+  async putValuesWithKeys<T>(tableName: TStoresKey, entries: { key: string; value: T }[]) {
     await this.lazyInit();
     return new Promise<void>((resolve, reject) => {
-      const transaction = this.db.transaction(
-        [tableName as string],
-        "readwrite"
-      );
+      const transaction = this.db.transaction([tableName as string], "readwrite");
       transaction.oncomplete = () => resolve();
       transaction.onerror = (event) => reject(event);
 
       entries.forEach((entry) => {
-        transaction
-          .objectStore(tableName as string)
-          .put(entry.value, entry.key);
+        transaction.objectStore(tableName as string).put(entry.value, entry.key);
       });
     });
   }
@@ -62,10 +51,7 @@ export class IndexedDBStore<
   async deleteAll(tableName: TStoresKey) {
     await this.lazyInit();
     return new Promise<void>((resolve, reject) => {
-      const transaction = this.db.transaction(
-        [tableName as string],
-        "readwrite"
-      );
+      const transaction = this.db.transaction([tableName as string], "readwrite");
       transaction.oncomplete = () => resolve();
       transaction.onerror = (event) => reject(event);
       transaction.objectStore(tableName as string).clear();
@@ -78,10 +64,7 @@ export class IndexedDBStore<
     }
 
     return new Promise<void>((resolve, reject) => {
-      const request = window.indexedDB.open(
-        this.schema.name,
-        this.schema.version
-      );
+      const request = window.indexedDB.open(this.schema.name, this.schema.version);
       request.onerror = () => {
         reject();
       };

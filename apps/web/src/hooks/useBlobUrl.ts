@@ -14,4 +14,3 @@ export const useBlobUrl = (blob: Blob | null | undefined) => {
 
   return src;
 };
-

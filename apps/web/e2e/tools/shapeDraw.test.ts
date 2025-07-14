@@ -1,15 +1,10 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { TestApp } from "../testApp";
-import {
-  mouseActionBetweenPoints,
-} from "../utils";
+import { mouseActionBetweenPoints } from "../utils";
 
 test.describe("shape draw", () => {
-  test.skip(
-    ({ browserName }) => browserName === "webkit",
-    "This test is disabled for WebKit"
-  );
-  
+  test.skip(({ browserName }) => browserName === "webkit", "This test is disabled for WebKit");
+
   test("draws ellipse shape", async ({ page }) => {
     const app = await TestApp.from(page);
     const box = await app.getLayerCanvasBoundingBox(0);
@@ -25,7 +20,7 @@ test.describe("shape draw", () => {
     await app.applySelectedShape();
     const buffer = await app.getLayerCanvasBuffer();
     await expect(buffer).toMatchSnapshot(["tool-shape-ellipse.png"], {
-      maxDiffPixelRatio: 0.01
+      maxDiffPixelRatio: 0.01,
     });
   });
 
@@ -43,8 +38,8 @@ test.describe("shape draw", () => {
     ]);
     await app.applySelectedShape();
     const buffer = await app.getLayerCanvasBuffer();
-    await expect(buffer).toMatchSnapshot(["tool-shape-rectangle.png"],{
-      maxDiffPixelRatio: 0.01
+    await expect(buffer).toMatchSnapshot(["tool-shape-rectangle.png"], {
+      maxDiffPixelRatio: 0.01,
     });
   });
 });

@@ -1,6 +1,6 @@
 export const readStream = async <T extends AllowSharedBufferSource>(
   stream: ReadableStream<T>,
-  callback: (chunk: T, done: boolean) => void
+  callback: (chunk: T, done: boolean) => void,
 ) => {
   const reader = stream.getReader();
   const processText = async (reader: ReadableStreamDefaultReader<T>) => {
@@ -18,4 +18,3 @@ export const readStream = async <T extends AllowSharedBufferSource>(
 
   return processText(reader);
 };
-

@@ -1,12 +1,10 @@
 import { environment } from "@/environment";
-import {
-  createTextToImageSection,
-  type TextToImageModel,
-} from "./types/textToImageModel";
-import { base64ToBlob } from "@/utils/image";
-import { apiClient } from "@/utils/api-client";
 import { getTranslations } from "@/translations";
+import { apiClient } from "@/utils/api-client";
+import { base64ToBlob } from "@/utils/image";
+import { createTextToImageSection, type TextToImageModel } from "./types/textToImageModel";
 import { handleHttpError } from "./utils";
+
 const translations = getTranslations().models;
 
 const textToImage = createTextToImageSection({

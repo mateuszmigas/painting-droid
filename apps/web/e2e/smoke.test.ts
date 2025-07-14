@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Smoke", () => {
   test("App has proper title", async ({ page }) => {
@@ -6,4 +6,3 @@ test.describe("Smoke", () => {
     await expect(page).toHaveTitle("Painting Droid");
   });
 });
-

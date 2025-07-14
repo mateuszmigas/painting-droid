@@ -1,15 +1,10 @@
-import {
-  createTextToImageSection,
-  type TextToImageModel,
-} from "./types/textToImageModel";
-import { base64ToBlob } from "@/utils/image";
-import { apiClient } from "@/utils/api-client";
-import { createApiKeyPlaceholder, handleHttpError } from "./utils";
 import { getTranslations } from "@/translations";
-import {
-  type ImageToImageModel,
-  createImageToImageSection,
-} from "./types/imageToImageModel";
+import { apiClient } from "@/utils/api-client";
+import { base64ToBlob } from "@/utils/image";
+import { createImageToImageSection, type ImageToImageModel } from "./types/imageToImageModel";
+import { createTextToImageSection, type TextToImageModel } from "./types/textToImageModel";
+import { createApiKeyPlaceholder, handleHttpError } from "./utils";
+
 const translations = getTranslations().models;
 
 const imageToImage = createImageToImageSection({
@@ -42,8 +37,7 @@ const imageToImage = createImageToImageSection({
   execute: async (modelId, prompt, image, options) => {
     const { steps, imageStrength } = options;
 
-    const url =
-      "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image";
+    const url = "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image";
 
     const formData = new FormData();
     formData.append("init_image", image.data);
@@ -114,8 +108,7 @@ const textToImage = createTextToImageSection({
   execute: async (modelId, prompt, options) => {
     const { size, steps } = options;
 
-    const url =
-      "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image";
+    const url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image";
 
     const body = {
       steps,

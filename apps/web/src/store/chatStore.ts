@@ -1,14 +1,12 @@
-import type { ChatMessage } from "@/types/chat";
 import { create, type StateCreator } from "zustand";
 import { getTranslations } from "@/translations";
+import type { ChatMessage } from "@/types/chat";
 
 type AppChatState = {
   messages: ChatMessage[];
 };
 
-const getDefaultMessages = (): ChatMessage[] => [
-  { type: "assistant", text: getTranslations().chat.welcomeMessage },
-];
+const getDefaultMessages = (): ChatMessage[] => [{ type: "assistant", text: getTranslations().chat.welcomeMessage }];
 const defaultState: AppChatState = {
   messages: getDefaultMessages(),
 };
@@ -22,8 +20,7 @@ type AppChatSlice = AppChatState & {
 
 export const chatStoreCreator: StateCreator<AppChatSlice> = (set) => ({
   ...defaultState,
-  addMessage: (message) =>
-    set((state) => ({ messages: [...state.messages, message] })),
+  addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
   updateLastMessage: (updater) =>
     set((state) => ({
       messages: [
@@ -39,4 +36,3 @@ export const chatStoreCreator: StateCreator<AppChatSlice> = (set) => ({
 });
 
 export const useChatStore = create<AppChatSlice>(chatStoreCreator);
-

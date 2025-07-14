@@ -17,4 +17,3 @@ export const BlobImage = (props: { blob?: Blob }) => {
 
   return <img class="absolute pixelated-canvas size-full" src={src()} alt="" />;
 };
-

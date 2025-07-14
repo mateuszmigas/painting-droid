@@ -1,16 +1,12 @@
-import { IconButton } from "../icons/iconButton";
-import { useToolStore } from "@/store";
 import { memo } from "react";
-import {
-  type CanvasToolId,
-  defaultCanvasToolsSettings,
-  canvasToolsMetadata,
-} from "@/tools";
-import type { IconType } from "../icons/icon";
 import { useCommandService } from "@/contexts/commandService";
-import { CommandIconButton } from "../commandIconButton";
-import { Separator } from "../ui/separator";
+import { useToolStore } from "@/store";
+import { type CanvasToolId, canvasToolsMetadata, defaultCanvasToolsSettings } from "@/tools";
 import { testIds } from "@/utils/testIds";
+import { CommandIconButton } from "../commandIconButton";
+import type { IconType } from "../icons/icon";
+import { IconButton } from "../icons/iconButton";
+import { Separator } from "../ui/separator";
 
 const tools: { id: CanvasToolId; icon: IconType; name: string }[] = (
   Object.keys(defaultCanvasToolsSettings) as CanvasToolId[]
@@ -50,10 +46,7 @@ export const ToolsPanel = memo(() => {
         <CommandIconButton size="medium" commandId="openTextToImageDialog" />
         <CommandIconButton size="medium" commandId="openImageToImageDialog" />
         <CommandIconButton size="medium" commandId="openLabelObjectsDialog" />
-        <CommandIconButton
-          size="medium"
-          commandId="openRemoveBackgroundDialog"
-        />
+        <CommandIconButton size="medium" commandId="openRemoveBackgroundDialog" />
         <CommandIconButton size="medium" commandId="openChatPopup" />
       </div>
     </div>

@@ -1,6 +1,6 @@
+import { useEffect, useMemo } from "react";
 import { type CommandId, commands, type ExecuteCommand } from "@/commands";
 import { eventToKeyGesture, keyGestureToString } from "@/utils/keyGesture";
-import { useEffect, useMemo } from "react";
 
 export const useGlobalKeyboardHandler = (executeCommand: ExecuteCommand) => {
   const commandByKeyGesture = useMemo(() => {
@@ -29,4 +29,3 @@ export const useGlobalKeyboardHandler = (executeCommand: ExecuteCommand) => {
     };
   }, [executeCommand, commandByKeyGesture]);
 };
-

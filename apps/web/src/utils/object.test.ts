@@ -8,4 +8,3 @@ describe("spreadOmitKeys", () => {
     expect(result).toEqual({ b: 2 });
   });
 });
-

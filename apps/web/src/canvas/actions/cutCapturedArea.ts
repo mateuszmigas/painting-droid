@@ -1,9 +1,9 @@
 import type { IconType } from "@/components/icons/icon";
-import type { CanvasAction } from "./action";
-import type { CanvasActionContext } from "./context";
 import { getTranslations } from "@/translations";
 import { ImageProcessor } from "@/utils/imageProcessor";
 import { spreadOmitKeys } from "@/utils/object";
+import type { CanvasAction } from "./action";
+import type { CanvasActionContext } from "./context";
 
 const translations = getTranslations();
 
@@ -12,7 +12,7 @@ export const createCanvasAction = async (
   payload: {
     display?: string;
     icon?: IconType;
-  }
+  },
 ): Promise<CanvasAction> => {
   const { display, icon } = payload;
   const state = context.getState();
@@ -54,9 +54,7 @@ export const createCanvasAction = async (
           }
           return layer;
         }),
-        shapes: spreadOmitKeys(state.shapes, [
-          capturedData.previousActiveShapeId,
-        ]),
+        shapes: spreadOmitKeys(state.shapes, [capturedData.previousActiveShapeId]),
         activeShapeId: null,
       };
     },
@@ -71,8 +69,7 @@ export const createCanvasAction = async (
         }),
         shapes: {
           ...state.shapes,
-          [capturedData.previousActiveShapeId]:
-            capturedData.previousActiveShape,
+          [capturedData.previousActiveShapeId]: capturedData.previousActiveShape,
         },
         activeShapeId: capturedData.previousActiveShapeId,
       };

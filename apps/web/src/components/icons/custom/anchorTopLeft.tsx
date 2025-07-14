@@ -1,7 +1,4 @@
-export const AnchorTopLeft = (props: {
-  size: string | number;
-  className?: string;
-}) => {
+export const AnchorTopLeft = (props: { size: string | number; className?: string }) => {
   const { size, className } = props;
   return (
     <svg
@@ -23,4 +20,3 @@ export const AnchorTopLeft = (props: {
     </svg>
   );
 };
-

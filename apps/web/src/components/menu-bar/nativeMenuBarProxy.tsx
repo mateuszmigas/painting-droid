@@ -1,28 +1,16 @@
-import { useCommandService } from "@/contexts/commandService";
-import { useWorkspacesStore } from "@/store";
-import { memo, useEffect } from "react";
-import { createMenuBarDefinition } from "./menuBarDefinition";
 import {
   Menu as NativeMenu,
   MenuItem as NativeMenuItem,
-  Submenu as NativeSubmenu,
   PredefinedMenuItem as NativePredefinedMenuItem,
+  Submenu as NativeSubmenu,
 } from "@tauri-apps/api/menu";
-import type { MenuItem } from "@/utils/menuItem";
+import { memo, useEffect } from "react";
+import { useCommandService } from "@/contexts/commandService";
+import { useWorkspacesStore } from "@/store";
 import { keyGestureToAccelerator } from "@/utils/keyGesture";
+import type { MenuItem } from "@/utils/menuItem";
 import { handleMenuItemAction } from "@/utils/menuItemAction";
-
-const getAllMenuItemsIds = (items: MenuItem[]): string[] => {
-  return items.flatMap((item) => {
-    if (item.type === "leaf") {
-      return item.id ? [item.id] : [];
-    }
-    if ("items" in item) {
-      return getAllMenuItemsIds(item.items);
-    }
-    return [];
-  });
-};
+import { createMenuBarDefinition } from "./menuBarDefinition";
 
 const mapMenuItemToNative = async (item: MenuItem) => {
   switch (item.type) {
@@ -37,9 +25,7 @@ const mapMenuItemToNative = async (item: MenuItem) => {
     case "leaf": {
       return NativeMenuItem.new({
         text: item.label,
-        accelerator: item.keyGesture
-          ? keyGestureToAccelerator(item.keyGesture)
-          : undefined,
+        accelerator: item.keyGesture ? keyGestureToAccelerator(item.keyGesture) : undefined,
         enabled: !item.disabled,
         action: () => handleMenuItemAction(item.action),
       });
@@ -74,4 +60,3 @@ export const NativeMenuBarProxy = memo(() => {
 
   return null;
 });
-

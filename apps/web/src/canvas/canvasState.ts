@@ -76,10 +76,7 @@ export const createDefaultLayer = (): CanvasLayer => ({
   data: null,
 });
 
-export const createDefaultCanvasState = (
-  size: Size,
-  baseColor?: RgbaColor | null
-): CanvasState => ({
+export const createDefaultCanvasState = (size: Size, baseColor?: RgbaColor | null): CanvasState => ({
   activeLayerIndex: 0,
   layers: [createDefaultLayer()],
   shapes: {},
@@ -87,4 +84,3 @@ export const createDefaultCanvasState = (
   size,
   baseColor: baseColor !== undefined ? baseColor : defaultCanvasColor,
 });
-

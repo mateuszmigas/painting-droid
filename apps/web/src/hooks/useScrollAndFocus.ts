@@ -1,9 +1,6 @@
 import { type RefObject, useEffect } from "react";
 
-export const useScrollAndFocus = (
-  focus: boolean,
-  inputRef: RefObject<HTMLElement>
-) => {
+export const useScrollAndFocus = (focus: boolean, inputRef: RefObject<HTMLElement>) => {
   useEffect(() => {
     const input = inputRef.current;
     if (input && focus) {
@@ -17,4 +14,3 @@ export const useScrollAndFocus = (
     }
   }, [focus, inputRef]);
 };
-

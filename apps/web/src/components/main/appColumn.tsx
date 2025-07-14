@@ -1,13 +1,9 @@
-import { ResizablePanel } from "@/components/ui/resizable";
 import { memo, useEffect, useRef } from "react";
 import type { ImperativePanelHandle } from "react-resizable-panels";
+import { ResizablePanel } from "@/components/ui/resizable";
 
 export const AppColumn = memo(
-  (props: {
-    size: number;
-    onResize: (size: number) => void;
-    children: React.ReactNode;
-  }) => {
+  (props: { size: number; onResize: (size: number) => void; children: React.ReactNode }) => {
     const { size, onResize, children } = props;
     const ref = useRef<ImperativePanelHandle>(null);
 
@@ -20,6 +16,5 @@ export const AppColumn = memo(
         {children}
       </ResizablePanel>
     );
-  }
+  },
 );
-

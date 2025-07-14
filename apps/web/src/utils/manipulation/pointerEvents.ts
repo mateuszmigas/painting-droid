@@ -6,7 +6,7 @@ export const subscribeToPointerEvents = (
   onPointerDown: (position: Position) => void,
   onPointerMove: (position: Position) => void,
   onPointerUp: (position: Position) => void,
-  onPointerLeave: () => void
+  onPointerLeave: () => void,
 ) => {
   if (isMobile()) {
     const offset = { x: 0, y: 0 };
@@ -83,4 +83,3 @@ export const subscribeToPointerEvents = (
     document.removeEventListener("pointerup", pointerUp);
   };
 };
-

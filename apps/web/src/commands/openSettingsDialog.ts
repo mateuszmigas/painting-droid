@@ -1,7 +1,7 @@
+import { SettingsDialog } from "@/components/dialogs/settings-dialog/settingsDialog";
+import { getTranslations } from "@/translations";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { getTranslations } from "@/translations";
-import { SettingsDialog } from "@/components/dialogs/settings-dialog/settingsDialog";
 
 const translations = getTranslations();
 
@@ -14,4 +14,3 @@ export const command = createCommand({
     await context.dialogService.openDialog(SettingsDialog, {});
   },
 });
-

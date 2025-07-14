@@ -14,26 +14,10 @@ export const Droid = memo((props: { typingDurationSeconds: number }) => {
       {/* head */}
       <path {...commonProps} d="M 50 100 A 50 50 0 0 1 150 100 L 50 100 Z" />
       {/* eye */}
-      <circle
-        {...commonProps}
-        className="glowing-eye"
-        fill={"red"}
-        cx="100"
-        cy="70"
-        r="10"
-      />
+      <circle {...commonProps} className="glowing-eye" fill={"red"} cx="100" cy="70" r="10" />
       {/* mouth */}
       <g transform="translate(80, 90)">
-        <rect
-          {...commonProps}
-          fill="hsl(var(--background))"
-          x="0"
-          y="0"
-          rx="2"
-          ry="2"
-          width="40"
-          height="10"
-        >
+        <rect {...commonProps} fill="hsl(var(--background))" x="0" y="0" rx="2" ry="2" width="40" height="10">
           <animate
             attributeName="height"
             from="0"
@@ -49,25 +33,9 @@ export const Droid = memo((props: { typingDurationSeconds: number }) => {
         </rect>
       </g>
       {/* torse */}
-      <rect
-        {...commonProps}
-        x="50"
-        y="110"
-        width="100"
-        height="100"
-        rx="5"
-        ry="5"
-      />
+      <rect {...commonProps} x="50" y="110" width="100" height="100" rx="5" ry="5" />
       {/* left arm */}
-      <rect
-        {...commonProps}
-        x="20"
-        y="120"
-        width="20"
-        height="60"
-        rx="5"
-        ry="5"
-      />
+      <rect {...commonProps} x="20" y="120" width="20" height="60" rx="5" ry="5" />
 
       <g {...commonProps} transform="translate(12, 195)" strokeWidth="4">
         <g transform="rotate(-45)">
@@ -76,15 +44,7 @@ export const Droid = memo((props: { typingDurationSeconds: number }) => {
         </g>
       </g>
       {/* right arm */}
-      <rect
-        {...commonProps}
-        x="160"
-        y="120"
-        width="20"
-        height="60"
-        rx="5"
-        ry="5"
-      />
+      <rect {...commonProps} x="160" y="120" width="20" height="60" rx="5" ry="5" />
       <g {...commonProps} transform="translate(182, 205)">
         <g transform="rotate(180)">
           <path d="M10 2v2" />
@@ -94,26 +54,9 @@ export const Droid = memo((props: { typingDurationSeconds: number }) => {
         </g>
       </g>
       {/* left leg */}
-      <rect
-        {...commonProps}
-        x="65"
-        y="220"
-        width="20"
-        height="40"
-        rx="5"
-        ry="5"
-      />
+      <rect {...commonProps} x="65" y="220" width="20" height="40" rx="5" ry="5" />
       {/* right leg */}
-      <rect
-        {...commonProps}
-        x="115"
-        y="220"
-        width="20"
-        height="40"
-        rx="5"
-        ry="5"
-      />
+      <rect {...commonProps} x="115" y="220" width="20" height="40" rx="5" ry="5" />
     </svg>
   );
 });
-

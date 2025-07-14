@@ -49,14 +49,16 @@ export type CustomField = {
 
 export type CustomFieldsSchema = Record<string, CustomField>;
 
-export type CustomFieldsSchemaAsValues<T extends Record<string, CustomField>> =
-  {
-    [K in keyof T]: T[K]["defaultValue"];
-  };
+export type CustomFieldsSchemaAsValues<T extends Record<string, CustomField>> = {
+  [K in keyof T]: T[K]["defaultValue"];
+};
 
 export const getDefaultValues = (schema: Record<string, CustomField>) => {
-  return Object.entries(schema).reduce((acc, [key, value]) => {
-    acc[key] = value.defaultValue;
-    return acc;
-  }, {} as Record<string, unknown>);
+  return Object.entries(schema).reduce(
+    (acc, [key, value]) => {
+      acc[key] = value.defaultValue;
+      return acc;
+    },
+    {} as Record<string, unknown>,
+  );
 };

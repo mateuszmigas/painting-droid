@@ -10,4 +10,3 @@ describe("randomRange", () => {
     expect(result).toBeLessThanOrEqual(max);
   });
 });
-

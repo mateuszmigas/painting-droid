@@ -7,10 +7,7 @@ export type ImageOffsetType = {
   bottom: number;
 };
 
-export const ImageOffset = (props: {
-  offset: ImageOffsetType;
-  onChange: (offset: ImageOffsetType) => void;
-}) => {
+export const ImageOffset = (props: { offset: ImageOffsetType; onChange: (offset: ImageOffsetType) => void }) => {
   const { offset, onChange } = props;
   const createCellProps = (type: keyof ImageOffsetType) => {
     return {
@@ -41,4 +38,3 @@ export const ImageOffset = (props: {
     </div>
   );
 };
-

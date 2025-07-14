@@ -1,17 +1,11 @@
-import {
-  createObjectDetectionSection,
-  type ObjectDetectionModel,
-} from "./types/objectDetectionModel";
-import { transformerJsClient } from "./providers/local/transformerJsClient";
 import { sortBySelector } from "@/utils/array";
+import { transformerJsClient } from "./providers/local/transformerJsClient";
+import { createObjectDetectionSection, type ObjectDetectionModel } from "./types/objectDetectionModel";
 
 const detectObjects = createObjectDetectionSection({
   optionsSchema: {},
   execute: async (imageData, onProgress) => {
-    const result = await transformerJsClient.detectObjects(
-      imageData,
-      onProgress
-    );
+    const result = await transformerJsClient.detectObjects(imageData, onProgress);
     return sortBySelector(result, (item) => item.score, false).map((item) => ({
       label: item.label,
       score: item.score,

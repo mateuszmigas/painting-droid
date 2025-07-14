@@ -7,19 +7,12 @@ const getAtPosition = (image: ImageUncompressed, position: Position) => {
   return !!data[position.y * width + position.x];
 };
 
-const setAtPosition = (
-  image: ImageUncompressed,
-  position: Position,
-  value: boolean
-) => {
+const setAtPosition = (image: ImageUncompressed, position: Position, value: boolean) => {
   const { width, data } = image;
   data[position.y * width + position.x] = value ? 1 : 0;
 };
 
-export const getPixelColor = (
-  position: Position,
-  imageData: ImageUncompressed
-) => {
+export const getPixelColor = (position: Position, imageData: ImageUncompressed) => {
   const { x, y } = position;
   const index = (y * imageData.width + x) * 4;
   return {
@@ -34,7 +27,7 @@ export const floodFill = (
   imageData: ImageUncompressed,
   position: Position,
   fillColor: RgbaColor,
-  shouldFill: (targetColor: RgbaColor, originColor: RgbaColor) => boolean
+  shouldFill: (targetColor: RgbaColor, originColor: RgbaColor) => boolean,
 ) => {
   const originColor = getPixelColor(position, imageData);
 
@@ -42,9 +35,7 @@ export const floodFill = (
     return imageData;
   }
 
-  const fillMask = generateFillMask(imageData, position, (color) =>
-    shouldFill(color, originColor)
-  );
+  const fillMask = generateFillMask(imageData, position, (color) => shouldFill(color, originColor));
 
   if (!fillMask) {
     return imageData;
@@ -68,7 +59,7 @@ export const floodFill = (
 export const selectMask = (
   imageData: ImageUncompressed,
   position: Position,
-  shouldFill: (color: RgbaColor) => boolean
+  shouldFill: (color: RgbaColor) => boolean,
 ): ImageMask | null => {
   return generateFillMask(imageData, position, shouldFill);
 };
@@ -77,7 +68,7 @@ export const selectMask = (
 const generateFillMask = (
   imageData: ImageUncompressed,
   position: Position,
-  shouldFill: (color: RgbaColor) => boolean
+  shouldFill: (color: RgbaColor) => boolean,
 ): ImageMask | null => {
   const { width, height } = imageData;
 
@@ -88,12 +79,7 @@ const generateFillMask = (
   };
 
   const shouldBeFilled = (position: { x: number; y: number }) => {
-    if (
-      position.x >= 0 &&
-      position.x < width &&
-      position.y >= 0 &&
-      position.y < height
-    ) {
+    if (position.x >= 0 && position.x < width && position.y >= 0 && position.y < height) {
       if (getAtPosition(filled, position)) {
         return false;
       }
@@ -135,4 +121,3 @@ const generateFillMask = (
 
   return filled;
 };
-

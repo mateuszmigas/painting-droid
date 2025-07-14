@@ -1,14 +1,8 @@
-import { createProxyServer } from "@/utils/worker";
-import type { ImageCompressed, ImageCompressedData } from "@/utils/imageData";
-import {
-  AutoModel,
-  AutoProcessor,
-  RawImage,
-  pipeline,
-  env,
-} from "@xenova/transformers";
+import { AutoModel, AutoProcessor, env, pipeline, RawImage } from "@xenova/transformers";
 import { sizeToString } from "@/utils/format";
+import type { ImageCompressed, ImageCompressedData } from "@/utils/imageData";
 import { ImageProcessor } from "@/utils/imageProcessor";
+import { createProxyServer } from "@/utils/worker";
 
 env.allowLocalModels = false;
 env.useBrowserCache = true;
@@ -19,9 +13,7 @@ type LoadingProgressValue = {
   progress: number;
 };
 
-const createLazyPipeline = <T>(
-  factory: (onLoading?: (value: LoadingProgressValue) => void) => Promise<T>
-) => {
+const createLazyPipeline = <T>(factory: (onLoading?: (value: LoadingProgressValue) => void) => Promise<T>) => {
   let pipeline: T | null = null;
   return {
     getPipeline: async (onLoading?: (value: LoadingProgressValue) => void) => {
@@ -33,22 +25,17 @@ const createLazyPipeline = <T>(
   };
 };
 
-const objectDetectionPipeline = createLazyPipeline(
-  (onLoading?: (value: LoadingProgressValue) => void) =>
-    pipeline("object-detection", "Xenova/detr-resnet-50", {
-      quantized: false,
-      progress_callback: onLoading,
-    })
+const objectDetectionPipeline = createLazyPipeline((onLoading?: (value: LoadingProgressValue) => void) =>
+  pipeline("object-detection", "Xenova/detr-resnet-50", {
+    quantized: false,
+    progress_callback: onLoading,
+  }),
 );
 
 const transformerJsServer = {
-  removeBackground: async (
-    imageCompressed: ImageCompressed
-  ): Promise<ImageCompressedData> => {
+  removeBackground: async (imageCompressed: ImageCompressed): Promise<ImageCompressedData> => {
     const size = { width: 1024, height: 1024 };
-    const needsResize =
-      imageCompressed.width !== size.width ||
-      imageCompressed.height !== size.height;
+    const needsResize = imageCompressed.width !== size.width || imageCompressed.height !== size.height;
     const name = "briaai/RMBG-1.4";
     const model = await AutoModel.from_pretrained(name, {
       config: { model_type: "custom" },
@@ -68,9 +55,7 @@ const transformerJsServer = {
       },
     });
 
-    let imageProcessor = ImageProcessor.fromCompressedData(
-      imageCompressed.data
-    );
+    let imageProcessor = ImageProcessor.fromCompressedData(imageCompressed.data);
 
     // Resize image to model input size
     if (needsResize) {
@@ -79,12 +64,7 @@ const transformerJsServer = {
 
     const imageData = await imageProcessor.toImageData();
 
-    const inputRawImage = new RawImage(
-      imageData.data,
-      imageData.width,
-      imageData.height,
-      4
-    );
+    const inputRawImage = new RawImage(imageData.data, imageData.width, imageData.height, 4);
     const outputRawImage = inputRawImage.clone();
 
     const { pixel_values } = await processor(inputRawImage);
@@ -97,11 +77,7 @@ const transformerJsServer = {
     }
 
     imageProcessor = ImageProcessor.fromImageData(
-      new ImageData(
-        new Uint8ClampedArray(outputRawImage.data),
-        outputRawImage.width,
-        outputRawImage.height
-      )
+      new ImageData(new Uint8ClampedArray(outputRawImage.data), outputRawImage.width, outputRawImage.height),
     );
 
     // Resize image back to original size
@@ -114,17 +90,11 @@ const transformerJsServer = {
 
     return imageProcessor.toCompressedData();
   },
-  detectObjects: async (
-    imageCompressed: ImageCompressed,
-    onProgress: (value: number, message: string) => void
-  ) => {
+  detectObjects: async (imageCompressed: ImageCompressed, onProgress: (value: number, message: string) => void) => {
     const dataUrl = URL.createObjectURL(imageCompressed.data);
     try {
       const pipeline = await objectDetectionPipeline.getPipeline((data) => {
-        onProgress(
-          data.progress,
-          `${sizeToString(data.loaded)} / ${sizeToString(data.total)}`
-        );
+        onProgress(data.progress, `${sizeToString(data.loaded)} / ${sizeToString(data.total)}`);
       });
       const result = await pipeline(dataUrl, {
         threshold: 0.9,
@@ -144,4 +114,3 @@ const transformerJsServer = {
 
 export type TransformerJsApi = typeof transformerJsServer;
 createProxyServer(self, transformerJsServer);
-

@@ -1,12 +1,10 @@
-import type { CanvasAction } from "./action";
-import type { CanvasActionContext } from "./context";
-import { createCanvasAction as clearActiveShape } from "./clearActiveShape";
-import { createCanvasAction as applyActiveShape } from "./applyActiveShape";
 import { areRectanglesEqual } from "@/utils/geometry";
+import type { CanvasAction } from "./action";
+import { createCanvasAction as applyActiveShape } from "./applyActiveShape";
+import { createCanvasAction as clearActiveShape } from "./clearActiveShape";
+import type { CanvasActionContext } from "./context";
 
-export const createCanvasAction = async (
-  context: CanvasActionContext
-): Promise<CanvasAction> => {
+export const createCanvasAction = async (context: CanvasActionContext): Promise<CanvasAction> => {
   const state = context.getState();
 
   if (!state.activeShapeId) {
@@ -16,9 +14,7 @@ export const createCanvasAction = async (
   const activeShape = state.shapes[state.activeShapeId];
 
   const shouldClear =
-    activeShape.capturedArea &&
-    areRectanglesEqual(activeShape.boundingBox, activeShape.capturedArea.box);
+    activeShape.capturedArea && areRectanglesEqual(activeShape.boundingBox, activeShape.capturedArea.box);
 
   return shouldClear ? clearActiveShape(context) : applyActiveShape(context);
 };
-

@@ -58,8 +58,5 @@ export const settingsStoreCreator: StateCreator<AppLayoutSlice> = (set) => ({
 });
 
 export const useLayoutStore = create<AppLayoutSlice>()(
-  persist(
-    settingsStoreCreator,
-    createSyncStorage({ version: 3, name: "layout" })
-  )
+  persist(settingsStoreCreator, createSyncStorage({ version: 3, name: "layout" })),
 );

@@ -2,12 +2,8 @@ import type { CanvasShape } from "@/canvas/canvasState";
 import type { CanvasVectorContext, Position } from "@/utils/common";
 import { arePointsClose } from "@/utils/geometry";
 import { fastRound } from "@/utils/math";
-import {
-  type TransformHandle,
-  pickHandle,
-  transform,
-} from "../utils/boundingBoxTransform";
 import { canvasShapeToShapes2d } from "@/utils/shapeConverter";
+import { pickHandle, type TransformHandle, transform } from "../utils/boundingBoxTransform";
 
 export class ShapeTransformTool {
   private startPosition: Position | null = null;
@@ -16,7 +12,7 @@ export class ShapeTransformTool {
 
   constructor(
     private vectorContext: CanvasVectorContext,
-    private getActiveShape: () => CanvasShape | null
+    private getActiveShape: () => CanvasShape | null,
   ) {}
 
   isTransforming() {
@@ -30,11 +26,7 @@ export class ShapeTransformTool {
       return false;
     }
 
-    this.transformHandle = pickHandle(
-      canvasPosition,
-      screenPosition,
-      activeShape.boundingBox
-    );
+    this.transformHandle = pickHandle(canvasPosition, screenPosition, activeShape.boundingBox);
 
     if (this.transformHandle) {
       this.startPosition = {
@@ -85,12 +77,7 @@ export class ShapeTransformTool {
 
     return {
       ...activeShape,
-      boundingBox: transform(
-        this.transformHandle!,
-        activeShape.boundingBox,
-        this.startPosition,
-        this.endPosition
-      ),
+      boundingBox: transform(this.transformHandle!, activeShape.boundingBox, this.startPosition, this.endPosition),
     };
   }
 
@@ -98,4 +85,3 @@ export class ShapeTransformTool {
     this.vectorContext.render("tool", canvasShapeToShapes2d(shape));
   };
 }
-

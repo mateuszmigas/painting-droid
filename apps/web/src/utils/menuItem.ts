@@ -1,6 +1,6 @@
+import type { IconType } from "@/components/icons/icon";
 import type { KeyGesture } from "@/utils/keyGesture";
 import type { MenuItemAction } from "./menuItemAction";
-import type { IconType } from "@/components/icons/icon";
 
 export type MenuItem =
   | {
@@ -21,4 +21,3 @@ export type MenuItem =
   | {
       type: "separator";
     };
-

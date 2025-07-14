@@ -1,42 +1,25 @@
+import { memo, useState } from "react";
+import { useBlobUrl, useCanvasActionDispatcher, useObjectDetectionModels } from "@/hooks";
 import type { ObjectDetectionResult } from "@/models/types/objectDetectionModel";
+import { useWorkspacesStore } from "@/store";
+import { activeWorkspaceActiveLayerSelector, activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
 import { getTranslations } from "@/translations";
 import type { ImageCompressedData } from "@/utils/imageData";
-import { memo, useState } from "react";
 import { Icon } from "../icons/icon";
+import { ImageFit } from "../image/imageFit";
 import { Button } from "../ui/button";
 import { DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { ImageFit } from "../image/imageFit";
 import { Label } from "../ui/label";
 import { Progress } from "../ui/progress";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { useWorkspacesStore } from "@/store";
-import {
-  activeWorkspaceActiveLayerSelector,
-  activeWorkspaceCanvasDataSelector,
-} from "@/store/workspacesStore";
-import {
-  useBlobUrl,
-  useCanvasActionDispatcher,
-  useObjectDetectionModels,
-} from "@/hooks";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const translations = getTranslations();
 
 export const SmartCropDialog = memo((props: { close: () => void }) => {
   const { close } = props;
 
-  const activeLayer = useWorkspacesStore((state) =>
-    activeWorkspaceActiveLayerSelector(state)
-  );
-  const size = useWorkspacesStore(
-    (state) => activeWorkspaceCanvasDataSelector(state).size
-  );
+  const activeLayer = useWorkspacesStore((state) => activeWorkspaceActiveLayerSelector(state));
+  const size = useWorkspacesStore((state) => activeWorkspaceCanvasDataSelector(state).size);
   const canvasActionDispatcher = useCanvasActionDispatcher();
   const models = useObjectDetectionModels();
 
@@ -46,20 +29,12 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [progressMessage, setProgressMessage] = useState<string | null>(null);
-  const [result, setResult] = useState<ObjectDetectionResult[] | null | string>(
-    null
-  );
-  const [selectedDetectionIndex, setSelectedDetectionIndex] = useState<
-    number | null
-  >(null);
+  const [result, setResult] = useState<ObjectDetectionResult[] | null | string>(null);
+  const [selectedDetectionIndex, setSelectedDetectionIndex] = useState<number | null>(null);
   const selectedCrop =
-    Array.isArray(result) && selectedDetectionIndex !== null
-      ? result[selectedDetectionIndex].box
-      : null;
+    Array.isArray(result) && selectedDetectionIndex !== null ? result[selectedDetectionIndex].box : null;
 
-  const [imageData, setImageData] = useState<ImageCompressedData | null>(
-    activeLayer.data
-  );
+  const [imageData, setImageData] = useState<ImageCompressedData | null>(activeLayer.data);
 
   const process = async () => {
     const originalImage = activeLayer.data;
@@ -73,9 +48,7 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
     setIsProcessing(true);
 
     try {
-      const { definition, config } = models.find(
-        (model) => model.id === selectedModelId
-      )!;
+      const { definition, config } = models.find((model) => model.id === selectedModelId)!;
 
       const result = await definition.detectObjects.execute(
         { data: activeLayer.data!, ...size },
@@ -84,12 +57,12 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
           progress && message && setProgressMessage(message);
         },
         {},
-        config
+        config,
       );
 
       setResult(result);
       setSelectedDetectionIndex(result.length > 0 ? 0 : null);
-    } catch (error) {
+    } catch {
       setResult(translations.errors.processingError);
       setSelectedDetectionIndex(null);
     } finally {
@@ -172,16 +145,14 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
               ) : result.length > 0 ? (
                 <Select
                   value={selectedDetectionIndex?.toString() ?? ""}
-                  onValueChange={(value) =>
-                    setSelectedDetectionIndex(Number(value))
-                  }
+                  onValueChange={(value) => setSelectedDetectionIndex(Number(value))}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {result.map((model, index) => (
-                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                      // biome-ignore lint/suspicious/noArrayIndexKey: checked
                       <SelectItem key={index} value={index.toString()}>
                         <div className="flex flex-row items-center gap-medium">
                           <div>{model.score.toFixed(2)}</div>
@@ -192,9 +163,7 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
                   </SelectContent>
                 </Select>
               ) : (
-                <div className="text-xs">
-                  {translations.models.labelObjects.result.noObjects}
-                </div>
+                <div className="text-xs">{translations.models.labelObjects.result.noObjects}</div>
               )}
             </div>
           ) : (
@@ -202,9 +171,7 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
               <div className="flex flex-col gap-medium flex-1">
                 <Label>{translations.general.loading}</Label>
                 <Progress value={progress} />
-                {progressMessage && (
-                  <div className="text-xs">{progressMessage}</div>
-                )}
+                {progressMessage && <div className="text-xs">{progressMessage}</div>}
               </div>
             )
           )}
@@ -212,24 +179,12 @@ export const SmartCropDialog = memo((props: { close: () => void }) => {
             <Button type="submit" variant="secondary" disabled={isProcessing}>
               {translations.general.process}
               {isProcessing ? (
-                <Icon
-                  className="ml-2 animate-spin"
-                  type="loader"
-                  size="small"
-                />
+                <Icon className="ml-2 animate-spin" type="loader" size="small" />
               ) : (
-                <Icon
-                  className="ml-2"
-                  type={result !== null ? "check" : "brain"}
-                  size="small"
-                />
+                <Icon className="ml-2" type={result !== null ? "check" : "brain"} size="small" />
               )}
             </Button>
-            <Button
-              type="button"
-              onClick={apply}
-              disabled={!(Array.isArray(result) && result.length > 0)}
-            >
+            <Button type="button" onClick={apply} disabled={!(Array.isArray(result) && result.length > 0)}>
               {translations.general.apply}
             </Button>
           </div>

@@ -2,6 +2,7 @@ import { Droid } from "@/components/droid";
 import { Typewriter } from "@/components/typewriter";
 import { useTypewriter } from "@/hooks";
 import { getTranslations } from "@/translations";
+
 const translations = getTranslations();
 
 const message = translations.dialogs.welcome.pages.welcome.message;
@@ -13,12 +14,7 @@ export const WelcomePage = () => {
       <div className="min-w-32">
         <Droid typingDurationSeconds={typeWriter.typingDurationSeconds} />
       </div>
-      <Typewriter
-        className="font-mono"
-        text={message}
-        typingDurationSeconds={typeWriter.typingDurationSeconds}
-      />
+      <Typewriter className="font-mono" text={message} typingDurationSeconds={typeWriter.typingDurationSeconds} />
     </div>
   );
 };
-

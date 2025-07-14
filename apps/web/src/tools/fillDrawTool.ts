@@ -1,15 +1,15 @@
+import { getTranslations } from "@/translations";
+import { areColorsClose, type RgbaColor } from "@/utils/color";
+import type { CanvasBitmapContext } from "@/utils/common";
+import { floodFill } from "@/utils/imageOperations";
 import {
-  type InferToolSettings,
-  createCanvasToolMetadata,
-  createCanvasToolSettingsSchema,
   type CanvasTool,
   type CanvasToolEvent,
   type CanvasToolResult,
+  createCanvasToolMetadata,
+  createCanvasToolSettingsSchema,
+  type InferToolSettings,
 } from "./canvasTool";
-import type { CanvasBitmapContext } from "@/utils/common";
-import { getTranslations } from "@/translations";
-import { type RgbaColor, areColorsClose } from "@/utils/color";
-import { floodFill } from "@/utils/imageOperations";
 
 const translations = getTranslations().tools.fillDraw;
 
@@ -51,15 +51,14 @@ export class FillDrawTool implements CanvasTool<FillDrawToolSettings> {
       0,
       0,
       this.bitmapContext.canvas.width,
-      this.bitmapContext.canvas.height
+      this.bitmapContext.canvas.height,
     );
 
     const filledData = floodFill(
       imageData,
       { x: ~~event.canvasPosition.x, y: ~~event.canvasPosition.y },
       this.fillColor!,
-      (targetColor, originColor) =>
-        areColorsClose(targetColor, originColor, this.tolerance)
+      (targetColor, originColor) => areColorsClose(targetColor, originColor, this.tolerance),
     );
 
     imageData.data.set(filledData.data);
@@ -81,4 +80,3 @@ export const fillDrawToolMetadata = createCanvasToolMetadata({
   settingsSchema,
   create: (context) => new FillDrawTool(context.bitmap),
 });
-

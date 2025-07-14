@@ -1,8 +1,9 @@
 import type { CanvasShape } from "@/canvas/canvasState";
-import type { BoundingBox, Shape2d } from "./common";
-import { generateGrips } from "./boundingBoxTransform";
-import { normalizeBoundingBox } from "./geometry";
 import { getTranslations } from "@/translations";
+import { generateGrips } from "./boundingBoxTransform";
+import type { BoundingBox, Shape2d } from "./common";
+import { normalizeBoundingBox } from "./geometry";
+
 const translations = getTranslations();
 
 const createGripsShapes = (boundingBox: BoundingBox): Shape2d[] =>
@@ -17,7 +18,7 @@ const createSelectionShape = (
   actions?: {
     display: string;
     callback: () => void;
-  }[]
+  }[],
 ): Shape2d => ({
   type: "selection-rectangle",
   rectangle: normalizeBoundingBox(boundingBox),
@@ -26,7 +27,7 @@ const createSelectionShape = (
 
 export const canvasShapeToShapes2d = (
   shape: CanvasShape,
-  actionHandlers?: { applyActiveShape: () => void }
+  actionHandlers?: { applyActiveShape: () => void },
 ): Shape2d[] => {
   const result: Shape2d[] = [];
 
@@ -35,8 +36,7 @@ export const canvasShapeToShapes2d = (
       type: "image-rectangle",
       boundingBox: shape.boundingBox,
       blob: shape.capturedArea.data,
-      outlineColor:
-        shape.type === "captured-area" ? shape.outlineColor : undefined,
+      outlineColor: shape.type === "captured-area" ? shape.outlineColor : undefined,
     });
   }
 
@@ -52,7 +52,7 @@ export const canvasShapeToShapes2d = (
           display: translations.general.apply,
           callback: () => actionHandlers!.applyActiveShape(),
         },
-      ])
+      ]),
     );
     result.push(...createGripsShapes(shape.boundingBox));
   }
@@ -81,4 +81,3 @@ export const canvasShapeToShapes2d = (
 
   return result;
 };
-

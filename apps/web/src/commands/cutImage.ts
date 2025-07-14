@@ -1,13 +1,9 @@
+import { activeLayerSelector, activeShapeSelector, activeWorkspaceCanvasDataSelector } from "@/store/workspacesStore";
+import { getTranslations } from "@/translations";
+import { clipboard } from "@/utils/clipboard";
 import { createSystemKeyGesture } from "@/utils/keyGesture";
 import type { CommandContext } from "./context";
 import { createCommand } from "./createCommand";
-import { getTranslations } from "@/translations";
-import {
-  activeLayerSelector,
-  activeShapeSelector,
-  activeWorkspaceCanvasDataSelector,
-} from "@/store/workspacesStore";
-import { clipboard } from "@/utils/clipboard";
 
 const translations = getTranslations();
 
@@ -18,9 +14,7 @@ export const command = createCommand({
   defaultKeyGesture: createSystemKeyGesture({ key: "X", ctrlOrCmd: true }),
   config: { showInPalette: true },
   execute: async (context: CommandContext) => {
-    const canvasData = activeWorkspaceCanvasDataSelector(
-      context.stores.workspaces()
-    );
+    const canvasData = activeWorkspaceCanvasDataSelector(context.stores.workspaces());
     const activeLayer = activeLayerSelector(canvasData);
     const activeShape = activeShapeSelector(canvasData);
 
@@ -36,4 +30,3 @@ export const command = createCommand({
     }
   },
 });
-

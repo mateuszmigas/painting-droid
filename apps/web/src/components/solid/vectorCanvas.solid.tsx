@@ -1,14 +1,11 @@
 /* @jsxImportSource solid-js */
 import * as Solid from "solid-js";
+import { TransitionGroup } from "solid-transition-group";
+import { domNames } from "@/constants";
 import type { Viewport } from "@/utils/manipulation";
 import { Shape, type Shape2d } from "./shapes/shape.solid";
-import { domNames } from "@/constants";
-import { TransitionGroup } from "solid-transition-group";
 
-export const VectorCanvas = (props: {
-  shapes?: Record<string, Shape2d[]>;
-  viewport: Viewport;
-}) => {
+export const VectorCanvas = (props: { shapes?: Record<string, Shape2d[]>; viewport: Viewport }) => {
   return (
     <Solid.Show when={props.shapes}>
       <svg id={domNames.svgHostId} class="absolute size-full">
@@ -24,9 +21,7 @@ export const VectorCanvas = (props: {
                 }}
               >
                 <Solid.Index each={shapes()}>
-                  {(shape) => (
-                    <Shape shape={shape()} viewport={props.viewport} />
-                  )}
+                  {(shape) => <Shape shape={shape()} viewport={props.viewport} />}
                 </Solid.Index>
               </TransitionGroup>
             </g>

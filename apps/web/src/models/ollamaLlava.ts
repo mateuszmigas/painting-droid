@@ -1,20 +1,19 @@
+import { features } from "@/features";
 import { getTranslations } from "@/translations";
-import { createConfigSchema } from "./types/baseModel";
-import { type ChatModel, createChatSection } from "./types/chatModel";
+import type { ChatAction, ChatActionKey } from "@/types/chat";
 import type { CustomFieldsSchemaAsValues } from "@/utils/customFieldsSchema";
 import { blobToBase64 } from "@/utils/image";
-import { handleHttpError } from "./utils";
-import { makeDeferred } from "@/utils/promise";
 import type { ImageCompressed } from "@/utils/imageData";
-import { features } from "@/features";
-import type { ChatAction, ChatActionKey } from "@/types/chat";
+import { makeDeferred } from "@/utils/promise";
+import { createConfigSchema } from "./types/baseModel";
+import { type ChatModel, createChatSection } from "./types/chatModel";
+import { handleHttpError } from "./utils";
+
 const translations = getTranslations().models;
 
 const imageModelSystemPrompt = "You are an assistant for a graphic program.";
 
-const createActionsSystemPrompt = (
-  actions: ChatAction[]
-) => `You are an assistant for a graphic program.
+const createActionsSystemPrompt = (actions: ChatAction[]) => `You are an assistant for a graphic program.
 Your task is to determine the image action in a prompt and return action keys as an array in JSON format.
 Example response: 
 { "actions": ["${actions[0].key}", "${actions[1].key}"] }
@@ -23,11 +22,7 @@ Return action keys from this list, nothing else:
 ${actions.map((a) => `key: ${a.key}, description: ${a.description}`).join("\n")}
 `;
 
-const fetchPromptResponse = async (
-  server: string,
-  prompt: string,
-  image: ImageCompressed | null
-) => {
+const fetchPromptResponse = async (server: string, prompt: string, image: ImageCompressed | null) => {
   const images = image ? [await blobToBase64(image.data)] : [];
   return fetch(server, {
     method: "POST",
@@ -40,11 +35,7 @@ const fetchPromptResponse = async (
     }),
   });
 };
-const fetchActionsResponse = (
-  server: string,
-  prompt: string,
-  actions: ChatAction[]
-) => {
+const fetchActionsResponse = (server: string, prompt: string, actions: ChatAction[]) => {
   return fetch(server, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -77,9 +68,7 @@ type ChatResponseChunk = {
 const chat = createChatSection({
   optionsSchema: {},
   execute: async (_modelId, prompt, image, actions, _options, config) => {
-    const { server } = config as CustomFieldsSchemaAsValues<
-      typeof configSchema
-    >;
+    const { server } = config as CustomFieldsSchemaAsValues<typeof configSchema>;
     const response = await fetchPromptResponse(server, prompt, image);
     handleHttpError(response.status);
 
@@ -94,11 +83,7 @@ const chat = createChatSection({
         const response = await fetchActionsResponse(server, prompt, actions);
         const body = await response.json();
         const result = JSON.parse(body.response);
-        const sanitizedResult = Array.isArray(result)
-          ? result
-          : "actions" in result
-          ? result.actions
-          : [];
+        const sanitizedResult = Array.isArray(result) ? result : "actions" in result ? result.actions : [];
         deferred.resolve(sanitizedResult);
       } catch {
         // there is high probability that model returns random stuff but we don't care much,
@@ -119,9 +104,7 @@ const chat = createChatSection({
       },
     });
 
-    const stream = response.body
-      .pipeThrough(new TextDecoderStream())
-      .pipeThrough(transformStream);
+    const stream = response.body.pipeThrough(new TextDecoderStream()).pipeThrough(transformStream);
 
     return { stream, getActions: () => deferred.promise };
   },
@@ -135,4 +118,3 @@ export const model = {
   configSchema,
   chat,
 } as const satisfies ChatModel;
-
