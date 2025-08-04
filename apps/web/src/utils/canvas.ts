@@ -1,3 +1,4 @@
+import { ensureArrayBuffer } from "./byteArray";
 import type { BoundingBox, CanvasBitmapContext } from "./common";
 import type { ImageCompressedData, ImageUncompressed } from "./imageData";
 
@@ -30,7 +31,15 @@ export const restoreContextFromCompressed = async (context: CanvasBitmapContext,
 };
 
 export const restoreContextFromUncompressed = (context: CanvasBitmapContext, uncompressed: ImageUncompressed) => {
-  context.putImageData(new ImageData(uncompressed.data, uncompressed.width, uncompressed.height), 0, 0);
+  context.putImageData(
+    new ImageData(
+      new Uint8ClampedArray(ensureArrayBuffer(uncompressed.data.buffer)),
+      uncompressed.width,
+      uncompressed.height,
+    ),
+    0,
+    0,
+  );
 };
 
 export const drawTransformedImage = (

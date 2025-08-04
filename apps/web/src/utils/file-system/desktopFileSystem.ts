@@ -1,6 +1,7 @@
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { readFile, readTextFile, writeFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { getTranslations } from "@/translations";
+import { ensureArrayBuffer } from "../byteArray";
 import type { FilePath } from "../common";
 import { splitNameAndExtension } from "../path";
 import type { PlatformFileSystem } from "./platformFileSystem";
@@ -9,13 +10,13 @@ const translations = getTranslations();
 
 const bytesToBase64 = (buffer: Uint8Array) => {
   return new Promise<string>((resolve) => {
-    const blob = new Blob([buffer], {
+    const blob = new Blob([new Uint8Array(ensureArrayBuffer(buffer.buffer))], {
       type: "application/octet-binary",
     });
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
-      resolve(dataUrl.substr(dataUrl.indexOf(",") + 1));
+      resolve(dataUrl.substring(dataUrl.indexOf(",") + 1));
     };
     reader.readAsDataURL(blob);
   });
@@ -62,7 +63,7 @@ const saveBlobToFile = async (blob: Blob, filename: string, extension: string) =
     return;
   }
   const arrayBuffer = await blob.arrayBuffer();
-  return writeFile(path, new Uint8Array(arrayBuffer));
+  return writeFile(path, new Uint8Array(arrayBuffer) as Uint8Array);
 };
 
 export const desktopFileSystem: PlatformFileSystem = {
