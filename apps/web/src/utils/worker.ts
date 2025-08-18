@@ -49,7 +49,11 @@ export const createProxyClient = <T extends {}>(initWorker: () => Worker) => {
   const getWorker = () => {
     if (!_worker) {
       _worker = initWorker();
-      _worker.addEventListener("message", (event) => callbacks.forEach((callback) => callback(event)));
+      _worker.addEventListener("message", (event) => {
+        for (const callback of callbacks.values()) {
+          callback(event);
+        }
+      });
     }
     return _worker;
   };
@@ -90,7 +94,9 @@ export const createProxyClient = <T extends {}>(initWorker: () => Worker) => {
           const callback = (event: MessageEvent) => {
             if (event.data.id === id) {
               callbacks.delete(id);
-              callbackIds.forEach((callbackId) => callbacks.delete(callbackId));
+              for (const callbackId of callbackIds) {
+                callbacks.delete(callbackId);
+              }
               resolve(event.data.result);
             }
           };

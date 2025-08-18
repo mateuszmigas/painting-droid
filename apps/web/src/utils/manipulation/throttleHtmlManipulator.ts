@@ -27,7 +27,9 @@ export class ThrottleHtmlManipulator {
   dispose() {
     this.resizeObserver.unobserve(this.element);
     this.resizeObserver.disconnect();
-    this.eventListeners.forEach((_, key) => this.element.removeEventListener(key, this.onEventTriggered));
+    for (const [key, _] of this.eventListeners) {
+      this.element.removeEventListener(key, this.onEventTriggered);
+    }
 
     cancelAnimationFrame(this.animationFrameHandle);
   }
