@@ -1,4 +1,6 @@
 /** biome-ignore-all lint/suspicious/noDuplicateProperties: checked */
+/** biome-ignore-all lint/suspicious/noUnknownAtRules: checked */
+
 @import "tailwindcss";
 
 @plugin 'tailwindcss-animate';
@@ -174,18 +176,22 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--color-border);
   }
   body {
-    @apply bg-background text-foreground;
-    @apply size-full;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    width: 100%;
+    height: 100%;
   }
   html {
-    @apply size-full;
+    width: 100%;
+    height: 100%;
     touch-action: none;
   }
   #root {
-    @apply size-full;
+    width: 100%;
+    height: 100%;
   }
   .pixelated-canvas {
     image-rendering: -moz-crisp-edges; /* Firefox */
@@ -212,10 +218,11 @@
   }
   input[type="color"]::-webkit-color-swatch {
     border: 1px solid hsl(var(--input));
-    @apply rounded-md;
+    border-radius: 0.375rem;
   }
 
   .remove-table-child > div {
+    /* biome-ignore lint/complexity/noImportantStyles: checked */
     display: block !important;
   }
 

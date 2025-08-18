@@ -100,10 +100,12 @@ export const CreateWorkspaceDialog = memo(
                   className="h-input-thick flex gap-big"
                 >
                   <div className="flex items-center gap-small">
+                    {/** biome-ignore lint/correctness/useUniqueElementIds: checked */}
                     <RadioGroupItem value="none" id="radio-none" />
                     <Label htmlFor="radio-none">{dialogTranslations.fields.background.options.none}</Label>
                   </div>
                   <div className="flex items-center gap-small">
+                    {/** biome-ignore lint/correctness/useUniqueElementIds: checked */}
                     <RadioGroupItem value="solid" id="radio-solid-color" />
                     <Label htmlFor="radio-solid-color">{dialogTranslations.fields.background.options.solid}</Label>
                   </div>

@@ -25,7 +25,9 @@ const restoreLayers = async (contextStack: CanvasBitmapContext[], layers: Canvas
     }
   }
 
-  canvasOperations.forEach((operation) => operation());
+  for (const operation of canvasOperations) {
+    operation();
+  }
 };
 
 export const useSyncCanvasWithLayers = (

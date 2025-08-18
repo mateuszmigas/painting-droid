@@ -27,6 +27,8 @@ export class Observable<T> {
   }
 
   notify() {
-    this.listeners.forEach((observer) => observer(this.data));
+    for (const observer of this.listeners) {
+      observer(this.data);
+    }
   }
 }
