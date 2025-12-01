@@ -34,8 +34,8 @@
     "@radix-ui/react-slider": "^1.3.6",
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tabs": "^1.1.13",
-    "@tauri-apps/api": "2.9.0",
-    "@tauri-apps/cli": "2.9.4",
+    "@tauri-apps/api": "2.9.1",
+    "@tauri-apps/cli": "2.9.5",
     "@tauri-apps/plugin-clipboard-manager": "2.3.2",
     "@tauri-apps/plugin-dialog": "2.4.2",
     "@tauri-apps/plugin-fs": "2.4.4",
@@ -49,12 +49,12 @@
     "lodash.debounce": "^4.0.8",
     "lodash.isequal": "^4.5.0",
     "lodash.throttle": "^4.1.1",
-    "lucide-react": "^0.554.0",
+    "lucide-react": "^0.555.0",
     "nanoid": "^5.1.6",
     "next-themes": "^0.4.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-hook-form": "^7.66.1",
+    "react-hook-form": "^7.67.0",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^3.0.6",
     "solid-js": "^1.9.10",
@@ -64,16 +64,16 @@
     "tailwindcss-animate": "^1.0.7",
     "vite-plugin-solid": "^2.11.10",
     "zod": "^4.1.13",
-    "zustand": "^5.0.8"
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.isequal": "^4.5.8",
     "@types/lodash.throttle": "^4.1.9",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.2.6",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@uiw/react-color-sketch": "^2.9.2",
     "@vitejs/plugin-react": "^5.1.1",
@@ -81,7 +81,7 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.13"
+    "vite": "^7.2.6",
+    "vitest": "^4.0.14"
   }
 }
