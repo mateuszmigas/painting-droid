@@ -5,7 +5,7 @@ import { cn } from "@/utils/css";
 
 const ResizablePanelGroup = ({ className, ...props }: React.ComponentProps<typeof Group>) => (
   <Group
-    className={cn("flex h-full w-full data-[orientation=vertical]:flex-col", className)}
+    className={cn("h-full w-full", className)}
     {...props}
   />
 );

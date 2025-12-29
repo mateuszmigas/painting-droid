@@ -7,15 +7,13 @@ export const AppEdgePanel = memo(
     const { title, size, onResize, children } = props;
 
     return (
-      <>
+      <ResizablePanel
+        defaultSize={`${size}%`}
+        onResize={(panelSize) => onResize(panelSize.asPercentage)}
+      >
         <PanelHeader title={title} />
-        <ResizablePanel
-          defaultSize={`${size}%`}
-          onResize={(panelSize) => onResize(panelSize.asPercentage)}
-        >
-          {children}
-        </ResizablePanel>
-      </>
+        {children}
+      </ResizablePanel>
     );
   },
 );
