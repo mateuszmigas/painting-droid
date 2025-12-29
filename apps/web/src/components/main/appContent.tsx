@@ -46,7 +46,7 @@ export const AppContent = memo(() => {
           <ScrollBar orientation="vertical" />
         </ScrollArea>
       </div>
-      <ResizablePanelGroup className="flex-1" direction="horizontal">
+      <ResizablePanelGroup className="flex-1" orientation="horizontal">
         <AppColumn {...createColumnProps("middle")}>
           <div className="relative size-full flex flex-col">
             <ToolSettingsBar />
@@ -55,7 +55,7 @@ export const AppContent = memo(() => {
         </AppColumn>
         <ResizableHandle />
         <AppColumn {...createColumnProps("right")}>
-          <ResizablePanelGroup direction="vertical">
+          <ResizablePanelGroup orientation="vertical">
             <AppEdgePanel {...createPanelProps("layers")}>
               <LayersPanel />
             </AppEdgePanel>
