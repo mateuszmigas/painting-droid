@@ -8,6 +8,9 @@ updates:
       all-deps:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "recharts"
+      - dependency-name: "react-resizable-panels"
   - package-ecosystem: "cargo"
     directory: "/apps/desktop"
     schedule:

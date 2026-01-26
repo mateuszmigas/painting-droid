@@ -238,7 +238,8 @@
         rgb(0, 0, 255),
         rgb(255, 0, 255),
         rgb(255, 0, 0)
-      ), radial-gradient(circle closest-side, white, transparent);
+      ),
+      radial-gradient(circle closest-side, white, transparent);
     background-blend-mode: overlay;
   }
 
