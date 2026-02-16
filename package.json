@@ -23,7 +23,7 @@
     "pnpm": ">=3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.13"
+    "@biomejs/biome": "2.4.0"
   },
   "pnpm": {
     "overrides": {
