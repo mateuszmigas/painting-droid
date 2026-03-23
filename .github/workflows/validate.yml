@@ -23,7 +23,7 @@ jobs:
           node-version: "22.14.0"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
         with:
           version: 9.2.0
 
@@ -46,7 +46,7 @@ jobs:
           node-version: "22.14.0"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
         with:
           version: 9.2.0
 
