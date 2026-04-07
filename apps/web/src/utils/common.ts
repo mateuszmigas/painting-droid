@@ -1,5 +1,6 @@
 import type { Shape2d } from "@/components/solid/shapes/shape.solid";
 import type { RgbaColor } from "./color";
+
 export type { Shape2d };
 
 export type Position = {
