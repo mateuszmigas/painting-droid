@@ -31,7 +31,6 @@ import {
   FilePlus2,
   FolderOpen,
   Fullscreen,
-  Github,
   HelpCircle,
   Image,
   ImageMinus,
@@ -83,6 +82,7 @@ import { assertNever } from "@/utils/typeGuards";
 import { AiLabel } from "../aiLabel";
 import { AnchorTopLeft } from "./custom/anchorTopLeft";
 import { Deselect } from "./custom/deselect";
+import { Github } from "./custom/github";
 
 type BaseIconType =
   | "pen"
