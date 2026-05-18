@@ -6,6 +6,6 @@
     "copy": "node copy.js"
   },
   "devDependencies": {
-    "wasm-pack": "^0.14.0"
+    "wasm-pack": "^0.15.0"
   }
 }
