@@ -16,7 +16,7 @@
     "analyze-bundle": "pnpm dlx vite-bundle-visualizer"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
+    "@hookform/resolvers": "^5.4.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.8",
     "@radix-ui/react-context-menu": "^2.2.16",
@@ -54,7 +54,7 @@
     "next-themes": "^0.4.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-hook-form": "^7.76.0",
+    "react-hook-form": "^7.76.1",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^3.0.6",
     "solid-js": "^1.9.13",
@@ -72,16 +72,16 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.isequal": "^4.5.8",
     "@types/lodash.throttle": "^4.1.9",
-    "@types/node": "^25.8.0",
-    "@types/react": "^19.2.14",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
-    "@uiw/react-color-sketch": "^2.10.1",
+    "@uiw/react-color-sketch": "^2.10.3",
     "@vitejs/plugin-react": "^6.0.2",
     "jsdom": "^29.1.1",
-    "postcss": "^8.5.14",
+    "postcss": "^8.5.15",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.13",
-    "vitest": "^4.1.6"
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7"
   }
 }
