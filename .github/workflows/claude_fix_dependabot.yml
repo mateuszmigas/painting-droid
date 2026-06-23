@@ -76,7 +76,9 @@ jobs:
         if: steps.pr.outputs.found == 'true'
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Auth via Claude subscription (Pro/Max). Generate the token locally with
+          # `claude setup-token` and store it as the CLAUDE_CODE_OAUTH_TOKEN secret.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             You are fixing a failing Dependabot dependency-bump PR (#${{ steps.pr.outputs.number }}).
