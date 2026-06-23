@@ -1,0 +1,98 @@
+name: Claude Fix Dependabot
+
+# Automatically asks Claude Code to repair Dependabot bump PRs whose CI is failing.
+# Trigger: the "Validate" workflow finishing on a Dependabot PR. We only spend an
+# agent run when validation actually failed, so green bumps cost nothing.
+on:
+  workflow_run:
+    workflows: ["Validate"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  fix:
+    # Only react to failed runs that were triggered by a Dependabot pull request.
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.actor.login == 'dependabot[bot]' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve the Dependabot PR
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const prs = run.pull_requests;
+            let number, headRef;
+            if (prs && prs.length > 0) {
+              number = prs[0].number;
+              headRef = prs[0].head.ref;
+            } else {
+              // Fallback: match the open PR by its head branch (head SHA isn't enough).
+              const { data } = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                head: `${context.repo.owner}:${run.head_branch}`,
+              });
+              if (data.length === 0) {
+                core.setOutput('found', 'false');
+                return;
+              }
+              number = data[0].number;
+              headRef = data[0].head.ref;
+            }
+            core.setOutput('found', 'true');
+            core.setOutput('number', String(number));
+            core.setOutput('head_ref', headRef);
+
+      - name: Checkout the Dependabot branch
+        if: steps.pr.outputs.found == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.head_ref }}
+          fetch-depth: 0
+
+      - name: Set up Node
+        if: steps.pr.outputs.found == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22.14.0"
+
+      - name: Setup pnpm
+        if: steps.pr.outputs.found == 'true'
+        uses: pnpm/action-setup@v5
+        with:
+          version: 9.2.0
+
+      - name: Let Claude repair the bump
+        if: steps.pr.outputs.found == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          # Auth via Claude subscription (Pro/Max). Generate the token locally with
+          # `claude setup-token` and store it as the CLAUDE_CODE_OAUTH_TOKEN secret.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            You are fixing a failing Dependabot dependency-bump PR (#${{ steps.pr.outputs.number }}).
+            The branch is already checked out. CI runs `pnpm validate` (unit tests, TypeScript
+            type-checking and lint) plus Playwright e2e tests.
+
+            Steps:
+            1. Run `pnpm install --prefer-offline`, then `pnpm validate`.
+            2. If it fails, diagnose what the dependency upgrade broke — lockfile drift,
+               breaking API/type changes from a major bump, lint, or test failures.
+            3. Fix the application/config code (and regenerate the lockfile if needed) so
+               validation passes. Keep changes minimal and focused on the upgrade.
+            4. Do NOT downgrade or pin the bumped versions — the goal is to adapt the code
+               to the new versions, not revert Dependabot's work.
+            5. Commit the fixes to the current branch and push. If validation already passes
+               with no changes, do nothing.
+          claude_args: "--max-turns 40"
