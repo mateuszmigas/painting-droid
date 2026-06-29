@@ -45,6 +45,7 @@ export class TestApp {
       await setting.click();
       const select = await this.page.getByTestId(testIds.selectContent);
       await select.getByLabel(value).click();
+      await select.waitFor({ state: "detached" });
     }
   }
 
