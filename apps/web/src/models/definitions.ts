@@ -1,6 +1,7 @@
 import { model as briaaiRMBG14 } from "./briaai_RMBG-1.4";
 import { model as demo } from "./demo";
 import { model as facebookDetrResnet50 } from "./facebook_detr-resnet-50";
+import { model as llmmanLlava } from "./llmmanLlava";
 import { model as ollamaLlava } from "./ollamaLlava";
 import { model as openAiDalle2 } from "./openAiDalle2";
 import { model as openAiDalle3 } from "./openAiDalle3";
@@ -16,6 +17,7 @@ export const modelDefinitions = [
   stableDiffusionServer,
   briaaiRMBG14,
   ollamaLlava,
+  llmmanLlava,
 ] as const;
 export type ModelType = (typeof modelDefinitions)[number]["type"];
 

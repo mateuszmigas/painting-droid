@@ -49,14 +49,17 @@ const fetchActionsResponse = (server: string, prompt: string, actions: ChatActio
   });
 };
 
-const configSchema = createConfigSchema({
-  server: {
-    style: { columns: 2 },
-    name: translations.config.server,
-    type: "string",
-    defaultValue: "http://localhost:11434/api/generate",
-  },
-});
+export const createServerConfigSchema = (defaultValue: string) =>
+  createConfigSchema({
+    server: {
+      style: { columns: 2 },
+      name: translations.config.server,
+      type: "string",
+      defaultValue,
+    },
+  });
+
+const configSchema = createServerConfigSchema("http://localhost:11434/api/generate");
 
 type ChatResponseChunk = {
   model: string;
@@ -65,7 +68,7 @@ type ChatResponseChunk = {
   done: boolean;
 };
 
-const chat = createChatSection({
+export const chat = createChatSection({
   optionsSchema: {},
   execute: async (_modelId, prompt, image, actions, _options, config) => {
     const { server } = config as CustomFieldsSchemaAsValues<typeof configSchema>;

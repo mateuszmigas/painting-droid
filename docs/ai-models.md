@@ -34,6 +34,16 @@ Models using API keys need a desktop version for secure storage
    `launchctl setenv OLLAMA_ORIGINS "https://www.paintingdroid.com"`. Check [link](https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama) for details.
 4. The defaults should work, if not adjust server address in model settings.
 
+### llmman LLaVa
+
+[llmman](https://github.com/llmmanorg/llmman) is a local model runner that serves the Ollama API on port 17434, so it works the same way as the Ollama model above.
+
+1. Install llmman: `curl -fsSL https://raw.githubusercontent.com/llmmanorg/llmman/main/install.sh | sh` (Linux/macOS) or `irm https://raw.githubusercontent.com/llmmanorg/llmman/main/install.ps1 | iex` (Windows).
+2. The app requests the model named `llava`, so alias that name to a LLaVA GGUF and pull it, for example:\
+   `llmman config set aliases.llava hf.co/second-state/Llava-v1.5-7B-GGUF` and then `llmman pull llava`.
+3. Run `llmman serve`.
+4. The defaults should work, if not adjust server address in model settings (default `http://localhost:17434/api/generate`).
+
 ## On-Device
 
 Currently, it is not possible to configure on-device models as they are enabled by default.
