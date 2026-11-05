@@ -24,4 +24,5 @@ export type Key =
   | "V"
   | "B"
   | "N"
-  | "M";
+  | "M"
+  | "DELETE";

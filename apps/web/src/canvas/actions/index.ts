@@ -2,6 +2,7 @@ import { createCanvasAction as addLayer } from "./addLayer";
 import { createCanvasAction as addShape } from "./addShape";
 import { createCanvasAction as applyActiveShape } from "./applyActiveShape";
 import { createCanvasAction as clearActiveShape } from "./clearActiveShape";
+import { createCanvasAction as clearCapturedArea } from "./clearCapturedArea";
 import { createCanvasAction as cropCanvas } from "./cropCanvas";
 import { createCanvasAction as cutCapturedArea } from "./cutCapturedArea";
 import { createCanvasAction as duplicateLayer } from "./duplicateLayer";
@@ -33,6 +34,7 @@ export const canvasActions = {
   applyActiveShape,
   resolveActiveShape,
   cutCapturedArea,
+  clearCapturedArea,
   cropCanvas,
   resizeCanvas,
   mergeLayerDown,
