@@ -4,6 +4,7 @@ import { command as clearActiveWorkspace } from "./clearActiveWorkspace";
 import { command as closeActiveWorkspace } from "./closeActiveWorkspace";
 import { command as copyImage } from "./copyImage";
 import { command as createActiveWorkspace } from "./createActiveWorkspace";
+import { command as clearSelection } from "./clearSelection";
 import { command as cutImage } from "./cutImage";
 import { command as dropFile } from "./dropFile";
 import { command as duplicateLayer } from "./duplicateLayer";
@@ -64,6 +65,7 @@ export const commands = {
   copyImage,
   pasteImage,
   cutImage,
+  clearSelection,
   checkForUpdate,
   openCropCanvasDialog,
   openResizeCanvasDialog,
