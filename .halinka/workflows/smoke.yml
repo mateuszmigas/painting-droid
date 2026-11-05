@@ -1,0 +1,11 @@
+name: Smoke
+steps:
+  - id: shell
+    type: shell
+    run: git status --short
+  - id: agent
+    type: agent
+    agent: claude-code
+    permissions:
+      write: false
+    prompt: Read this repository. Report a summary of the project in one sentence.
