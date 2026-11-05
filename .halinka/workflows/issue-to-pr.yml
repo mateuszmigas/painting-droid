@@ -1,0 +1,64 @@
+# The label `halinka` on an issue, or a comment that starts with /halinka, starts a run. A team member must do it.
+# Anyone can write the text of an issue. Read it before you start a run, and at the approval read the diff itself.
+name: Issue to PR
+
+inputs:
+  issue_number: { type: number, required: true, description: The issue to implement }
+  issue_title: { type: string, default: "" }
+  issue_body: { type: string, default: "" }
+
+on:
+  issues:
+    types: [labeled]
+    labels: [halinka]
+    inputs:
+      issue_number: ${{ event.issue.number }}
+      issue_title: ${{ event.issue.title }}
+      issue_body: ${{ event.issue.body ?? '' }}
+  issue_comment:
+    starts_with: /halinka
+    inputs:
+      issue_number: ${{ event.issue.number }}
+      issue_title: ${{ event.issue.title }}
+      issue_body: ${{ event.issue.body ?? '' }}
+
+branch:
+  name: halinka/issue-${{ inputs.issue_number }}
+
+max_cost_usd: 5
+
+steps:
+  - id: fix_loop
+    type: loop
+    max_iterations: 3
+    until: ${{ steps.code_review.outcome == 'approve' }}
+    steps:
+      - id: implement
+        type: agent
+        agent: claude-code
+        prompt: |
+          Implement issue #${{ inputs.issue_number }}.
+          Title: ${{ inputs.issue_title }}
+          Text: ${{ inputs.issue_body }}
+          Review findings: ${{ loop.previous.code_review.summary ?? 'none' }}
+        gates:
+          - name: validate
+            run: pnpm validate
+          - name: unit_tests
+            run: pnpm --filter @painting-droid/web test:unit
+
+      - id: code_review
+        type: agent
+        agent: claude-code
+        permissions: { write: false }
+        prompt: Review the branch diff against its base. Report only blocking issues.
+        outcomes: [approve, changes_requested]
+
+  - id: approve
+    type: approval
+    message: Review the diff of issue ${{ inputs.issue_number }}
+    reviewers: [code_review]
+
+  - id: open_pr
+    type: github
+    action: open_pull_request

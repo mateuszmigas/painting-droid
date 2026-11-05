@@ -1,0 +1,7 @@
+server: local
+devcontainer: .devcontainer.json
+setup:
+  network: [registry.npmjs.org]
+  # The image has a newer pnpm, which refuses this lockfile. CI uses 9.2.0.
+  # The install scripts of sharp and wasm-pack download from hosts outside this list, and the gates do not need them.
+  run: npm install -g pnpm@9.2.0 && pnpm install --frozen-lockfile --ignore-scripts
