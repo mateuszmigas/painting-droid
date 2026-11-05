@@ -1,4 +1,4 @@
-server: https://app.halinka.dev
+server: local
 devcontainer: .devcontainer.json
 setup:
   network: [registry.npmjs.org]
